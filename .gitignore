@@ -1,0 +1,6 @@
+npm-cache/
+node_modules/
+dist/
+*.pdf
+*.epub
+.DS_Store

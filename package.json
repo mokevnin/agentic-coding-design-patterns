@@ -1,0 +1,17 @@
+{
+  "name": "agentic-coding-design-patterns",
+  "version": "0.0.1",
+  "description": "Design patterns for coding with AI agents (ru/en/es), in the spirit of the Gang of Four",
+  "private": true,
+  "license": "CC-BY-SA-4.0",
+  "scripts": {
+    "start": "honkit serve ./book",
+    "build": "honkit build ./book ../dist",
+    "pdf:ru": "honkit pdf ./book/ru ../../dist/agentic-coding-design-patterns-ru.pdf",
+    "pdf:en": "honkit pdf ./book/en ../../dist/agentic-coding-design-patterns-en.pdf",
+    "pdf:es": "honkit pdf ./book/es ../../dist/agentic-coding-design-patterns-es.pdf"
+  },
+  "devDependencies": {
+    "honkit": "^6.2.2"
+  }
+}

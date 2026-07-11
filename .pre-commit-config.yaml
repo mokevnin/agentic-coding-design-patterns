@@ -1,0 +1,9 @@
+# Managed with prek (https://github.com/j178/prek) — a fast, single-binary
+# reimplementation of pre-commit. Install hooks once with:
+#   prek install --hook-type commit-msg
+repos:
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]

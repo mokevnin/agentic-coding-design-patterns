@@ -1,0 +1,16 @@
+{
+  "title": "Agentic Design Patterns",
+  "description": "Design patterns for coding with AI agents, in the spirit of the Gang of Four",
+  "author": "Hexlet",
+  "language": "ru",
+  "structure": {
+    "readme": "README.md",
+    "summary": "SUMMARY.md",
+    "langs": "LANGS.md"
+  },
+  "pdf": {
+    "pageNumbers": true,
+    "fontSize": 12,
+    "paperSize": "a4"
+  }
+}
