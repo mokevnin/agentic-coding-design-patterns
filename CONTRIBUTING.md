@@ -6,6 +6,9 @@ language.
 
 ## Add a new pattern
 
+0. Check [CANDIDATES.md](CANDIDATES.md) first. New ideas start there as a
+   `candidate` row; adding a chapter means moving the idea to `accepted`. Rejected
+   ideas stay documented so we don't reconsider them by accident.
 1. Pick a kebab-case `slug` (e.g. `chain-of-thought`). It becomes the file name in
    every locale and the key under `book/assets/`.
 2. Create the chapter in the canonical locale: copy

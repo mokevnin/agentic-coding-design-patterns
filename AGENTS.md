@@ -32,4 +32,6 @@ Operating guide for agents (and humans) working in this repository.
   `book/<locale>/SUMMARY.md`.
 - Shared assets in `book/assets/<slug>/`, referenced via `../assets/<slug>/...`.
 - Canonical locale is `ru`: write a pattern in Russian first, then translate.
+- New pattern ideas are tracked in [CANDIDATES.md](CANDIDATES.md) — check it
+  before writing a chapter, and record accepted/rejected there.
 - See [CONTRIBUTING.md](CONTRIBUTING.md) for the full authoring workflow.
