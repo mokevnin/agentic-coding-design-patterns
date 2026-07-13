@@ -99,6 +99,12 @@ an agent.
 | tool-use | Ng's canonical pattern; largely a model capability, not a developer move. | [ng] |
 | planning | Ng frames it as agent-side autonomy; overlaps `explore-plan-code-commit` on the human side. | [ng] |
 | multi-agent-collaboration | Multiple agents split/debate work. Could seed a "project-org" chapter — author call. | [ng] |
+| react | Interleave reasoning traces and actions in one loop — the canonical agentic-cycle. Model-internal. | [react] |
+| reflexion | Verbal self-reflection stored in an episodic memory buffer across trials. Agent-internal origin of `reflection`. | [reflexion] |
+| tree-of-thoughts | Deliberate reasoning over a tree of thoughts with look-ahead / backtracking. Model-internal. | [tot] |
+| manager-pattern | A central agent coordinates specialists via tool calls. Overlaps `orchestrator-workers`. | [openai-guide] |
+| decentralized-handoff | Peer agents hand off execution one-way. Agent-architecture. | [openai-guide] |
+| structure-vs-autonomy | Design axis: successful agentic software sits between a rigid DAG and full autonomy. Meta-principle, could inform task-setting. | [llamaindex] |
 
 ## Sources
 
