@@ -119,3 +119,56 @@ an agent.
 - `[addy]` — Addy Osmani, *What makes a good AI spec* — https://addyosmani.com/blog/good-spec/
 - `[sdd-survey]` — Piskala, *Spec-driven development survey*, arXiv:2602.00180 — https://arxiv.org/html/2602.00180v1
 - `[adp-paper]` — Dao et al., *Agentic Design Patterns: A System-Theoretic Framework*, arXiv:2601.19752 — https://arxiv.org/html/2601.19752v1
+
+### From the source survey (deep-research run, 2026-07)
+
+Places to mine for patterns, found and fact-checked by a deep-research pass on
+*"where to source agentic design patterns."* Verification votes are the run's
+adversarial 3-vote check (3-0 = unanimous). See the [caveats](#caveats) below.
+
+Pattern catalogs & books (closest prior art to this book's format):
+
+- `[gulli]` — Antonio Gulli, *Agentic Design Patterns: A Hands-On Guide to Building Intelligent Systems* (Springer, 2025) — 21 patterns, one chapter each (overview / use cases / code / takeaways). GoF-style catalog to model our structure on. Code in LangChain, CrewAI, Google ADK. *Verified 3-0.* — https://link.springer.com/book/10.1007/978-3-032-01402-3
+- `[batch-ng]` — Andrew Ng, *How agents can improve LLM performance* (DeepLearning.ai, The Batch) — the four canonical patterns (Reflection, Tool Use, Planning, Multi-Agent); fuller citation than the `[ng]` tweet. *Verified 3-0.* — https://www.deeplearning.ai/the-batch/how-agents-can-improve-llm-performance/
+
+Vendor engineering guidance (named patterns with intent/structure):
+
+- `[openai-guide]` — OpenAI, *A Practical Guide to Building Agents* (PDF) — single/multi-agent taxonomy + Manager and Decentralized patterns. *Verified 3-0.* — https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf
+- `[google-agents]` — Google, *Introduction to Agents* whitepaper (Nov 2025; co-author Gulli) — Coordinator, Sequential, Iterative Refinement, Human-in-the-Loop. *Fetched, claims not verified in this run.* — https://vanducng.dev/2026/01/10/Google-Introduction-to-Agents-Whitepaper-Summary/
+- `[llamaindex]` — LlamaIndex, *Bending Without Breaking* (Laurie Voss, 2025) — the structure-vs-autonomy design axis. *Verified 3-0 but single vendor blog → medium confidence; a separate claim from this post was refuted 0-3.* — https://www.llamaindex.ai/blog/bending-without-breaking-optimal-design-patterns-for-effective-agents
+
+Academic surveys & primary papers (rich catalogs of named patterns):
+
+- `[survey-arch]` — Masterman et al., *The Landscape of Emerging AI Agent Architectures*, arXiv:2404.11584 — ReAct, RAISE, Reflexion, AutoGPT+P, LATS; Vertical vs Horizontal multi-agent. *Verified 3-0 (planning-categories sub-claim 2-1; that taxonomy traces to arXiv:2402.02716, Huang et al.).* — https://arxiv.org/html/2404.11584v1
+- `[csiro-tax]` — Zhou/Lu et al. (CSIRO Data61), *taxonomy of foundation-model agent architectures*, arXiv:2408.02920 — 12 taxonomy branches; reflection & coordination sub-patterns. Already structured as a design-option catalog. *Verified 3-0.* — https://arxiv.org/pdf/2408.02920
+- `[react]` — Yao et al., *ReAct*, arXiv:2210.03629 (ICLR 2023). *Verified 3-0.* — https://arxiv.org/abs/2210.03629
+- `[reflexion]` — Shinn et al., *Reflexion*, arXiv:2303.11366 (NeurIPS 2023). *Verified 3-0.* — https://arxiv.org/abs/2303.11366
+- `[tot]` — Yao et al., *Tree of Thoughts*, arXiv:2305.10601 (NeurIPS 2023). *Verified 3-0.* — https://arxiv.org/abs/2305.10601
+- `[toolformer]` — Schick et al., *Toolformer*, arXiv:2302.04761 (Meta AI) — historical origin of Tool Use. *Verified 3-0.* — https://arxiv.org/abs/2302.04761
+
+Framework docs & reference code (runnable pattern implementations):
+
+- `[spring-ai]` — Spring AI, *Effective agents* — the five Anthropic patterns with runnable Java. *Verified 3-0.* — https://docs.spring.io/spring-ai/reference/api/effective-agents.html
+- `[langgraph]` — LangGraph, *Multi-Agent Systems* — Supervisor and Swarm as first-class abstractions. *Fetched, claims not verified in this run.* — https://langchain-ai.github.io/langgraph/concepts/multi_agent/
+- `[autogen]` — Microsoft AutoGen, *Design Patterns* docs + the DeepLearning.ai course *AI Agentic Design Patterns with AutoGen*. *Fetched, claims not verified in this run.* — https://microsoft.github.io/autogen/stable/user-guide/core-user-guide/design-patterns/index.html
+- `[crewai]` — CrewAI docs. *Fetched, claims not verified in this run.* — https://docs.crewai.com/
+
+Practitioner communities & open-source repos:
+
+- `[willison]` — Simon Willison, *Agentic Engineering Patterns* — a living guide explicitly modeled on the GoF format. *Fetched, claims not verified in this run.* — https://simonwillison.net/2026/Feb/23/agentic-engineering-patterns/
+- `[awesome-agentic]` — nibzard, *awesome-agentic-patterns* (curated pattern index). *Fetched, claims not verified in this run.* — https://github.com/nibzard/awesome-agentic-patterns
+- `[cookbook]` — Anthropic, *anthropic-cookbook / patterns / agents* (reference implementations). *Fetched, claims not verified in this run.* — https://github.com/anthropics/anthropic-cookbook/tree/main/patterns/agents
+
+#### Caveats
+
+- **Scope gap:** most verified evidence is about *general* agentic design (building
+  agents), not *agentic coding* specifically (working with a coding agent). Filter
+  hard against this book's scope before promoting any row out of *Out of scope*.
+- **Coverage gap:** courses, communities, and repos were under-verified — the
+  entries above marked *not verified in this run* are leads, not fact-checked
+  claims. Confirm each before citing.
+- **Refuted (do not use):** the claim that LlamaIndex's *Bending Without Breaking*
+  attributes chains/branches/loops/fan-outs to Anthropic, implemented via LlamaIndex
+  Workflows, was refuted 0-3.
+- **Time sensitivity:** sources span Dec 2024 – Oct 2025; conceptual taxonomies are
+  stable, specific frameworks/SDKs drift.
