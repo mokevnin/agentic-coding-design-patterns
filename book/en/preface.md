@@ -10,5 +10,11 @@ scattered across articles, talks, and framework code. This book is an attempt to
 assemble such a catalog for agents and LLMs: to name recurring solutions and
 describe their forces and trade-offs.
 
+Like any patterns catalog, it is first of all a compilation: most of the
+solutions were not invented by the author but gathered from existing sources —
+Anthropic's engineering guides, community practices, skill packs, articles, and
+talks; primary sources are cited in the chapters. To these are added the
+author's own findings and ideas, tested in his own practice.
+
 The book is living and open. Patterns are added and refined; see
 [CONTRIBUTING](https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md).

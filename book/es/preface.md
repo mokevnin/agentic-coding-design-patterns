@@ -10,5 +10,12 @@ el conocimiento está disperso en artículos, charlas y código de frameworks. E
 libro es un intento de reunir ese catálogo para agentes y LLM: nombrar las
 soluciones recurrentes y describir sus fuerzas y compromisos.
 
+Como todo catálogo de patrones, es ante todo una compilación: la mayoría de las
+soluciones no las inventó el autor, sino que se reunieron de fuentes
+existentes — las guías de ingeniería de Anthropic, las prácticas de la
+comunidad, paquetes de skills, artículos y charlas; las fuentes primarias se
+citan en los capítulos. A ellas se suman los hallazgos e ideas propios del
+autor, probados en su práctica.
+
 El libro es vivo y abierto. Los patrones se añaden y se refinan; véase
 [CONTRIBUTING](https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md).
