@@ -31,6 +31,7 @@
 * [Bucle de retroalimentación](give-agent-a-way-to-verify.md)
 * [TDD con agente](tdd-with-agent.md)
 * [Reflexión](reflection.md)
+* [Escritor y revisor](writer-reviewer.md)
 
 ## Organización del proyecto
 
