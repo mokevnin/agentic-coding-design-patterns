@@ -96,18 +96,16 @@ cuatro fases solo ralentizan el trabajo.
 
 ## Implementación
 
-1. Empieza por la exploración y prohíbe el código explícitamente: «Lee los
-   archivos responsables de X y entiende cómo funciona Y. De momento no
-   escribas nada».
-2. Pide un plan: «Redacta un plan de solución; no escribas código». Si la
-   herramienta tiene un modo de planificación (en Claude Code — plan mode),
-   actívalo: la prohibición de editar la garantiza la propia herramienta, no
-   solo el prompt.
+1. Activa el modo de planificación: el agente no podrá tocar archivos hasta
+   que el plan se apruebe, y no hará falta prohibir el código en los prompts.
+2. Empieza por la exploración: «Lee los archivos responsables de X y entiende
+   cómo funciona Y». Después pide un plan e indica las restricciones que no se
+   ven en el código.
 3. Lee el plan como si revisaras código: haz preguntas, tacha lo innecesario,
    exige alternativas. Itera hasta estar de acuerdo — es la fase más barata
    para discutir.
-4. Aprobado el plan, pide la implementación e indica con qué puede verificarse
-   el agente: tests, build, linter.
+4. Aprueba el plan con la confirmación propia de la herramienta e indica con
+   qué puede verificarse el agente: tests, build, linter.
 5. Cierra con la fase de commit: mensaje con sentido, pull request con el plan
    en la descripción y actualización de la documentación si los cambios la
    tocaron.
@@ -187,18 +185,19 @@ explícitamente con el desarrollador.
 ## Ejemplo
 
 Tarea: en la exportación de informes a CSV, la hora aparece desplazada una hora
-para algunos usuarios.
+para algunos usuarios. El desarrollador activa el modo de planificación — el
+agente no puede cambiar archivos hasta que el plan se apruebe, así que no hace
+falta prohibir el código en los prompts.
 
 **Exploración:**
 
 > Lee el código de exportación de informes y averigua de dónde sale la hora en
-> el CSV y dónde puede desplazarse con el cambio de horario de verano. De
-> momento no cambies nada.
+> el CSV y dónde puede desplazarse con el cambio de horario de verano.
 
 **Plan:**
 
-> Redacta un plan de corrección. El formato del archivo no se puede cambiar —
-> lo leen integraciones externas. No escribas código.
+> Redacta un plan de corrección. Ten en cuenta que el formato del archivo no se
+> puede cambiar — lo leen integraciones externas.
 
 El agente propone dos opciones: convertir la hora al escribir o al leer. El
 desarrollador responde:
@@ -206,9 +205,9 @@ desarrollador responde:
 > Convertir al leer rompe los archivos ya exportados. Toma la primera opción y
 > añade al plan un test para el límite del cambio de horario.
 
-**Código:**
-
-> Plan aprobado. Impleméntalo y ejecuta los tests del exportador.
+**Código:** el desarrollador acepta el plan corregido con la confirmación
+propia de la herramienta — el agente sale del modo de planificación, implementa
+el plan y ejecuta los tests del exportador.
 
 **Commit:**
 

@@ -96,15 +96,15 @@ only slow the work down.
 
 ## Implementation
 
-1. Start with exploration and explicitly forbid code: "Read the files
-   responsible for X and figure out how Y works. Don't write anything yet."
-2. Ask for a plan: "Draft a plan for solving this; don't write code." If the
-   tool has a planning mode (in Claude Code — plan mode), turn it on: the ban
-   on edits is then enforced by the tool itself, not just by the prompt.
+1. Turn on planning mode: the agent can't touch files until the plan is
+   approved, so there's no need to forbid code in the prompts.
+2. Start with exploration: "Read the files responsible for X and figure out
+   how Y works." Then ask for a plan and spell out the constraints that aren't
+   visible in the code.
 3. Read the plan the way you would review code: ask questions, cross out the
    unnecessary, demand alternatives. Iterate until you agree — this is the
    cheapest phase to argue in.
-4. Once the plan is approved, ask for the implementation and point out what the
+4. Approve the plan with the tool's own confirmation and point out what the
    agent can verify itself with: tests, build, linter.
 5. Finish with the commit phase: a meaningful message, a pull request with the
    plan in the description, and documentation updates if the changes touched
@@ -186,18 +186,18 @@ with the developer.
 ## Example
 
 Task: in the CSV report export, timestamps are shifted by an hour for some
-users.
+users. The developer turns on planning mode — the agent can't change files
+until the plan is approved, so there's no need to forbid code in the prompts.
 
 **Explore:**
 
 > Read the report export code and figure out where the timestamps in the CSV
 > come from and where they could shift around the daylight-saving transition.
-> Don't change anything yet.
 
 **Plan:**
 
-> Draft a fix plan. The file format must not change — external integrations
-> read it. Don't write code.
+> Draft a fix plan. Keep in mind the file format must not change — external
+> integrations read it.
 
 The agent proposes two options: convert the time when writing or when reading.
 The developer replies:
@@ -205,9 +205,9 @@ The developer replies:
 > Converting on read breaks the files that have already been exported. Take the
 > first option, and add a test for the daylight-saving boundary to the plan.
 
-**Code:**
-
-> Plan approved. Implement it and run the exporter tests.
+**Code:** the developer accepts the revised plan with the tool's own
+confirmation — the agent leaves planning mode, implements the plan, and runs
+the exporter tests.
 
 **Commit:**
 
