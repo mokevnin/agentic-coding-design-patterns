@@ -29,6 +29,7 @@
 ## Проверка
 
 * [Петля обратной связи](give-agent-a-way-to-verify.md)
+* [TDD с агентом](tdd-with-agent.md)
 
 ## Организация проекта
 

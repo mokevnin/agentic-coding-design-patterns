@@ -79,7 +79,7 @@ article per framework.
 | Slug | Status | Pitch / Note | Src |
 |------|--------|--------------|-----|
 | give-agent-a-way-to-verify | done | Hand the agent a pass/fail check (tests, build, linter, screenshot); it runs, reads, and iterates until it passes. | [cc-bp] |
-| tdd-with-agent | accepted | Enforce red-green-refactor with phase-specific prompts, else the agent defaults to implementation-first and writes tests retroactively. | [cc-bp] |
+| tdd-with-agent | done | Enforce red-green-refactor with phase-specific prompts, else the agent defaults to implementation-first and writes tests retroactively. | [cc-bp] |
 | reflection | accepted | Self-critique loop: generate → evaluate → improve. The `evaluator-optimizer` workflow reframed for the human-driven case. | [ng], [bea] |
 | writer-reviewer | accepted | Review the diff in a *fresh* context (separate session/subagent) so the agent isn't biased toward code it just wrote. Includes adversarial refutation (grader ≠ author) as a hardened variant (merge decided 2026-07-23). | [cc-bp] |
 | adversarial-review | rejected | Merged into `writer-reviewer` (author decision 2026-07-23): difference in degree, not structure. | [cc-bp] |

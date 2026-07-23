@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 330" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#4a6fa5"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#a54a4a"/>
+    </marker>
+  </defs>
+
+  <text x="440" y="26" text-anchor="middle" font-size="12" fill="#a5764a">промпт на каждую фазу — иначе агент смешает их сам</text>
+
+  <!-- red phase -->
+  <rect x="40" y="60" width="180" height="110" rx="10" fill="#f9eded" stroke="#a54a4a" stroke-width="1.5"/>
+  <text x="130" y="88" text-anchor="middle" font-size="14" font-weight="600" fill="#1a2b3c">Красная фаза</text>
+  <text x="130" y="112" text-anchor="middle" font-size="11" fill="#5b6b7c">тесты по кейсам</text>
+  <text x="130" y="128" text-anchor="middle" font-size="11" fill="#5b6b7c">прогнать — должны упасть</text>
+  <text x="130" y="150" text-anchor="middle" font-size="11" fill="#a54a4a">реализация запрещена</text>
+
+  <!-- commit gate -->
+  <line x1="222" y1="115" x2="248" y2="115" stroke="#4a6fa5" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <circle cx="235" cy="115" r="5" fill="#fff" stroke="#a5764a" stroke-width="1.5"/>
+  <line x1="235" y1="123" x2="235" y2="178" stroke="#a5764a" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="235" y="194" text-anchor="middle" font-size="10" fill="#a5764a">коммит: оракул</text>
+  <text x="235" y="207" text-anchor="middle" font-size="10" fill="#a5764a">зафиксирован</text>
+
+  <!-- green phase -->
+  <rect x="250" y="60" width="180" height="110" rx="10" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="340" y="88" text-anchor="middle" font-size="14" font-weight="600" fill="#1a2b3c">Зелёная фаза</text>
+  <text x="340" y="112" text-anchor="middle" font-size="11" fill="#5b6b7c">минимальный код до зелёного</text>
+  <text x="340" y="128" text-anchor="middle" font-size="11" fill="#5b6b7c">петля: запуск — правка</text>
+  <text x="340" y="150" text-anchor="middle" font-size="11" fill="#a54a4a">тесты заморожены</text>
+
+  <line x1="432" y1="115" x2="458" y2="115" stroke="#4a6fa5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- overfit check -->
+  <rect x="460" y="60" width="180" height="110" rx="10" fill="#fff" stroke="#4a6fa5" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="550" y="88" text-anchor="middle" font-size="14" font-weight="600" fill="#1a2b3c">Проверка на подгонку</text>
+  <text x="550" y="112" text-anchor="middle" font-size="11" fill="#5b6b7c">свежий сабагент:</text>
+  <text x="550" y="128" text-anchor="middle" font-size="11" fill="#5b6b7c">не подогнан ли код</text>
+  <text x="550" y="144" text-anchor="middle" font-size="11" fill="#5b6b7c">под конкретные тесты</text>
+
+  <line x1="642" y1="115" x2="668" y2="115" stroke="#4a6fa5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- refactor -->
+  <rect x="670" y="60" width="180" height="110" rx="10" fill="#f6f1e7" stroke="#a5764a" stroke-width="1.5"/>
+  <text x="760" y="88" text-anchor="middle" font-size="14" font-weight="600" fill="#1a2b3c">Рефакторинг</text>
+  <text x="760" y="112" text-anchor="middle" font-size="11" fill="#5b6b7c">после зелёного,</text>
+  <text x="760" y="128" text-anchor="middle" font-size="11" fill="#5b6b7c">под защитой тестов</text>
+
+  <!-- next slice loop -->
+  <path d="M760 172 L760 255 L130 255 L130 174" fill="none" stroke="#a54a4a" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-red)"/>
+  <text x="445" y="272" text-anchor="middle" font-size="12" fill="#a54a4a">следующий слайс: один тест — одна реализация</text>
+
+  <!-- principle -->
+  <text x="440" y="312" text-anchor="middle" font-size="13" font-style="italic" fill="#5b6b7c">оракул пишется до кода — и потому не наследует его ошибок</text>
+</svg>
