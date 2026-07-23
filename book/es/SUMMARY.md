@@ -6,7 +6,7 @@
 
 ## Planteamiento de la tarea
 
-* [Exploración — plan — código — commit](explore-plan-code-commit.md)
+* [Cuatro fases](explore-plan-code-commit.md)
 
 ## Desarrollo orientado a especificaciones
 
@@ -19,6 +19,8 @@
 * [Skills de Matt Pocock](matt-pocock-skills.md)
 
 ## Trabajo con el contexto
+
+* [Ingeniería de contexto](context-engineering.md)
 
 ## Verificación
 

@@ -6,7 +6,7 @@
 
 ## Task Setting
 
-* [Explore — Plan — Code — Commit](explore-plan-code-commit.md)
+* [Four Phases](explore-plan-code-commit.md)
 
 ## Spec-Driven Development
 
@@ -19,6 +19,8 @@
 * [Matt Pocock's Skills](matt-pocock-skills.md)
 
 ## Working with Context
+
+* [Context Engineering](context-engineering.md)
 
 ## Verification
 
