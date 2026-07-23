@@ -15,6 +15,8 @@
 * [OpenSpec](openspec.md)
 * [Kiro](kiro.md)
 * [Tessl](tessl.md)
+* [Superpowers](superpowers.md)
+* [Matt Pocock's Skills](matt-pocock-skills.md)
 
 ## Working with Context
 

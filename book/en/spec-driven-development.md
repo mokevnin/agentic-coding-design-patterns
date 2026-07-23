@@ -2,7 +2,7 @@
 group: sdd
 status: draft
 related: [explore-plan-code-commit, premature-specification]
-source_rev: 07fc27a4a9be99f1aa6f1a42525711a2e8b2e9f3
+source_rev: 69d336ebeb0525cf4dd7e9cd7d354ce31dffe499
 ---
 
 # Spec-Driven Development
@@ -146,13 +146,12 @@ article in this section:
   of each phase and acceptance criteria in EARS notation.
 - [Tessl](tessl.md) — the radical variant: the specification is the source,
   the code a derived artifact.
-
-The same pipeline can also be assembled from Claude Code skills, with no
-separate tool: in [Superpowers](https://github.com/obra/superpowers) —
-`brainstorming` → `writing-plans` → implementation via subagents with a TDD
-cycle; in [Matt Pocock's pack](https://github.com/mattpocock/skills) —
-`/to-spec` → `/to-tickets` → `/implement`. Both packs are covered in detail in
-[explore — plan — code — commit](explore-plan-code-commit.md).
+- [Superpowers](superpowers.md) — SDD as a Claude Code skill pack:
+  brainstorming → plan → subagent implementation with TDD and mandatory
+  checkpoints.
+- [Matt Pocock's skills](matt-pocock-skills.md) — a pipeline on top of the
+  issue tracker: interview → specification → tracer-bullet tickets →
+  implementation.
 
 ## Example
 
@@ -200,13 +199,12 @@ workaround in the code.
 ## Known uses
 
 - [GitHub Spec Kit](spec-kit.md), [OpenSpec](openspec.md), [Kiro](kiro.md),
-  and [Tessl](tessl.md) — the four frameworks covered by this section's
-  articles; the SDD manifesto as a methodology is in the
+  [Tessl](tessl.md), [Superpowers](superpowers.md), and
+  [Matt Pocock's skills](matt-pocock-skills.md) — the six solutions covered by
+  this section's articles; the SDD manifesto as a methodology is in the
   [Spec Kit announcement](https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/).
 - **BMAD-Method** — SDD in an agile wrapper: role agents (analyst, PM,
   architect, developer) drive PRD → architecture → stories.
-- **Superpowers and Matt Pocock's skill pack** — the same pipeline assembled
-  from Claude Code skills.
 
 ## Related patterns
 

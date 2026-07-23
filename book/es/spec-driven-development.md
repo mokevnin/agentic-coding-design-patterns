@@ -2,7 +2,7 @@
 group: sdd
 status: draft
 related: [explore-plan-code-commit, premature-specification]
-source_rev: 07fc27a4a9be99f1aa6f1a42525711a2e8b2e9f3
+source_rev: 69d336ebeb0525cf4dd7e9cd7d354ce31dffe499
 ---
 
 # Desarrollo orientado a especificaciones
@@ -151,13 +151,12 @@ sección:
   explícita de cada fase y criterios de aceptación en notación EARS.
 - [Tessl](tessl.md) — la variante radical: la especificación es la fuente y el
   código un artefacto derivado.
-
-La misma tubería también se monta con skills de Claude Code, sin herramienta
-aparte: en [Superpowers](https://github.com/obra/superpowers) —
-`brainstorming` → `writing-plans` → implementación con subagentes y ciclo TDD;
-en el [pack de Matt Pocock](https://github.com/mattpocock/skills) —
-`/to-spec` → `/to-tickets` → `/implement`. Ambos packs se analizan en detalle
-en [exploración — plan — código — commit](explore-plan-code-commit.md).
+- [Superpowers](superpowers.md) — SDD como pack de skills de Claude Code:
+  brainstorming → plan → implementación con subagentes, TDD y puntos de
+  control obligatorios.
+- [Skills de Matt Pocock](matt-pocock-skills.md) — una tubería sobre el gestor
+  de incidencias: entrevista → especificación → tickets bala trazadora →
+  implementación.
 
 ## Ejemplo
 
@@ -209,14 +208,14 @@ adjunto), no un rodeo silencioso en el código.
 
 ## Usos conocidos
 
-- [GitHub Spec Kit](spec-kit.md), [OpenSpec](openspec.md), [Kiro](kiro.md) y
-  [Tessl](tessl.md) — los cuatro frameworks analizados en los artículos de
-  esta sección; el manifiesto de SDD como metodología está en el
+- [GitHub Spec Kit](spec-kit.md), [OpenSpec](openspec.md), [Kiro](kiro.md),
+  [Tessl](tessl.md), [Superpowers](superpowers.md) y los
+  [skills de Matt Pocock](matt-pocock-skills.md) — las seis soluciones
+  analizadas en los artículos de esta sección; el manifiesto de SDD como
+  metodología está en el
   [anuncio de Spec Kit](https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/).
 - **BMAD-Method** — SDD con envoltorio agile: agentes de rol (analista, PM,
   arquitecto, desarrollador) conducen PRD → arquitectura → historias.
-- **Superpowers y el pack de skills de Matt Pocock** — la misma tubería
-  montada con skills de Claude Code.
 
 ## Patrones relacionados
 
