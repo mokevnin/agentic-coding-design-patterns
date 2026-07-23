@@ -7,6 +7,7 @@
 ## Task Setting
 
 * [Explore — Plan — Code — Commit](explore-plan-code-commit.md)
+* [Spec-Driven Development](spec-driven-development.md)
 
 ## Working with Context
 

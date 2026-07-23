@@ -7,6 +7,7 @@
 ## Planteamiento de la tarea
 
 * [Exploración — plan — código — commit](explore-plan-code-commit.md)
+* [Desarrollo orientado a especificaciones](spec-driven-development.md)
 
 ## Trabajo con el contexto
 
