@@ -30,6 +30,7 @@
 
 * [Bucle de retroalimentación](give-agent-a-way-to-verify.md)
 * [TDD con agente](tdd-with-agent.md)
+* [Reflexión](reflection.md)
 
 ## Organización del proyecto
 
