@@ -72,7 +72,7 @@ article per framework.
 | progress-file | accepted | A dedicated progress log (e.g. `claude-progress.txt`) beside git history so a fresh-context agent can recover state. | [harness] |
 | json-spec-file | rejected | Merged into `feature-list-harness` (author decision 2026-07-23): a format choice, not a standalone pattern — becomes a section on the status-file format there. | [harness] |
 | handoff | accepted | Deliberately compact the session into a handoff document for the next agent — instead of trusting auto-summarization. Neighbor of `progress-file`, but a different moment: progress is a running log, handoff is a session boundary. | [mp] |
-| domain-context-file | accepted | A domain glossary + ADRs in the repo (`CONTEXT.md`) as the canonical language the agent reads every session — cures term drift and renaming churn. Separate axis from `claude-md-memory`: that's "how to work", this is "what words mean". | [mp] |
+| domain-context-file | done | A domain glossary + ADRs in the repo (`CONTEXT.md`) as the canonical language the agent reads every session — cures term drift and renaming churn. Separate axis from `claude-md-memory`: that's "how to work", this is "what words mean". | [mp] |
 
 ## Verification
 

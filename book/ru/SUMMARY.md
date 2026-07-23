@@ -22,6 +22,7 @@
 
 * [Инженерия контекста](context-engineering.md)
 * [Память проекта](claude-md-memory.md)
+* [Словарь домена](domain-context-file.md)
 
 ## Проверка
 

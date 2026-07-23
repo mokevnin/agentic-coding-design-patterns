@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 380" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#4a6fa5"/>
+    </marker>
+    <marker id="arrow-tan" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#a5764a"/>
+    </marker>
+  </defs>
+
+  <!-- update loop: session -> glossary -->
+  <path d="M480 108 L480 30 L160 30 L160 56" fill="none" stroke="#a5764a" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-tan)"/>
+  <text x="470" y="22" text-anchor="middle" font-size="12" fill="#a5764a">el término asentado se fija en el vocabulario al momento</text>
+
+  <!-- glossary -->
+  <rect x="40" y="60" width="240" height="80" rx="8" fill="#f6f1e7" stroke="#a5764a" stroke-width="2"/>
+  <text x="160" y="86" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c" font-family="ui-monospace, 'SF Mono', Menlo, monospace">CONTEXT.md</text>
+  <text x="160" y="106" text-anchor="middle" font-size="11" fill="#5b6b7c">glosario: canon + listas «evitar»</text>
+  <text x="160" y="124" text-anchor="middle" font-size="11" fill="#5b6b7c">sin detalles de implementación</text>
+
+  <!-- ADR log -->
+  <rect x="40" y="170" width="240" height="80" rx="8" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="160" y="196" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c" font-family="ui-monospace, 'SF Mono', Menlo, monospace">docs/adr/</text>
+  <text x="160" y="216" text-anchor="middle" font-size="11" fill="#5b6b7c">decisiones: qué y por qué</text>
+  <text x="160" y="234" text-anchor="middle" font-size="11" fill="#5b6b7c">registros de un párrafo</text>
+
+  <!-- context map -->
+  <rect x="40" y="280" width="240" height="52" rx="8" fill="#fff" stroke="#4a6fa5" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="160" y="302" text-anchor="middle" font-size="12" font-weight="600" fill="#1a2b3c" font-family="ui-monospace, 'SF Mono', Menlo, monospace">CONTEXT-MAP.md</text>
+  <text x="160" y="320" text-anchor="middle" font-size="11" fill="#5b6b7c">si hay varios dominios</text>
+  <line x1="160" y1="278" x2="160" y2="254" stroke="#4a6fa5" stroke-width="1" stroke-dasharray="3 3"/>
+
+  <!-- agent session -->
+  <rect x="370" y="110" width="220" height="130" rx="10" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="480" y="140" text-anchor="middle" font-size="15" font-weight="600" fill="#1a2b3c">Sesión del agente</text>
+  <text x="480" y="170" text-anchor="middle" font-size="12" fill="#5b6b7c">términos y código se cotejan</text>
+  <text x="480" y="188" text-anchor="middle" font-size="12" fill="#5b6b7c">con el vocabulario</text>
+
+  <!-- artifacts into session -->
+  <g stroke="#4a6fa5" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+    <line x1="282" y1="100" x2="368" y2="150"/>
+    <line x1="282" y1="210" x2="368" y2="195"/>
+  </g>
+
+  <!-- developer -->
+  <rect x="680" y="110" width="160" height="130" rx="10" fill="#f6f1e7" stroke="#a5764a" stroke-width="1.5"/>
+  <text x="760" y="150" text-anchor="middle" font-size="15" font-weight="600" fill="#1a2b3c">Desarrollador</text>
+  <text x="760" y="175" text-anchor="middle" font-size="12" fill="#5b6b7c">árbitro del lenguaje</text>
+
+  <!-- challenge loop -->
+  <line x1="592" y1="150" x2="678" y2="150" stroke="#a54a4a" stroke-width="1.5" marker-end="url(#arrow-tan)"/>
+  <text x="635" y="138" text-anchor="middle" font-size="11" fill="#a54a4a">conflicto — pregunta</text>
+  <line x1="678" y1="205" x2="592" y2="205" stroke="#4a6fa5" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="635" y="226" text-anchor="middle" font-size="11" fill="#5b6b7c">el término canónico</text>
+
+  <!-- principle -->
+  <text x="440" y="365" text-anchor="middle" font-size="13" font-style="italic" fill="#5b6b7c">un concepto — una palabra; cada decisión tiene su porqué escrito</text>
+</svg>
