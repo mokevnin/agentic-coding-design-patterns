@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 370" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#4a6fa5"/>
+    </marker>
+    <marker id="arrow-tan" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#a5764a"/>
+    </marker>
+  </defs>
+
+  <!-- compaction loop over the window -->
+  <path d="M500 58 L500 26 L380 26 L380 56" fill="none" stroke="#a5764a" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-tan)"/>
+  <text x="640" y="30" text-anchor="middle" font-size="12" fill="#a5764a">compaction: deliberately summarize and continue</text>
+
+  <!-- context window -->
+  <rect x="310" y="60" width="260" height="230" rx="10" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="440" y="86" text-anchor="middle" font-size="15" font-weight="600" fill="#1a2b3c">Context window</text>
+  <g fill="#fff" stroke="#4a6fa5" stroke-width="1">
+    <rect x="325" y="100" width="230" height="30" rx="6"/>
+    <rect x="325" y="138" width="230" height="30" rx="6"/>
+    <rect x="325" y="176" width="230" height="30" rx="6"/>
+    <rect x="325" y="214" width="230" height="30" rx="6"/>
+  </g>
+  <g fill="#1a2b3c" text-anchor="middle" font-size="12">
+    <text x="440" y="119">system prompt</text>
+    <text x="440" y="157">project memory · domain vocabulary</text>
+    <text x="440" y="195">conversation history</text>
+    <text x="440" y="233">tool results</text>
+  </g>
+  <text x="440" y="272" text-anchor="middle" font-size="12" fill="#a54a4a">the attention budget is limited</text>
+
+  <!-- persistent layer -->
+  <rect x="30" y="90" width="210" height="80" rx="8" fill="#f6f1e7" stroke="#a5764a" stroke-width="1.5"/>
+  <text x="135" y="114" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">persistent layer</text>
+  <text x="135" y="134" text-anchor="middle" font-size="11" fill="#4a6fa5" font-family="ui-monospace, 'SF Mono', Menlo, monospace">CLAUDE.md · CONTEXT.md</text>
+  <text x="135" y="154" text-anchor="middle" font-size="11" fill="#5b6b7c">loaded every session</text>
+  <line x1="240" y1="130" x2="308" y2="130" stroke="#4a6fa5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- task layer, just-in-time -->
+  <rect x="30" y="200" width="210" height="80" rx="8" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="135" y="224" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">task layer (just-in-time)</text>
+  <text x="135" y="244" text-anchor="middle" font-size="11" fill="#5b6b7c">paths and links instead</text>
+  <text x="135" y="258" text-anchor="middle" font-size="11" fill="#5b6b7c">of whole files</text>
+  <line x1="240" y1="240" x2="308" y2="240" stroke="#4a6fa5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- external state -->
+  <rect x="640" y="130" width="210" height="96" rx="8" fill="#f6f1e7" stroke="#a5764a" stroke-width="1.5"/>
+  <text x="745" y="156" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">external state</text>
+  <text x="745" y="176" text-anchor="middle" font-size="11" fill="#4a6fa5" font-family="ui-monospace, 'SF Mono', Menlo, monospace">progress journal · handoff</text>
+  <text x="745" y="196" text-anchor="middle" font-size="11" fill="#5b6b7c">outlives window and session</text>
+
+  <line x1="572" y1="150" x2="638" y2="150" stroke="#4a6fa5" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="605" y="140" text-anchor="middle" font-size="11" fill="#5b6b7c">moved out</text>
+  <line x1="638" y1="206" x2="572" y2="206" stroke="#a5764a" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-tan)"/>
+  <text x="605" y="226" text-anchor="middle" font-size="11" fill="#a5764a">back condensed,</text>
+  <text x="605" y="240" text-anchor="middle" font-size="11" fill="#a5764a">next session</text>
+
+  <!-- principle -->
+  <text x="440" y="330" text-anchor="middle" font-size="13" font-style="italic" fill="#5b6b7c">principle: the smallest set of high-signal tokens</text>
+  <text x="440" y="348" text-anchor="middle" font-size="13" font-style="italic" fill="#5b6b7c">that maximizes the likelihood of the desired outcome</text>
+</svg>
