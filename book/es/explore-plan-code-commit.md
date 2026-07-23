@@ -2,7 +2,7 @@
 group: task-setting
 status: draft
 related: [premature-specification]
-source_rev: 85c685dd28a5296866480a22d8bf26a869b8889c
+source_rev: 5fe00e84cec4b6ded1d7510aeb03d1a0832d850f
 ---
 
 # Exploración — plan — código — commit
@@ -112,6 +112,28 @@ cuatro fases solo ralentizan el trabajo.
    en la descripción y actualización de la documentación si los cambios la
    tocaron.
 
+### Con los skills de Matt Pocock
+
+Si el proyecto tiene instalado el [paquete de skills de Matt
+Pocock](https://github.com/mattpocock/skills), el patrón se monta con comandos
+ya hechos — su flujo principal «idea → ship» reproduce las fases de EPCC:
+
+- **Exploración y plan** — `/grill-with-docs`: el skill lee la base de código y
+  te entrevista hasta que al plan no le queden agujeros; lo aprendido queda en
+  `CONTEXT.md` y en los ADR. Una pregunta que no se resuelve conversando se
+  saca a `/prototype`, con `/handoff` como puente.
+- **Fijar el plan** — para trabajo de más de una sesión, `/to-spec` convierte
+  la conversación en una especificación y `/to-tickets` la corta en tickets
+  bala-trazadora con sus dependencias bloqueantes.
+- **Código** — `/implement` lleva la implementación por ticket, ejecutando
+  `/tdd` por dentro, un ciclo red–green cada vez.
+- **Commit** — `/implement` cierra con `/code-review` (dos ejes: estándares y
+  especificación) y solo después hace commit.
+
+El punto de control del patrón se conserva: tanto el resultado de
+`/grill-with-docs` como las costuras de prueba de `/to-spec` se confirman
+explícitamente con el desarrollador.
+
 ## Ejemplo
 
 Tarea: en la exportación de informes a CSV, la hora aparece desplazada una hora
@@ -167,6 +189,9 @@ tirar una implementación terminada.
   practices](https://code.claude.com/docs/en/best-practices).
 - Existen modos análogos de «primero el plan» en otros agentes — por ejemplo,
   plan mode en Cursor y architect mode en aider.
+- **El paquete de skills de Matt Pocock** — el flujo principal «idea → ship»
+  (grill → spec → tickets → implement → review → commit) es el mismo EPCC
+  desplegado en metodología.
 - **GitHub Spec Kit** desarrolla la misma idea hasta una metodología completa
   (Specify → Plan → Tasks → Implement), donde el plan pasa a formar parte de la
   especificación.

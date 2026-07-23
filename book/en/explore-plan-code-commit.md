@@ -2,7 +2,7 @@
 group: task-setting
 status: draft
 related: [premature-specification]
-source_rev: 85c685dd28a5296866480a22d8bf26a869b8889c
+source_rev: 5fe00e84cec4b6ded1d7510aeb03d1a0832d850f
 ---
 
 # Explore — Plan — Code — Commit
@@ -110,6 +110,28 @@ only slow the work down.
    plan in the description, and documentation updates if the changes touched
    it.
 
+### With Matt Pocock's skills
+
+If the project has [Matt Pocock's skill pack](https://github.com/mattpocock/skills)
+installed, the pattern assembles from ready-made commands — its main
+"idea → ship" flow mirrors the EPCC phases:
+
+- **Explore and plan** — `/grill-with-docs`: the skill reads the codebase and
+  interviews you until the plan runs out of holes; what it learns settles into
+  `CONTEXT.md` and ADRs. A question that can't be settled in conversation is
+  taken out to `/prototype`, bridged by `/handoff`.
+- **Locking the plan in** — for work larger than one session, `/to-spec` turns
+  the conversation into a spec, and `/to-tickets` slices it into tracer-bullet
+  tickets with blocking edges.
+- **Code** — `/implement` drives the work per ticket, running `/tdd` inside,
+  one red–green slice at a time.
+- **Commit** — `/implement` closes with a `/code-review` (two axes: standards
+  and spec) and only then commits.
+
+The pattern's checkpoint survives intact: both the outcome of
+`/grill-with-docs` and the testing seams in `/to-spec` are explicitly confirmed
+with the developer.
+
 ## Example
 
 Task: in the CSV report export, timestamps are shifted by an hour for some
@@ -164,6 +186,9 @@ implementation would have been thrown away.
   practices](https://code.claude.com/docs/en/best-practices).
 - Similar "plan first" modes exist in other agents — e.g. plan mode in Cursor
   and architect mode in aider.
+- **Matt Pocock's skill pack** — the main "idea → ship" flow (grill → spec →
+  tickets → implement → review → commit) is the same EPCC unfolded into a
+  methodology.
 - **GitHub Spec Kit** develops the same idea into a full methodology
   (Specify → Plan → Tasks → Implement), where the plan becomes part of the
   specification.
