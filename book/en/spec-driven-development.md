@@ -1,8 +1,8 @@
 ---
-group: task-setting
+group: sdd
 status: draft
 related: [explore-plan-code-commit, premature-specification]
-source_rev: cbf9c0a987f94c7a5329dfb05ae3aff03d74ec9d
+source_rev: 07fc27a4a9be99f1aa6f1a42525711a2e8b2e9f3
 ---
 
 # Spec-Driven Development
@@ -121,105 +121,37 @@ request is enough.
 
 ## Implementation
 
-The pattern is rarely assembled by hand — there are ready-made toolkits, each
-with its own view of what the pipeline should be. Below are four widespread
-solutions and how they work.
+1. Pin down the project conventions: standards, stack, quality constraints.
+   This is a standing document shared by all specifications.
+2. Unfold the intent into a specification: scenarios, requirements, acceptance
+   criteria — no technical decisions. Review it as text; underspecified spots
+   are cheapest to close here.
+3. Ask for a technical plan derived from the specification and review it:
+   architecture, contracts, affected modules.
+4. Slice the plan into small tasks, each with a completion check.
+5. Run the implementation down the task list; the agent checks against the
+   specification and the plan.
+6. When reality diverges, fix the specification first, the code second.
 
-### GitHub Spec Kit
+This pipeline is almost never assembled by hand — there are ready-made
+frameworks, each with its own view of what it should be. Each one has its own
+article in this section:
 
-[Spec Kit](https://github.com/github/spec-kit) is the most direct translation
-of the pattern into a tool. The `specify init` CLI installs a set of slash
-commands into the project (they work in Claude Code, Copilot, Cursor, Gemini
-CLI, and other agents); each phase is its own command and its own artifact in
-`specs/<number>-<feature>/`:
+- [GitHub Spec Kit](spec-kit.md) — the most direct translation of the pattern
+  into a tool: a slash command per phase, an artifact per command.
+- [OpenSpec](openspec.md) — a pipeline around a **change**: the system's
+  standing specifications are updated by deltas, the way migrations update a
+  database schema.
+- [Kiro](kiro.md) — SDD as an IDE mode: spec sessions with explicit approval
+  of each phase and acceptance criteria in EARS notation.
+- [Tessl](tessl.md) — the radical variant: the specification is the source,
+  the code a derived artifact.
 
-- `/speckit.constitution` — project conventions: principles, stack, quality
-  standards. Written once, applies to every feature.
-- `/speckit.specify` — the feature specification (`spec.md`): user stories and
-  requirements, deliberately free of technical decisions.
-- `/speckit.clarify` — the agent asks questions about underspecified spots in
-  the specification and writes the answers back into it.
-- `/speckit.plan` — the technical plan (`plan.md`): stack, architecture,
-  contracts, data model.
-- `/speckit.tasks` — the plan sliced into tasks with dependencies
-  (`tasks.md`).
-- `/speckit.analyze` — a consistency check: do the specification, plan, and
-  tasks contradict each other?
-- `/speckit.implement` — executing the tasks down the list.
-
-Spec Kit's point of view: specification and code are strictly separated — the
-"what" must not know about the "how", so `/speckit.specify` refuses to discuss
-the stack until you reach `/speckit.plan`.
-
-### OpenSpec
-
-[OpenSpec](https://github.com/Fission-AI/OpenSpec) builds the pipeline not
-around a feature but around a **change** with a propose → review → apply →
-archive lifecycle. Two zones live in the repository: `openspec/specs/` — the
-current specifications of what is *already built*, and `openspec/changes/` —
-change proposals:
-
-- `/opsx:explore` — thinking mode: the agent reads the code and weighs
-  options, changing nothing.
-- `/opsx:propose` — creates the change's artifact bundle: `proposal.md`
-  (why), deltas to the specifications (what changes in the requirements),
-  `design.md` (technical approach), and `tasks.md` (a checklist).
-- Reviewing the bundle is the checkpoint before the first line of code.
-- `/opsx:apply` — implementation following `tasks.md`.
-- Archiving — after the merge the deltas fold into `openspec/specs/` and the
-  change moves to `openspec/changes/archive/`: the history of decisions stays
-  in the repository.
-
-OpenSpec's point of view: the specification is not a one-off feature document
-but a continuously current model of the system, updated by changes through
-deltas — the way migrations update a database schema.
-
-### Kiro
-
-[Kiro](https://kiro.dev) (AWS) builds the pattern into the IDE: alongside vibe
-sessions there are spec sessions, and the agent itself walks you through three
-phases, each explicitly approved; the artifacts live in
-`.kiro/specs/<feature>/`:
-
-- `requirements.md` — user stories with acceptance criteria in EARS notation
-  ("WHEN … THEN the system SHALL …") — wording that can be verified.
-- `design.md` — the technical design: architecture, interfaces, data model;
-  Kiro generates it by reading the existing code.
-- `tasks.md` — tasks tied to the requirements; they are checked off one by
-  one, and "Run all Tasks" builds a dependency graph and executes independent
-  tasks in parallel.
-
-The role of conventions is played by steering files (`.kiro/steering/`) —
-project rules mixed into every session. Kiro's point of view: SDD should be an
-IDE mode, not developer discipline — the interface itself keeps you from
-jumping from requirements straight into code.
-
-### Tessl
-
-[Tessl](https://tessl.io) takes the idea to its limit: the specification is
-not a companion to the code but its *source*. In the original framework (2025)
-files were marked as generated from the spec and never edited by hand: you
-edit the specification and the code is regenerated, while tests are bound to
-its statements (capabilities) and verify conformance. Today Tessl is a
-"context as code" platform with a registry/package manager, and SDD is
-installed into a project as a plugin
-(`tessl install tessl-labs/spec-driven-development`): the agent gathers
-requirements by asking questions, writes specifications into `specs/`, and
-after approval implements against them, folding back whatever was discovered
-during development. Tessl's point of view: code is a derived artifact; editing
-it behind the specification's back is like patching compiler output.
-
-### Via skills: Superpowers and Matt Pocock's pack
-
-The same pipeline can be assembled from Claude Code skills, with no separate
-tool. In [Superpowers](https://github.com/obra/superpowers), `brainstorming`
-takes the idea to a design validated section by section, `writing-plans`
-writes a plan of small tasks, and implementation runs through subagents with a
-TDD cycle. In [Matt Pocock's pack](https://github.com/mattpocock/skills),
-`/to-spec` turns a worked-through conversation into a self-contained
-specification, `/to-tickets` slices it into tracer-bullet tickets with
-blocking edges, and `/implement` drives implementation ticket by ticket. Both
-packs are covered in detail in
+The same pipeline can also be assembled from Claude Code skills, with no
+separate tool: in [Superpowers](https://github.com/obra/superpowers) —
+`brainstorming` → `writing-plans` → implementation via subagents with a TDD
+cycle; in [Matt Pocock's pack](https://github.com/mattpocock/skills) —
+`/to-spec` → `/to-tickets` → `/implement`. Both packs are covered in detail in
 [explore — plan — code — commit](explore-plan-code-commit.md).
 
 ## Example
@@ -267,15 +199,10 @@ workaround in the code.
 
 ## Known uses
 
-- **GitHub Spec Kit** — GitHub's open-source toolkit; the SDD manifesto as a
-  methodology is in the
-  [announcement](https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/).
-- **OpenSpec** — a change lifecycle on top of continuously current
-  specifications.
-- **Kiro (AWS)** — spec sessions as a built-in IDE mode: requirements → design
-  → tasks.
-- **Tessl** — the radical "spec as source" variant: code is regenerated from
-  the specification.
+- [GitHub Spec Kit](spec-kit.md), [OpenSpec](openspec.md), [Kiro](kiro.md),
+  and [Tessl](tessl.md) — the four frameworks covered by this section's
+  articles; the SDD manifesto as a methodology is in the
+  [Spec Kit announcement](https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/).
 - **BMAD-Method** — SDD in an agile wrapper: role agents (analyst, PM,
   architect, developer) drive PRD → architecture → stories.
 - **Superpowers and Matt Pocock's skill pack** — the same pipeline assembled

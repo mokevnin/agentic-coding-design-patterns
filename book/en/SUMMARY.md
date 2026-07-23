@@ -7,7 +7,14 @@
 ## Task Setting
 
 * [Explore — Plan — Code — Commit](explore-plan-code-commit.md)
-* [Spec-Driven Development](spec-driven-development.md)
+
+## Spec-Driven Development
+
+* [Overview](spec-driven-development.md)
+* [GitHub Spec Kit](spec-kit.md)
+* [OpenSpec](openspec.md)
+* [Kiro](kiro.md)
+* [Tessl](tessl.md)
 
 ## Working with Context
 

@@ -7,7 +7,14 @@
 ## Planteamiento de la tarea
 
 * [Exploración — plan — código — commit](explore-plan-code-commit.md)
-* [Desarrollo orientado a especificaciones](spec-driven-development.md)
+
+## Desarrollo orientado a especificaciones
+
+* [Visión general](spec-driven-development.md)
+* [GitHub Spec Kit](spec-kit.md)
+* [OpenSpec](openspec.md)
+* [Kiro](kiro.md)
+* [Tessl](tessl.md)
 
 ## Trabajo con el contexto
 
