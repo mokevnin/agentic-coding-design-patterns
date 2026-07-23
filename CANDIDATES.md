@@ -42,7 +42,7 @@ Source labels (`[xx]`) are resolved in [Sources](#sources) at the bottom.
 
 | Slug | Status | Pitch / Note | Src |
 |------|--------|--------------|-----|
-| explore-plan-code-commit | accepted | Four-phase workflow — explore, plan (plan mode), implement, commit — so the agent doesn't solve the wrong problem. | [cc-bp] |
+| explore-plan-code-commit | done | Four-phase workflow — explore, plan (plan mode), implement, commit — so the agent doesn't solve the wrong problem. | [cc-bp] |
 | let-claude-interview-you | candidate | Start minimal, let the agent interview you (AskUserQuestion), crystallize a self-contained `SPEC.md`, then execute in a fresh session. | [cc-bp] |
 | grilling | candidate | The agent relentlessly interviews you about a plan/decision until the holes surface — a stress-test of *your* thinking before work starts. Not `let-claude-interview-you`: that interview *builds* a spec, this one *attacks* a finished plan. | [mp] |
 | tracer-bullet-tickets | candidate | Slice a conversation/spec into tracer-bullet tickets with explicit blocking edges — the agent gets executable chunks, not an epic. Plugs into `spec-driven-development` (the Tasks step) with concrete mechanics. | [mp] |
@@ -66,13 +66,13 @@ article per framework.
 
 | Slug | Status | Pitch / Note | Src |
 |------|--------|--------------|-----|
-| context-engineering | candidate | Curate and maintain the optimal set of tokens for the task — the successor discipline to prompt engineering. | [ctx] |
-| claude-md-memory | candidate | A persistent memory file loaded every session; keep it concise (bloat is a separate anti-pattern). Covers the cross-tool `AGENTS.md` convention as a section (merge decided 2026-07-23). | [cc-mem], [agentsmd] |
+| context-engineering | done | Curate and maintain the optimal set of tokens for the task — the successor discipline to prompt engineering. | [ctx] |
+| claude-md-memory | accepted | A persistent memory file loaded every session; keep it concise (bloat is a separate anti-pattern). Covers the cross-tool `AGENTS.md` convention as a section (merge decided 2026-07-23). | [cc-mem], [agentsmd] |
 | agents-md-convention | rejected | Merged into `claude-md-memory` (author decision 2026-07-23): two chapters would retell each other. | [agentsmd] |
-| progress-file | candidate | A dedicated progress log (e.g. `claude-progress.txt`) beside git history so a fresh-context agent can recover state. | [harness] |
-| json-spec-file | candidate | Use JSON (not Markdown) for the machine-updated spec/status file; agents edit only the status field, less prone to overwriting. | [harness] |
-| handoff | candidate | Deliberately compact the session into a handoff document for the next agent — instead of trusting auto-summarization. Neighbor of `progress-file`, but a different moment: progress is a running log, handoff is a session boundary. | [mp] |
-| domain-context-file | candidate | A domain glossary + ADRs in the repo (`CONTEXT.md`) as the canonical language the agent reads every session — cures term drift and renaming churn. Separate axis from `claude-md-memory`: that's "how to work", this is "what words mean". | [mp] |
+| progress-file | accepted | A dedicated progress log (e.g. `claude-progress.txt`) beside git history so a fresh-context agent can recover state. | [harness] |
+| json-spec-file | rejected | Merged into `feature-list-harness` (author decision 2026-07-23): a format choice, not a standalone pattern — becomes a section on the status-file format there. | [harness] |
+| handoff | accepted | Deliberately compact the session into a handoff document for the next agent — instead of trusting auto-summarization. Neighbor of `progress-file`, but a different moment: progress is a running log, handoff is a session boundary. | [mp] |
+| domain-context-file | accepted | A domain glossary + ADRs in the repo (`CONTEXT.md`) as the canonical language the agent reads every session — cures term drift and renaming churn. Separate axis from `claude-md-memory`: that's "how to work", this is "what words mean". | [mp] |
 
 ## Verification
 
@@ -89,7 +89,7 @@ article per framework.
 
 | Slug | Status | Pitch / Note | Src |
 |------|--------|--------------|-----|
-| feature-list-harness | candidate | A persistent feature list where items start `failing` and flip to `passing` only after verification — the backbone of long-running work. | [harness] |
+| feature-list-harness | candidate | A persistent feature list where items start `failing` and flip to `passing` only after verification — the backbone of long-running work. Absorbs `json-spec-file` as a section on the status-file format. | [harness] |
 | one-feature-at-a-time | candidate | Constrain the agent to a single feature per pass; counters its tendency to do too much at once. | [harness] |
 | wayfinder | candidate | Work bigger than one session is planned as a map of investigation tickets on the tracker; the agent resolves them one at a time until the way is clear. Extends `feature-list-harness` toward *investigation*, not features. | [mp] |
 | triage-state-machine | candidate | Incoming issues move through a fixed set of role labels (`needs-triage` → `ready-for-agent` / `ready-for-human`) ending in an agent-ready brief. | [mp] |
