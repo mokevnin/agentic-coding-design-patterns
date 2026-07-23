@@ -99,11 +99,11 @@ only slow the work down.
 1. Turn on planning mode: the agent can't touch files until the plan is
    approved, so there's no need to forbid code in the prompts.
 2. Start with exploration: "Read the files responsible for X and figure out
-   how Y works." Then ask for a plan and spell out the constraints that aren't
-   visible in the code.
+   how Y works." Then ask for a plan.
 3. Read the plan the way you would review code: ask questions, cross out the
-   unnecessary, demand alternatives. Iterate until you agree — this is the
-   cheapest phase to argue in.
+   unnecessary, demand alternatives, bring up the constraints that aren't
+   visible in the code. Iterate until you agree — this is the cheapest phase
+   to argue in.
 4. Approve the plan with the tool's own confirmation and point out what the
    agent can verify itself with: tests, build, linter.
 5. Finish with the commit phase: a meaningful message, a pull request with the
@@ -196,14 +196,14 @@ until the plan is approved, so there's no need to forbid code in the prompts.
 
 **Plan:**
 
-> Draft a fix plan. Keep in mind the file format must not change — external
-> integrations read it.
+> Draft a fix plan.
 
 The agent proposes two options: convert the time when writing or when reading.
 The developer replies:
 
-> Converting on read breaks the files that have already been exported. Take the
-> first option, and add a test for the daylight-saving boundary to the plan.
+> Converting on read breaks the files that have already been exported — the
+> format is read by external integrations. Take the first option, and add a
+> test for the daylight-saving boundary to the plan.
 
 **Code:** the developer accepts the revised plan with the tool's own
 confirmation — the agent leaves planning mode, implements the plan, and runs

@@ -99,11 +99,10 @@ cuatro fases solo ralentizan el trabajo.
 1. Activa el modo de planificación: el agente no podrá tocar archivos hasta
    que el plan se apruebe, y no hará falta prohibir el código en los prompts.
 2. Empieza por la exploración: «Lee los archivos responsables de X y entiende
-   cómo funciona Y». Después pide un plan e indica las restricciones que no se
-   ven en el código.
+   cómo funciona Y». Después pide un plan.
 3. Lee el plan como si revisaras código: haz preguntas, tacha lo innecesario,
-   exige alternativas. Itera hasta estar de acuerdo — es la fase más barata
-   para discutir.
+   exige alternativas, saca las restricciones que no se ven en el código.
+   Itera hasta estar de acuerdo — es la fase más barata para discutir.
 4. Aprueba el plan con la confirmación propia de la herramienta e indica con
    qué puede verificarse el agente: tests, build, linter.
 5. Cierra con la fase de commit: mensaje con sentido, pull request con el plan
@@ -196,14 +195,14 @@ falta prohibir el código en los prompts.
 
 **Plan:**
 
-> Redacta un plan de corrección. Ten en cuenta que el formato del archivo no se
-> puede cambiar — lo leen integraciones externas.
+> Redacta un plan de corrección.
 
 El agente propone dos opciones: convertir la hora al escribir o al leer. El
 desarrollador responde:
 
-> Convertir al leer rompe los archivos ya exportados. Toma la primera opción y
-> añade al plan un test para el límite del cambio de horario.
+> Convertir al leer rompe los archivos ya exportados — el formato lo leen
+> integraciones externas. Toma la primera opción y añade al plan un test para
+> el límite del cambio de horario.
 
 **Código:** el desarrollador acepta el plan corregido con la confirmación
 propia de la herramienta — el agente sale del modo de planificación, implementa
