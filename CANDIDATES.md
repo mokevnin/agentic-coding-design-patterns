@@ -124,6 +124,8 @@ an agent.
 - `[ng]` — Andrew Ng, *Four agentic design patterns* — https://x.com/AndrewYNg/status/1773393357022298617
 - `[speckit]` — GitHub, *Spec-driven development with AI (Spec Kit)* — https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/
 - `[agentsmd]` — *AGENTS.md convention* — https://agents.md/
+- `[openspec]` — Fission-AI, *OpenSpec* (spec-driven change lifecycle: propose → review → apply → archive) — https://github.com/Fission-AI/OpenSpec
+- `[superpowers]` — Jesse Vincent (obra), *Superpowers* (Claude Code skill pack: brainstorm → plan → subagent TDD → review) — https://github.com/obra/superpowers
 - `[mp]` — Matt Pocock, *skills* (engineering/productivity skill pack; vendored in this repo under `.agents/skills/`) — https://github.com/mattpocock/skills
 - `[addy]` — Addy Osmani, *What makes a good AI spec* — https://addyosmani.com/blog/good-spec/
 - `[sdd-survey]` — Piskala, *Spec-driven development survey*, arXiv:2602.00180 — https://arxiv.org/html/2602.00180v1
