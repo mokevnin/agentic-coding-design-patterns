@@ -32,6 +32,7 @@
 * [TDD с агентом](tdd-with-agent.md)
 * [Рефлексия](reflection.md)
 * [Писатель и рецензент](writer-reviewer.md)
+* [Одноразовый прототип](prototype-to-answer.md)
 
 ## Организация проекта
 

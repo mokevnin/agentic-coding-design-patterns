@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 395" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#4a6fa5"/>
+    </marker>
+    <marker id="arrow-tan" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#a5764a"/>
+    </marker>
+  </defs>
+
+  <!-- design question -->
+  <rect x="40" y="90" width="200" height="90" rx="10" fill="#f6f1e7" stroke="#a5764a" stroke-width="2"/>
+  <text x="140" y="122" text-anchor="middle" font-size="14" font-weight="600" fill="#1a2b3c">Pregunta de diseño</text>
+  <text x="140" y="146" text-anchor="middle" font-size="11" fill="#5b6b7c">una sola frase —</text>
+  <text x="140" y="162" text-anchor="middle" font-size="11" fill="#5b6b7c">la forma sigue a la pregunta</text>
+
+  <!-- logic branch -->
+  <rect x="300" y="40" width="220" height="76" rx="10" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="410" y="62" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">Ejecutor de lógica</text>
+  <text x="410" y="82" text-anchor="middle" font-size="11" fill="#5b6b7c">mini-app de terminal,</text>
+  <text x="410" y="98" text-anchor="middle" font-size="11" fill="#5b6b7c">los casos difíciles del modelo</text>
+
+  <!-- UI branch -->
+  <rect x="300" y="150" width="220" height="76" rx="10" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="410" y="172" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">Abanico de variantes UI</text>
+  <text x="410" y="192" text-anchor="middle" font-size="11" fill="#5b6b7c">ideas distintas en una ruta,</text>
+  <text x="410" y="208" text-anchor="middle" font-size="11" fill="#5b6b7c">conmutador de variantes</text>
+
+  <!-- disposability rules -->
+  <rect x="300" y="260" width="220" height="88" rx="10" fill="#fff" stroke="#a5764a" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="410" y="282" text-anchor="middle" font-size="11" font-weight="600" fill="#1a2b3c">reglas de desechabilidad:</text>
+  <text x="410" y="300" text-anchor="middle" font-size="11" fill="#5b6b7c">marcado como prototipo</text>
+  <text x="410" y="316" text-anchor="middle" font-size="11" fill="#5b6b7c">un comando · sin pulido</text>
+  <text x="410" y="332" text-anchor="middle" font-size="11" fill="#5b6b7c">estado en memoria</text>
+  <line x1="410" y1="258" x2="410" y2="230" stroke="#a5764a" stroke-width="1" stroke-dasharray="3 3"/>
+
+  <!-- fork arrows -->
+  <g stroke="#4a6fa5" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+    <line x1="242" y1="115" x2="298" y2="90"/>
+    <line x1="242" y1="140" x2="298" y2="175"/>
+    <line x1="522" y1="80" x2="578" y2="100"/>
+    <line x1="522" y1="185" x2="578" y2="135"/>
+  </g>
+
+  <!-- the run -->
+  <rect x="580" y="80" width="260" height="76" rx="10" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="710" y="104" text-anchor="middle" font-size="14" font-weight="600" fill="#1a2b3c">La ejecución</text>
+  <text x="710" y="124" text-anchor="middle" font-size="11" fill="#5b6b7c">el desarrollador prueba</text>
+  <text x="710" y="140" text-anchor="middle" font-size="11" fill="#5b6b7c">los casos difíciles en persona</text>
+
+  <line x1="710" y1="158" x2="710" y2="198" stroke="#a5764a" stroke-width="1.5" marker-end="url(#arrow-tan)"/>
+
+  <!-- the verdict -->
+  <rect x="580" y="200" width="260" height="112" rx="10" fill="#f6f1e7" stroke="#a5764a" stroke-width="2"/>
+  <text x="710" y="226" text-anchor="middle" font-size="14" font-weight="600" fill="#1a2b3c">Veredicto</text>
+  <text x="710" y="248" text-anchor="middle" font-size="11" fill="#5b6b7c">la respuesta — al ticket o al ADR</text>
+  <text x="710" y="264" text-anchor="middle" font-size="11" fill="#5b6b7c">la decisión — al código real</text>
+  <text x="710" y="280" text-anchor="middle" font-size="11" fill="#5b6b7c">el prototipo — a una rama-fuente</text>
+  <text x="710" y="302" text-anchor="middle" font-size="11" fill="#a54a4a">ni una línea suya llega a main</text>
+
+  <!-- principle -->
+  <text x="440" y="380" text-anchor="middle" font-size="13" font-style="italic" fill="#5b6b7c">el prototipo muere — la respuesta queda</text>
+</svg>

@@ -83,7 +83,7 @@ article per framework.
 | reflection | done | Self-critique loop: generate → evaluate → improve. The `evaluator-optimizer` workflow reframed for the human-driven case. | [ng], [bea] |
 | writer-reviewer | done | Review the diff in a *fresh* context (separate session/subagent) so the agent isn't biased toward code it just wrote. Includes adversarial refutation (grader ≠ author) as a hardened variant (merge decided 2026-07-23). | [cc-bp] |
 | adversarial-review | rejected | Merged into `writer-reviewer` (author decision 2026-07-23): difference in degree, not structure. | [cc-bp] |
-| prototype-to-answer | accepted | Build a throwaway prototype to answer a design question ("does this state model even fly?") before the real implementation — verify the design, not the code. | [mp] |
+| prototype-to-answer | done | Build a throwaway prototype to answer a design question ("does this state model even fly?") before the real implementation — verify the design, not the code. | [mp] |
 
 ## Project organization
 
