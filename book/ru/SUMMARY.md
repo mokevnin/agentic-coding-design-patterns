@@ -24,6 +24,7 @@
 * [Память проекта](claude-md-memory.md)
 * [Словарь домена](domain-context-file.md)
 * [Журнал прогресса](progress-file.md)
+* [Передача сессии](handoff.md)
 
 ## Проверка
 
