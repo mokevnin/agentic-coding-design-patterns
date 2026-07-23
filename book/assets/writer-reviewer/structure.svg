@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 380" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#4a6fa5"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#a54a4a"/>
+    </marker>
+  </defs>
+
+  <!-- writer -->
+  <rect x="40" y="80" width="240" height="120" rx="10" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="160" y="112" text-anchor="middle" font-size="14" font-weight="600" fill="#1a2b3c">Писатель — сессия A</text>
+  <text x="160" y="138" text-anchor="middle" font-size="11" fill="#5b6b7c">полная история: задача,</text>
+  <text x="160" y="154" text-anchor="middle" font-size="11" fill="#5b6b7c">рассуждения, правки</text>
+  <text x="160" y="178" text-anchor="middle" font-size="11" fill="#4a6fa5">чинит по находкам</text>
+
+  <!-- reviewer -->
+  <rect x="600" y="80" width="240" height="120" rx="10" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="720" y="112" text-anchor="middle" font-size="14" font-weight="600" fill="#1a2b3c">Рецензент — свежий контекст</text>
+  <text x="720" y="138" text-anchor="middle" font-size="11" fill="#5b6b7c">отдельная сессия или сабагент;</text>
+  <text x="720" y="154" text-anchor="middle" font-size="11" fill="#5b6b7c">видит только дифф и критерии</text>
+  <text x="720" y="178" text-anchor="middle" font-size="11" fill="#4a6fa5">находит — не правит</text>
+
+  <!-- diff + criteria across the boundary -->
+  <rect x="345" y="88" width="190" height="44" rx="8" fill="#f6f1e7" stroke="#a5764a" stroke-width="1.5"/>
+  <text x="440" y="106" text-anchor="middle" font-size="12" font-weight="600" fill="#1a2b3c">дифф + критерии</text>
+  <text x="440" y="122" text-anchor="middle" font-size="10" fill="#5b6b7c">план · спецификация · оси</text>
+  <line x1="282" y1="110" x2="343" y2="110" stroke="#4a6fa5" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="537" y1="110" x2="598" y2="110" stroke="#4a6fa5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- findings back -->
+  <rect x="345" y="158" width="190" height="44" rx="8" fill="#f9eded" stroke="#a54a4a" stroke-width="1.5"/>
+  <text x="440" y="176" text-anchor="middle" font-size="12" font-weight="600" fill="#1a2b3c">находки</text>
+  <text x="440" y="192" text-anchor="middle" font-size="10" fill="#5b6b7c">пробелы, не вкусовщина</text>
+  <line x1="598" y1="180" x2="537" y2="180" stroke="#a54a4a" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+  <line x1="343" y1="180" x2="282" y2="180" stroke="#a54a4a" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+
+  <!-- boundary note -->
+  <text x="440" y="242" text-anchor="middle" font-size="12" fill="#a54a4a">рассуждения автора границу не пересекают —</text>
+  <text x="440" y="258" text-anchor="middle" font-size="12" fill="#a54a4a">в этом весь механизм</text>
+
+  <!-- adversarial variant -->
+  <rect x="250" y="284" width="380" height="56" rx="10" fill="#fff" stroke="#a54a4a" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="440" y="306" text-anchor="middle" font-size="12" font-weight="600" fill="#1a2b3c">жёсткий вариант — опровержение:</text>
+  <text x="440" y="326" text-anchor="middle" font-size="11" fill="#5b6b7c">«докажи, что это не работает»</text>
+
+  <!-- principle -->
+  <text x="440" y="370" text-anchor="middle" font-size="13" font-style="italic" fill="#5b6b7c">работу оценивает не тот, кто её делал</text>
+</svg>
