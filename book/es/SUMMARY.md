@@ -28,6 +28,8 @@
 
 ## Verificación
 
+* [Bucle de retroalimentación](give-agent-a-way-to-verify.md)
+
 ## Organización del proyecto
 
 ## Antipatrones

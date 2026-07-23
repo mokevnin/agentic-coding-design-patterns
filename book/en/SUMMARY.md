@@ -28,6 +28,8 @@
 
 ## Verification
 
+* [Feedback Loop](give-agent-a-way-to-verify.md)
+
 ## Project Organization
 
 ## Anti-patterns
