@@ -44,7 +44,7 @@ Source labels (`[xx]`) are resolved in [Sources](#sources) at the bottom.
 |------|--------|--------------|-----|
 | explore-plan-code-commit | accepted | Four-phase workflow — explore, plan (plan mode), implement, commit — so the agent doesn't solve the wrong problem. | [cc-bp] |
 | let-claude-interview-you | candidate | Start minimal, let the agent interview you (AskUserQuestion), crystallize a self-contained `SPEC.md`, then execute in a fresh session. | [cc-bp] |
-| spec-driven-development | candidate | Treat the spec as the source of truth (intent, not code): Specify → Plan → Tasks → Implement. Absorbs "start high-level, let the agent expand it" [addy]. | [speckit] |
+| spec-driven-development | done | Treat the spec as the source of truth (intent, not code): Specify → Plan → Tasks → Implement. Absorbs "start high-level, let the agent expand it" [addy]. Chapter covers Spec Kit, OpenSpec, Kiro, Tessl, BMAD, skill packs (ru+en+es, 2026-07-23). | [speckit] |
 | grilling | candidate | The agent relentlessly interviews you about a plan/decision until the holes surface — a stress-test of *your* thinking before work starts. Not `let-claude-interview-you`: that interview *builds* a spec, this one *attacks* a finished plan. | [mp] |
 | tracer-bullet-tickets | candidate | Slice a conversation/spec into tracer-bullet tickets with explicit blocking edges — the agent gets executable chunks, not an epic. Plugs into `spec-driven-development` (the Tasks step) with concrete mechanics. | [mp] |
 

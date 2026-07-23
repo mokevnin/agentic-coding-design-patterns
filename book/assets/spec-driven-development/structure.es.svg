@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 320" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#4a6fa5"/>
+    </marker>
+  </defs>
+
+  <!-- return loop: implementation -> specification -->
+  <path d="M740 100 L740 45 L110 45 L110 100" fill="none" stroke="#a5764a" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+  <text x="425" y="36" text-anchor="middle" font-size="12" fill="#a5764a">la realidad se apartó de la spec — corrige la spec, no solo el código</text>
+
+  <!-- phase boxes -->
+  <g stroke="#4a6fa5" stroke-width="1.5" fill="#eef3f9">
+    <rect x="30"  y="100" width="160" height="64" rx="8"/>
+    <rect x="240" y="100" width="160" height="64" rx="8"/>
+    <rect x="450" y="100" width="160" height="64" rx="8"/>
+    <rect x="660" y="100" width="160" height="64" rx="8"/>
+  </g>
+
+  <g fill="#1a2b3c" text-anchor="middle" font-size="15" font-weight="600">
+    <text x="110" y="126">Especificación</text>
+    <text x="320" y="126">Plan</text>
+    <text x="530" y="126">Tareas</text>
+    <text x="740" y="126">Implementación</text>
+  </g>
+  <g fill="#5b6b7c" text-anchor="middle" font-size="11">
+    <text x="110" y="148">qué y para qué,</text>
+    <text x="110" y="160">sin decisiones técnicas</text>
+    <text x="320" y="148">cómo: stack,</text>
+    <text x="320" y="160">arquitectura</text>
+    <text x="530" y="148">pasos pequeños</text>
+    <text x="530" y="160">con verificaciones</text>
+    <text x="740" y="148">código y tests</text>
+    <text x="740" y="160">tarea por tarea</text>
+  </g>
+
+  <!-- artifact labels under boxes -->
+  <g fill="#4a6fa5" text-anchor="middle" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace">
+    <text x="110" y="184">spec.md</text>
+    <text x="320" y="184">plan.md</text>
+    <text x="530" y="184">tasks.md</text>
+    <text x="740" y="184">diff + tests</text>
+  </g>
+
+  <!-- arrows between phases -->
+  <g stroke="#4a6fa5" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+    <line x1="190" y1="132" x2="238" y2="132"/>
+    <line x1="400" y1="132" x2="448" y2="132"/>
+    <line x1="610" y1="132" x2="658" y2="132"/>
+  </g>
+
+  <!-- human checkpoints on each transition -->
+  <g fill="#fff" stroke="#a54a4a" stroke-width="1.5">
+    <circle cx="214" cy="132" r="5"/>
+    <circle cx="424" cy="132" r="5"/>
+    <circle cx="634" cy="132" r="5"/>
+  </g>
+  <line x1="424" y1="140" x2="424" y2="196" stroke="#a54a4a" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="424" y="216" text-anchor="middle" font-size="12" fill="#a54a4a">puntos de control: el desarrollador revisa cada artefacto,</text>
+  <text x="424" y="231" text-anchor="middle" font-size="12" fill="#a54a4a">no solo el diff final</text>
+
+  <!-- project conventions feeding the whole flow -->
+  <rect x="285" y="256" width="280" height="40" rx="8" fill="#f6f1e7" stroke="#a5764a" stroke-width="1.5"/>
+  <text x="425" y="281" text-anchor="middle" font-size="13" fill="#1a2b3c">convenciones del proyecto (constitution)</text>
+  <g stroke="#a5764a" stroke-width="1" stroke-dasharray="3 3" fill="none">
+    <line x1="315" y1="256" x2="130" y2="170"/>
+    <line x1="535" y1="256" x2="720" y2="170"/>
+  </g>
+</svg>
