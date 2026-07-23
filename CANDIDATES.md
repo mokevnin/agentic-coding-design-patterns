@@ -42,7 +42,7 @@ Source labels (`[xx]`) are resolved in [Sources](#sources) at the bottom.
 
 | Slug | Status | Pitch / Note | Src |
 |------|--------|--------------|-----|
-| explore-plan-code-commit | candidate | Four-phase workflow — explore, plan (plan mode), implement, commit — so the agent doesn't solve the wrong problem. | [cc-bp] |
+| explore-plan-code-commit | accepted | Four-phase workflow — explore, plan (plan mode), implement, commit — so the agent doesn't solve the wrong problem. | [cc-bp] |
 | let-claude-interview-you | candidate | Start minimal, let the agent interview you (AskUserQuestion), crystallize a self-contained `SPEC.md`, then execute in a fresh session. | [cc-bp] |
 | spec-driven-development | candidate | Treat the spec as the source of truth (intent, not code): Specify → Plan → Tasks → Implement. Absorbs "start high-level, let the agent expand it" [addy]. | [speckit] |
 | grilling | candidate | The agent relentlessly interviews you about a plan/decision until the holes surface — a stress-test of *your* thinking before work starts. Not `let-claude-interview-you`: that interview *builds* a spec, this one *attacks* a finished plan. | [mp] |
@@ -53,8 +53,8 @@ Source labels (`[xx]`) are resolved in [Sources](#sources) at the bottom.
 | Slug | Status | Pitch / Note | Src |
 |------|--------|--------------|-----|
 | context-engineering | candidate | Curate and maintain the optimal set of tokens for the task — the successor discipline to prompt engineering. | [ctx] |
-| claude-md-memory | candidate | A persistent memory file loaded every session; keep it concise (bloat is a separate anti-pattern). Consider merging with `agents-md`. | [cc-mem] |
-| agents-md-convention | candidate | Cross-tool `AGENTS.md` convention for repo/agent instructions. Decide: one pattern with `claude-md-memory` or two? | [agentsmd] |
+| claude-md-memory | candidate | A persistent memory file loaded every session; keep it concise (bloat is a separate anti-pattern). Covers the cross-tool `AGENTS.md` convention as a section (merge decided 2026-07-23). | [cc-mem], [agentsmd] |
+| agents-md-convention | rejected | Merged into `claude-md-memory` (author decision 2026-07-23): two chapters would retell each other. | [agentsmd] |
 | progress-file | candidate | A dedicated progress log (e.g. `claude-progress.txt`) beside git history so a fresh-context agent can recover state. | [harness] |
 | json-spec-file | candidate | Use JSON (not Markdown) for the machine-updated spec/status file; agents edit only the status field, less prone to overwriting. | [harness] |
 | handoff | candidate | Deliberately compact the session into a handoff document for the next agent — instead of trusting auto-summarization. Neighbor of `progress-file`, but a different moment: progress is a running log, handoff is a session boundary. | [mp] |
@@ -67,8 +67,8 @@ Source labels (`[xx]`) are resolved in [Sources](#sources) at the bottom.
 | give-agent-a-way-to-verify | candidate | Hand the agent a pass/fail check (tests, build, linter, screenshot); it runs, reads, and iterates until it passes. | [cc-bp] |
 | tdd-with-agent | candidate | Enforce red-green-refactor with phase-specific prompts, else the agent defaults to implementation-first and writes tests retroactively. | [cc-bp] |
 | reflection | candidate | Self-critique loop: generate → evaluate → improve. The `evaluator-optimizer` workflow reframed for the human-driven case. | [ng], [bea] |
-| writer-reviewer | candidate | Review the diff in a *fresh* context (separate session/subagent) so the agent isn't biased toward code it just wrote. | [cc-bp] |
-| adversarial-review | candidate | A fresh model tries to *refute* the result before it counts as done — grader ≠ author. Possibly one pattern with `writer-reviewer`. | [cc-bp] |
+| writer-reviewer | candidate | Review the diff in a *fresh* context (separate session/subagent) so the agent isn't biased toward code it just wrote. Includes adversarial refutation (grader ≠ author) as a hardened variant (merge decided 2026-07-23). | [cc-bp] |
+| adversarial-review | rejected | Merged into `writer-reviewer` (author decision 2026-07-23): difference in degree, not structure. | [cc-bp] |
 | prototype-to-answer | candidate | Build a throwaway prototype to answer a design question ("does this state model even fly?") before the real implementation — verify the design, not the code. | [mp] |
 
 ## Project organization
