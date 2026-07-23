@@ -1,7 +1,7 @@
 ---
 group: task-setting
 status: draft
-related: [premature-specification]
+related: [spec-driven-development, premature-specification]
 source_rev: 572b790bc4562778693d591204befe0d594da2fe
 ---
 
@@ -243,6 +243,9 @@ implementation would have been thrown away.
 
 ## Related patterns
 
+- [Spec-Driven Development](spec-driven-development.md) — the same "agree
+  first, code second" principle unfolded into artifacts that outlive the
+  session: specification → plan → tasks → implementation.
 - [Premature Specification](premature-specification.md) — the anti-pattern the
   planning phase degrades into when you demand detail before the problem is
   understood.

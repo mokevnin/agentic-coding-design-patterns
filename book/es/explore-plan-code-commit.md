@@ -1,7 +1,7 @@
 ---
 group: task-setting
 status: draft
-related: [premature-specification]
+related: [spec-driven-development, premature-specification]
 source_rev: 572b790bc4562778693d591204befe0d594da2fe
 ---
 
@@ -246,6 +246,10 @@ tirar una implementación terminada.
 
 ## Patrones relacionados
 
+- [Desarrollo orientado a especificaciones](spec-driven-development.md) — el
+  mismo principio de «primero acordar, después codificar», desplegado en
+  artefactos que sobreviven a la sesión: especificación → plan → tareas →
+  implementación.
 - [Especificación prematura](premature-specification.md) — el antipatrón en el
   que degenera la fase de plan si se exige detalle antes de entender el
   problema.
