@@ -59,6 +59,8 @@ article per framework.
 | openspec | done | Change lifecycle propose → review → apply → archive; standing specs updated by deltas, brownfield-first. | [openspec] |
 | kiro | done | AWS: SDD as an IDE mode — spec sessions with phase-gate approvals, EARS requirements, steering files, hooks. | [kiro] |
 | tessl | done | Spec as the *source* of code; evolved into a "context as code" platform with SDD as an installable plugin. | [tessl] |
+| superpowers | done | SDD as a Claude Code skill pack: brainstorm → plan → subagent TDD implementation with mandatory checkpoints. | [superpowers] |
+| matt-pocock-skills | done | SDD on top of the issue tracker: grill interview → spec → tracer-bullet tickets → implement with TDD and two-axis review. | [mp] |
 
 ## Context
 
