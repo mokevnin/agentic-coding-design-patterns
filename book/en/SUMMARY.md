@@ -29,6 +29,7 @@
 ## Verification
 
 * [Feedback Loop](give-agent-a-way-to-verify.md)
+* [TDD with an Agent](tdd-with-agent.md)
 
 ## Project Organization
 
