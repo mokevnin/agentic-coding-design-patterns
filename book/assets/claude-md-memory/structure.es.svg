@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 400" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#4a6fa5"/>
+    </marker>
+    <marker id="arrow-tan" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#a5764a"/>
+    </marker>
+  </defs>
+
+  <!-- memory layers -->
+  <rect x="40" y="30" width="250" height="52" rx="8" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="165" y="52" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">organización</text>
+  <text x="165" y="70" text-anchor="middle" font-size="11" fill="#5b6b7c">política gestionada</text>
+
+  <rect x="40" y="96" width="250" height="52" rx="8" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="165" y="118" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">usuario</text>
+  <text x="165" y="136" text-anchor="middle" font-size="11" fill="#4a6fa5" font-family="ui-monospace, 'SF Mono', Menlo, monospace">~/.claude/CLAUDE.md</text>
+
+  <rect x="40" y="162" width="250" height="52" rx="8" fill="#f6f1e7" stroke="#a5764a" stroke-width="2"/>
+  <text x="165" y="184" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">proyecto — compartido, en git</text>
+  <text x="165" y="202" text-anchor="middle" font-size="11" fill="#4a6fa5" font-family="ui-monospace, 'SF Mono', Menlo, monospace">./CLAUDE.md · AGENTS.md</text>
+
+  <rect x="40" y="228" width="250" height="52" rx="8" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="165" y="250" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">local — en .gitignore</text>
+  <text x="165" y="268" text-anchor="middle" font-size="11" fill="#4a6fa5" font-family="ui-monospace, 'SF Mono', Menlo, monospace">CLAUDE.local.md</text>
+
+  <!-- arrows into the window -->
+  <g stroke="#4a6fa5" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+    <line x1="292" y1="56" x2="518" y2="120"/>
+    <line x1="292" y1="122" x2="518" y2="150"/>
+    <line x1="292" y1="188" x2="518" y2="180"/>
+    <line x1="292" y1="254" x2="518" y2="210"/>
+  </g>
+
+  <!-- session context window -->
+  <rect x="520" y="90" width="310" height="180" rx="10" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="675" y="118" text-anchor="middle" font-size="15" font-weight="600" fill="#1a2b3c">Ventana de contexto de la sesión</text>
+  <g fill="#5b6b7c" text-anchor="middle" font-size="12">
+    <text x="675" y="150">las capas se concatenan al inicio:</text>
+    <text x="675" y="170">de la más amplia a la más estrecha,</text>
+    <text x="675" y="190">la más cercana al trabajo se lee última</text>
+  </g>
+  <text x="675" y="240" text-anchor="middle" font-size="12" fill="#a54a4a">cada línea cuesta tokens en cada sesión</text>
+
+  <!-- nested files, on demand -->
+  <rect x="40" y="310" width="250" height="52" rx="8" fill="#fff" stroke="#a5764a" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="165" y="332" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">CLAUDE.md anidados</text>
+  <text x="165" y="350" text-anchor="middle" font-size="11" fill="#5b6b7c">en subdirectorios — bajo demanda</text>
+  <line x1="292" y1="336" x2="600" y2="272" stroke="#a5764a" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-tan)"/>
+
+  <!-- principle -->
+  <text x="585" y="345" text-anchor="middle" font-size="13" font-style="italic" fill="#5b6b7c">la regla se escribe una vez —</text>
+  <text x="585" y="363" text-anchor="middle" font-size="13" font-style="italic" fill="#5b6b7c">y se lee en cada sesión</text>
+</svg>

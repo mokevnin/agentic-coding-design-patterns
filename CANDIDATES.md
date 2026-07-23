@@ -67,7 +67,7 @@ article per framework.
 | Slug | Status | Pitch / Note | Src |
 |------|--------|--------------|-----|
 | context-engineering | done | Curate and maintain the optimal set of tokens for the task — the successor discipline to prompt engineering. | [ctx] |
-| claude-md-memory | accepted | A persistent memory file loaded every session; keep it concise (bloat is a separate anti-pattern). Covers the cross-tool `AGENTS.md` convention as a section (merge decided 2026-07-23). | [cc-mem], [agentsmd] |
+| claude-md-memory | done | A persistent memory file loaded every session; keep it concise (bloat is a separate anti-pattern). Covers the cross-tool `AGENTS.md` convention as a section (merge decided 2026-07-23). | [cc-mem], [agentsmd] |
 | agents-md-convention | rejected | Merged into `claude-md-memory` (author decision 2026-07-23): two chapters would retell each other. | [agentsmd] |
 | progress-file | accepted | A dedicated progress log (e.g. `claude-progress.txt`) beside git history so a fresh-context agent can recover state. | [harness] |
 | json-spec-file | rejected | Merged into `feature-list-harness` (author decision 2026-07-23): a format choice, not a standalone pattern — becomes a section on the status-file format there. | [harness] |
