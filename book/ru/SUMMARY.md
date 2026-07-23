@@ -30,6 +30,7 @@
 
 * [Петля обратной связи](give-agent-a-way-to-verify.md)
 * [TDD с агентом](tdd-with-agent.md)
+* [Рефлексия](reflection.md)
 
 ## Организация проекта
 
