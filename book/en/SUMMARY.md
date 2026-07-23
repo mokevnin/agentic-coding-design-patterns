@@ -24,6 +24,7 @@
 * [Project Memory](claude-md-memory.md)
 * [Domain Vocabulary](domain-context-file.md)
 * [Progress Journal](progress-file.md)
+* [Session Handoff](handoff.md)
 
 ## Verification
 

@@ -24,6 +24,7 @@
 * [Memoria del proyecto](claude-md-memory.md)
 * [Vocabulario del dominio](domain-context-file.md)
 * [Diario de progreso](progress-file.md)
+* [Traspaso de sesión](handoff.md)
 
 ## Verificación
 
