@@ -2,7 +2,7 @@
 group: task-setting
 status: draft
 related: [premature-specification]
-source_rev: 5fe00e84cec4b6ded1d7510aeb03d1a0832d850f
+source_rev: 572b790bc4562778693d591204befe0d594da2fe
 ---
 
 # Exploración — plan — código — commit
@@ -112,6 +112,56 @@ cuatro fases solo ralentizan el trabajo.
    en la descripción y actualización de la documentación si los cambios la
    tocaron.
 
+No hace falta montar el patrón a mano con prompts — los toolkits populares de
+desarrollo orientado a especificaciones lo implementan con comandos ya hechos.
+A continuación, las fases de EPCC mapeadas a los cuatro más extendidos.
+
+### Con GitHub Spec Kit
+
+[Spec Kit](https://github.com/github/spec-kit) te lleva por las fases con una
+serie de comandos slash, cada uno dejando un artefacto en el repositorio:
+
+- **Exploración y plan** — `/speckit.specify` fija *qué* se construye
+  (requisitos e historias de usuario), `/speckit.clarify` hace preguntas sobre
+  los puntos poco definidos, `/speckit.plan` escribe el plan técnico y
+  `/speckit.tasks` lo corta en tareas. El punto de control es revisar y editar
+  estos artefactos antes de que empiece el código.
+- **Código** — `/speckit.implement` ejecuta la lista de tareas.
+- **Commit** — el flujo git habitual; `/speckit.analyze` verifica además la
+  coherencia entre especificación, plan y tareas.
+
+### Con OpenSpec
+
+[OpenSpec](https://github.com/Fission-AI/OpenSpec) organiza el trabajo en torno
+a un «cambio» con ciclo de vida propose → review → apply → archive:
+
+- **Exploración** — `/opsx:explore`: un modo de «socio para pensar» que lee el
+  código y sopesa opciones sin cambiar nada.
+- **Plan** — `/opsx:propose` crea un conjunto de artefactos: `proposal.md` (por
+  qué y qué cambia), `specs/` (requisitos y escenarios), `design.md` (enfoque
+  técnico), `tasks.md` (lista de tareas de implementación). El punto de control
+  es revisar el conjunto antes de la primera línea de código.
+- **Código** — `/opsx:apply` ejecuta las tareas de `tasks.md`.
+- **Commit** — el cambio terminado se archiva en `openspec/changes/archive/`:
+  la historia de decisiones queda en el repositorio junto al código.
+
+### Con Superpowers
+
+[Superpowers](https://github.com/obra/superpowers) es un paquete de skills para
+Claude Code con puntos de control obligatorios tras cada fase:
+
+- **Exploración y plan** — `brainstorming` afina la idea con preguntas y
+  presenta el diseño por secciones para validarlo; con el diseño aprobado,
+  `writing-plans` escribe un plan de tareas pequeñas (2–5 minutos cada una) con
+  rutas de archivo y pasos de verificación. La implementación no arranca hasta
+  que digas «go» explícitamente.
+- **Código** — `subagent-driven-development`: un subagente nuevo por tarea, con
+  `test-driven-development` sosteniendo el ciclo red–green–refactor por dentro
+  y `using-git-worktrees` aislando el trabajo en un worktree aparte.
+- **Commit** — `requesting-code-review` contrasta el resultado con la
+  especificación y `finishing-a-development-branch` lleva la rama hasta el
+  merge o el PR.
+
 ### Con los skills de Matt Pocock
 
 Si el proyecto tiene instalado el [paquete de skills de Matt
@@ -189,12 +239,10 @@ tirar una implementación terminada.
   practices](https://code.claude.com/docs/en/best-practices).
 - Existen modos análogos de «primero el plan» en otros agentes — por ejemplo,
   plan mode en Cursor y architect mode en aider.
-- **El paquete de skills de Matt Pocock** — el flujo principal «idea → ship»
-  (grill → spec → tickets → implement → review → commit) es el mismo EPCC
-  desplegado en metodología.
-- **GitHub Spec Kit** desarrolla la misma idea hasta una metodología completa
-  (Specify → Plan → Tasks → Implement), donde el plan pasa a formar parte de la
-  especificación.
+- **Toolkits orientados a especificaciones** — GitHub Spec Kit, OpenSpec,
+  Superpowers y el paquete de skills de Matt Pocock — despliegan EPCC en
+  metodologías completas; sus comandos se detallan en la sección
+  «Implementación».
 
 ## Patrones relacionados
 
