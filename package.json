@@ -12,6 +12,8 @@
     "pdf:es": "honkit pdf ./book/es ../../dist/agentic-coding-design-patterns-es.pdf"
   },
   "devDependencies": {
+    "gitbook-plugin-github": "^3.0.0",
+    "gitbook-plugin-toolbar": "^0.6.0",
     "honkit": "^6.2.2"
   }
 }

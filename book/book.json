@@ -3,6 +3,34 @@
   "description": "Design patterns for coding with AI agents, in the spirit of the Gang of Four",
   "author": "Hexlet",
   "language": "ru",
+  "plugins": ["github", "toolbar"],
+  "pluginsConfig": {
+    "github": {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns"
+    },
+    "toolbar": {
+      "buttons": [
+        {
+          "label": "Hexlet AI Club",
+          "icon": "fa fa-telegram",
+          "url": "https://t.me/hexletclub",
+          "position": "left"
+        },
+        {
+          "label": "Организованное программирование (Telegram)",
+          "icon": "fa fa-paper-plane",
+          "url": "https://t.me/orgprog",
+          "position": "left"
+        },
+        {
+          "label": "Организованное программирование (YouTube)",
+          "icon": "fa fa-youtube-play",
+          "url": "https://www.youtube.com/@mokevnin",
+          "position": "left"
+        }
+      ]
+    }
+  },
   "structure": {
     "readme": "README.md",
     "summary": "SUMMARY.md",
