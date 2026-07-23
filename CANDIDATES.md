@@ -45,6 +45,8 @@ Source labels (`[xx]`) are resolved in [Sources](#sources) at the bottom.
 | explore-plan-code-commit | candidate | Four-phase workflow — explore, plan (plan mode), implement, commit — so the agent doesn't solve the wrong problem. | [cc-bp] |
 | let-claude-interview-you | candidate | Start minimal, let the agent interview you (AskUserQuestion), crystallize a self-contained `SPEC.md`, then execute in a fresh session. | [cc-bp] |
 | spec-driven-development | candidate | Treat the spec as the source of truth (intent, not code): Specify → Plan → Tasks → Implement. Absorbs "start high-level, let the agent expand it" [addy]. | [speckit] |
+| grilling | candidate | The agent relentlessly interviews you about a plan/decision until the holes surface — a stress-test of *your* thinking before work starts. Not `let-claude-interview-you`: that interview *builds* a spec, this one *attacks* a finished plan. | [mp] |
+| tracer-bullet-tickets | candidate | Slice a conversation/spec into tracer-bullet tickets with explicit blocking edges — the agent gets executable chunks, not an epic. Plugs into `spec-driven-development` (the Tasks step) with concrete mechanics. | [mp] |
 
 ## Context
 
@@ -55,6 +57,8 @@ Source labels (`[xx]`) are resolved in [Sources](#sources) at the bottom.
 | agents-md-convention | candidate | Cross-tool `AGENTS.md` convention for repo/agent instructions. Decide: one pattern with `claude-md-memory` or two? | [agentsmd] |
 | progress-file | candidate | A dedicated progress log (e.g. `claude-progress.txt`) beside git history so a fresh-context agent can recover state. | [harness] |
 | json-spec-file | candidate | Use JSON (not Markdown) for the machine-updated spec/status file; agents edit only the status field, less prone to overwriting. | [harness] |
+| handoff | candidate | Deliberately compact the session into a handoff document for the next agent — instead of trusting auto-summarization. Neighbor of `progress-file`, but a different moment: progress is a running log, handoff is a session boundary. | [mp] |
+| domain-context-file | candidate | A domain glossary + ADRs in the repo (`CONTEXT.md`) as the canonical language the agent reads every session — cures term drift and renaming churn. Separate axis from `claude-md-memory`: that's "how to work", this is "what words mean". | [mp] |
 
 ## Verification
 
@@ -65,6 +69,7 @@ Source labels (`[xx]`) are resolved in [Sources](#sources) at the bottom.
 | reflection | candidate | Self-critique loop: generate → evaluate → improve. The `evaluator-optimizer` workflow reframed for the human-driven case. | [ng], [bea] |
 | writer-reviewer | candidate | Review the diff in a *fresh* context (separate session/subagent) so the agent isn't biased toward code it just wrote. | [cc-bp] |
 | adversarial-review | candidate | A fresh model tries to *refute* the result before it counts as done — grader ≠ author. Possibly one pattern with `writer-reviewer`. | [cc-bp] |
+| prototype-to-answer | candidate | Build a throwaway prototype to answer a design question ("does this state model even fly?") before the real implementation — verify the design, not the code. | [mp] |
 
 ## Project organization
 
@@ -72,6 +77,9 @@ Source labels (`[xx]`) are resolved in [Sources](#sources) at the bottom.
 |------|--------|--------------|-----|
 | feature-list-harness | candidate | A persistent feature list where items start `failing` and flip to `passing` only after verification — the backbone of long-running work. | [harness] |
 | one-feature-at-a-time | candidate | Constrain the agent to a single feature per pass; counters its tendency to do too much at once. | [harness] |
+| wayfinder | candidate | Work bigger than one session is planned as a map of investigation tickets on the tracker; the agent resolves them one at a time until the way is clear. Extends `feature-list-harness` toward *investigation*, not features. | [mp] |
+| triage-state-machine | candidate | Incoming issues move through a fixed set of role labels (`needs-triage` → `ready-for-agent` / `ready-for-human`) ending in an agent-ready brief. | [mp] |
+| skills-as-packaged-workflows | candidate | Package recurring procedures as skills/slash-commands instead of re-explaining them in every prompt. Meta-pattern over most others in this list. | [mp] |
 
 ## Anti-patterns
 
@@ -116,6 +124,7 @@ an agent.
 - `[ng]` — Andrew Ng, *Four agentic design patterns* — https://x.com/AndrewYNg/status/1773393357022298617
 - `[speckit]` — GitHub, *Spec-driven development with AI (Spec Kit)* — https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/
 - `[agentsmd]` — *AGENTS.md convention* — https://agents.md/
+- `[mp]` — Matt Pocock, *skills* (engineering/productivity skill pack; vendored in this repo under `.agents/skills/`) — https://github.com/mattpocock/skills
 - `[addy]` — Addy Osmani, *What makes a good AI spec* — https://addyosmani.com/blog/good-spec/
 - `[sdd-survey]` — Piskala, *Spec-driven development survey*, arXiv:2602.00180 — https://arxiv.org/html/2602.00180v1
 - `[adp-paper]` — Dao et al., *Agentic Design Patterns: A System-Theoretic Framework*, arXiv:2601.19752 — https://arxiv.org/html/2601.19752v1
