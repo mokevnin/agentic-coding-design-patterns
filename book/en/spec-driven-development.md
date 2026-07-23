@@ -98,8 +98,7 @@ diverged from it.
   specification forces that decision before the code.
 
 For a two-file edit the pipeline is overkill — there,
-[explore — plan — code — commit](explore-plan-code-commit.md) or a plain
-request is enough.
+[the four phases](explore-plan-code-commit.md) or a plain request is enough.
 
 ## Consequences and trade-offs
 
@@ -208,7 +207,7 @@ workaround in the code.
 
 ## Related patterns
 
-- [Explore — Plan — Code — Commit](explore-plan-code-commit.md) — the same
+- [Four Phases](explore-plan-code-commit.md) — the same
   "agree first, code second" principle at the scale of a single session; SDD
   unfolds it into artifacts that outlive the session.
 - [Premature Specification](premature-specification.md) — the anti-pattern the

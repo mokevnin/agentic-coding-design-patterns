@@ -101,8 +101,7 @@ especificación cuando la realidad se ha apartado de ella.
   especificación obliga a decidirlo antes del código.
 
 Para un cambio de dos archivos la tubería es excesiva — ahí basta con
-[exploración — plan — código — commit](explore-plan-code-commit.md) o una
-petición simple.
+[las cuatro fases](explore-plan-code-commit.md) o una petición simple.
 
 ## Consecuencias y compromisos
 
@@ -219,7 +218,7 @@ adjunto), no un rodeo silencioso en el código.
 
 ## Patrones relacionados
 
-- [Exploración — plan — código — commit](explore-plan-code-commit.md) — el
+- [Cuatro fases](explore-plan-code-commit.md) — el
   mismo principio de «primero acordar, después codificar» a escala de una
   sesión; SDD lo despliega en artefactos que sobreviven a la sesión.
 - [Especificación prematura](premature-specification.md) — el antipatrón en el

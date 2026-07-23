@@ -70,6 +70,6 @@ marca esos lugares explícitamente.
 
 ## Patrones y antipatrones relacionados
 
-- [Exploración — plan — código — commit](explore-plan-code-commit.md) — el
+- [Cuatro fases](explore-plan-code-commit.md) — el
   patrón cuya fase de plan degenera en especificación prematura si se exige
   detalle antes de entender el problema.

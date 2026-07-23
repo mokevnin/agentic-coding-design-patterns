@@ -5,7 +5,7 @@ related: [spec-driven-development, premature-specification]
 source_rev: 572b790bc4562778693d591204befe0d594da2fe
 ---
 
-# Exploración — plan — código — commit
+# Cuatro fases
 
 ## Propósito
 
@@ -16,7 +16,8 @@ con el desarrollador, y solo después escriba código.
 
 ## También conocido como
 
-Explore–Plan–Code–Commit (EPCC), «primero el plan, después el código».
+Exploración — plan — código — commit; Explore–Plan–Code–Commit (EPCC);
+«primero el plan, después el código».
 
 ## Problema
 

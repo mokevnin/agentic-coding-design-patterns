@@ -5,7 +5,7 @@ related: [spec-driven-development, premature-specification]
 source_rev: 572b790bc4562778693d591204befe0d594da2fe
 ---
 
-# Explore — Plan — Code — Commit
+# Four Phases
 
 ## Intent
 
@@ -16,7 +16,7 @@ and only then writes code.
 
 ## Also known as
 
-Explore–Plan–Code–Commit (EPCC), "plan first, code second".
+Explore — Plan — Code — Commit (EPCC), "plan first, code second".
 
 ## Problem
 

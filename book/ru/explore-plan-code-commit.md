@@ -5,7 +5,7 @@ related: [spec-driven-development, premature-specification]
 source_rev:
 ---
 
-# Исследование — план — код — коммит
+# Четыре фазы
 
 ## Назначение
 
@@ -16,7 +16,8 @@ source_rev:
 
 ## Также известен как
 
-Explore–Plan–Code–Commit (EPCC), «сначала план — потом код».
+Исследование — план — код — коммит; Explore–Plan–Code–Commit (EPCC); «сначала
+план — потом код».
 
 ## Проблема
 

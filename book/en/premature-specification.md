@@ -67,6 +67,6 @@ and mark those places explicitly.
 
 ## Related patterns and anti-patterns
 
-- [Explore — Plan — Code — Commit](explore-plan-code-commit.md) — the pattern
+- [Four Phases](explore-plan-code-commit.md) — the pattern
   whose planning phase degrades into premature specification when you demand
   detail before the problem is understood.
