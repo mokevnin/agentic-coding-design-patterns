@@ -98,8 +98,9 @@ cuatro fases solo ralentizan el trabajo.
 
 1. Activa el modo de planificación: el agente no podrá tocar archivos hasta
    que el plan se apruebe, y no hará falta prohibir el código en los prompts.
-2. Empieza por la exploración: «Lee los archivos responsables de X y entiende
-   cómo funciona Y». Después pide un plan.
+2. Entrega la tarea y pide un plan. No hace falta reescribirla en un prompt —
+   basta con pasar el ticket del tracker: el agente lee la descripción y el
+   código relevante por sí mismo.
 3. Lee el plan como si revisaras código: haz preguntas, tacha lo innecesario,
    exige alternativas, saca las restricciones que no se ven en el código.
    Itera hasta estar de acuerdo — es la fase más barata para discutir.
@@ -183,22 +184,18 @@ explícitamente con el desarrollador.
 
 ## Ejemplo
 
-Tarea: en la exportación de informes a CSV, la hora aparece desplazada una hora
-para algunos usuarios. El desarrollador activa el modo de planificación — el
-agente no puede cambiar archivos hasta que el plan se apruebe, así que no hace
-falta prohibir el código en los prompts.
+En el backlog hay un ticket: «en la exportación de informes a CSV, la hora
+aparece desplazada una hora para algunos usuarios». El desarrollador activa el
+modo de planificación — el agente no puede cambiar archivos hasta que el plan
+se apruebe — y le pasa el ticket tal cual:
 
-**Exploración:**
+> Mira REP-1432 y redacta un plan de corrección.
 
-> Lee el código de exportación de informes y averigua de dónde sale la hora en
-> el CSV y dónde puede desplazarse con el cambio de horario de verano.
+**Exploración:** el agente lee el ticket y el código de exportación de informes
+y encuentra dónde se convierte la hora al escribir el CSV.
 
-**Plan:**
-
-> Redacta un plan de corrección.
-
-El agente propone dos opciones: convertir la hora al escribir o al leer. El
-desarrollador responde:
+**Plan:** el agente propone dos opciones — convertir la hora al escribir o al
+leer. El desarrollador responde:
 
 > Convertir al leer rompe los archivos ya exportados — el formato lo leen
 > integraciones externas. Toma la primera opción y añade al plan un test para

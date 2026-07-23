@@ -98,8 +98,9 @@ only slow the work down.
 
 1. Turn on planning mode: the agent can't touch files until the plan is
    approved, so there's no need to forbid code in the prompts.
-2. Start with exploration: "Read the files responsible for X and figure out
-   how Y works." Then ask for a plan.
+2. Hand over the task and ask for a plan. There's no need to rewrite it into a
+   prompt — dropping the ticket from the tracker is enough: the agent reads
+   the description and the relevant code itself.
 3. Read the plan the way you would review code: ask questions, cross out the
    unnecessary, demand alternatives, bring up the constraints that aren't
    visible in the code. Iterate until you agree — this is the cheapest phase
@@ -185,21 +186,18 @@ with the developer.
 
 ## Example
 
-Task: in the CSV report export, timestamps are shifted by an hour for some
-users. The developer turns on planning mode — the agent can't change files
-until the plan is approved, so there's no need to forbid code in the prompts.
+The backlog has a ticket: "in the CSV report export, timestamps are shifted by
+an hour for some users." The developer turns on planning mode — the agent
+can't change files until the plan is approved — and hands over the ticket as
+is:
 
-**Explore:**
+> Look into REP-1432 and draft a fix plan.
 
-> Read the report export code and figure out where the timestamps in the CSV
-> come from and where they could shift around the daylight-saving transition.
+**Explore:** the agent reads the ticket and the report export code and finds
+where the timestamps get converted when writing the CSV.
 
-**Plan:**
-
-> Draft a fix plan.
-
-The agent proposes two options: convert the time when writing or when reading.
-The developer replies:
+**Plan:** the agent proposes two options — convert the time when writing or
+when reading. The developer replies:
 
 > Converting on read breaks the files that have already been exported — the
 > format is read by external integrations. Take the first option, and add a
