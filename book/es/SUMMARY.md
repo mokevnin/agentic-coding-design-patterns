@@ -21,6 +21,7 @@
 ## Trabajo con el contexto
 
 * [Ingeniería de contexto](context-engineering.md)
+* [Memoria del proyecto](claude-md-memory.md)
 
 ## Verificación
 
