@@ -23,6 +23,7 @@
 * [Инженерия контекста](context-engineering.md)
 * [Память проекта](claude-md-memory.md)
 * [Словарь домена](domain-context-file.md)
+* [Журнал прогресса](progress-file.md)
 
 ## Проверка
 

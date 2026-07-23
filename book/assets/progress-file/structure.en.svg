@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 380" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#4a6fa5"/>
+    </marker>
+    <marker id="arrow-tan" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#a5764a"/>
+    </marker>
+  </defs>
+
+  <!-- sessions -->
+  <rect x="40" y="40" width="220" height="64" rx="8" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="150" y="66" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">Session 1</text>
+  <text x="150" y="86" text-anchor="middle" font-size="11" fill="#5b6b7c">works, writes journal and commits</text>
+
+  <rect x="330" y="40" width="220" height="64" rx="8" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="440" y="66" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">Session 2 — fresh window</text>
+  <text x="440" y="86" text-anchor="middle" font-size="11" fill="#5b6b7c">journal and git log first</text>
+
+  <rect x="620" y="40" width="220" height="64" rx="8" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="730" y="66" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">Session 3 — fresh window</text>
+  <text x="730" y="86" text-anchor="middle" font-size="11" fill="#5b6b7c">continues without retracing</text>
+
+  <!-- context breaks between sessions -->
+  <g stroke="#a54a4a" stroke-width="1.5" stroke-dasharray="4 4" fill="none">
+    <line x1="262" y1="72" x2="326" y2="72"/>
+    <line x1="552" y1="72" x2="616" y2="72"/>
+  </g>
+  <text x="294" y="118" text-anchor="middle" font-size="10" fill="#a54a4a">context lost</text>
+  <text x="584" y="118" text-anchor="middle" font-size="10" fill="#a54a4a">context lost</text>
+
+  <!-- artifacts -->
+  <rect x="150" y="240" width="270" height="100" rx="8" fill="#f6f1e7" stroke="#a5764a" stroke-width="2"/>
+  <text x="285" y="268" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c" font-family="ui-monospace, 'SF Mono', Menlo, monospace">PROGRESS.md</text>
+  <text x="285" y="292" text-anchor="middle" font-size="11" fill="#5b6b7c">state · next step</text>
+  <text x="285" y="310" text-anchor="middle" font-size="11" fill="#5b6b7c">problems · discarded approaches</text>
+
+  <rect x="490" y="240" width="220" height="100" rx="8" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="600" y="272" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">git history</text>
+  <text x="600" y="296" text-anchor="middle" font-size="11" fill="#5b6b7c">what changed in the code</text>
+
+  <!-- write and read arrows -->
+  <line x1="170" y1="106" x2="245" y2="238" stroke="#a5764a" stroke-width="1.5" marker-end="url(#arrow-tan)"/>
+  <text x="120" y="180" text-anchor="middle" font-size="11" fill="#a5764a">updated at the end</text>
+  <text x="120" y="194" text-anchor="middle" font-size="11" fill="#a5764a">of every step</text>
+
+  <line x1="340" y1="238" x2="405" y2="108" stroke="#4a6fa5" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="330" y="180" text-anchor="middle" font-size="11" fill="#4a6fa5">read</text>
+  <text x="330" y="194" text-anchor="middle" font-size="11" fill="#4a6fa5">first thing</text>
+
+  <line x1="555" y1="238" x2="465" y2="108" stroke="#4a6fa5" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+  <text x="540" y="180" text-anchor="middle" font-size="11" fill="#5b6b7c">git log</text>
+
+  <!-- principle -->
+  <text x="440" y="370" text-anchor="middle" font-size="13" font-style="italic" fill="#5b6b7c">every session leaves clear artifacts for the next one</text>
+</svg>
