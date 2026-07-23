@@ -23,6 +23,7 @@
 * [Context Engineering](context-engineering.md)
 * [Project Memory](claude-md-memory.md)
 * [Domain Vocabulary](domain-context-file.md)
+* [Progress Journal](progress-file.md)
 
 ## Verification
 
