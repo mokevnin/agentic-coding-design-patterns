@@ -16,6 +16,8 @@
 
 ## Antipatrones
 
+* [Especificación prematura](premature-specification.md)
+
 ## Apéndice
 
 * [Glosario](glossary.md)

@@ -16,6 +16,8 @@
 
 ## Anti-patterns
 
+* [Premature Specification](premature-specification.md)
+
 ## Appendix
 
 * [Glossary](glossary.md)
