@@ -6,6 +6,8 @@
 
 ## Task Setting
 
+* [Explore — Plan — Code — Commit](explore-plan-code-commit.md)
+
 ## Working with Context
 
 ## Verification

@@ -6,6 +6,8 @@
 
 ## Planteamiento de la tarea
 
+* [Exploración — plan — código — commit](explore-plan-code-commit.md)
+
 ## Trabajo con el contexto
 
 ## Verificación

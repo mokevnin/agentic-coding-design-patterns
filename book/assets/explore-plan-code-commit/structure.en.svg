@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 250" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#4a6fa5"/>
+    </marker>
+  </defs>
+
+  <!-- return loop: code -> plan -->
+  <path d="M530 90 L530 45 L320 45 L320 90" fill="none" stroke="#a5764a" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+  <text x="425" y="36" text-anchor="middle" font-size="12" fill="#a5764a">plan diverges from reality — go back</text>
+
+  <!-- phase boxes -->
+  <g stroke="#4a6fa5" stroke-width="1.5" fill="#eef3f9">
+    <rect x="30"  y="90" width="160" height="64" rx="8"/>
+    <rect x="240" y="90" width="160" height="64" rx="8"/>
+    <rect x="450" y="90" width="160" height="64" rx="8"/>
+    <rect x="660" y="90" width="160" height="64" rx="8"/>
+  </g>
+
+  <g fill="#1a2b3c" text-anchor="middle" font-size="15" font-weight="600">
+    <text x="110" y="116">Explore</text>
+    <text x="320" y="116">Plan</text>
+    <text x="530" y="116">Code</text>
+    <text x="740" y="116">Commit</text>
+  </g>
+  <g fill="#5b6b7c" text-anchor="middle" font-size="11">
+    <text x="110" y="138">reads the code,</text>
+    <text x="110" y="150">writes nothing</text>
+    <text x="320" y="138">approach and risks,</text>
+    <text x="320" y="150">no code yet</text>
+    <text x="530" y="138">implements</text>
+    <text x="530" y="150">the plan</text>
+    <text x="740" y="138">commit, PR,</text>
+    <text x="740" y="150">documentation</text>
+  </g>
+
+  <!-- arrows between phases -->
+  <g stroke="#4a6fa5" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+    <line x1="190" y1="122" x2="238" y2="122"/>
+    <line x1="400" y1="122" x2="448" y2="122"/>
+    <line x1="610" y1="122" x2="658" y2="122"/>
+  </g>
+
+  <!-- human checkpoint on plan -> code -->
+  <circle cx="424" cy="122" r="5" fill="#fff" stroke="#a54a4a" stroke-width="1.5"/>
+  <line x1="424" y1="130" x2="424" y2="176" stroke="#a54a4a" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="424" y="196" text-anchor="middle" font-size="12" fill="#a54a4a">checkpoint:</text>
+  <text x="424" y="211" text-anchor="middle" font-size="12" fill="#a54a4a">the developer approves the plan</text>
+</svg>
