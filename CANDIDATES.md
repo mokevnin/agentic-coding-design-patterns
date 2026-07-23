@@ -34,7 +34,7 @@ scope — see [Out of scope](#out-of-scope--author-decision).
 | `rejected`  | Deliberately not doing — reason in Note             |
 
 Groups mirror the headings in `book/ru/SUMMARY.md`:
-`task-setting` · `context` · `verification` · `project-org` · `anti-pattern`.
+`task-setting` · `sdd` · `context` · `verification` · `project-org` · `anti-pattern`.
 
 Source labels (`[xx]`) are resolved in [Sources](#sources) at the bottom.
 
@@ -44,9 +44,21 @@ Source labels (`[xx]`) are resolved in [Sources](#sources) at the bottom.
 |------|--------|--------------|-----|
 | explore-plan-code-commit | accepted | Four-phase workflow — explore, plan (plan mode), implement, commit — so the agent doesn't solve the wrong problem. | [cc-bp] |
 | let-claude-interview-you | candidate | Start minimal, let the agent interview you (AskUserQuestion), crystallize a self-contained `SPEC.md`, then execute in a fresh session. | [cc-bp] |
-| spec-driven-development | done | Treat the spec as the source of truth (intent, not code): Specify → Plan → Tasks → Implement. Absorbs "start high-level, let the agent expand it" [addy]. Chapter covers Spec Kit, OpenSpec, Kiro, Tessl, BMAD, skill packs (ru+en+es, 2026-07-23). | [speckit] |
 | grilling | candidate | The agent relentlessly interviews you about a plan/decision until the holes surface — a stress-test of *your* thinking before work starts. Not `let-claude-interview-you`: that interview *builds* a spec, this one *attacks* a finished plan. | [mp] |
 | tracer-bullet-tickets | candidate | Slice a conversation/spec into tracer-bullet tickets with explicit blocking edges — the agent gets executable chunks, not an epic. Plugs into `spec-driven-development` (the Tasks step) with concrete mechanics. | [mp] |
+
+## Spec-driven development
+
+Own section in the book (decided 2026-07-23): an overview chapter plus one
+article per framework.
+
+| Slug | Status | Pitch / Note | Src |
+|------|--------|--------------|-----|
+| spec-driven-development | done | Overview: treat the spec as the source of truth (intent, not code): Specify → Plan → Tasks → Implement. Absorbs "start high-level, let the agent expand it" [addy]. | [speckit] |
+| spec-kit | done | GitHub Spec Kit: `specify` CLI, `/speckit.*` command per phase, artifact per command; agent-agnostic. | [speckit] |
+| openspec | done | Change lifecycle propose → review → apply → archive; standing specs updated by deltas, brownfield-first. | [openspec] |
+| kiro | done | AWS: SDD as an IDE mode — spec sessions with phase-gate approvals, EARS requirements, steering files, hooks. | [kiro] |
+| tessl | done | Spec as the *source* of code; evolved into a "context as code" platform with SDD as an installable plugin. | [tessl] |
 
 ## Context
 
@@ -125,6 +137,8 @@ an agent.
 - `[speckit]` — GitHub, *Spec-driven development with AI (Spec Kit)* — https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/
 - `[agentsmd]` — *AGENTS.md convention* — https://agents.md/
 - `[openspec]` — Fission-AI, *OpenSpec* (spec-driven change lifecycle: propose → review → apply → archive) — https://github.com/Fission-AI/OpenSpec
+- `[kiro]` — AWS, *Kiro — Specs* (spec sessions: EARS requirements → design → tasks; steering; hooks) — https://kiro.dev/docs/specs/
+- `[tessl]` — Tessl (spec as the source of code; SDD plugin on a "context as code" platform) — https://docs.tessl.io
 - `[superpowers]` — Jesse Vincent (obra), *Superpowers* (Claude Code skill pack: brainstorm → plan → subagent TDD → review) — https://github.com/obra/superpowers
 - `[mp]` — Matt Pocock, *skills* (engineering/productivity skill pack; vendored in this repo under `.agents/skills/`) — https://github.com/mattpocock/skills
 - `[addy]` — Addy Osmani, *What makes a good AI spec* — https://addyosmani.com/blog/good-spec/

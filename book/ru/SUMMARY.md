@@ -7,7 +7,14 @@
 ## Постановка задачи
 
 * [Исследование — план — код — коммит](explore-plan-code-commit.md)
-* [Спеко-ориентированная разработка](spec-driven-development.md)
+
+## Спеко-ориентированная разработка
+
+* [Обзор подхода](spec-driven-development.md)
+* [GitHub Spec Kit](spec-kit.md)
+* [OpenSpec](openspec.md)
+* [Kiro](kiro.md)
+* [Tessl](tessl.md)
 
 ## Работа с контекстом
 
