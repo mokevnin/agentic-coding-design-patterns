@@ -32,6 +32,7 @@
 * [TDD with an Agent](tdd-with-agent.md)
 * [Reflection](reflection.md)
 * [Writer and Reviewer](writer-reviewer.md)
+* [Throwaway Prototype](prototype-to-answer.md)
 
 ## Project Organization
 

@@ -32,6 +32,7 @@
 * [TDD con agente](tdd-with-agent.md)
 * [Reflexión](reflection.md)
 * [Escritor y revisor](writer-reviewer.md)
+* [Prototipo desechable](prototype-to-answer.md)
 
 ## Organización del proyecto
 
