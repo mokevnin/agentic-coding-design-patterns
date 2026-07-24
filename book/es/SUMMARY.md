@@ -7,6 +7,7 @@
 ## Planteamiento de la tarea
 
 * [Cuatro fases](explore-plan-code-commit.md)
+* [Entrevista del agente](let-claude-interview-you.md)
 
 ## Desarrollo orientado a especificaciones
 
