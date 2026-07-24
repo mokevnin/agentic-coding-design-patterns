@@ -48,6 +48,10 @@
 ## Анти-паттерны
 
 * [Преждевременная спецификация](premature-specification.md)
+* [Преждевременный успех](premature-success.md)
+* [Раздутая память](bloated-claude-md.md)
+* [Вайб-кодинг](vibe-coding.md)
+* [Уан-шот](one-shotting.md)
 
 ## Приложения
 

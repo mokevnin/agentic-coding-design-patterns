@@ -100,10 +100,10 @@ article per framework.
 | Slug | Status | Pitch / Note | Src |
 |------|--------|--------------|-----|
 | premature-specification | done | Nailing down details before the problem is understood. Already in the book. | — |
-| premature-success | accepted | Declaring the job done on unit tests / curl without end-to-end verification as a real user. Distinct from `premature-specification`. | [harness] |
-| bloated-claude-md | accepted | An over-specified memory file — the agent ignores half of it because rules get lost in the noise. Inverse of `claude-md-memory`. | [cc-bp] |
-| vibe-coding | accepted | Describe a goal, paste back whatever compiles; fine for throwaways, a trap on real/existing codebases. | [speckit] |
-| one-shotting | accepted | Expecting a whole feature from a single prompt instead of an iterative, verified loop. Confirm it has a clean primary source before accepting. | [cc-bp] |
+| premature-success | done | Declaring the job done on unit tests / curl without end-to-end verification as a real user. Distinct from `premature-specification`. | [harness] |
+| bloated-claude-md | done | An over-specified memory file — the agent ignores half of it because rules get lost in the noise. Inverse of `claude-md-memory`. | [cc-bp] |
+| vibe-coding | done | Describe a goal, paste back whatever compiles; fine for throwaways, a trap on real/existing codebases. | [speckit] |
+| one-shotting | done | Expecting a whole feature from a single prompt instead of an iterative, verified loop. Primary sources confirmed: the one-shot attempt quote in [harness] plus the trust-then-verify gap in [cc-bp]. | [harness], [cc-bp] |
 
 ## Out of scope / author decision
 
