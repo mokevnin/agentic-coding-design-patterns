@@ -8,6 +8,7 @@
 
 * [Four Phases](explore-plan-code-commit.md)
 * [Agent-Led Interview](let-claude-interview-you.md)
+* [Grilling](grilling.md)
 
 ## Spec-Driven Development
 

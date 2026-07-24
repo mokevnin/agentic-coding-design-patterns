@@ -8,6 +8,7 @@
 
 * [Cuatro fases](explore-plan-code-commit.md)
 * [Entrevista del agente](let-claude-interview-you.md)
+* [Grilling](grilling.md)
 
 ## Desarrollo orientado a especificaciones
 
