@@ -36,6 +36,8 @@
 
 ## Project Organization
 
+* [Feature List](feature-list-harness.md)
+
 ## Anti-patterns
 
 * [Premature Specification](premature-specification.md)

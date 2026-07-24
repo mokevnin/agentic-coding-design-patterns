@@ -36,6 +36,8 @@
 
 ## Organización del proyecto
 
+* [Lista de funcionalidades](feature-list-harness.md)
+
 ## Antipatrones
 
 * [Especificación prematura](premature-specification.md)
