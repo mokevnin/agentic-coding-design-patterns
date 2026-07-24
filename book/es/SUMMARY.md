@@ -38,6 +38,7 @@
 
 * [Lista de funcionalidades](feature-list-harness.md)
 * [Una funcionalidad a la vez](one-feature-at-a-time.md)
+* [Mapa de investigación](wayfinder.md)
 
 ## Antipatrones
 
