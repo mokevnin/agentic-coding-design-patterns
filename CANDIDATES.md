@@ -89,11 +89,11 @@ article per framework.
 
 | Slug | Status | Pitch / Note | Src |
 |------|--------|--------------|-----|
-| feature-list-harness | candidate | A persistent feature list where items start `failing` and flip to `passing` only after verification — the backbone of long-running work. Absorbs `json-spec-file` as a section on the status-file format. | [harness] |
-| one-feature-at-a-time | candidate | Constrain the agent to a single feature per pass; counters its tendency to do too much at once. | [harness] |
-| wayfinder | candidate | Work bigger than one session is planned as a map of investigation tickets on the tracker; the agent resolves them one at a time until the way is clear. Extends `feature-list-harness` toward *investigation*, not features. | [mp] |
-| triage-state-machine | candidate | Incoming issues move through a fixed set of role labels (`needs-triage` → `ready-for-agent` / `ready-for-human`) ending in an agent-ready brief. | [mp] |
-| skills-as-packaged-workflows | candidate | Package recurring procedures as skills/slash-commands instead of re-explaining them in every prompt. Meta-pattern over most others in this list. | [mp] |
+| feature-list-harness | done | A persistent feature list where items start `failing` and flip to `passing` only after verification — the backbone of long-running work. Absorbs `json-spec-file` as a section on the status-file format. | [harness] |
+| one-feature-at-a-time | accepted | Constrain the agent to a single feature per pass; counters its tendency to do too much at once. | [harness] |
+| wayfinder | accepted | Work bigger than one session is planned as a map of investigation tickets on the tracker; the agent resolves them one at a time until the way is clear. Extends `feature-list-harness` toward *investigation*, not features. | [mp] |
+| triage-state-machine | accepted | Incoming issues move through a fixed set of role labels (`needs-triage` → `ready-for-agent` / `ready-for-human`) ending in an agent-ready brief. | [mp] |
+| skills-as-packaged-workflows | accepted | Package recurring procedures as skills/slash-commands instead of re-explaining them in every prompt. Meta-pattern over most others in this list. | [mp] |
 
 ## Anti-patterns
 
