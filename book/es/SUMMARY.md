@@ -40,6 +40,7 @@
 * [Una funcionalidad a la vez](one-feature-at-a-time.md)
 * [Mapa de investigación](wayfinder.md)
 * [Triaje de tareas](triage-state-machine.md)
+* [Skills](skills-as-packaged-workflows.md)
 
 ## Antipatrones
 
