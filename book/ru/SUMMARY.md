@@ -40,6 +40,7 @@
 * [Одна фича за раз](one-feature-at-a-time.md)
 * [Карта исследования](wayfinder.md)
 * [Триаж задач](triage-state-machine.md)
+* [Скилы](skills-as-packaged-workflows.md)
 
 ## Анти-паттерны
 

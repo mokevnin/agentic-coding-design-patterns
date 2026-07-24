@@ -93,7 +93,7 @@ article per framework.
 | one-feature-at-a-time | done | Constrain the agent to a single feature per pass; counters its tendency to do too much at once. | [harness] |
 | wayfinder | done | Work bigger than one session is planned as a map of investigation tickets on the tracker; the agent resolves them one at a time until the way is clear. Extends `feature-list-harness` toward *investigation*, not features. | [mp] |
 | triage-state-machine | done | Incoming issues move through a fixed set of role labels (`needs-triage` → `ready-for-agent` / `ready-for-human`) ending in an agent-ready brief. | [mp] |
-| skills-as-packaged-workflows | accepted | Package recurring procedures as skills/slash-commands instead of re-explaining them in every prompt. Meta-pattern over most others in this list. | [mp] |
+| skills-as-packaged-workflows | done | Package recurring procedures as skills/slash-commands instead of re-explaining them in every prompt. Meta-pattern over most others in this list. | [mp] |
 
 ## Anti-patterns
 
