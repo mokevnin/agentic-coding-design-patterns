@@ -38,6 +38,7 @@
 
 * [Список фич](feature-list-harness.md)
 * [Одна фича за раз](one-feature-at-a-time.md)
+* [Карта исследования](wayfinder.md)
 
 ## Анти-паттерны
 
