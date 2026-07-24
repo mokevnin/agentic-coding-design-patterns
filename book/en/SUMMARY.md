@@ -39,6 +39,7 @@
 * [Feature List](feature-list-harness.md)
 * [One Feature at a Time](one-feature-at-a-time.md)
 * [Investigation Map](wayfinder.md)
+* [Issue Triage](triage-state-machine.md)
 
 ## Anti-patterns
 
