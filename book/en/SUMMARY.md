@@ -48,6 +48,10 @@
 ## Anti-patterns
 
 * [Premature Specification](premature-specification.md)
+* [Premature Success](premature-success.md)
+* [Bloated Memory](bloated-claude-md.md)
+* [Vibe Coding](vibe-coding.md)
+* [One-Shotting](one-shotting.md)
 
 ## Appendix
 
