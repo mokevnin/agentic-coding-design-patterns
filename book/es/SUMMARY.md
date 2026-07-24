@@ -37,6 +37,7 @@
 ## Organización del proyecto
 
 * [Lista de funcionalidades](feature-list-harness.md)
+* [Una funcionalidad a la vez](one-feature-at-a-time.md)
 
 ## Antipatrones
 
