@@ -43,9 +43,9 @@ Source labels (`[xx]`) are resolved in [Sources](#sources) at the bottom.
 | Slug | Status | Pitch / Note | Src |
 |------|--------|--------------|-----|
 | explore-plan-code-commit | done | Four-phase workflow — explore, plan (plan mode), implement, commit — so the agent doesn't solve the wrong problem. | [cc-bp] |
-| let-claude-interview-you | candidate | Start minimal, let the agent interview you (AskUserQuestion), crystallize a self-contained `SPEC.md`, then execute in a fresh session. | [cc-bp] |
-| grilling | candidate | The agent relentlessly interviews you about a plan/decision until the holes surface — a stress-test of *your* thinking before work starts. Not `let-claude-interview-you`: that interview *builds* a spec, this one *attacks* a finished plan. | [mp] |
-| tracer-bullet-tickets | candidate | Slice a conversation/spec into tracer-bullet tickets with explicit blocking edges — the agent gets executable chunks, not an epic. Plugs into `spec-driven-development` (the Tasks step) with concrete mechanics. | [mp] |
+| let-claude-interview-you | done | Start minimal, let the agent interview you (AskUserQuestion), crystallize a self-contained `SPEC.md`, then execute in a fresh session. | [cc-bp] |
+| grilling | accepted | The agent relentlessly interviews you about a plan/decision until the holes surface — a stress-test of *your* thinking before work starts. Not `let-claude-interview-you`: that interview *builds* a spec, this one *attacks* a finished plan. | [mp] |
+| tracer-bullet-tickets | accepted | Slice a conversation/spec into tracer-bullet tickets with explicit blocking edges — the agent gets executable chunks, not an epic. Plugs into `spec-driven-development` (the Tasks step) with concrete mechanics. | [mp] |
 
 ## Spec-driven development
 
@@ -100,10 +100,10 @@ article per framework.
 | Slug | Status | Pitch / Note | Src |
 |------|--------|--------------|-----|
 | premature-specification | done | Nailing down details before the problem is understood. Already in the book. | — |
-| premature-success | candidate | Declaring the job done on unit tests / curl without end-to-end verification as a real user. Distinct from `premature-specification`. | [harness] |
-| bloated-claude-md | candidate | An over-specified memory file — the agent ignores half of it because rules get lost in the noise. Inverse of `claude-md-memory`. | [cc-bp] |
-| vibe-coding | candidate | Describe a goal, paste back whatever compiles; fine for throwaways, a trap on real/existing codebases. | [speckit] |
-| one-shotting | candidate | Expecting a whole feature from a single prompt instead of an iterative, verified loop. Confirm it has a clean primary source before accepting. | [cc-bp] |
+| premature-success | accepted | Declaring the job done on unit tests / curl without end-to-end verification as a real user. Distinct from `premature-specification`. | [harness] |
+| bloated-claude-md | accepted | An over-specified memory file — the agent ignores half of it because rules get lost in the noise. Inverse of `claude-md-memory`. | [cc-bp] |
+| vibe-coding | accepted | Describe a goal, paste back whatever compiles; fine for throwaways, a trap on real/existing codebases. | [speckit] |
+| one-shotting | accepted | Expecting a whole feature from a single prompt instead of an iterative, verified loop. Confirm it has a clean primary source before accepting. | [cc-bp] |
 
 ## Out of scope / author decision
 
