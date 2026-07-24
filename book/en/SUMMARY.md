@@ -9,6 +9,7 @@
 * [Four Phases](explore-plan-code-commit.md)
 * [Agent-Led Interview](let-claude-interview-you.md)
 * [Grilling](grilling.md)
+* [Tracer-Bullet Tickets](tracer-bullet-tickets.md)
 
 ## Spec-Driven Development
 
