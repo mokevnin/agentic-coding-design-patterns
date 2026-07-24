@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 390" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#4a6fa5"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#a54a4a"/>
+    </marker>
+  </defs>
+
+  <!-- fix loop back to the plan -->
+  <path d="M730 38 L730 20 L130 20 L130 76" fill="none" stroke="#a54a4a" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-red)"/>
+  <text x="430" y="14" text-anchor="middle" font-size="11" fill="#a54a4a">план правится немедленно — допрос продолжается</text>
+
+  <!-- the plan -->
+  <rect x="40" y="80" width="180" height="90" rx="10" fill="#f6f1e7" stroke="#a5764a" stroke-width="1.5"/>
+  <text x="130" y="112" text-anchor="middle" font-size="13" font-weight="600" fill="#1a2b3c">Готовый план</text>
+  <text x="130" y="134" text-anchor="middle" font-size="11" fill="#5b6b7c">убедителен автору;</text>
+  <text x="130" y="150" text-anchor="middle" font-size="11" fill="#5b6b7c">свои дыры не видны</text>
+
+  <line x1="222" y1="125" x2="278" y2="125" stroke="#4a6fa5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- the grilling loop -->
+  <rect x="280" y="60" width="280" height="140" rx="10" fill="#eef3f9" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="420" y="88" text-anchor="middle" font-size="14" font-weight="600" fill="#1a2b3c">Допрос</text>
+  <text x="420" y="112" text-anchor="middle" font-size="11" fill="#5b6b7c">по одному вопросу, ветка за веткой;</text>
+  <text x="420" y="128" text-anchor="middle" font-size="11" fill="#5b6b7c">к каждому вопросу — рекомендация;</text>
+  <text x="420" y="144" text-anchor="middle" font-size="11" fill="#5b6b7c">факты — из кода,</text>
+  <text x="420" y="160" text-anchor="middle" font-size="11" fill="#5b6b7c">решения — от разработчика</text>
+
+  <!-- outcomes -->
+  <g stroke="#4a6fa5" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+    <line x1="562" y1="95" x2="618" y2="66"/>
+    <line x1="562" y1="130" x2="618" y2="146"/>
+    <line x1="562" y1="165" x2="618" y2="226"/>
+  </g>
+
+  <rect x="620" y="40" width="220" height="54" rx="10" fill="#f9eded" stroke="#a54a4a" stroke-width="1.5"/>
+  <text x="730" y="62" text-anchor="middle" font-size="12" font-weight="600" fill="#1a2b3c">дыра</text>
+  <text x="730" y="80" text-anchor="middle" font-size="10" fill="#5b6b7c">недодуманная ветка — правка плана</text>
+
+  <rect x="620" y="120" width="220" height="54" rx="10" fill="#fff" stroke="#4a6fa5" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="730" y="142" text-anchor="middle" font-size="12" font-weight="600" fill="#1a2b3c">не решается разговором</text>
+  <text x="730" y="160" text-anchor="middle" font-size="10" fill="#5b6b7c">вопрос уходит в прототип</text>
+
+  <rect x="620" y="200" width="220" height="54" rx="10" fill="#f6f1e7" stroke="#a5764a" stroke-width="2"/>
+  <text x="730" y="222" text-anchor="middle" font-size="12" font-weight="600" fill="#1a2b3c">общее понимание</text>
+  <text x="730" y="240" text-anchor="middle" font-size="10" fill="#5b6b7c">подтверждено — работа начинается</text>
+
+  <!-- principle -->
+  <text x="440" y="310" text-anchor="middle" font-size="13" font-style="italic" fill="#5b6b7c">дыры всплывают за столом — по цене реплики, а не переделки</text>
+</svg>
