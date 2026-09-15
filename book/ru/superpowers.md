@@ -1,11 +1,14 @@
 ---
 group: sdd
+kind: tool
 status: draft
 related: [spec-driven-development, explore-plan-code-commit]
 source_rev:
 ---
 
 # Superpowers
+
+*Команды и возможности проверены 15 сентября 2026 года.*
 
 [Superpowers](https://github.com/obra/superpowers) Джесси Винсента (obra) —
 «целая методология разработки для кодинг-агентов, собранная из композируемых

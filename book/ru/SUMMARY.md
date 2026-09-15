@@ -14,6 +14,9 @@
 ## Спеко-ориентированная разработка
 
 * [Обзор подхода](spec-driven-development.md)
+
+### Обзоры инструментов
+
 * [OpenSpec](openspec.md)
 * [Superpowers](superpowers.md)
 * [Скилы Мэтта Покока](matt-pocock-skills.md)
