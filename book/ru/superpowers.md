@@ -1,6 +1,7 @@
 ---
 group: sdd
 kind: tool
+checked_on: 2026-09-15
 status: draft
 related: [spec-driven-development, explore-plan-code-commit]
 source_rev:

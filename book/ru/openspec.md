@@ -1,6 +1,7 @@
 ---
 group: sdd
 kind: tool
+checked_on: 2026-09-15
 status: draft
 related: [spec-driven-development]
 source_rev:
@@ -16,8 +17,8 @@ source_rev:
 Ключевая идея — разделить «что уже есть» и «что меняется»: постоянные
 спецификации системы обновляются дельтами, как схема базы данных — миграциями.
 
-OpenSpec — агент-агностичный тулкит: слэш-команды работают в Claude Code,
-Cursor, GitHub Copilot и ещё двух десятках ассистентов.
+OpenSpec — агент-агностичный тулкит: он поддерживает больше 30 кодинг-агентов и
+ассистентов, включая Claude Code, Codex, Cursor и GitHub Copilot.
 
 ## Установка
 

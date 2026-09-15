@@ -24,6 +24,12 @@ language.
 Anti-patterns go into the separate "Anti-patterns" chapter and use
 `templates/<locale>/anti-pattern.md`.
 
+Tool profiles are not patterns. Put them under the relevant methodology section,
+add `kind: tool` and `checked_on: YYYY-MM-DD` to their front matter, and use the
+practical-card structure: installation, workflow, artifacts, distinctions, and
+selection criteria. Show the check date to readers because commands and product
+capabilities change faster than pattern descriptions.
+
 ## Chapter front matter (optional but useful)
 
 Honkit takes the title from the first `#` and navigation from `SUMMARY.md`. A small
