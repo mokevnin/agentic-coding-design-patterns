@@ -13,15 +13,15 @@ Operating guide for agents (and humans) working in this repository.
 
 - Follow [Conventional Commits](https://www.conventionalcommits.org/), written in
   **English**.
-- Enforced locally by a `commit-msg` hook managed with
-  [prek](https://github.com/j178/prek) (config in `.pre-commit-config.yaml`),
-  installed by `make setup`.
+- Enforced locally by a `commit-msg` hook: [lefthook](https://github.com/evilmartians/lefthook)
+  (config in `lefthook.yml`) runs [commitlint](https://commitlint.js.org/).
+  Both come from `npm install`, which also installs the hooks.
 - Examples: `feat: add reflection pattern`, `docs: translate preface to es`,
   `ci: bump actions to latest`.
 
 ## Build / preview
 
-- `make setup` — install prek, deps, and git hooks
+- `make setup` — install deps and git hooks
 - `make serve` — local preview (Honkit serve)
 - `make build` — static build into `./dist`
 - `make pdf` — PDFs for all locales

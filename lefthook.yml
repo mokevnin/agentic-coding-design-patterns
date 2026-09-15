@@ -1,0 +1,6 @@
+# Git hooks managed with lefthook (https://github.com/evilmartians/lefthook).
+# Installed automatically on `npm install`; see Makefile.
+commit-msg:
+  commands:
+    commitlint:
+      run: npx --no -- commitlint --edit {1}

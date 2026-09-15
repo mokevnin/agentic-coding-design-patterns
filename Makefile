@@ -1,9 +1,7 @@
 .PHONY: setup serve build pdf clean
 
-setup: ## Install prek, dependencies, and the commit-msg hook
-	@command -v prek >/dev/null 2>&1 || uv tool install prek || brew install prek
+setup: ## Install dependencies and git hooks
 	npm install
-	prek install --hook-type commit-msg
 
 serve: ## Local preview (Honkit serve)
 	npm start
