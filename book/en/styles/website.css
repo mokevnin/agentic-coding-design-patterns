@@ -1,8 +1,11 @@
 /* Wide tables run off a phone screen: the theme keeps them at display:table,
-   where overflow has no effect. Drop this once honkit/honkit#532 is released. */
-.markdown-section table {
-  display: block;
-  width: max-content;
-  max-width: 100%;
-  overflow-x: auto;
+   where overflow has no effect. Screen only, so print keeps every column.
+   Drop this once honkit/honkit#532 is released. */
+@media screen {
+  .markdown-section table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+  }
 }
