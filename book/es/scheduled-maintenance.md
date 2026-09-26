@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [claude-md-memory, domain-context-file, bloated-claude-md, skills-as-packaged-workflows, writer-reviewer, executable-guardrails]
-source_rev: 0c11a14125b2cc54de9689c8aae7cecf158353d9
+source_rev: 66736af5af6d54dac16e46ad524d859e6e1378ea
 ---
 
 # Mantenimiento programado
@@ -100,56 +100,335 @@ En un proyecto pequeño con un solo desarrollador y cambios poco frecuentes, bas
 5. Separa las pasadas del proyecto del mantenimiento de la herramienta. Las primeras cambian el repositorio y van a PR; las segundas cambian tus ajustes y tu memoria.
 6. Una vez al mes, revisa el propio calendario: qué pasadas llevan tiempo sin encontrar nada y cuáles producen PR que nadie lee.
 
-### El conjunto común
+### Pasadas del proyecto
 
-Las pasadas de abajo no dependen del agente. La mayoría son [skills de Matt Pocock](matt-pocock-skills.md), y el paquete hay que instalarlo antes: `npx skills@latest add mattpocock/skills` y luego, una vez, `/setup-matt-pocock-skills`. El instalador deja los skills en _.agents/skills_, de donde los lee Codex; Claude Code solo lee _.claude/skills_, así que ahí tiene que haber enlaces a ellos. El skill `retro` está en la sección in-progress del paquete; comprueba que haya entrado en la instalación.
+Estas pasadas no dependen del agente. La mayoría son [skills de Matt Pocock](matt-pocock-skills.md), y el paquete hay que instalarlo antes: `npx skills@latest add mattpocock/skills` y luego, una vez, `/setup-matt-pocock-skills`. El instalador deja los skills en _.agents/skills_, de donde los lee Codex; Claude Code solo lee _.claude/skills_, así que ahí tiene que haber enlaces a ellos. En Claude Code un skill se invoca como `/nombre`, en Codex como `$nombre`. Cuando un agente tiene un comando integrado, se describe en la misma subsección.
 
-| Frecuencia | Pasada | Resultado |
-|---|---|---|
-| justo después de una sesión en la que el agente se atascó | `retro` en esa misma sesión | Propuestas para el entorno. Las infracciones mecánicas las detecta un linter, un hook o CI; las cuestiones de criterio se anotan en los estándares de revisión; de _AGENTS.md_ se quitan las reglas que no cambian nada |
-| cada semana | `code-review` sobre la rama principal de la semana, solo el eje de estándares, una tarea por área | La desviación de los estándares que no se ve en un solo PR se corrige en PR separados |
-| cada semana | Simplificar los 3–5 directorios con más cambios de la semana | Se eliminan repeticiones, capas sobrantes y código muerto |
-| cada semana | Revisión de seguridad de los cambios de la semana, empezando por autorización, pagos, subida de archivos y API externas | Los hallazgos se corrigen |
-| cada semana | `domain-modeling` sobre _CONTEXT.md_ | Los modelos nuevos entran en el glosario, los renombrados se reflejan, los términos prohibidos salen del código |
-| cada semana | `improve-codebase-architecture <área>` contigo; el área alterna entre una capa y un concepto del dominio | Un sitio donde conviene profundizar un módulo se desarrolla hasta un plan y se divide en tickets con `to-tickets` |
-| cada mes | `writing-for-agents` sobre _AGENTS.md_, los estándares de revisión y la documentación para agentes | Se quitan los duplicados entre archivos y se corrigen las reglas que se alejaron de la práctica |
-| cada mes | `writing-for-agents` sobre tus propios skills | Se eliminan pasos muertos y se ajustan las descripciones para que el skill se active cuando hace falta |
-| cada mes | `domain-modeling` sobre _docs/adr_ | Los ADR sustituidos o nunca implementados reciben estado y enlaces |
-| cada mes | Revisión de la memoria del agente | Los hechos del proyecto de la memoria privada pasan al repositorio o se borran; en la memoria queda solo cómo trabajar contigo |
+#### Retrospectiva
 
-Las pasadas semanales sugieren el área para la sesión de arquitectura: toma el directorio donde la revisión y la simplificación encontraron más cosas, o el sitio en el que la retrospectiva se quejó de que costaba orientarse.
+**Qué es.** El skill `retro` de la sección in-progress del paquete de Matt Pocock ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/in-progress/retro)). El modelo no lo invoca por su cuenta; solo lo lanzas tú.
 
-### En Claude Code
+**Cómo funciona.** El skill carga `writing-for-agents` como guía de estilo y lee la transcripción de la sesión, por defecto la actual. Busca mejoras en siete categorías: navegación por el proyecto, comprobaciones automáticas, estándares de revisión, _AGENTS.md_, economía de llamadas, reglas que no cambian nada y acceso a la información. Propone detectar una infracción mecánica con un linter, un hook o CI, y anotar en los estándares solo lo que requiere criterio. Presenta los candidatos por gravedad y no cambia nada por sí mismo.
 
-Comprobado con Claude Code 2.1.283 el 2026-09-26. Los nombres de los comandos cambian más rápido que el enfoque.
+**Cuándo.** Justo después de una sesión en la que el agente se atascó: muchas correcciones, una vuelta atrás, una búsqueda larga, un error repetido.
 
-- **Calendario.** `/schedule` (también `/routines`) crea tareas en la nube según un calendario. La tarea clona el repositorio, puede usar los conectores conectados y entrega su resultado como un PR desde una rama con el prefijo `claude/`. Aquí encajan las pasadas semanales de revisión, simplificación, seguridad y glosario.
-- **Simplificación.** El `/simplify` integrado mira el código modificado y aplica las correcciones enseguida; no busca errores. Pásale la lista de directorios de forma explícita.
-- **Seguridad.** `/security-review` comprueba solo los cambios de la rama actual respecto a su base y no acepta un rango de commits. Ejecútalo en la rama antes de fusionar, y programa la pasada semanal por la rama principal como tarea en la nube con un prompt normal de revisión de seguridad del periodo.
-- **Permisos.** `/fewer-permission-prompts` busca en las transcripciones llamadas seguras frecuentes y las añade al _.claude/settings.json_ compartido.
-- **Estado de la instalación.** `/doctor` comprueba la instalación y la versión, los servidores MCP y plugins sin uso, los hooks lentos, y añade los comandos de solo lectura que se rechazan a menudo al _.claude/settings.local.json_ personal. Sus comprobaciones de duplicados y recortes miran los archivos _CLAUDE.md_ y _.claude/rules_; _AGENTS.md_ no está en esa lista, así que las instrucciones las recorta la pasada de `writing-for-agents`.
-- **Skills.** `/skill-doctor` muestra qué skills cargados no se usan y cuánto contexto ocupan. Claude Code lee los skills de _.claude/skills_, así que los skills de _.agents/skills_ se enlazan allí con symlinks; comprueba que no se haya perdido ninguno.
-- **Arranque de la aplicación.** `/run-skill-generator` crea un skill que sabe arrancar tu aplicación. El `/run` integrado propone por sí mismo actualizar ese skill cuando deja de funcionar.
-- **Memoria.** La memoria automática vive en _~/.claude/projects/&lt;proyecto&gt;/memory_. La consolidación en segundo plano (el ajuste `autoDreamEnabled`) elimina entradas obsoletas y marca contradicciones con _CLAUDE.md_, pero no lleva los hechos del proyecto al repositorio. Esa parte de la revisión hazla tú.
+**Cómo lanzarlo.**
 
-Las tareas en la nube solo reciben el repositorio. La revisión de la memoria, `/doctor`, `/fewer-permission-prompts`, `/skill-doctor` y `/run-skill-generator` se ejecutan en local, porque necesitan tus transcripciones, tus ajustes o un entorno en marcha.
+```text
+/retro el agente buscó tres veces dónde se configuran los envíos de correo y editó dos veces un archivo generado
+```
 
-### En Codex
+En Codex el mismo texto empieza con `$retro`. Las propuestas aceptadas las implementas en esa misma sesión.
+
+#### Revisión de estándares
+
+**Qué es.** El skill `code-review` del paquete ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/engineering/code-review)). Claude Code tiene un comando integrado `/code-review` que busca errores de corrección. Un skill del proyecto con el mismo nombre lo sustituye, y el integrado sigue disponible como `/review`.
+
+**Cómo funciona.** El skill toma el diff desde un punto de referencia (`git diff <punto>...HEAD`) y encuentra los documentos con estándares, como _CODING_STANDARDS.md_ y _CONTRIBUTING.md_. Luego lanza dos subagentes en paralelo. Standards contrasta el diff con los estándares del proyecto y con una lista base de code smells de *Refactoring* de Fowler. Spec contrasta el diff con la tarea de origen. Para una pasada programada basta con el eje Standards. Las infracciones se dividen en graves y discutibles, cada una con un enlace a la regla.
+
+**Cuándo.** Cada semana, como tarea en la nube, una tarea por cada área grande.
+
+**Cómo lanzarlo.** Un prompt para la tarea de un área:
+
+```text
+/code-review desde el último commit de main con más de 7 días, solo el eje Standards, solo app/services. Corrige las infracciones y abre un PR que enumere en la descripción las reglas incumplidas de CODING_STANDARDS.md
+```
+
+En Codex el mismo prompt empieza con `$code-review`. Codex también tiene el comando integrado `codex review --base <rama>`, que toma las reglas de revisión de la sección `## Code Review Rules` de _AGENTS.md_ ([documentación](https://learn.chatgpt.com/docs/code-review)). La revisión automática de PR en GitHub (`@codex review`) mira un solo PR e informa solo de problemas graves, así que no sustituye a la pasada semanal.
+
+#### Simplificación
+
+**Qué es.** En Claude Code, el skill integrado `/simplify` ([documentación](https://code.claude.com/docs/en/commands)). Codex no tiene un equivalente integrado.
+
+**Cómo funciona.** Cuatro subagentes miran en paralelo el código modificado: reutilización de helpers existentes, simplificación, eficiencia y nivel de abstracción. Lo que encuentran se corrige enseguida. `/simplify` no busca errores de corrección; para eso está `/code-review`. Se le puede pasar una ruta o un PR como argumento.
+
+**Cuándo.** Cada semana, sobre los 3–5 directorios con más cambios.
+
+**Cómo lanzarlo.** La tarea en la nube primero localiza los directorios con `git log --since="7 days ago" --stat` y después lanza el comando para cada uno:
+
+```text
+/simplify app/services
+```
+
+En Codex, usa un prompt normal: «encuentra repeticiones, capas sobrantes y código muerto en los cambios de la semana en app/services y elimínalos».
+
+#### Revisión de seguridad
+
+**Qué es.** En Claude Code, el comando integrado `/security-review` ([documentación](https://code.claude.com/docs/en/security-guidance), [código fuente](https://github.com/anthropics/claude-code-security-review)). En Codex, la mención `@codex security review` en un PR y el plugin aparte Codex Security ([documentación](https://learn.chatgpt.com/docs/security)).
+
+**Cómo funciona.** `/security-review` toma el diff entre la rama actual y la rama por defecto de `origin` y busca inyecciones, fallos de autorización y fugas de datos. No acepta un rango de commits. `@codex security review` comprueba un PR; el informe completo aparece en la pestaña Security Report de la tarea.
+
+**Cuándo.** En cada rama antes de fusionar y cada semana sobre la rama principal.
+
+**Cómo lanzarlo.** En una rama antes de fusionar:
+
+```text
+/security-review
+```
+
+La pasada semanal por la rama principal es una tarea en la nube con un prompt normal:
+
+```text
+Revisa la seguridad de los cambios en main de los últimos 7 días: autorización, pagos, subida de archivos, llamadas a API externas. Para cada hallazgo confirmado, abre un PR aparte con la corrección y un test que lo reproduzca
+```
+
+#### Comprobación del glosario
+
+**Qué es.** El skill `domain-modeling` del paquete ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/engineering/domain-modeling)).
+
+**Cómo funciona.** El skill contrasta los términos del código y de la conversación con _CONTEXT.md_ y señala las contradicciones: el glosario llama a un concepto de una manera y el código de otra, o el código se comporta distinto de lo descrito. Un término resuelto lo anota en el glosario enseguida. _CONTEXT.md_ sigue siendo solo un diccionario, sin detalles de implementación. Si en la raíz hay un _CONTEXT-MAP.md_, el skill trabaja con varios contextos.
+
+**Cuándo.** Cada semana, como tarea en la nube.
+
+**Cómo lanzarlo.**
+
+```text
+/domain-modeling contrasta CONTEXT.md con los modelos y servicios añadidos a main en los últimos 7 días: conceptos nuevos sin entrada, entradas con nombres de clase antiguos, términos de la sección Avoid que han vuelto al código. Pon los cambios del glosario en un PR y enumera en la descripción los términos dudosos
+```
+
+El skill está pensado para una conversación contigo. En una tarea en la nube no hay a quién preguntar, así que los términos dudosos van a la descripción del PR y los decides tú.
+
+#### Arquitectura
+
+**Qué es.** El skill `improve-codebase-architecture` del paquete ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture)). Carga por sí mismo `codebase-design` y `grilling`. El plan se convierte en tickets con el skill `to-tickets` ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-tickets)).
+
+**Cómo funciona.** El skill toma su vocabulario de `codebase-design`: módulo, interfaz, profundidad, costura, adaptador. Luego lee _CONTEXT.md_ y los ADR del área elegida, y un subagente recorre el código buscando fricción: para entender un concepto hay que saltar entre muchos módulos pequeños; una interfaz es casi tan compleja como su implementación; los módulos se filtran unos en otros a través de las costuras. A los módulos sospechosos se les aplica la prueba de borrado: si borraras el módulo, ¿la complejidad se concentraría en un sitio o solo se movería? El skill presenta los candidatos en un informe HTML en una carpeta temporal. Para el candidato elegido hace un `grilling` y, si quieres, compara variantes de interfaz con design-it-twice. `to-tickets` corta el plan en rebanadas verticales con dependencias de bloqueo y las publica en el tracker.
+
+**Cuándo.** Cada semana, contigo. El área alterna entre una capa y un concepto del dominio. Elígela donde la revisión y la simplificación semanales encontraron más cosas.
+
+**Cómo lanzarlo.**
+
+```text
+/improve-codebase-architecture app/services
+```
+
+Después de trabajar el sitio elegido, lanza `/to-tickets`.
+
+#### Instrucciones para agentes
+
+**Qué es.** El skill `writing-for-agents` del paquete ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/productivity/writing-for-agents)).
+
+**Cómo funciona.** Es una referencia sobre cómo escribir documentos para un agente. Trata los punteros de contexto, las dos cargas (sobre el contexto del agente y sobre la atención de la persona), el orden de pasos y referencia, los criterios de finalización y la fuente única de verdad. Con él se ven los duplicados entre archivos, los documentos hinchados y las prohibiciones que atraen la atención hacia lo prohibido más de lo que la apartan.
+
+**Cuándo.** Cada mes.
+
+**Cómo lanzarlo.**
+
+```text
+/writing-for-agents repasa AGENTS.md, CODING_STANDARDS.md y docs/agents/: encuentra duplicados entre archivos, reglas que se han alejado de cómo trabajamos de verdad y lo que conviene mover detrás de un puntero
+```
+
+#### Tus propios skills
+
+**Qué es.** El mismo `writing-for-agents`. Para los skills trata además el frontmatter y la forma de invocación.
+
+**Cómo funciona.** El skill contrasta las instrucciones con la referencia y con cómo se activa realmente el skill: la descripción debe nombrar los casos en que hace falta, y cada paso debe terminar en un criterio comprobable.
+
+**Cuándo.** Cada mes.
+
+**Cómo lanzarlo.**
+
+```text
+/writing-for-agents repasa los skills que escribimos nosotros: run-app y finish-task. Quita los pasos que el agente ya no ejecuta y ajusta las descripciones para que cada skill se active cuando hace falta
+```
+
+#### ADR
+
+**Qué es.** El mismo `domain-modeling`.
+
+**Cómo funciona.** El skill lee _docs/adr_, contrasta las decisiones con el código y con ADR posteriores, y pone estados y enlaces.
+
+**Cuándo.** Cada mes.
+
+**Cómo lanzarlo.**
+
+```text
+/domain-modeling repasa docs/adr: qué decisiones fueron sustituidas por otras posteriores y cuáles nunca se implementaron. Pon los estados y los enlaces a los ADR que las sustituyen
+```
+
+#### Memoria del agente
+
+**Qué es.** Un prompt normal; no hay comando propio. En Claude Code, la memoria automática vive en _~/.claude/projects/&lt;proyecto&gt;/memory_, y `/memory` muestra las entradas ([documentación](https://code.claude.com/docs/en/memory)). Codex tiene Memories en _~/.codex/memories/_; están desactivadas por defecto ([documentación](https://learn.chatgpt.com/docs/customization/memories)).
+
+**Cómo funciona.** El agente lee su memoria y la contrasta con el repositorio. En Claude Code, la consolidación en segundo plano (el ajuste `autoDreamEnabled`) ya elimina entradas obsoletas y marca contradicciones con _CLAUDE.md_, pero no lleva los hechos del proyecto al repositorio. La documentación de Codex desaconseja editar las Memories a mano, así que allí los hechos van a _AGENTS.md_ y, si hace falta, la generación se desactiva con `memories.generate_memories`.
+
+**Cuándo.** Cada mes, en local.
+
+**Cómo lanzarlo.**
+
+```text
+Repasa tu memoria de este proyecto. Lleva los hechos sobre el código, los comandos y la estructura del proyecto a AGENTS.md o a docs/ si todavía no están, y bórralos de la memoria. Deja solo cómo trabajar conmigo
+```
+
+### Calendario y mantenimiento en Claude Code
+
+Comprobado con Claude Code 2.1.283 y la [referencia de comandos](https://code.claude.com/docs/en/commands) el 2026-09-26. Los nombres de los comandos cambian más rápido que el enfoque. Todo salvo `/schedule` se ejecuta en local: estos comandos necesitan tus transcripciones, tus ajustes o un entorno en marcha.
+
+#### Calendario: `/schedule`
+
+**Qué es.** Un comando integrado, también `/routines` ([documentación](https://code.claude.com/docs/en/routines)).
+
+**Cómo funciona.** El comando crea una tarea en la nube conversando contigo: pregunta el calendario, el repositorio y el prompt. Cada ejecución clona el repositorio en su rama por defecto y puede usar los conectores conectados. La tarea entrega su resultado como un PR desde una rama con el prefijo `claude/`, y la ejecución se puede seguir en su transcripción en claude.ai.
+
+**Cómo lanzarlo.**
+
+```text
+/schedule cada lunes a las 9:00 revisa los estándares en main de los últimos 7 días en app/services, app/policies y app/javascript, un PR aparte por directorio
+```
+
+#### Permisos: `/fewer-permission-prompts`
+
+**Qué es.** Un skill integrado.
+
+**Cómo funciona.** El skill lee las transcripciones de las sesiones, reúne las llamadas frecuentes de solo lectura a Bash y MCP y propone una lista por prioridad. Cuando das tu conformidad, añade las reglas a `permissions.allow` del _.claude/settings.json_ compartido.
+
+**Cuándo.** Cada mes.
+
+**Cómo lanzarlo.**
+
+```text
+/fewer-permission-prompts
+```
+
+#### Estado de la instalación: `/doctor`
+
+**Qué es.** Un skill integrado.
+
+**Cómo funciona.** El skill comprueba la instalación (duplicados, `PATH`, archivos de ajustes dañados) y la versión. Encuentra skills, servidores MCP y plugins sin uso junto con su coste en contexto, y señala los hooks lentos. Limpia los archivos _CLAUDE.md_ de duplicados y de lo que se puede deducir del código. Añade los comandos de solo lectura que se rechazan a menudo al _.claude/settings.local.json_ personal. _AGENTS.md_ no forma parte de sus comprobaciones, así que las instrucciones las recorta la pasada de `writing-for-agents`.
+
+**Cuándo.** Cada mes, después de `/fewer-permission-prompts`.
+
+**Cómo lanzarlo.**
+
+```text
+/doctor
+```
+
+#### Skills: `/skill-doctor`
+
+**Qué es.** Un comando integrado, disponible desde la versión 2.1.252.
+
+**Cómo funciona.** El comando muestra, para cada skill, cuánto cuesta en contexto y con qué frecuencia se usa, para que se vea qué desactivar. Claude Code no ve en absoluto los skills que no están en _.claude/skills_, así que comprueba también que los enlaces a _.agents/skills_ siguen en su sitio.
+
+**Cuándo.** Cada mes.
+
+**Cómo lanzarlo.**
+
+```text
+/skill-doctor qué skills compensan sus tokens y cuáles son peso muerto
+```
+
+#### Arranque de la aplicación: `/run-skill-generator`
+
+**Qué es.** Un skill integrado.
+
+**Cómo funciona.** El skill escribe un skill del proyecto que enseña a `/run` y `/verify` a compilar, arrancar y comprobar tu aplicación desde un entorno limpio. Si el skill guardado deja de funcionar, `/run` propone actualizarlo. Claude edita el archivo solo cuando una ejecución salió mal.
+
+**Cuándo.** Cada mes y cada vez que `/run` avise de que el skill está obsoleto.
+
+**Cómo lanzarlo.**
+
+```text
+/run-skill-generator
+```
+
+### Calendario y mantenimiento en Codex
 
 Comprobado con Codex CLI 0.156.1 y la documentación de learn.chatgpt.com el 2026-09-26.
 
-- **Calendario.** La aplicación de Codex tiene **Scheduled tasks**. Una tarea se ejecuta en el proyecto local o en un worktree aparte, y el resultado llega a la vista Scheduled, que funciona como bandeja de entrada. El ordenador y la aplicación tienen que estar encendidos. Para ejecutar sin tu máquina, usa `openai/codex-action` en GitHub Actions con un disparador cron.
-- **Revisión.** `codex review --base <rama>` comprueba un diff sin sesión interactiva; `/review` hace lo mismo en la TUI. La revisión automática de PR en GitHub (`@codex review`) mira un solo PR e informa solo de problemas graves, así que no sustituye a una pasada semanal de estándares. Codex toma sus reglas de revisión de la sección `## Code Review Rules` de _AGENTS.md_.
-- **Seguridad.** `@codex security review` comprueba un PR; para comprobaciones más amplias existe el plugin aparte Codex Security.
-- **Simplificación.** No hay comando integrado. Usa `codex review` con tus propias instrucciones o tu propio skill.
-- **Permisos.** Cada «permitir» en la TUI añade una regla a _~/.codex/rules/default.rules_, y no hay comando para revisarla ni limpiarla. Una vez al mes, repasa el archivo a mano, lleva las reglas compartidas a _.codex/rules/_ del repositorio y pruébalas con `codex execpolicy check`. El mecanismo de reglas está marcado como experimental.
-- **Estado de la instalación.** `codex doctor` comprueba la instalación, la configuración, la autenticación y Git; `/debug-config` muestra las capas de configuración; `/hooks` muestra los hooks y su confianza.
-- **Instrucciones.** Codex deja de cargar los _AGENTS.md_ cuando su tamaño total supera `project_doc_max_bytes` (32 KiB por defecto), y no avisa. La pasada mensual por las instrucciones también debe vigilar ese umbral.
-- **Skills.** Codex lee _.agents/skills_ directamente; no hacen falta symlinks. No hay equivalente de `/skill-doctor`: los skills sin uso se desactivan con `[[skills.config]]` y `enabled = false`, y el uso se puede estimar a partir de las sesiones en _~/.codex/sessions_.
-- **Arranque de la aplicación.** No hay generador de skills. Los comandos para arrancar la aplicación y preparar un worktree se describen en los Local environments de la aplicación; revísalos junto con el resto del entorno.
-- **Memoria.** Las Memories están desactivadas por defecto. Si las activaste, las entradas viven en _~/.codex/memories/_ y se generan a partir de sesiones anteriores. La documentación desaconseja editarlas a mano, así que durante la revisión lleva los hechos del proyecto a _AGENTS.md_ o a la documentación y, si hace falta, desactiva la generación con `memories.generate_memories`.
+#### Calendario: Scheduled tasks y `codex-action`
 
-Las tareas de la aplicación se ejecutan sin confirmaciones (`approval_policy = "never"`) en tu sandbox por defecto. Antes de poner una pasada en el calendario, asegúrate de que el sandbox la mantiene dentro del repositorio.
+**Qué es.** Scheduled tasks es una función de la aplicación de Codex ([documentación](https://learn.chatgpt.com/docs/automations)). `openai/codex-action` es una GitHub Action que ejecuta Codex en CI ([documentación](https://learn.chatgpt.com/docs/github-action), [código fuente](https://github.com/openai/codex-action)).
+
+**Cómo funciona.** Una tarea de la aplicación se ejecuta según el calendario en el proyecto local o en un worktree aparte, sin confirmaciones (`approval_policy = "never"`), en tu sandbox por defecto. El resultado llega a la vista Scheduled, que funciona como bandeja de entrada. El ordenador y la aplicación tienen que estar encendidos. La Action ejecuta `codex exec` con cualquier disparador de GitHub, incluido cron, y no depende de tu máquina. No abre PR por sí misma; para eso hace falta un paso aparte.
+
+**Cómo lanzarlo.** En la aplicación, crea una tarea en la vista Scheduled con un calendario y un prompt, por ejemplo `$code-review desde el último commit de main con más de 7 días, solo el eje Standards, solo app/services`. En CI la misma pasada queda así:
+
+```yaml
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+jobs:
+  standards:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: .github/prompts/weekly-standards.md
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: maintenance/weekly-standards
+          title: "refactor: weekly standards pass"
+```
+
+Antes de poner una pasada en el calendario, asegúrate de que el sandbox la mantiene dentro del repositorio.
+
+#### Permisos: archivos `.rules`
+
+**Qué es.** El mecanismo de reglas de ejecución de comandos, marcado como experimental ([documentación](https://learn.chatgpt.com/docs/agent-configuration/rules)).
+
+**Cómo funciona.** Las reglas se escriben como `prefix_rule(pattern=[...], decision="allow" | "prompt" | "forbidden")` en archivos _.rules_ junto a cada capa de configuración: _~/.codex/rules/_ y _.codex/rules/_ en un proyecto de confianza. De las reglas que coinciden gana la más estricta. Cada «permitir» en la TUI añade una regla a _~/.codex/rules/default.rules_, y no hay comando para revisarla ni limpiarla.
+
+**Cuándo.** Cada mes: repasa el archivo a mano, lleva las reglas compartidas a _.codex/rules/_ del repositorio y borra las que sobran.
+
+**Cómo lanzarlo.** Comprobar cómo deciden las reglas un comando concreto:
+
+```text
+codex execpolicy check --pretty --rules ~/.codex/rules/default.rules -- git push origin main
+```
+
+#### Estado de la instalación: `codex doctor`
+
+**Qué es.** Un comando integrado de la CLI ([documentación](https://learn.chatgpt.com/docs/cli/reference)).
+
+**Cómo funciona.** El comando comprueba la instalación, la configuración, la autenticación, el entorno de ejecución, Git y el terminal. En la TUI, `/debug-config` muestra las capas de configuración, y `/hooks` muestra los hooks y permite confiar en ellos o desactivarlos ([documentación](https://learn.chatgpt.com/docs/hooks)).
+
+**Cuándo.** Cada mes.
+
+**Cómo lanzarlo.**
+
+```text
+codex doctor
+```
+
+#### Tamaño de _AGENTS.md_
+
+**Qué es.** El límite de configuración `project_doc_max_bytes`, 32 KiB por defecto ([documentación](https://learn.chatgpt.com/docs/agent-configuration/agents-md)).
+
+**Cómo funciona.** Codex reúne los _AGENTS.md_ desde la raíz del proyecto hasta el directorio de trabajo y deja de cargarlos cuando el tamaño total llega al límite. No hay aviso: las reglas de los últimos archivos simplemente no entran en el contexto.
+
+**Cuándo.** Cada mes, junto con la pasada de `writing-for-agents`.
+
+**Cómo lanzarlo.** En esa misma pasada, pide al agente que sume el tamaño de todos los _AGENTS.md_ en el camino hasta los directorios más profundos y lo compare con el límite.
+
+#### Skills
+
+**Qué es.** El ajuste `[[skills.config]]` en _config.toml_ ([documentación](https://learn.chatgpt.com/docs/build-skills)). No hay equivalente de `/skill-doctor`.
+
+**Cómo funciona.** Codex lee _.agents/skills_ directamente; no hacen falta symlinks. Un skill sin uso se desactiva con una entrada `[[skills.config]]` con `enabled = false`. La frecuencia con que se activa un skill se puede estimar a partir de las sesiones en _~/.codex/sessions_.
+
+**Cuándo.** Cada mes.
+
+**Cómo lanzarlo.**
+
+```text
+Cuenta, a partir de las sesiones en ~/.codex/sessions del último mes, qué skills de .agents/skills se invocaron y cuántas veces. Enumera los que no se invocaron nunca
+```
+
+#### Arranque de la aplicación
+
+**Qué es.** Los Local environments de la aplicación de Codex ([documentación](https://learn.chatgpt.com/docs/environments/local-environment)). No hay generador de un skill de arranque.
+
+**Cómo funciona.** En Local environments se describen los scripts de preparación del worktree y las acciones frecuentes, como arrancar la aplicación.
+
+**Cuándo.** Cada mes: comprueba que los scripts siguen levantando la aplicación desde cero.
 
 ## Ejemplo
 
