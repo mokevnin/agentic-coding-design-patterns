@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [claude-md-memory, domain-context-file, bloated-claude-md, skills-as-packaged-workflows, writer-reviewer, executable-guardrails]
-source_rev: 97d78fd1ec963c294695bf8f2b16cd2cc739b7cf
+source_rev: 0c11a14125b2cc54de9689c8aae7cecf158353d9
 ---
 
 # Scheduled Maintenance
@@ -102,7 +102,7 @@ In a small project with one developer and infrequent changes, a retrospective af
 
 ### The common set
 
-The passes below don't depend on the agent. Most of them rely on [Matt Pocock's skills](matt-pocock-skills.md), which live in _.agents/skills_ for both Claude Code and Codex.
+The passes below don't depend on the agent. Most of them are [Matt Pocock's skills](matt-pocock-skills.md), and the pack has to be installed first: `npx skills@latest add mattpocock/skills`, then `/setup-matt-pocock-skills` once. The installer puts the skills in _.agents/skills_, where Codex reads them; Claude Code reads only _.claude/skills_, so links to them must be there. The `retro` skill is in the pack's in-progress section; check that it made it into the install.
 
 | Cadence | Pass | Result |
 |---|---|---|

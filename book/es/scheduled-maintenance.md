@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [claude-md-memory, domain-context-file, bloated-claude-md, skills-as-packaged-workflows, writer-reviewer, executable-guardrails]
-source_rev: 97d78fd1ec963c294695bf8f2b16cd2cc739b7cf
+source_rev: 0c11a14125b2cc54de9689c8aae7cecf158353d9
 ---
 
 # Mantenimiento programado
@@ -102,7 +102,7 @@ En un proyecto pequeño con un solo desarrollador y cambios poco frecuentes, bas
 
 ### El conjunto común
 
-Las pasadas de abajo no dependen del agente. La mayoría se apoya en los [skills de Matt Pocock](matt-pocock-skills.md), que están en _.agents/skills_ tanto para Claude Code como para Codex.
+Las pasadas de abajo no dependen del agente. La mayoría son [skills de Matt Pocock](matt-pocock-skills.md), y el paquete hay que instalarlo antes: `npx skills@latest add mattpocock/skills` y luego, una vez, `/setup-matt-pocock-skills`. El instalador deja los skills en _.agents/skills_, de donde los lee Codex; Claude Code solo lee _.claude/skills_, así que ahí tiene que haber enlaces a ellos. El skill `retro` está en la sección in-progress del paquete; comprueba que haya entrado en la instalación.
 
 | Frecuencia | Pasada | Resultado |
 |---|---|---|
