@@ -30,8 +30,8 @@ Puedes escribir en español, inglés o ruso; necesitas una cuenta de GitHub para
 | Comprobación de instrucciones — determinar si el agente encuentra una regla y la aplica durante la tarea. | `instruction-activation-checks` | Debate aún no abierto |
 | Procedimiento manual guiado — pedir al agente una guía interactiva para las acciones humanas y recoger sus resultados. | `guided-manual-procedure` | Debate aún no abierto |
 | Intentos acotados — si no hay progreso, conservar los resultados y cambiar el enfoque o transferir la tarea. | `bounded-retry-escalation` | Debate aún no abierto |
-| Reescritura con retrospectiva — tras una solución funcional pero mediocre, descartar el código y reimplementarlo con lo aprendido. | `hindsight-rewrite` | Debate aún no abierto |
+| Reescritura con retrospectiva — tras una solución funcional pero mediocre, descartar el código y reimplementarlo con lo aprendido. | `hindsight-rewrite` | [Comentar / votar](https://github.com/mokevnin/agentic-coding-design-patterns/issues/30) |
 | Fatiga de aprobación — las solicitudes frecuentes convierten la revisión consciente en clics automáticos. | `approval-fatigue` | [Comentar / votar](https://github.com/mokevnin/agentic-coding-design-patterns/issues/21) |
 | Pruebas que se confirman a sí mismas — una prueba calcula el resultado esperado con la misma lógica que debería comprobar. | `self-confirming-tests` | [Comentar / votar](https://github.com/mokevnin/agentic-coding-design-patterns/issues/22) |
-| Memoria privada del agente — el agente acumula conocimiento del proyecto fuera del repositorio, donde el equipo y la revisión no lo ven. | `private-agent-memory` | Debate aún no abierto |
-| Migración a medias — conviven la variante antigua y la nueva, y el agente copia la primera que encuentra. | `half-finished-migration` | Debate aún no abierto |
+| Memoria privada del agente — el agente acumula conocimiento del proyecto fuera del repositorio, donde el equipo y la revisión no lo ven. | `private-agent-memory` | [Comentar / votar](https://github.com/mokevnin/agentic-coding-design-patterns/issues/31) |
+| Migración a medias — conviven la variante antigua y la nueva, y el agente copia la primera que encuentra. | `half-finished-migration` | [Comentar / votar](https://github.com/mokevnin/agentic-coding-design-patterns/issues/32) |

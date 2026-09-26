@@ -30,8 +30,8 @@ Russian, English, and Spanish are welcome; participation requires a GitHub accou
 | Instruction activation checks — determine whether the agent discovers a rule and applies it during the task. | `instruction-activation-checks` | Discussion not opened yet |
 | Guided manual procedure — have the agent prepare an interactive procedure for human actions and collect their results. | `guided-manual-procedure` | Discussion not opened yet |
 | Bounded retries — when progress stops, preserve findings and change the approach or hand off the task. | `bounded-retry-escalation` | Discussion not opened yet |
-| Hindsight rewrite — after a mediocre working solution, discard the code and reimplement it with what the session learned. | `hindsight-rewrite` | Discussion not opened yet |
+| Hindsight rewrite — after a mediocre working solution, discard the code and reimplement it with what the session learned. | `hindsight-rewrite` | [Discuss / vote](https://github.com/mokevnin/agentic-coding-design-patterns/issues/30) |
 | Approval fatigue — frequent requests turn considered approval into automatic clicking. | `approval-fatigue` | [Discuss / vote](https://github.com/mokevnin/agentic-coding-design-patterns/issues/21) |
 | Self-confirming tests — a test computes its expected answer using the very logic it should check. | `self-confirming-tests` | [Discuss / vote](https://github.com/mokevnin/agentic-coding-design-patterns/issues/22) |
-| Private agent memory — the agent accumulates project knowledge outside the repository, where the team and review never see it. | `private-agent-memory` | Discussion not opened yet |
-| Half-finished migration — old and new variants coexist in the code, and the agent copies whichever it meets first. | `half-finished-migration` | Discussion not opened yet |
+| Private agent memory — the agent accumulates project knowledge outside the repository, where the team and review never see it. | `private-agent-memory` | [Discuss / vote](https://github.com/mokevnin/agentic-coding-design-patterns/issues/31) |
+| Half-finished migration — old and new variants coexist in the code, and the agent copies whichever it meets first. | `half-finished-migration` | [Discuss / vote](https://github.com/mokevnin/agentic-coding-design-patterns/issues/32) |
