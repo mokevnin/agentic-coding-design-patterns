@@ -1,7 +1,7 @@
 ---
 kind: anti-pattern
 status: draft
-related: [claude-md-memory, skills-as-packaged-workflows, context-engineering]
+related: [claude-md-memory, skills-as-packaged-workflows, context-engineering, scheduled-maintenance]
 source_rev:
 ---
 
@@ -77,3 +77,4 @@ Commands and conventions,CLAUDE.md (stays),25
 - [Скиллы](skills-as-packaged-workflows.md) позволяют загружать процедуры по требованию.
 - [Инженерия контекста](context-engineering.md) объясняет, как лишний текст мешает использовать нужные сведения.
 - [Преждевременная спецификация](premature-specification.md) описывает сходную попытку получить контроль через избыточные инструкции.
+- [Плановое обслуживание](scheduled-maintenance.md) не даёт памяти разрастись: ежемесячный проход убирает дубли и правила, которые ничего не меняют.

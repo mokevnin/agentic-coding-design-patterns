@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [context-engineering, domain-context-file, bloated-claude-md]
+related: [context-engineering, domain-context-file, bloated-claude-md, scheduled-maintenance]
 source_rev:
 ---
 
@@ -160,3 +160,4 @@ SDD-фреймворки тоже сохраняют правила проект
 - [Словарь домена](domain-context-file.md) дополняет рабочие инструкции определениями терминов проекта.
 - [Спеко-ориентированная разработка](spec-driven-development.md) использует соглашения проекта при подготовке спецификации и плана.
 - [Раздутая память](bloated-claude-md.md) описывает файл памяти, в котором без пересмотра накопились дубли, противоречия и пересказ кода.
+- [Плановое обслуживание](scheduled-maintenance.md) раз в месяц сверяет файл памяти с практикой и убирает лишнее.
