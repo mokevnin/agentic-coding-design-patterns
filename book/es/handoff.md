@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [context-engineering, progress-file, explore-plan-code-commit]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 5c891bed1a1649eff17aefa24ee50ae6833b4070
 ---
 
 # Traspaso de sesión
@@ -158,5 +158,6 @@ El agente empieza el prototipo a partir de la pregunta planteada y de los enlace
 
 - [Diario de progreso](progress-file.md) se actualiza sobre la marcha y se guarda en el repositorio.
 - [Ingeniería de contexto](context-engineering.md) explica cómo seleccionar la información para el traspaso.
+- [Bifurcación del contexto](context-forking.md) continúa el trabajo desde un punto anterior de la misma conversación cuando no hace falta una sesión nueva.
 - [Cuatro fases](explore-plan-code-commit.md) permite pasar un plan aprobado a una sesión nueva de implementación.
 - [Desarrollo orientado a especificaciones](spec-driven-development.md) guarda los documentos permanentes a los que remite el traspaso.

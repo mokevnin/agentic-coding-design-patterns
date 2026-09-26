@@ -29,6 +29,7 @@
 * [Vocabulario del dominio](domain-context-file.md)
 * [Diario de progreso](progress-file.md)
 * [Traspaso de sesión](handoff.md)
+* [Bifurcación del contexto](context-forking.md)
 * [Límites ejecutables](executable-guardrails.md)
 
 ## Verificación

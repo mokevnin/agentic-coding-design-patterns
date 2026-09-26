@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [context-engineering, progress-file, explore-plan-code-commit]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 5c891bed1a1649eff17aefa24ee50ae6833b4070
 ---
 
 # Session Handoff
@@ -158,5 +158,6 @@ The agent starts the prototype from the stated question and the links to the agr
 
 - [Progress Journal](progress-file.md) is updated as the work goes and is kept in the repository.
 - [Context Engineering](context-engineering.md) explains how to select information for a handoff.
+- [Context Forking](context-forking.md) continues the work from an earlier point in the same conversation when a new session isn't needed.
 - [Four Phases](explore-plan-code-commit.md) lets you pass an approved plan to a new implementation session.
 - [Spec-Driven Development](spec-driven-development.md) keeps the permanent documents that a handoff links to.

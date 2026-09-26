@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [claude-md-memory, domain-context-file, progress-file, handoff, spec-driven-development, bloated-claude-md]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 5c891bed1a1649eff17aefa24ee50ae6833b4070
 ---
 
 # Ingeniería de contexto
@@ -123,7 +123,7 @@ La siguiente sesión recibe un resumen breve y las rutas a las pruebas. El agent
 - **Archivo de memoria hinchado.** Entre cientos de reglas al agente le cuesta más distinguir las instrucciones aplicables. Este error se analiza en el capítulo [«Memoria hinchada»](bloated-claude-md.md).
 - **«Lo pego entero, por si acaso».** Los logs completos ocupan la ventana antes de que empiece la investigación. Pasa rutas y precisa qué fragmento hace falta.
 - **Compactación automática silenciosa.** En la compactación automática pueden perderse decisiones. Revisa el resumen y prepara un handoff antes de cambiar de sesión.
-- **Corregir sobre un intento fallido.** Una réplica del tipo «no ha funcionado, prueba de otra forma» deja en la ventana el enfoque fallido y la discusión sobre él. Rebobina la conversación hasta el punto anterior al intento y repite la petición teniendo en cuenta lo que se ha averiguado.
+- **Corregir sobre un intento fallido.** Una réplica del tipo «no ha funcionado, prueba de otra forma» deja en la ventana el enfoque fallido y la discusión sobre él. Rebobina la conversación hasta el punto anterior al intento y repite la petición teniendo en cuenta lo que se ha averiguado. Esta técnica se analiza en el capítulo [«Bifurcación del contexto»](context-forking.md).
 - **Ahorrar en lo necesario.** Si eliminas la información de la que depende la decisión, el agente empezará a hacer suposiciones.
 
 ## Usos conocidos

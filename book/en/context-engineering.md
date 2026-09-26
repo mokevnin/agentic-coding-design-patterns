@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [claude-md-memory, domain-context-file, progress-file, handoff, spec-driven-development, bloated-claude-md]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 5c891bed1a1649eff17aefa24ee50ae6833b4070
 ---
 
 # Context Engineering
@@ -123,7 +123,7 @@ The next session gets a short summary and paths to the evidence. The agent can s
 - **A bloated memory file.** Among hundreds of rules it is harder for the agent to pick out the applicable instructions. This mistake is covered in the [Bloated Memory](bloated-claude-md.md) chapter.
 - **"I'll paste it whole, just to be safe."** Full logs occupy the window before the investigation begins. Pass paths and specify which fragment is needed.
 - **Silent auto-compaction.** Decisions can be lost during automatic compaction. Check the summary and prepare a handoff before switching sessions.
-- **Correcting on top of a failed attempt.** A reply like "that didn't work, try something else" leaves the failed approach and the argument about it in the window. Rewind the conversation to the point before the attempt and repeat the request, taking into account what you learned.
+- **Correcting on top of a failed attempt.** A reply like "that didn't work, try something else" leaves the failed approach and the argument about it in the window. Rewind the conversation to the point before the attempt and repeat the request, taking into account what you learned. This technique is covered in the [Context Forking](context-forking.md) chapter.
 - **Economizing on the necessary.** If you remove information the decision depends on, the agent will start making assumptions.
 
 ## Known uses

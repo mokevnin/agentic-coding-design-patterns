@@ -29,6 +29,7 @@
 * [Domain Vocabulary](domain-context-file.md)
 * [Progress Journal](progress-file.md)
 * [Session Handoff](handoff.md)
+* [Context Forking](context-forking.md)
 * [Executable Guardrails](executable-guardrails.md)
 
 ## Verification
