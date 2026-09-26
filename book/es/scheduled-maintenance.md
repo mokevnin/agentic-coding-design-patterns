@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [claude-md-memory, domain-context-file, bloated-claude-md, skills-as-packaged-workflows, writer-reviewer, executable-guardrails]
-source_rev: 31a839a2a7e7370ecb813c3a69c73961fb806347
+source_rev: 41945e36e9d181eec0bbc58d9219f8b7c5db9d09
 ---
 
 # Mantenimiento programado
@@ -25,9 +25,9 @@ Una limpieza puntual «cuando la cosa se ponga fea» no funciona: para entonces 
 
 ## Solución
 
-Haz una lista de las pasadas periódicas y decide cuatro cosas para cada una. La primera es qué deriva: el código respecto a los estándares, el lenguaje del dominio respecto al glosario, las instrucciones respecto a la práctica, el entorno del agente respecto al proyecto real. La segunda es la frecuencia, que depende de lo rápido que ocurre la deriva. Todo lo que sigue al código, revísalo cada semana; las instrucciones y el entorno del agente cambian más despacio, y basta con mirarlos una vez al mes.
+Cuando hay mucho código de agentes, todo deriva a la vez: la arquitectura, los límites entre capas, el glosario, el cumplimiento de los estándares, las instrucciones para los propios agentes. Por eso las comprobaciones no esperan a un motivo; simplemente se ejecutan con regularidad. Todo lo que sigue al código se revisa cada semana: estándares, simplificación, seguridad, glosario, arquitectura. Las instrucciones, los skills, los ADR y los ajustes del agente cambian más despacio, y basta con revisarlos una vez al mes.
 
-La tercera es el alcance. Una pasada por todo el repositorio da un informe superficial, así que fija un rango de commits, los directorios con más cambios, una capa o un concepto del dominio. La cuarta es la forma de ejecución. A una pasada que solo necesita el repositorio le sirve una tarea en segundo plano en la nube. Una pasada que necesita tu memoria, tus transcripciones o la aplicación en marcha necesita tu máquina. Una pasada con decisiones que solo tomas tú se hace contigo.
+Cada pasada mira una parte concreta: los cambios de la semana, un directorio, una capa o un concepto del dominio. Una pasada por todo el repositorio de golpe da un informe superficial.
 
 El resultado de cada pasada debe ser una acción, no un informe: un PR con correcciones para un área, o tickets. Un informe que nadie convirtió en un cambio solo añade ruido.
 
@@ -90,111 +90,77 @@ En un proyecto pequeño con un solo desarrollador y cambios poco frecuentes, bas
 
 ## Implementación
 
-Primero anota qué sirve de referencia en el proyecto y qué puede quedarse atrás respecto a ella: sin referencia, la revisión de estándares y la comprobación del glosario se convierten en cuestión de gustos. Para cada pasada, fija la frecuencia, el alcance y el formato del resultado. Empieza con una revisión semanal de estándares y una pasada mensual por las instrucciones, y añade el resto cuando aparezca un problema recurrente.
+Las pasadas semanales por el código es cómodo ponerlas como tareas en la nube: llegan solas como PR listos. La arquitectura, la retrospectiva y el mantenimiento del agente se lanzan a mano. Una tarea en segundo plano no recuerda su última ejecución, así que indica el periodo directamente en el prompt, por ejemplo «de la última semana». Si hay demasiados cambios para una sola pasada, lánzala por directorios. Una vez al mes, mira qué pasadas llevan tiempo sin encontrar nada y cuáles producen PR que nadie lee.
 
-Fija el rango de forma explícita. Una tarea en segundo plano no tiene por qué recordar su última ejecución, así que pon en el prompt la etiqueta de la ejecución o un periodo como «commits de los últimos 7 días». Divide un diff grande por directorios: decenas de miles de líneas no caben en una sola pasada, así que lanza una tarea por cada área grande.
+### Pasadas que no dependen del agente
 
-Separa las pasadas del proyecto del mantenimiento de la herramienta: las primeras cambian el repositorio y van a PR, las segundas cambian tus ajustes y tu memoria. Una vez al mes, revisa el propio calendario: qué pasadas llevan tiempo sin encontrar nada y cuáles producen PR que nadie lee.
-
-### Pasadas del proyecto
-
-Estas pasadas no dependen del agente. La mayoría son [skills de Matt Pocock](matt-pocock-skills.md), y el paquete hay que instalarlo antes: `npx skills@latest add mattpocock/skills` y luego, una vez, `/setup-matt-pocock-skills`. El instalador deja los skills en _.agents/skills_, de donde los lee Codex; Claude Code solo lee _.claude/skills_, así que ahí tiene que haber enlaces a ellos. En Claude Code un skill se invoca como `/nombre`, en Codex como `$nombre`. Cuando un agente tiene un comando integrado, se describe en la misma subsección.
+La mayoría de estas pasadas son [skills de Matt Pocock](matt-pocock-skills.md), y el paquete hay que instalarlo antes: `npx skills@latest add mattpocock/skills` y luego, una vez, `/setup-matt-pocock-skills`. El instalador deja los skills en _.agents/skills_, de donde los lee Codex; Claude Code solo lee _.claude/skills_, así que ahí tiene que haber enlaces a ellos. En los ejemplos los skills se invocan como en Claude Code, con `/nombre`; en Codex la misma llamada se escribe `$nombre`. Los comandos integrados de cada agente se describen en los bloques siguientes.
 
 #### Retrospectiva
 
-Es el skill `retro` de la sección in-progress del paquete de Matt Pocock ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/in-progress/retro)). El modelo no lo invoca por su cuenta; solo lo lanzas tú.
+Es el skill `retro` de la sección in-progress del paquete ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/in-progress/retro)). El modelo no lo invoca por su cuenta; solo lo lanzas tú.
 
 El skill carga `writing-for-agents` como guía de estilo y lee la transcripción de la sesión, por defecto la actual. Busca mejoras en siete categorías: navegación por el proyecto, comprobaciones automáticas, estándares de revisión, _AGENTS.md_, economía de llamadas, reglas que no cambian nada y acceso a la información. Propone detectar una infracción mecánica con un linter, un hook o CI, y anotar en los estándares solo lo que requiere criterio. Presenta los candidatos por gravedad y no cambia nada por sí mismo.
 
-Lánzalo justo después de una sesión en la que el agente se atascó: muchas correcciones, una vuelta atrás, una búsqueda larga, un error repetido.
+Lánzalo justo después de una sesión en la que el agente se atascó: muchas correcciones, una vuelta atrás, una búsqueda larga, un error repetido. Implementa las propuestas aceptadas en esa misma sesión.
 
 ##### Ejemplo
 
 ```text
-/retro el agente buscó tres veces dónde se configuran los envíos de correo y editó dos veces un archivo generado
+/retro
 ```
-
-En Codex el mismo texto empieza con `$retro`. Las propuestas aceptadas las implementas en esa misma sesión.
 
 #### Revisión de estándares
 
-Es el skill `code-review` del paquete ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/engineering/code-review)). Claude Code tiene un comando integrado `/code-review` que busca errores de corrección. Un skill del proyecto con el mismo nombre lo sustituye, y el integrado sigue disponible como `/review`.
+Es el skill `code-review` del paquete ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/engineering/code-review)).
 
-El skill toma el diff desde un punto de referencia (`git diff <punto>...HEAD`) y encuentra los documentos con estándares, como _CODING_STANDARDS.md_ y _CONTRIBUTING.md_. Luego lanza dos subagentes en paralelo. Standards contrasta el diff con los estándares del proyecto y con una lista base de code smells de *Refactoring* de Fowler. Spec contrasta el diff con la tarea de origen. Para una pasada programada basta con el eje Standards. Las infracciones se dividen en graves y discutibles, cada una con un enlace a la regla.
+El skill toma el diff desde un punto de referencia (`git diff <punto>...HEAD`) y encuentra los documentos con estándares, como _CODING_STANDARDS.md_ y _CONTRIBUTING.md_. Luego lanza dos subagentes en paralelo: uno contrasta el diff con los estándares del proyecto y con una lista base de code smells de *Refactoring* de Fowler, el otro lo contrasta con la tarea de origen. Para una pasada programada basta con la primera parte. Las infracciones se dividen en graves y discutibles, cada una con un enlace a la regla.
 
-Lánzalo cada semana, como tarea en la nube, una tarea por cada área grande.
+Lánzalo cada semana como tarea en la nube, una tarea por cada área grande.
 
 ##### Ejemplo
 
-Un prompt para la tarea de un área:
-
 ```text
-/code-review desde el último commit de main con más de 7 días, solo el eje Standards, solo app/services. Corrige las infracciones y abre un PR que enumere en la descripción las reglas incumplidas de CODING_STANDARDS.md
+/code-review de la última semana
 ```
-
-En Codex el mismo prompt empieza con `$code-review`. Codex también tiene el comando integrado `codex review --base <rama>`, que toma las reglas de revisión de la sección `## Code Review Rules` de _AGENTS.md_ ([documentación](https://learn.chatgpt.com/docs/code-review)). La revisión automática de PR en GitHub (`@codex review`) mira un solo PR e informa solo de problemas graves, así que no sustituye a la pasada semanal.
 
 #### Simplificación
 
-En Claude Code es el skill integrado `/simplify` ([documentación](https://code.claude.com/docs/en/commands)). Codex no tiene un equivalente integrado.
+El paquete no tiene un skill propio para esto; la pasada es un prompt normal. El agente busca repeticiones, capas sobrantes y código muerto en el código cambiado hace poco y los elimina enseguida.
 
-Cuatro subagentes miran en paralelo el código modificado: reutilización de helpers existentes, simplificación, eficiencia y nivel de abstracción. Lo que encuentran se corrige enseguida. `/simplify` no busca errores de corrección; para eso está `/code-review`. Se le puede pasar una ruta o un PR como argumento.
-
-Lánzalo cada semana, sobre los 3–5 directorios con más cambios.
+Lánzalo cada semana sobre los 3–5 directorios con más cambios. La tarea en la nube los localiza sola con `git log --since="7 days ago" --stat`.
 
 ##### Ejemplo
 
-La tarea en la nube primero localiza los directorios con `git log --since="7 days ago" --stat` y después lanza el comando para cada uno:
-
 ```text
-/simplify app/services
-```
-
-##### Ejemplo para Codex
-
-Codex no tiene comando integrado, así que usa un prompt normal:
-
-```text
-Encuentra repeticiones, capas sobrantes y código muerto en los cambios de la semana en app/services y elimínalos
+Simplifica el código que cambió en la última semana
 ```
 
 #### Revisión de seguridad
 
-En Claude Code es el comando integrado `/security-review` ([documentación](https://code.claude.com/docs/en/security-guidance), [código fuente](https://github.com/anthropics/claude-code-security-review)). En Codex es la mención `@codex security review` en un PR y el plugin aparte Codex Security ([documentación](https://learn.chatgpt.com/docs/security)).
+Un prompt normal. El agente lee los cambios del periodo y revisa los sitios donde un error sale más caro: autorización, pagos, subida de archivos y llamadas a API externas.
 
-`/security-review` toma el diff entre la rama actual y la rama por defecto de `origin` y busca inyecciones, fallos de autorización y fugas de datos. No acepta un rango de commits. `@codex security review` comprueba un PR; el informe completo aparece en la pestaña Security Report de la tarea.
+Lánzalo cada semana como tarea en la nube sobre la rama principal.
 
-Lánzalo en cada rama antes de fusionar y cada semana sobre la rama principal.
-
-##### Ejemplo: una rama antes de fusionar
+##### Ejemplo
 
 ```text
-/security-review
-```
-
-##### Ejemplo: la pasada semanal por la rama principal
-
-La pasada semanal por la rama principal es una tarea en la nube con un prompt normal:
-
-```text
-Revisa la seguridad de los cambios en main de los últimos 7 días: autorización, pagos, subida de archivos, llamadas a API externas. Para cada hallazgo confirmado, abre un PR aparte con la corrección y un test que lo reproduzca
+Revisa si hay vulnerabilidades en los cambios de la última semana
 ```
 
 #### Comprobación del glosario
 
 Es el skill `domain-modeling` del paquete ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/engineering/domain-modeling)).
 
-El skill contrasta los términos del código y de la conversación con _CONTEXT.md_ y señala las contradicciones: el glosario llama a un concepto de una manera y el código de otra, o el código se comporta distinto de lo descrito. Un término resuelto lo anota en el glosario enseguida. _CONTEXT.md_ sigue siendo solo un diccionario, sin detalles de implementación. Si en la raíz hay un _CONTEXT-MAP.md_, el skill trabaja con varios contextos.
+El skill contrasta los términos del código y de la conversación con _CONTEXT.md_ y señala las contradicciones: el glosario llama a un concepto de una manera y el código de otra, o el código se comporta distinto de lo descrito. Un término resuelto lo anota en el glosario enseguida. _CONTEXT.md_ sigue siendo solo un diccionario, sin detalles de implementación. El skill está pensado para una conversación contigo; en una tarea en la nube no hay a quién preguntar, así que los términos dudosos van a la descripción del PR.
 
-Lánzalo cada semana, como tarea en la nube.
+Lánzalo cada semana como tarea en la nube.
 
 ##### Ejemplo
 
 ```text
-/domain-modeling contrasta CONTEXT.md con los modelos y servicios añadidos a main en los últimos 7 días: conceptos nuevos sin entrada, entradas con nombres de clase antiguos, términos de la sección Avoid que han vuelto al código. Pon los cambios del glosario en un PR y enumera en la descripción los términos dudosos
+/domain-modeling de la última semana
 ```
-
-El skill está pensado para una conversación contigo. En una tarea en la nube no hay a quién preguntar, así que los términos dudosos van a la descripción del PR y los decides tú.
 
 #### Arquitectura
 
@@ -223,52 +189,46 @@ Lánzalo cada mes.
 ##### Ejemplo
 
 ```text
-/writing-for-agents repasa AGENTS.md, CODING_STANDARDS.md y docs/agents/: encuentra duplicados entre archivos, reglas que se han alejado de cómo trabajamos de verdad y lo que conviene mover detrás de un puntero
+/writing-for-agents revisa la documentación
 ```
 
 #### Tus propios skills
 
-Tus propios skills se revisan con el mismo `writing-for-agents`; para los skills trata además el frontmatter y la forma de invocación.
-
-El skill contrasta las instrucciones con la referencia y con cómo se activa realmente el skill: la descripción debe nombrar los casos en que hace falta, y cada paso debe terminar en un criterio comprobable.
+Tus propios skills se revisan con el mismo `writing-for-agents`; para los skills trata además el frontmatter y la forma de invocación. La descripción de un skill debe nombrar los casos en que hace falta, y cada paso debe terminar en un criterio comprobable.
 
 Lánzalo cada mes.
 
 ##### Ejemplo
 
 ```text
-/writing-for-agents repasa los skills que escribimos nosotros: run-app y finish-task. Quita los pasos que el agente ya no ejecuta y ajusta las descripciones para que cada skill se active cuando hace falta
+/writing-for-agents revisa los skills
 ```
 
 #### ADR
 
-Los ADR se revisan con el mismo `domain-modeling`.
-
-El skill lee _docs/adr_, contrasta las decisiones con el código y con ADR posteriores, y pone estados y enlaces.
+Los ADR se revisan con el mismo `domain-modeling`. El skill lee _docs/adr_, contrasta las decisiones con el código y con ADR posteriores, y pone estados y enlaces.
 
 Lánzalo cada mes.
 
 ##### Ejemplo
 
 ```text
-/domain-modeling repasa docs/adr: qué decisiones fueron sustituidas por otras posteriores y cuáles nunca se implementaron. Pon los estados y los enlaces a los ADR que las sustituyen
+/domain-modeling revisa los ADR
 ```
 
 #### Memoria del agente
 
-Para la memoria basta un prompt normal; no hay comando propio. En Claude Code, la memoria automática vive en _~/.claude/projects/&lt;proyecto&gt;/memory_, y `/memory` muestra las entradas ([documentación](https://code.claude.com/docs/en/memory)). Codex tiene Memories en _~/.codex/memories/_; están desactivadas por defecto ([documentación](https://learn.chatgpt.com/docs/customization/memories)).
-
-El agente lee su memoria y la contrasta con el repositorio. En Claude Code, la consolidación en segundo plano (el ajuste `autoDreamEnabled`) ya elimina entradas obsoletas y marca contradicciones con _CLAUDE.md_, pero no lleva los hechos del proyecto al repositorio. La documentación de Codex desaconseja editar las Memories a mano, así que allí los hechos van a _AGENTS.md_ y, si hace falta, la generación se desactiva con `memories.generate_memories`.
+No hay comando propio; basta un prompt normal. El agente lee su memoria sobre el proyecto, lleva al repositorio los hechos sobre el código y los comandos y deja en la memoria solo cómo trabajar contigo. Dónde vive la memoria y cómo se limpia sola depende del agente y se describe en su bloque.
 
 Lánzalo cada mes, en local.
 
 ##### Ejemplo
 
 ```text
-Repasa tu memoria de este proyecto. Lleva los hechos sobre el código, los comandos y la estructura del proyecto a AGENTS.md o a docs/ si todavía no están, y bórralos de la memoria. Deja solo cómo trabajar conmigo
+Limpia tu memoria de este proyecto
 ```
 
-### Calendario y mantenimiento en Claude Code
+### Claude Code
 
 Comprobado con Claude Code 2.1.283 y la [referencia de comandos](https://code.claude.com/docs/en/commands) el 2026-09-26. Los nombres de los comandos cambian más rápido que el enfoque. Todo salvo `/schedule` se ejecuta en local: estos comandos necesitan tus transcripciones, tus ajustes o un entorno en marcha.
 
@@ -281,8 +241,46 @@ El comando crea una tarea en la nube conversando contigo: pregunta el calendario
 ##### Ejemplo
 
 ```text
-/schedule cada lunes a las 9:00 revisa los estándares en main de los últimos 7 días en app/services, app/policies y app/javascript, un PR aparte por directorio
+/schedule cada lunes /code-review de la última semana
 ```
+
+#### Revisión: `/code-review` y `/review`
+
+Claude Code tiene un skill integrado `/code-review` que busca errores de corrección. Un skill del proyecto con el mismo nombre, como `code-review` del paquete de Matt Pocock, lo sustituye, y el integrado sigue disponible como `/review` ([documentación](https://code.claude.com/docs/en/skills)).
+
+##### Ejemplo
+
+```text
+/review
+```
+
+#### Simplificación: `/simplify`
+
+`/simplify` es un skill integrado ([documentación](https://code.claude.com/docs/en/commands)).
+
+Cuatro subagentes miran en paralelo el código modificado: reutilización de helpers existentes, simplificación, eficiencia y nivel de abstracción. Lo que encuentran se corrige enseguida. `/simplify` no busca errores de corrección. Se le puede pasar una ruta o un PR como argumento, así que la tarea semanal lo lanza por directorio.
+
+##### Ejemplo
+
+```text
+/simplify app/services
+```
+
+#### Seguridad: `/security-review`
+
+`/security-review` es un comando integrado ([documentación](https://code.claude.com/docs/en/security-guidance), [código fuente](https://github.com/anthropics/claude-code-security-review)).
+
+El comando toma el diff entre la rama actual y la rama por defecto de `origin` y busca inyecciones, fallos de autorización y fugas de datos. No acepta un rango de commits, así que se ejecuta en una rama antes de fusionar, y la pasada semanal por la rama principal sigue siendo un prompt normal del bloque común.
+
+##### Ejemplo
+
+```text
+/security-review
+```
+
+#### Memoria
+
+La memoria automática vive en _~/.claude/projects/&lt;proyecto&gt;/memory_, y `/memory` muestra las entradas y la activa o desactiva ([documentación](https://code.claude.com/docs/en/memory)). La consolidación en segundo plano (el ajuste `autoDreamEnabled`) elimina entradas obsoletas y marca contradicciones con _CLAUDE.md_, pero no lleva los hechos del proyecto al repositorio, así que la pasada mensual del bloque común sigue haciendo falta.
 
 #### Permisos: `/fewer-permission-prompts`
 
@@ -323,7 +321,7 @@ Lánzalo cada mes.
 ##### Ejemplo
 
 ```text
-/skill-doctor qué skills compensan sus tokens y cuáles son peso muerto
+/skill-doctor
 ```
 
 #### Arranque de la aplicación: `/run-skill-generator`
@@ -340,7 +338,7 @@ Lánzalo cada mes y cada vez que `/run` avise de que el skill está obsoleto.
 /run-skill-generator
 ```
 
-### Calendario y mantenimiento en Codex
+### Codex
 
 Comprobado con Codex CLI 0.156.1 y la documentación de learn.chatgpt.com el 2026-09-26.
 
@@ -348,19 +346,17 @@ Comprobado con Codex CLI 0.156.1 y la documentación de learn.chatgpt.com el 202
 
 Scheduled tasks es una función de la aplicación de Codex ([documentación](https://learn.chatgpt.com/docs/automations)). `openai/codex-action` es una GitHub Action que ejecuta Codex en CI ([documentación](https://learn.chatgpt.com/docs/github-action), [código fuente](https://github.com/openai/codex-action)).
 
-Una tarea de la aplicación se ejecuta según el calendario en el proyecto local o en un worktree aparte, sin confirmaciones (`approval_policy = "never"`), en tu sandbox por defecto. El resultado llega a la vista Scheduled, que funciona como bandeja de entrada. El ordenador y la aplicación tienen que estar encendidos. La Action ejecuta `codex exec` con cualquier disparador de GitHub, incluido cron, y no depende de tu máquina. No abre PR por sí misma; para eso hace falta un paso aparte.
+Una tarea de la aplicación se ejecuta según el calendario en el proyecto local o en un worktree aparte, sin confirmaciones (`approval_policy = "never"`), en tu sandbox por defecto. El resultado llega a la vista Scheduled, que funciona como bandeja de entrada. El ordenador y la aplicación tienen que estar encendidos. La Action ejecuta `codex exec` con cualquier disparador de GitHub, incluido cron, y no depende de tu máquina. No abre PR por sí misma; para eso hace falta un paso aparte. Antes de poner una pasada en el calendario, asegúrate de que el sandbox la mantiene dentro del repositorio.
 
 ##### Ejemplo en la aplicación
 
 En la vista Scheduled, crea una tarea con un calendario y un prompt:
 
 ```text
-$code-review desde el último commit de main con más de 7 días, solo el eje Standards, solo app/services
+$code-review de la última semana
 ```
 
 ##### Ejemplo en GitHub Actions
-
-En CI la misma pasada queda así:
 
 ```yaml
 on:
@@ -386,7 +382,29 @@ jobs:
           title: "refactor: weekly standards pass"
 ```
 
-Antes de poner una pasada en el calendario, asegúrate de que el sandbox la mantiene dentro del repositorio.
+#### Revisión: `codex review` y `@codex review`
+
+`codex review` es un comando integrado de la CLI; `/review` hace lo mismo en la TUI ([documentación](https://learn.chatgpt.com/docs/code-review)). Codex toma sus reglas de revisión de la sección `## Code Review Rules` de _AGENTS.md_, así que ahí conviene tener el enlace a los estándares del proyecto. La revisión automática de PR en GitHub (`@codex review`) mira un solo PR e informa solo de problemas graves, así que no sustituye a la pasada semanal.
+
+##### Ejemplo
+
+```text
+codex review --base main
+```
+
+#### Seguridad: `@codex security review`
+
+Mencionar `@codex security review` en un comentario de un PR lanza un Security Review; el informe completo aparece en la pestaña Security Report de la tarea. Para comprobaciones más amplias existe el plugin aparte Codex Security ([documentación](https://learn.chatgpt.com/docs/security)).
+
+##### Ejemplo
+
+```text
+@codex security review
+```
+
+#### Memoria: Memories
+
+Las Memories están desactivadas por defecto ([documentación](https://learn.chatgpt.com/docs/customization/memories)). Si las activaste, las entradas viven en _~/.codex/memories/_ y se generan a partir de sesiones anteriores. La documentación desaconseja editarlas a mano, así que en la pasada mensual los hechos del proyecto van a _AGENTS.md_ y, si hace falta, la generación se desactiva con `memories.generate_memories`.
 
 #### Permisos: archivos `.rules`
 
@@ -422,16 +440,12 @@ codex doctor
 
 El tamaño de las instrucciones lo limita el ajuste `project_doc_max_bytes`, 32 KiB por defecto ([documentación](https://learn.chatgpt.com/docs/agent-configuration/agents-md)).
 
-Codex reúne los _AGENTS.md_ desde la raíz del proyecto hasta el directorio de trabajo y deja de cargarlos cuando el tamaño total llega al límite. No hay aviso: las reglas de los últimos archivos simplemente no entran en el contexto.
-
-Lánzalo cada mes, junto con la pasada de `writing-for-agents`.
+Codex reúne los _AGENTS.md_ desde la raíz del proyecto hasta el directorio de trabajo y deja de cargarlos cuando el tamaño total llega al límite. No hay aviso: las reglas de los últimos archivos simplemente no entran en el contexto. Compruébalo cada mes junto con la pasada de `writing-for-agents`.
 
 ##### Ejemplo
 
-En esa misma pasada de `writing-for-agents`, da al agente este prompt:
-
 ```text
-Suma el tamaño de todos los AGENTS.md en el camino desde la raíz hasta los directorios más profundos y compáralo con el límite project_doc_max_bytes, 32 KiB por defecto. Si se supera el límite, enumera los archivos que no se cargan
+Suma cuánto pesan todos los AGENTS.md juntos
 ```
 
 #### Skills
@@ -445,22 +459,18 @@ Lánzalo cada mes.
 ##### Ejemplo
 
 ```text
-Cuenta, a partir de las sesiones en ~/.codex/sessions del último mes, qué skills de .agents/skills se invocaron y cuántas veces. Enumera los que no se invocaron nunca
+¿Qué skills no he usado en el último mes?
 ```
 
 #### Arranque de la aplicación
 
-El arranque de la aplicación en Codex se describe en los Local environments de la aplicación ([documentación](https://learn.chatgpt.com/docs/environments/local-environment)). No hay generador de un skill de arranque.
-
-En Local environments se describen los scripts de preparación del worktree y las acciones frecuentes, como arrancar la aplicación.
-
-Una vez al mes, comprueba que los scripts siguen levantando la aplicación desde cero.
+El arranque de la aplicación en Codex se describe en los Local environments de la aplicación ([documentación](https://learn.chatgpt.com/docs/environments/local-environment)). No hay generador de un skill de arranque. Una vez al mes, comprueba que los scripts siguen levantando la aplicación desde cero.
 
 ## Ejemplo
 
-El proyecto recibe unas veinte mil líneas a la semana, los estándares están en _CODING_STANDARDS.md_ y el código está organizado por capas en _app/_. La tarea semanal de revisión de estándares recibe este prompt.
+El proyecto recibe unas veinte mil líneas a la semana, los estándares están en _CODING_STANDARDS.md_ y el código está organizado por capas en _app/_. Cada lunes una tarea en la nube se ejecuta con este prompt:
 
-> Comprueba el cumplimiento de los estándares en main de los últimos 7 días. Usa el skill code-review, solo el eje Standards. Divide los cambios por directorio de primer nivel dentro de app/ y recorre cada uno por separado. Abre un PR aparte para cada área con hallazgos y enumera en la descripción las reglas de CODING_STANDARDS.md que se incumplen, con enlaces a los commits donde aparecieron.
+> /code-review de la última semana
 
 El lunes llegan tres PR: en _app/services_ dos servicios vuelven a ir a la base de datos saltándose los repositorios, en _app/policies_ una comprobación de rol compara cadenas en lugar de usar una enumeración, y en _app/javascript/pages_ se duplica el formateo de fechas. Aceptas los dos primeros tras una revisión breve. El tercero muestra que la regla del formateo de fechas se puede comprobar con un linter, así que abres un ticket para una regla de lint en lugar de una línea en los estándares.
 
