@@ -1,55 +1,35 @@
 ---
-source_rev: 41ffe61445820e8cf04a836addf315d74618f395
+source_rev: 959018d2502c29a9c2d8977271bb39cc6e903d87
 ---
 
 # Glosario
 
-**Agente** — programa basado en un LLM al que el desarrollador asigna tareas y que
-las realiza generando y modificando código.
+**Agente** realiza tareas con ayuda de un LLM y de herramientas. En este libro lee y modifica código, ejecuta comprobaciones y guarda los resultados de su trabajo.
 
-**Planteamiento de la tarea** — cómo el desarrollador expresa al agente qué hay
-que hacer y por qué.
+**Planteamiento de la tarea** explica al agente qué hay que hacer y por qué.
 
-**Contexto** — los datos que el agente ve al trabajar: instrucciones, código,
-historial, materiales adjuntos.
+**Contexto** incluye las instrucciones, el código, el historial y otros datos disponibles para el agente mientras trabaja.
 
-**Especificación** — descripción de qué debe hacer el sistema y por qué:
-escenarios, requisitos, restricciones y criterios de aceptación. La solución
-técnica pertenece al plan, no a la especificación.
+**Especificación** describe el objetivo, los escenarios, los requisitos, las restricciones y los criterios de aceptación del sistema. El enfoque técnico se describe en el plan.
 
-**Plan** — descripción de cómo implementar la especificación: enfoque
-arquitectónico, partes afectadas del sistema, orden del trabajo y formas de
-verificarlo.
+**Plan** explica cómo implementar la especificación, qué partes del sistema cambiar y cómo verificar el resultado.
 
-**Ventana de contexto** — cantidad limitada de texto y datos que un modelo puede
-tener en cuenta en una sesión.
+**Ventana de contexto** limita la cantidad de datos que el modelo puede tener en cuenta en cada llamada.
 
-**Skill** — procedimiento guardado para un agente: instrucciones y, cuando hace
-falta, scripts, plantillas y material de referencia para un flujo recurrente.
+**Skill** guarda un procedimiento recurrente como instrucciones y, cuando hace falta, lo complementa con scripts, plantillas y material de referencia.
 
-**Subagente** — instancia separada de un agente, con su propio contexto, a la que
-el agente principal delega una parte acotada del trabajo.
+**Subagente** realiza una parte acotada de la tarea en un contexto separado por encargo del agente principal.
 
-**Oráculo** — fuente independiente de una respuesta correcta o incorrecta: un
-test, linter, build, captura de pantalla, resultado de referencia o escenario de
-usuario verificable.
+**Oráculo** da fundamento para juzgar si un resultado es correcto. Este papel lo puede cumplir un test, una salida de referencia o un escenario de usuario verificable.
 
-**Costura de testing** — límite del sistema a través del cual se puede observar
-y verificar el comportamiento sin acoplar el test a detalles de implementación.
+**Costura de testing** permite observar el comportamiento del sistema sin atarse a los detalles internos de la implementación.
 
-**Ticket bala trazadora** — pequeño corte vertical de funcionalidad que atraviesa
-las capas necesarias del sistema y termina en un comportamiento verificable por
-separado.
+**Ticket trazador** describe un pequeño corte vertical de funcionalidad a través de las capas necesarias del sistema, con un resultado verificable por separado.
 
-**Brownfield** — sistema existente con restricciones, contratos e historial de
-decisiones acumulados. **Greenfield** — sistema nuevo donde esas restricciones
-aún no existen.
+**Brownfield** designa el trabajo con un sistema existente y sus restricciones acumuladas. **Greenfield** designa la creación de un sistema nuevo.
 
-**SDD** — Spec-Driven Development, o desarrollo orientado a especificaciones: un
-enfoque en el que una especificación acordada guía la planificación y la
-implementación.
+**SDD** significa Spec-Driven Development, o desarrollo orientado a especificaciones. En este enfoque, una especificación acordada guía la planificación y la implementación.
 
-**Patrón** — solución probada a un problema recurrente de interacción con un agente.
+**Patrón** describe un problema recurrente y una forma de resolverlo.
 
-**Antipatrón** — una forma común de empeorar las cosas: un movimiento tentador
-pero dañino que tiene un reemplazo mejor.
+**Antipatrón** describe una acción errónea extendida, sus consecuencias y un reemplazo adecuado.

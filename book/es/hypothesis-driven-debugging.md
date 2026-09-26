@@ -2,14 +2,14 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, tdd-with-agent, prototype-to-answer]
-source_rev:
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Diagnóstico mediante hipótesis
 
 ## Propósito
 
-Encontrar la causa de un defecto mediante su reproducción y experimentos que distingan las explicaciones posibles. El desarrollador define el síntoma y los límites del trabajo; el agente comprueba las explicaciones antes de modificar el código de producción.
+Encontrar la causa de un defecto mediante su reproducción y experimentos que distingan las explicaciones posibles. Tú defines el síntoma y los límites del trabajo; el agente comprueba las explicaciones antes de modificar el código de producción.
 
 ## También conocido como
 

@@ -2,230 +2,133 @@
 group: sdd
 status: draft
 related: [explore-plan-code-commit, premature-specification]
-source_rev: 5df7b47a444c5c22419c5b424a05805eccc71275
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Spec-Driven Development
 
 ## Intent
 
-Make neither the code nor the chat with the agent the source of truth, but the
-specification — a living document in the repository that describes *what* we
-are building and *why*. The specification unfolds into a technical plan and a
-task list, the agent implements them step by step, and the developer reviews
-the artifacts at every transition — long before a diff appears.
+Keep the goal and requirements in an agreed specification. From it the team prepares a technical plan and tasks, and the agent implements them while verifying the result. The documents let the work continue in another session and make it possible to judge whether the result matches the original intent.
 
 ## Also known as
 
-SDD, spec-first, "the spec as the source of truth".
+Spec-Driven Development (SDD), spec-first, "the spec as the source of truth".
 
 ## Problem
 
-In conversational work with an agent, intent lives in the chat. For a short
-task that is enough, but for a large feature the chat does not scale:
+With a large feature, requirements can end up buried among the messages of a long conversation. A new session sees the code but does not know everything that was agreed.
 
-- The context window ends before the feature does. A new session starts from
-  scratch — what was decided, why this approach was chosen, and what remains
-  has to be reconstructed from memory and from the code.
-- A prompt is ephemeral. A month later nobody — neither human nor agent — can
-  tell whether "it's meant to be this way" or "it just came out this way": the
-  intent is recorded nowhere, only the code remains.
-- Without pinned-down requirements, every next "tweak this bit" request
-  gradually pulls the implementation away from the original goal, and there is
-  nothing to detect the drift with — nothing to compare against.
+For example, the chat settled on sending large reports as a link. The implementation still sends attachments, and a new agent cannot tell whether that was a deliberate limitation or an unfinished piece of work. Without a written record, requirements have to be reconstructed from the author's memory. Subsequent edits can pull the behavior even further from the goal, because there is nothing to compare it against.
 
-The opposite extreme is [vibe coding](vibe-coding.md): describe the goal in one phrase and accept
-whatever compiles. It works on a prototype; in a living codebase it leaves
-behind a layer of code that nobody can say what it is *supposed* to do.
+Accepting generated code without such a comparison is described in the [vibe coding](vibe-coding.md) anti-pattern.
 
 ## Solution
 
-Before implementing, pin the intent down in a specification — a file in the
-repository, not a chat — and drive the work from it:
+Before implementation, write the goal down in a specification and use it in the later stages.
 
-1. **Specification.** What we are building and why: user scenarios,
-   requirements, acceptance criteria. No technical decisions — the "what", not
-   the "how".
-2. **Plan.** How we are building it: stack, architecture, affected modules,
-   contracts. Technical decisions appear only here, once the "what" is agreed.
-3. **Tasks.** The plan is sliced into small verifiable steps — each has a way
-   to confirm the step is done.
-4. **Implementation.** The agent works through the task list, checking against
-   the specification and the plan.
+1. **The specification** describes scenarios, requirements, constraints and acceptance criteria.
+2. **The plan** chooses a technical approach once the requirements are agreed.
+3. **The tasks** split the plan into small steps with a verifiable result.
+4. **Implementation.** The agent works through the tasks in order, checking against the specification and the plan.
 
-Every transition is a checkpoint: the developer reviews the artifact and edits
-it as text. A requirements mistake is caught on the specification, an
-architecture mistake on the plan — both cheaper than on a finished diff. If
-during implementation the specification turns out to be wrong, it is fixed
-first and the code second — otherwise the document silently goes stale and
-stops being the source of truth.
+At each transition you review the resulting document. This lets you fix a requirement before it is implemented. If new information changes the task, agree on the specification first and then bring the code in line with it.
 
 ## Structure
 
+The diagram connects the specification, the plan, the tasks and the code.
+
 ```mermaid
 ---
-title: "checkpoints: the developer reviews each artifact, not just the final diff"
+title: the developer reviews the requirements and the plan before implementation
 ---
 flowchart TB
-  spec["Specify<br/>what and why, no tech choices<br/>spec.md"]
+  spec["Specification<br/>what and why, no tech decisions<br/>spec.md"]
   plan["Plan<br/>how: stack, architecture<br/>plan.md"]
   tasks["Tasks<br/>small steps with checks<br/>tasks.md"]
-  impl["Implement<br/>code and tests task by task<br/>diff + tests"]
+  impl["Implementation<br/>code and tests per task<br/>diff + tests"]
   rules["project conventions<br/>(constitution)"]:::accent
   spec -- "review" --> plan -- "review" --> tasks -- "review" --> impl
-  impl -. "reality diverged from the spec —<br/>fix the spec, not just the code" .-> spec
+  impl -. "reality diverged from the specification —<br/>agree on new requirements and fix the code" .-> spec
   rules -.- spec
   rules -.- impl
 ```
 
-The four artifacts form a pipeline, and each next one is derived from the
-previous: the plan from the specification, the tasks from the plan, the code
-from the tasks. All artifacts live in the repository and go through ordinary
-review. A separate input is the project conventions (in Spec Kit — the
-"constitution"): standards and constraints the agent must respect in every
-phase. The dashed arrow back is the specification edit when reality has
-diverged from it.
+Standing project conventions constrain the choices in every phase. The backward arrow shows requirements being revised in light of new information.
 
 ## Participants / Components
 
-- **Developer** — states the intent, reviews and approves each artifact,
-  accepts the result.
-- **Agent** — unfolds the intent into a specification, plan, and tasks;
-  implements the tasks, checking against the artifacts.
-- **Specification** — the source of truth: what we build and why, acceptance
-  criteria.
-- **Plan and tasks** — derived artifacts: the technical approach and the
-  slicing into verifiable steps.
-- **Project conventions** — standing rules (standards, stack, constraints)
-  shared by all specifications.
+- **Developer** sets the goal and reviews the documents and the result.
+- **Agent** prepares the documents and implements the agreed tasks.
+- **Specification** holds the requirements and acceptance criteria.
+- **Plan and tasks** set the technical approach and the order of implementation.
+- **Project conventions** preserve shared standards and constraints.
 
 ## When to use
 
-- The feature is bigger than one session: the work outlives the context
-  window, and artifacts are the only way to hand state to the next session or
-  another agent.
-- Several people or several agents work on the task — you need a shared
-  document, not somebody's chat history.
-- A domain with strict requirements: you must be able to show *what* the
-  system is obliged to do and verify the implementation against that list.
-- Greenfield where "what we are building" has not settled yet: the
-  specification forces that decision before the code.
+- The work spans several sessions.
+- Several participants need shared requirements.
+- The system's correctness has to be checked against explicitly defined scenarios.
+- The team is still refining the behavior of a new system.
 
-For a two-file edit the pipeline is overkill — there,
-[the four phases](explore-plan-code-commit.md) or a plain request is enough.
+For a small edit, [four phases](explore-plan-code-commit.md) or a direct request is enough.
 
 ## Consequences and trade-offs
 
-- ➕ Intent outlives the session: a new session, another agent, or a colleague
-  continues from the artifacts, not from a retelling.
-- ➕ Drift is visible: the implementation can be checked against the
-  specification, and a divergence can be discussed concretely.
-- ➕ Review is spread across cheap points: requirements, approach, and slicing
-  are checked as text before any code exists.
-- ➕ The specification remains documentation: half a year later you can see
-  what the system is *supposed* to do, not only what it does.
-- ➖ Overhead: on a short task the four-artifact pipeline costs more than the
-  task itself.
-- ➖ Artifacts must be maintained: a stale specification is worse than none —
-  it lies with an authoritative face.
-- ➖ The temptation to detail the specification down to pseudocode leads back
-  to [premature specification](premature-specification.md): pin down
-  requirements and constraints, not the implementation.
+- ➕ Requirements are available to the next session and to other participants.
+- ➕ Divergence between the implementation and the intent can be checked against the document.
+- ➕ Mistakes in requirements and approach can surface before any code is written.
+- ➕ An up-to-date specification explains the expected behavior after development is finished.
+- ➖ Preparing documents raises the cost of short tasks.
+- ➖ The documents have to be updated when requirements change.
+- ➖ Too much implementation detail in the specification leads to [premature specification](premature-specification.md).
 
 ## Implementation
 
-1. Pin down the project conventions: standards, stack, quality constraints.
-   This is a standing document shared by all specifications.
-2. Unfold the intent into a specification: scenarios, requirements, acceptance
-   criteria — no technical decisions. Review it as text; underspecified spots
-   are cheapest to close here.
-3. Ask for a technical plan derived from the specification and review it:
-   architecture, contracts, affected modules.
-4. Slice the plan into small tasks, each with a completion check.
-5. Run the implementation down the task list; the agent checks against the
-   specification and the plan.
-6. When reality diverges, fix the specification first, the code second.
+1. Write down the project's shared standards and constraints.
+2. Prepare scenarios, requirements and acceptance criteria. Check them for completeness.
+3. Draft and discuss the technical plan.
+4. Split the plan into tasks, each with a way to verify its result.
+5. Run the implementation from the task list; the agent checks against the specification and the plan.
+6. If the code violates the current requirements, fix the implementation. If the requirements themselves have changed, agree on a new specification and then bring the code in line with it.
 
-This pipeline is almost never assembled by hand — there are ready-made
-frameworks, each with its own view of what it should be. Three are covered in
-this section:
+You can assemble the workflow by hand or use a ready-made toolkit. This section covers three options.
 
-- [OpenSpec](openspec.md) — a pipeline around a **change**: the system's
-  standing specifications are updated by deltas, the way migrations update a
-  database schema.
-- [Superpowers](superpowers.md) — SDD as a Claude Code skill pack:
-  brainstorming → plan → subagent implementation with TDD and mandatory
-  checkpoints.
-- [Matt Pocock's skills](matt-pocock-skills.md) — a pipeline on top of the
-  issue tracker: interview → specification → tracer-bullet tickets →
-  implementation.
+- [OpenSpec](openspec.md) keeps standing specifications and change deltas.
+- [Superpowers](superpowers.md) links the phases through skills and mandatory checkpoints.
+- [Matt Pocock's skills](matt-pocock-skills.md) keep specifications and tracer-bullet tickets in the issue tracker.
 
-There are many more — GitHub Spec Kit (the most direct translation of the
-pattern into a tool), Kiro, Tessl, BMAD, and dozens of others. A survey and
-comparison of them lives in the
-[spec-compare](https://cameronsjo.github.io/spec-compare/) project; links to
-the tools are in [Useful Links](resources.md).
+Other tools are collected in [Useful Links](resources.md) and in the [spec-compare](https://cameronsjo.github.io/spec-compare/) comparison.
 
 ## Example
 
-The task: add scheduled report exports to the service.
+A team is adding scheduled report export.
 
-**Specification** (e.g. the `/opsx:propose` command in OpenSpec):
+First it writes the **specification**, for example with `/opsx:propose` in OpenSpec.
 
-> A user configures a recurring report export: picks the report, a schedule,
-> and recipients. At the scheduled time the system builds the report and sends
-> it by email. Acceptance criteria: the export goes out no later than five
-> minutes past the schedule; if the build fails, recipients get a failure
-> notification, not silence; deleting a report disables its schedules.
+> The user picks a report, a schedule and recipients. The system sends the report no later than five minutes after the scheduled time. If the build fails, it notifies the recipients of the failure. Deleting a report disables its schedules.
 
-Reviewing the specification immediately exposes a hole: what about the
-recipients' time zones? The requirement is added — before it could turn into a
-bug.
+During review the team notices that the schedule's time zone is undefined and extends the requirement before implementation.
 
-**Plan:** the agent proposes a cron worker and a `report_schedules` table; in
-review the developer replaces the hand-rolled cron with the task scheduler the
-project already uses — a one-line text edit.
+In the **plan**, the agent proposes a cron worker and `report_schedules`. You point to the scheduler the project already uses, and the agent refines the approach.
 
-**Tasks:** migration, model, worker, notifications, settings UI — each with a
-check (a test or a manual scenario).
+The **tasks** add verifiable scenarios one after another: creating a schedule, sending a report and handling a failure.
 
-**Implementation:** the agent works down the list; when it turns out the mail
-gateway rejects attachments over 10 MB, that is a specification edit (add a
-requirement for a download link instead of an attachment), not a silent
-workaround in the code.
+During **implementation** it turns out the mail gateway limits attachments to 10 MB. The team agrees to send a link for large reports and records this behavior in the specification.
 
 ## Anti-patterns and common mistakes
 
-- **A specification for the checkbox.** Artifacts are generated and approved
-  unread — the pipeline adds overhead but catches nothing. Checkpoints work
-  only if someone actually looks.
-- **The code diverged from the spec — oh well.** The first unsynchronized edit
-  turns the specification from a source of truth into a museum exhibit. One
-  rule: the document first, the code second.
-- **The pseudocode specification.** Spelling out function names and call order
-  in the specification is
-  [premature specification](premature-specification.md) in a new wrapper. The
-  "what" level holds requirements, not implementation.
-- **A pipeline for a two-file edit.** If the task fits in one session and one
-  screen of diff, four artifacts are bureaucracy, not engineering.
+- **Documents without review.** Unchecked requirements can carry a mistake into the implementation.
+- **Stale specification.** When behavior changes, update the agreed requirements together with the code.
+- **Pseudocode specification.** A detailed call sequence written before the task has been explored creates a [premature specification](premature-specification.md).
+- **Excessive process.** For a small, reversible edit, a full set of documents can cost more than the work itself.
 
 ## Known uses
 
-- [OpenSpec](openspec.md), [Superpowers](superpowers.md), and
-  [Matt Pocock's skills](matt-pocock-skills.md) — the three solutions covered
-  by this section's articles; the SDD manifesto as a methodology is in the
-  [Spec Kit announcement](https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/).
-- The full SDD tool landscape — GitHub Spec Kit, Kiro, Tessl, BMAD-Method (SDD
-  in an agile wrapper with role agents), Spec Kitty, Traycer, and dozens of
-  others — is gathered in the
-  [spec-compare](https://cameronsjo.github.io/spec-compare/) comparison and in
-  [Useful Links](resources.md).
+- [OpenSpec](openspec.md), [Superpowers](superpowers.md) and [Matt Pocock's skills](matt-pocock-skills.md) are covered in this section. The general approach is also described in the [Spec Kit announcement](https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/).
+- A comparison of other tools is available in [spec-compare](https://cameronsjo.github.io/spec-compare/) and the [collection of links](resources.md).
 
 ## Related patterns
 
-- [Four Phases](explore-plan-code-commit.md) — the same
-  "agree first, code second" principle at the scale of a single session; SDD
-  unfolds it into artifacts that outlive the session.
-- [Premature Specification](premature-specification.md) — the anti-pattern the
-  specification degenerates into if you pin down the implementation instead of
-  the requirements.
+- [Four Phases](explore-plan-code-commit.md) organizes agreement and implementation at the scale of a single task.
+- [Premature Specification](premature-specification.md) describes the risk of choosing an implementation before the requirements are clarified.

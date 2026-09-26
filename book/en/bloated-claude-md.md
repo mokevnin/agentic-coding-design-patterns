@@ -2,82 +2,58 @@
 kind: anti-pattern
 status: draft
 related: [claude-md-memory, skills-as-packaged-workflows, context-engineering]
-source_rev: 0467919769ae9e07e7dfb6a41d92d54afd014895
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Bloated Memory
 
 ## Also known as
 
-Bloated CLAUDE.md, the over-specified memory file, the memory dump.
+Bloated CLAUDE.md, over-specified memory file, memory dump.
 
 ## Context
 
-For months the team keeps adding to the project's memory file: every
-incident with the agent births a new rule, every onboarding a new section.
-The file grows and never shrinks.
+For months, the team keeps adding to the project memory file. After every incident with the agent, developers add a rule, but rarely check whether it is still needed. The file grows and never shrinks.
 
 ## Problem
 
-The memory file is overloaded: hundreds of lines, duplicates,
-contradictions, retellings of what the agent sees in the code anyway. An
-overloaded memory doesn't strengthen control — it switches it off: the
-important rules drown in the noise, and the agent ignores half of what is
-written.
+The memory file accumulates hundreds of lines of duplicates, contradictions, and retellings of the code. The agent finds it harder to pick out the applicable instructions from the rest, so even a rule that is written down may go unheeded.
 
 ## Why people do it
 
-- Adding feels safe, deleting feels risky: every rule was needed once, and
-  nobody remembers whether it can be touched.
-- The illusion of control: it seems that more rules make a more obedient
-  agent. In reality it's the reverse: bloated memory files cause the agent
-  to ignore the actual instructions.
-- The memory is used as a warehouse: architecture overviews, dependency
-  lists, and multi-step procedures get dumped there — none of which belongs.
-- The file has no owner: everyone adds, nobody prunes.
+- Every rule was needed at some point, and developers are afraid to delete it without knowing the original reason.
+- The team expects additional instructions to make the agent's behavior more predictable and does not check the effect of piling them up.
+- Developers put architecture descriptions and long procedures into memory that would be better off as separate documents.
+- The whole team adds to the file, but nobody is responsible for reviewing it.
 
 ## Consequences
 
-- ➖ The agent breaks written rules: the rule exists but got lost in the
-  noise — the most common symptom.
-- ➖ Every line is paid for in tokens in every session of every developer —
-  bloated memory gets more expensive in proportion to the team.
-- ➖ Contradictory rules resolve arbitrarily: today the agent picks one,
-  tomorrow the other.
-- ➖ People stop reading the file too: a new colleague opens four hundred
-  lines and closes them.
+- ➖ The agent misses the instruction it needs among all the others.
+- ➖ Every extra line costs tokens in every session that loads the file.
+- ➖ When instructions contradict each other, the agent may pick different rules in different sessions.
+- ➖ New colleagues have to wade through a long file to find the convention they need.
 
 ## Signs
 
-- The memory file is hundreds of lines long, and it only grows.
+- The file has hundreds of lines and keeps growing.
 - The agent does what the memory explicitly forbids.
-- The file contains the directory layout, the dependency list, an
-  architecture overview — what the agent sees in the code itself.
-- There are rules the agent follows even without the instruction.
-- Nobody can say what half the lines are for.
+- The file retells the directory structure and dependencies that the agent can read in the repository.
+- Some rules are ones the agent follows even without the instruction.
+- Nobody can say why half of the lines are there.
 
 ## A better way
 
-Restore the discipline from the [pattern of the same name](claude-md-memory.md):
-for every line, ask "if I delete this, will the agent start making
-mistakes?" — and if not, delete it. Everything derivable from the code goes
-out wholesale. Multi-step procedures go to
-[skills](skills-as-packaged-workflows.md): they load on demand and cost
-nothing until invoked. Rules needed only by part of the codebase go to
-modular path-scoped files. Hard prohibitions go to hooks: mechanics are more
-reliable than wishes. And pruning on a schedule — like updating
-dependencies.
+Review the memory using the rule from [the pattern of the same name](claude-md-memory.md). For each line, find out which mistake it prevents. If the agent gets the same information from the code or follows the rule without a reminder, the line can be deleted. Move long procedures into [skills](skills-as-packaged-workflows.md) that load on demand. After trimming the file, check on real tasks whether the behavior you need is preserved.
 
 ## Example
 
 **Before:**
 
-> A 420-line CLAUDE.md: a three-screen architecture overview, a list of
-> every package, a style guide copied from the linter's documentation, a
-> 30-step release procedure, and a "don't touch the legacy folder" rule on
-> line 287 — which the agent broke yesterday.
+> CLAUDE.md has accumulated 420 lines. Most of it is an architecture overview, a list of packages, and copied linter rules. Among them, on line 287, is a ban on changing legacy code that the agent violated yesterday.
 
 ```mermaid
+%% TODO: node labels in English — sankey-beta (mermaid 12.0.0) does not parse non-ASCII
+%% in node names. Localize them once this is fixed.
 sankey-beta
 
 Architecture overview,Deleted,120
@@ -89,25 +65,15 @@ Legacy ban,PreToolUse hook,5
 Commands and conventions,CLAUDE.md (stays),25
 ```
 
-Of the 420 lines, 265 are simply deleted: the agent already sees them in the code. Another 95 are a procedure that belongs in a skill. Only 25 lines of commands and conventions reach memory; the frontend rules move to `.claude/rules/`, and the legacy ban becomes a hook. The file shrinks not because the rules were thrown away, but because each one moved to where it actually works.
+In the diagram, you delete 265 lines that repeat information from the code and the linter settings. You move the 95-line release procedure into a skill, put the 30 lines of frontend rules into _.claude/rules/_, and enforce the five-line legacy ban with a hook. What stays in memory is 25 lines of commands and conventions. Each rule now lives where it applies.
 
 **After:**
 
-> A 60-line CLAUDE.md: the commands that aren't in the Makefile, the
-> conventions that diverge from the defaults, and the hard boundaries. The
-> release procedure is a `/release` skill. The frontend rules are in
-> `.claude/rules/` scoped to paths. "Don't touch legacy" is a PreToolUse
-> hook that simply refuses writes to the folder.
+> CLAUDE.md is down to 25 lines of commands and conventions. The agent gets the release procedure from the `/release` skill and loads the frontend rules from _.claude/rules/_ when working with the relevant files. A PreToolUse hook blocks writes to legacy code.
 
 ## Related patterns and anti-patterns
 
-- [Project Memory](claude-md-memory.md) — the pattern whose degeneration
-  bloated memory is; the discipline that cures it lives there too.
-- [Skills](skills-as-packaged-workflows.md) — the main relief valve:
-  procedures leave the memory for on-demand files.
-- [Context Engineering](context-engineering.md) — explains the mechanism of
-  the harm: the attention budget is finite, and every extra line pays out
-  of it.
-- [Premature Specification](premature-specification.md) — the kindred
-  illusion of control: there the task gets over-detailed, here the rules
-  do.
+- [Project Memory](claude-md-memory.md) sets the rules for selecting and reviewing persistent instructions.
+- [Skills](skills-as-packaged-workflows.md) let procedures load on demand.
+- [Context Engineering](context-engineering.md) explains how extra text gets in the way of using the information you need.
+- [Premature Specification](premature-specification.md) describes a similar attempt to gain control through excessive instructions.

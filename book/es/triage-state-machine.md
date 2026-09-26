@@ -2,251 +2,138 @@
 group: project-org
 status: draft
 related: [wayfinder, give-agent-a-way-to-verify, domain-context-file]
-source_rev: f3e9a31e92847306a9a71e89045dfa51bd342ff6
+source_rev: 6dad340eb767f81de0fb2e097944b3a9324f5c9d
 ---
 
 # Triaje de tareas
 
 ## Propósito
 
-Hacer pasar las tareas entrantes por una máquina de estados de
-etiquetas-roles — de «necesita clasificación» a un brief listo para el
-agente o a la marca «para un humano» — de modo que, al llegar a la
-ejecución, cada ticket esté categorizado, verificado y especificado. La
-clasificación la conduce el agente; el destino lo decide el mantenedor.
+Preparar las tareas entrantes para su ejecución mediante estados de triaje explícitos. El agente comprueba la solicitud y redacta un brief, y el mantenedor decide si pasar la tarea a un agente, a una persona o rechazarla.
 
 ## También conocido como
 
-Triage state machine, máquina de estados de triaje; `/triage` en los skills
-de Matt Pocock.
+Triage state machine, máquina de estados de triaje; `/triage` en las skills de Matt Pocock.
 
 ## Problema
 
-La bandeja de entrada del tracker es materia prima, no tareas: reportes de
-bugs sin pasos de reproducción, deseos, duplicados de lo ya existente,
-peticiones repetidas de lo ya rechazado, pull requests externos de calidad
-desconocida. Los dos destinatarios habituales manejan mal ese flujo:
+Un informe de bug entrante puede contener solo la frase «la búsqueda no funciona». El ejecutor no conoce ni la consulta, ni el locale, ni el resultado esperado.
 
-- Entregar un ticket crudo al agente — y este completa servicialmente lo
-  que falta: «arregla» un bug no reproducido, implementa lo que ya existe
-  en la base con otro nombre o reabre una discusión cerrada hace medio año.
-- Que el mantenedor lo clasifique todo a mano — y su tiempo se va no a
-  decisiones sino a arqueología: reproducir, cazar duplicados, sonsacar
-  detalles a los reporteros.
-- Sin estados fijos no se sabe dónde está nada: qué tickets están
-  clasificados, cuáles esperan, cuáles se pueden tomar.
+Si encargas el arreglo al agente de inmediato, empezará a elegir el problema a base de conjeturas. Ni siquiera los tests en verde de ese arreglo confirmarán que el fallo original ha desaparecido. El mantenedor necesita reunir la información que falta y reproducir el problema. Esa parte del trabajo se puede delegar en el agente. Los estados explícitos muestran qué solicitud ya está comprobada y cuál sigue esperando respuesta.
 
 ## Solución
 
-Una pequeña máquina de estados de etiquetas y un agente que lleva cada
-ticket a través de ella.
+Define un conjunto pequeño de estados y el orden en que se comprueba cada ticket.
 
-**Los roles.** Cada ticket clasificado lleva exactamente una categoría —
-`bug` o `enhancement` — y exactamente un estado:
+En esta variante del proceso, un ticket clasificado tiene una categoría (`bug` o `enhancement`) y un estado.
 
-- `needs-triage` — espera clasificación;
-- `needs-info` — espera al reportero; vuelve a `needs-triage` cuando llega
-  la respuesta;
-- `ready-for-agent` — totalmente especificado, con brief adjunto; un agente
-  autónomo puede tomar el trabajo;
-- `ready-for-human` — necesita a una persona; la misma estructura de brief
-  más la razón explícita de por qué no se delega: juicios, accesos
-  externos, pruebas manuales;
-- `wontfix` — no se hará; la razón queda anotada.
+- `needs-triage` significa que espera clasificación.
+- `needs-info` significa que espera información concreta del autor. Tras la respuesta, el ticket vuelve a `needs-triage`.
+- `ready-for-agent` significa que hay un brief comprobado para el trabajo autónomo.
+- `ready-for-human` indica que hace falta una persona y conserva el motivo de esa decisión.
+- `wontfix` registra un rechazo con su justificación.
 
-Un pull request externo es un ticket con código adjunto: los mismos roles,
-la misma máquina.
+Un pull request externo pasa por la misma clasificación, con una comprobación adicional del código adjunto.
 
-**El ritual de clasificación.** El agente reúne el contexto (el cuerpo, los
-comentarios, la base de código — mediante el
-[vocabulario del dominio](domain-context-file.md) y los ADR) y hace dos
-comprobaciones antes que nada: *¿ya está implementado?* — buscando por
-conceptos del dominio, no por las palabras de la petición — y *¿ya fue
-rechazado?* — cotejando la base de rechazos. Después recomienda categoría y
-estado — y espera la decisión del mantenedor. Luego, la verificación de la
-afirmación: el bug se reproduce con los pasos del reportero, el diff del
-pull request se pasa por los tests. Si la petición necesita maduración —
-una entrevista con el mantenedor, pregunta a pregunta. El desenlace se
-aplica con etiquetas, un brief o un cierre.
+El agente lee la descripción, los comentarios y el código, apoyándose en el [vocabulario del dominio](domain-context-file.md) y los ADR. Busca una implementación existente y decisiones anteriores sobre solicitudes parecidas. Después comprueba la afirmación, por ejemplo reproduciendo el bug, y recomienda un estado. El mantenedor aprueba el resultado; si falta información, el agente prepara preguntas concretas.
 
-**La memoria de los rechazos.** Los deseos rechazados se anotan en una base
-de conocimiento del repositorio (`.out-of-scope/`): la siguiente petición
-parecida se corta con un enlace, no con otra discusión.
+Guarda los motivos de las solicitudes rechazadas en _.out-of-scope/_. Ante una solicitud parecida, el agente podrá mostrar la decisión anterior, y el mantenedor comprobará si sigue siendo aplicable.
 
-Todo lo que el agente publica en un tracker público empieza con la nota
-«generado por IA durante el triaje» — la transparencia no se negocia.
+En el proceso descrito, los comentarios del agente se marcan como generados por IA durante el triaje. El mantenedor revisa su contenido antes de publicarlos.
 
 ## Estructura
 
+El diagrama se limita a la etapa de triaje. Su final significa pasar la tarea preparada a un ejecutor o rechazarla.
+
 ```mermaid
 ---
-title: categoría — exactamente una; estado — exactamente uno
+title: el triaje termina con un traspaso de la tarea o un rechazo
 ---
 stateDiagram-v2
-  direction LR
+  direction TB
   state "needs-triage" as triage
   state "needs-info" as info
   state "ready-for-agent" as agent
   state "ready-for-human" as human
   state "wontfix" as wontfix
-
   class agent accent
   class wontfix warn
-
-  [*] --> triage: un issue o un PR externo
-  triage --> info: faltan datos
-  info --> triage: el reportero respondió
-  triage --> agent: brief autosuficiente adjunto
-  triage --> human: brief + por qué no se delega
-  triage --> wontfix: el rechazo, anotado en la base
-  agent --> [*]
-  human --> [*]
-  wontfix --> [*]
-
-  note right of triage
-    cada ticket: contexto, verificar
-    la afirmación, entrevista, desenlace
-  end note
+  [*] --> triage
+  triage --> info: falta información
+  info --> triage: respuesta recibida
+  triage --> agent: brief listo
+  triage --> human: hace falta una persona
+  triage --> wontfix: rechazo justificado
+  agent --> [*]: pasar a un agente
+  human --> [*]: pasar a una persona
+  wontfix --> [*]: guardar el motivo
 ```
 
-El ticket entrante cae en `needs-triage` — el único estado donde ocurre el
-trabajo de clasificación. De él salen cuatro salidas: el brief para un
-agente, el brief para un humano con la razón de la no-delegación, preguntas
-concretas al reportero con retorno tras la respuesta — y el rechazo, que se
-asienta en la base de conocimiento. Abajo, el ritual que el agente ejecuta
-para cada ticket antes de elegir la salida; la decisión de la salida queda
-en manos del mantenedor.
+El mantenedor aprueba la transición después de comprobar la afirmación, precisar el contexto y preparar el brief. Si falta información, el ticket espera respuesta y vuelve a pasar por la clasificación. La categoría de la tarea se guarda aparte del estado mostrado aquí; estar lista para pasar a un ejecutor todavía no significa que la tarea misma esté terminada.
 
 ## Participantes / Componentes
 
-- **La máquina de etiquetas** — las categorías y los estados; exactamente
-  uno de cada por ticket.
-- **El agente de triaje** — reúne contexto, comprueba, reproduce,
-  recomienda, da forma al desenlace.
-- **El mantenedor** — el árbitro: acepta recomendaciones, decide destinos,
-  puede mover cualquier ticket a cualquier estado directamente.
-- **El reportero** — la fuente de los detalles; recibe preguntas concretas,
-  no «aclare, por favor».
-- **El brief** — el artefacto del desenlace: un planteamiento
-  autosuficiente con el que el agente trabaja sin el autor del ticket.
-- **La base de rechazos** — negativas anotadas con sus razones; el filtro
-  de las peticiones repetidas.
+- **Los estados** muestran si el ticket está listo para la siguiente acción.
+- **El agente** reúne información, comprueba la afirmación y prepara una recomendación.
+- **El mantenedor** aprueba la decisión sobre la tarea.
+- **El autor de la solicitud** aporta los detalles que faltan.
+- **El brief** da un planteamiento autosuficiente y un criterio de terminado.
+- **La base de rechazos** conserva los motivos de las decisiones anteriores.
 
 ## Cuándo aplicarlo
 
-- Un proyecto abierto o de equipo con flujo entrante: bugs, deseos, pull
-  requests externos.
-- Agentes autónomos toman trabajo del tracker: `ready-for-agent` es su
-  cola, y la calidad de los briefs determina la calidad de los resultados.
-- El tiempo del mantenedor es el cuello de botella: la clasificación se
-  delega al agente y al humano le quedan solo las decisiones.
+- Al proyecto llegan con regularidad bugs, propuestas y PR externos.
+- Los agentes autónomos eligen trabajo del tracker.
+- El mantenedor dedica mucho tiempo a reunir información antes de decidir.
 
-Para un proyecto personal con tres tickets al mes la máquina sobra — bastan
-la cabeza y una etiqueta.
+Con unos pocos tickets al mes, el conjunto completo de estados puede sobrar.
 
 ## Consecuencias y compromisos
 
-- ➕ Al ejecutor llega solo lo verificado y lo especificado: el agente
-  recibe un brief, no conjeturas.
-- ➕ Los duplicados y las repeticiones se cortan mecánicamente: la
-  comprobación «¿ya implementado?» y la base de rechazos actúan antes de la
-  discusión, no después.
-- ➕ El estado del flujo se ve en las etiquetas: qué está clasificado, qué
-  espera, qué está listo — sin leer los tickets.
-- ➕ Verificación antes del brief: un bug irreproducible no llegará a la
-  ejecución.
-- ➖ Montaje: las etiquetas, su mapeo, las plantillas de briefs, la base de
-  rechazos — infraestructura que hay que crear y mantener.
-- ➖ Los comentarios del agente en un tracker público son cuestión de
-  tacto: la nota de IA es obligatoria, y el tono también es responsabilidad
-  del mantenedor.
-- ➖ La máquina no toma decisiones: sin árbitro degenera en cuello de
-  botella o en el autogobierno del agente.
+- ➕ El ejecutor recibe un planteamiento comprobado.
+- ➕ Las decisiones anteriores ayudan a clasificar las solicitudes repetidas.
+- ➕ Las etiquetas muestran qué tarea espera aclaraciones y cuál está lista para trabajar.
+- ➕ La reproducción da la base para el criterio del arreglo.
+- ➖ Las etiquetas, las plantillas y la base de decisiones requieren mantenimiento.
+- ➖ Los comentarios públicos exigen revisar su contenido y su tono.
+- ➖ El proceso depende de que el mantenedor decida a tiempo.
 
 ## Implementación
 
-1. Define los roles: dos categorías, cinco estados, la regla «exactamente
-   una + exactamente uno». Mapea todo a las etiquetas de tu tracker.
-2. Fija las transiciones: ticket nuevo → `needs-triage`; de ahí — a uno de
-   los cuatro desenlaces; `needs-info` vuelve a `needs-triage` tras la
-   respuesta.
-3. Establece el ritual: contexto → «¿ya implementado?» → «¿ya rechazado?» →
-   recomendación al mantenedor → verificación de la afirmación → entrevista
-   si hace falta → desenlace.
-4. Exige la verificación antes del brief: un bug reproducido con su ruta de
-   código da al brief base firme; uno irreproducible es una señal fuerte de
-   `needs-info`.
-5. Plantillas de los desenlaces: el brief — autosuficiente (reproducción,
-   contexto, criterio de listo); las notas de triaje — «qué hemos
-   establecido» más preguntas concretas; el rechazo de un deseo — un
-   registro en `.out-of-scope/` enlazado desde un comentario.
-6. La nota «generado por IA durante el triaje» — al inicio de cada
-   comentario del agente.
-7. Cierra la tubería sobre la ejecución: `ready-for-agent` es la cola de
-   las sesiones autónomas, un ticket por pasada.
+1. Haz corresponder las categorías y los estados con las etiquetas del tracker.
+2. Describe las transiciones, incluido el regreso desde `needs-info` tras la respuesta.
+3. Fija el orden para reunir el contexto, buscar decisiones anteriores y comprobar la afirmación.
+4. Confirma el bug reproduciéndolo antes de preparar el brief del arreglo.
+5. Prepara plantillas para el brief, las preguntas concretas y el registro de un rechazo.
+6. Indica el origen del comentario del agente antes de publicarlo.
+7. Usa `ready-for-agent` como cola, un ticket por pasada.
 
 ## Ejemplo
 
-Llega al tracker: «la búsqueda no funciona». El agente clasifica: sin
-duplicados, nada parecido en la base de rechazos; no logra reproducirlo con
-la descripción — faltan detalles. Recomendación: `bug` + `needs-info`. Tras
-la decisión del mantenedor, en el ticket aparece un comentario con la nota
-de IA: qué se ha establecido (la búsqueda exacta funciona, la de subcadena
-también) y dos preguntas concretas: qué cadena de búsqueda y qué locale.
+Ante el informe «la búsqueda no funciona», el agente prueba la búsqueda normal y no encuentra ningún fallo. Recomienda `bug` y `needs-info`. El mantenedor aprueba pedir la cadena de búsqueda y el locale; el comentario también indica qué casos ya se han comprobado.
 
-El reportero responde: locale turco, una consulta con la «İ» mayúscula. El
-ticket vuelve a `needs-triage`; el agente reproduce el bug — la
-normalización Unicode del indexador — y da forma a `ready-for-agent` con un
-brief: pasos de reproducción, ruta de código, criterio de listo (el test
-fallido de la reproducción pasa). La sesión autónoma nocturna toma el ticket
-por el brief — ya no necesita al autor del ticket.
+El autor indica el locale turco y una consulta con «İ». El agente reproduce un fallo de normalización Unicode y prepara un brief con los datos de entrada, el lugar donde se procesan y el resultado esperado. Tras revisarlo, el mantenedor pasa el ticket a `ready-for-agent`.
 
-Un deseo paralelo, «modo oscuro en las notificaciones por correo», se
-cierra en un minuto: en `.out-of-scope/` está el rechazo del año pasado a la
-personalización de correos con sus razones — `wontfix` con enlace, sin
-discusión nueva.
+Ante una solicitud repetida sobre la personalización de los correos, el agente encuentra el rechazo anterior en _.out-of-scope/_. El mantenedor comprueba si los motivos han cambiado y, si se confirman, cierra la solicitud con un enlace a la decisión.
 
 ## Antipatrones y errores comunes
 
-- **El ticket crudo directo al agente.** Saltarse el triaje significa que
-  el agente completará lo que falta: la forma más cara de descubrir que el
-  bug no se reproduce.
-- **El agente decide destinos.** Una máquina sin árbitro: categorías y
-  estados son recomendaciones, decide el mantenedor. Sobre todo en
-  `wontfix`.
-- **«Aclare, por favor».** Un `needs-info` vago es un «déjeme en paz»
-  educado: las preguntas deben poder responderse.
-- **Rechazo sin registro.** `wontfix` sin base de conocimiento garantiza
-  que la misma petición vuelva en un mes y la discusión se repita.
-- **El brief hueco.** La etiqueta `ready-for-agent` sin brief
-  autosuficiente es el mismo planteamiento crudo, solo que con pegatina
-  verde.
-- **IA oculta.** Comentarios del agente sin la nota socavan la confianza en
-  el tracker; la transparencia es más barata que el descubrimiento.
+- **Arreglo sin comprobación.** El agente puede resolver un problema inventado si la afirmación original no se reprodujo.
+- **Decisión sin el mantenedor.** La recomendación del agente necesita aprobación, sobre todo en un rechazo.
+- **Petición genérica de aclaraciones.** Indica la información concreta necesaria para la comprobación.
+- **Rechazo sin motivo.** La siguiente solicitud parecida volverá a necesitar una discusión completa.
+- **Listo sin brief.** La etiqueta por sí sola no le da requisitos al ejecutor.
+- **Comentario público sin revisar.** El mantenedor responde de la exactitud y la claridad del texto publicado.
 
 ## Usos conocidos
 
-- **Skills de Matt Pocock** — `/triage`: la fuente primaria — los roles y
-  la máquina, el orden «verifica y luego entrevista», los briefs de agente,
-  la base `.out-of-scope/` y el triaje de pull requests como «tickets con
-  código».
-- **El triaje de bugs clásico** — el linaje pre-agente: los procesos de
-  Mozilla y Debian con el rol dedicado de triador y el ciclo de vida de
-  estados; el patrón entrega la parte rutinaria de ese rol al agente.
-- **Las automatizaciones de triaje de GitHub** — bots de etiquetado y
-  autocierre como la forma débil: categorización sin verificación ni
-  briefs.
+- **Las skills de Matt Pocock** implementan los estados, los briefs y la base de rechazos mediante `/triage`.
+- **El bug triage clásico** usa un rol dedicado a preparar los bugs entrantes para el trabajo.
+- **Las automatizaciones de GitHub** ayudan a etiquetar el flujo, pero necesitan comprobaciones adicionales para preparar un brief completo.
 
 ## Patrones relacionados
 
-- [Mapa de investigación](wayfinder.md) — el vecino del tracker con otro
-  objeto: el mapa conduce una gran investigación a su destino, el triaje
-  muele el flujo de entrantes pequeños.
-- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) — el paso de
-  verificación es exactamente eso: reproducir el bug y ejecutar el diff
-  antes de creer la afirmación.
-- [Vocabulario del dominio](domain-context-file.md) — la clasificación caza
-  duplicados por conceptos del dominio, no por las palabras de la petición;
-  sin lenguaje canónico la comprobación «¿ya implementado?» está ciega.
-- [Una funcionalidad a la vez](one-feature-at-a-time.md) — la regla de
-  ejecución de la cola `ready-for-agent`: un ticket por pasada.
+- [Mapa de investigación](wayfinder.md) organiza las preguntas de una iniciativa grande.
+- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) ayuda a comprobar la afirmación antes de la ejecución.
+- [Vocabulario del dominio](domain-context-file.md) permite buscar duplicados por el sentido de los conceptos.
+- [Una funcionalidad a la vez](one-feature-at-a-time.md) limita el trabajo sobre la cola lista.

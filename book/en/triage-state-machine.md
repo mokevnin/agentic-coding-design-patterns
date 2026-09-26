@@ -2,17 +2,14 @@
 group: project-org
 status: draft
 related: [wayfinder, give-agent-a-way-to-verify, domain-context-file]
-source_rev: f3e9a31e92847306a9a71e89045dfa51bd342ff6
+source_rev: 6dad340eb767f81de0fb2e097944b3a9324f5c9d
 ---
 
 # Issue Triage
 
 ## Intent
 
-Move incoming issues through a state machine of role labels — from "needs
-sorting" to a finished agent-ready brief or a "for a human" mark — so that
-by the time of execution every ticket is categorized, verified, and
-specified. The agent drives the sorting; the maintainer decides the fate.
+Prepare incoming issues for execution through explicit triage states. The agent verifies the request and drafts a brief, and the maintainer decides whether to hand the issue to an agent, to a human, or to reject it.
 
 ## Also known as
 
@@ -20,230 +17,123 @@ Triage state machine; `/triage` in Matt Pocock's skills.
 
 ## Problem
 
-The tracker's inbox is raw material, not tasks: bug reports without
-reproduction steps, feature wishes, duplicates of what already exists,
-repeat requests for what was already rejected, external pull requests of
-unknown quality. Both usual recipients handle this stream poorly:
+An incoming bug report may contain nothing but the phrase "search doesn't work". The implementer knows neither the query, nor the locale, nor the expected result.
 
-- Hand a raw ticket to an agent — and it helpfully fills in the missing
-  parts: "fixes" an unreproduced bug, implements what already exists in the
-  codebase under another name, or reopens an argument closed half a year
-  ago.
-- Have the maintainer sort everything by hand — and their time goes not to
-  decisions but to archaeology: reproducing, hunting duplicates, coaxing
-  details out of reporters.
-- Without fixed states nobody knows where anything stands: which tickets
-  are sorted, which are waiting, which can be picked up.
+If you hand the fix to an agent right away, it will start picking the problem by guesswork. Even passing tests for such a fix won't confirm that the original failure is gone. The maintainer needs to gather the missing information and reproduce the problem. This part of the work can be delegated to the agent. Explicit states show which request has already been verified and which is still waiting for a reply.
 
 ## Solution
 
-A small state machine of labels, and an agent that walks every ticket
-through it.
+Define a small set of states and the order in which each ticket is checked.
 
-**The roles.** Every triaged ticket carries exactly one category — `bug` or
-`enhancement` — and exactly one state:
+In this variant of the process, a triaged ticket has one category (`bug` or `enhancement`) and one state.
 
-- `needs-triage` — awaiting sorting;
-- `needs-info` — waiting on the reporter; returns to `needs-triage` once
-  the reply arrives;
-- `ready-for-agent` — fully specified, a brief is attached, an autonomous
-  agent can take the work;
-- `ready-for-human` — needs a person; the same brief structure plus an
-  explicit reason why it can't be delegated: judgment calls, external
-  access, manual testing;
-- `wontfix` — will not be actioned; the reason is recorded.
+- `needs-triage` means it is waiting to be sorted.
+- `needs-info` means it is waiting for specific information from the reporter. After the reply, the ticket returns to `needs-triage`.
+- `ready-for-agent` means a verified brief exists for autonomous work.
+- `ready-for-human` indicates that a person needs to be involved and keeps the reason for that decision.
+- `wontfix` records a rejection with its justification.
 
-An external pull request is an issue with attached code: the same roles,
-the same machine.
+An external pull request goes through the same sorting, with an additional check of the attached code.
 
-**The sorting ritual.** The agent gathers the context (the body, the
-comments, the codebase — through the
-[Domain Vocabulary](domain-context-file.md) and the ADRs) and runs two
-checks before anything else: *is it already implemented* — searching by
-domain concepts, not the request's wording — and *was it already rejected*
-— checking the rejection knowledge base. It then recommends a category and
-a state — and waits for the maintainer's decision. Next comes verifying the
-claim: a bug is reproduced from the reporter's steps, a pull request's diff
-is run through the tests. If the request needs fleshing out — an interview
-with the maintainer, one question at a time. The outcome is applied as
-labels, a brief, or a closure.
+The agent reads the description, the comments, and the code, using the [Domain Vocabulary](domain-context-file.md) and the ADRs. It looks for an existing implementation and earlier decisions on similar requests. Then it verifies the claim, for example by reproducing the bug, and recommends a state. The maintainer approves the result; when information is missing, the agent prepares specific questions.
 
-**The memory of rejections.** Rejected wishes are recorded in a knowledge
-base in the repository (`.out-of-scope/`): the next similar request is cut
-off with a link, not another discussion.
+Save the reasons for rejected requests in _.out-of-scope/_. When a similar request comes in, the agent can show the earlier decision, and the maintainer checks whether it still applies.
 
-Everything the agent posts to a public tracker starts with a "generated by
-AI during triage" note — the transparency is non-negotiable.
+In the process described here, the agent's comments are marked as generated by AI during triage. The maintainer reviews their content before publishing.
 
 ## Structure
 
+The diagram is limited to the triage stage. Its end means handing a prepared issue to an implementer or rejecting it.
+
 ```mermaid
 ---
-title: category — exactly one; state — exactly one
+title: triage ends with a handoff or a rejection
 ---
 stateDiagram-v2
-  direction LR
+  direction TB
   state "needs-triage" as triage
   state "needs-info" as info
   state "ready-for-agent" as agent
   state "ready-for-human" as human
   state "wontfix" as wontfix
-
   class agent accent
   class wontfix warn
-
-  [*] --> triage: an issue or an external PR
-  triage --> info: not enough data
-  info --> triage: the reporter replied
-  triage --> agent: a self-contained brief attached
-  triage --> human: a brief + why it can't be delegated
-  triage --> wontfix: the rejection recorded in the KB
-  agent --> [*]
-  human --> [*]
-  wontfix --> [*]
-
-  note right of triage
-    every ticket: context, verify
-    the claim, interview, outcome
-  end note
+  [*] --> triage
+  triage --> info: information needed
+  info --> triage: reply received
+  triage --> agent: brief ready
+  triage --> human: a human is needed
+  triage --> wontfix: rejection justified
+  agent --> [*]: hand to an agent
+  human --> [*]: hand to a human
+  wontfix --> [*]: save the reason
 ```
 
-An incoming ticket lands in `needs-triage` — the only state where the
-sorting work happens. Out of it lead four exits: a brief for an agent, a
-brief for a human with the reason it can't be delegated, specific questions
-to the reporter with a return after the reply — and a rejection that
-settles into the knowledge base. At the bottom is the ritual the agent runs
-for every ticket before an exit is chosen; the exit decision stays with the
-maintainer.
+The maintainer approves a transition after the claim is verified, the context is clarified, and the brief is prepared. When information is missing, the ticket waits for a reply and goes through sorting again. The issue's category is stored separately from the state shown here; being ready to hand to an implementer does not yet mean the issue itself is done.
 
 ## Participants / Components
 
-- **The label machine** — the categories and the states; exactly one of
-  each per ticket.
-- **The triaging agent** — gathers context, checks, reproduces,
-  recommends, formats the outcome.
-- **The maintainer** — the arbiter: accepts recommendations, decides fates,
-  can move any ticket to any state directly.
-- **The reporter** — the source of details; receives specific questions,
-  not "please clarify".
-- **The brief** — the outcome artifact: a self-contained statement of the
-  work an agent can execute without the ticket's author.
-- **The rejection base** — recorded refusals with reasons; the filter for
-  repeat requests.
+- **The states** show whether a ticket is ready for the next action.
+- **The agent** gathers information, verifies the claim, and prepares a recommendation.
+- **The maintainer** approves the decision on the issue.
+- **The reporter** supplies the missing details.
+- **The brief** gives a self-contained statement of the work and a done criterion.
+- **The rejection base** keeps the reasons for earlier decisions.
 
 ## When to use
 
-- An open-source or team project with an inbox stream: bugs, wishes,
-  external pull requests.
-- Autonomous agents pick work from the tracker: `ready-for-agent` is their
-  queue, and the quality of the briefs determines the quality of the
-  results.
-- Maintainer time is the bottleneck: the sorting is delegated to the agent,
-  and only the decisions remain with the human.
+- The project regularly receives bugs, suggestions, and external PRs.
+- Autonomous agents pick work from the tracker.
+- The maintainer spends a lot of time gathering information before deciding.
 
-For a personal project with three tickets a month the machine is overkill —
-a head and one label suffice.
+With a few tickets a month, the full set of states may be overkill.
 
 ## Consequences and trade-offs
 
-- ➕ Only the verified and the specified reaches the implementer: the agent
-  receives a brief, not guesses.
-- ➕ Duplicates and repeats are cut off mechanically: the
-  "already implemented" check and the rejection base work before the
-  discussion, not after.
-- ➕ The stream's state is visible from the labels: what's sorted, what's
-  waiting, what's ready to take — without reading the tickets.
-- ➕ Verification before the brief: an unreproducible bug won't ride to
-  execution.
-- ➖ Setup: the labels, their mapping, the brief templates, the rejection
-  base — infrastructure that has to be built and maintained.
-- ➖ Agent comments on a public tracker are a matter of tact: the AI note
-  is mandatory, and the tone is the maintainer's responsibility too.
-- ➖ The machine makes no decisions: without an arbiter it degenerates into
-  either a bottleneck or the agent's self-rule.
+- ➕ The implementer receives a verified statement of the work.
+- ➕ Earlier decisions help sort repeat requests.
+- ➕ The labels show which issue is waiting for clarification and which is ready for work.
+- ➕ Reproduction provides the basis for the fix criterion.
+- ➖ The labels, templates, and decision base need maintenance.
+- ➖ Public comments require a check of their content and tone.
+- ➖ The process depends on the maintainer deciding in time.
 
 ## Implementation
 
-1. Define the roles: two categories, five states, the "exactly one + 
-   exactly one" rule. Map them onto your tracker's labels.
-2. Fix the transitions: a new ticket → `needs-triage`; from there — into
-   one of the four outcomes; `needs-info` returns to `needs-triage` after
-   the reply.
-3. Set the sorting ritual: context → "already implemented?" → "already
-   rejected?" → a recommendation to the maintainer → verify the claim → an
-   interview if needed → the outcome.
-4. Demand verification before the brief: a reproduced bug with a code path
-   gives the brief solid ground; an unreproducible one is a strong
-   `needs-info` signal.
-5. Templates for the outcomes: the brief — self-contained (reproduction,
-   context, the done criterion); triage notes — "what we've established"
-   plus specific questions; an enhancement rejection — a record in
-   `.out-of-scope/` linked from a comment.
-6. The "generated by AI during triage" note — at the top of every agent
-   comment.
-7. Close the pipeline onto execution: `ready-for-agent` is the queue for
-   autonomous sessions, one ticket per pass.
+1. Map the categories and states onto the tracker's labels.
+2. Describe the transitions, including the return from `needs-info` after a reply.
+3. Set the order for gathering context, searching for earlier decisions, and verifying the claim.
+4. Confirm a bug by reproducing it before preparing a brief for the fix.
+5. Prepare templates for the brief, the specific questions, and the rejection record.
+6. Indicate the origin of an agent comment before publishing it.
+7. Use `ready-for-agent` as a queue, one ticket per pass.
 
 ## Example
 
-An issue lands in the tracker: "search doesn't work". The agent sorts it:
-no duplicates, nothing similar in the rejection base; it can't reproduce
-from the description — no details. The recommendation: `bug` +
-`needs-info`. After the maintainer's decision, a comment with the AI note
-appears on the ticket: what's been established (exact-match search works,
-substring search works) and two specific questions: what query string and
-what locale.
+For the report "search doesn't work", the agent checks ordinary search and finds no failure. It recommends `bug` and `needs-info`. The maintainer approves asking for the query string and the locale; the comment also says which cases have already been checked.
 
-The reporter replies: Turkish locale, a query with a capital "İ". The
-ticket returns to `needs-triage`; the agent reproduces the bug — Unicode
-normalization in the indexer — and formats `ready-for-agent` with a brief:
-reproduction steps, the code path, the done criterion (the failing test
-from the reproduction passes). The overnight autonomous session picks the
-ticket up by the brief — it no longer needs the ticket's author.
+The reporter names the Turkish locale and a query with "İ". The agent reproduces a Unicode normalization failure and prepares a brief with the input data, the place where it is processed, and the expected result. After reviewing it, the maintainer moves the ticket to `ready-for-agent`.
 
-A parallel wish, "dark mode for email notifications", closes in a minute:
-`.out-of-scope/` holds last year's rejection of email customization with
-its reasons — `wontfix` with a link, no new discussion.
+For a repeat request about customizing emails, the agent finds the earlier rejection in _.out-of-scope/_. The maintainer checks whether the grounds have changed and, if they still hold, closes the request with a link to the decision.
 
 ## Anti-patterns and common mistakes
 
-- **A raw ticket straight to the agent.** Skipping triage means the agent
-  fills in what's missing: the most expensive way to learn a bug doesn't
-  reproduce.
-- **The agent decides fates.** A machine without an arbiter: categories and
-  states are recommendations, the maintainer decides. Especially for
-  `wontfix`.
-- **"Please clarify."** A vague `needs-info` is a polite "go away":
-  questions must be answerable.
-- **A rejection without a record.** `wontfix` without the knowledge base
-  guarantees the same request returns in a month and the discussion
-  repeats.
-- **A hollow brief.** A `ready-for-agent` label without a self-contained
-  brief is the same raw statement, just with a green sticker.
-- **Hidden AI.** Agent comments without the note undermine trust in the
-  tracker; transparency is cheaper than exposure.
+- **A fix without verification.** The agent may solve an imagined problem if the original claim was not reproduced.
+- **A decision without the maintainer.** The agent's recommendation needs approval, especially for a rejection.
+- **A generic request for clarification.** Name the specific information needed for verification.
+- **A rejection without a reason.** The next similar request will again need a full discussion.
+- **Readiness without a brief.** A label by itself does not give the implementer requirements.
+- **An unreviewed public comment.** The maintainer is responsible for the accuracy and clarity of the published text.
 
 ## Known uses
 
-- **Matt Pocock's skills** — `/triage`: the primary source — the roles and
-  the machine, the "verify, then interview" order, agent briefs, the
-  `.out-of-scope/` base, and triaging pull requests as "issues with code".
-- **Classic bug triage** — the pre-agent lineage: Mozilla's and Debian's
-  processes with a dedicated triager role and a status lifecycle; the
-  pattern hands the routine part of that role to an agent.
-- **GitHub triage automations** — labeling and auto-closing bots as the
-  weak form: categorization without verification or briefs.
+- **Matt Pocock's skills** implement the states, the briefs, and the rejection base through `/triage`.
+- **Classic bug triage** uses a dedicated role to prepare incoming bugs for work.
+- **GitHub automations** help label the stream but need additional checks to prepare a full brief.
 
 ## Related patterns
 
-- [Investigation Map](wayfinder.md) — the tracker neighbor with a
-  different subject: the map leads a large investigation to a destination,
-  triage grinds the stream of small incomings.
-- [Feedback Loop](give-agent-a-way-to-verify.md) — the verification step is
-  exactly it: reproducing the bug and running the diff before the claim is
-  believed.
-- [Domain Vocabulary](domain-context-file.md) — the sorting hunts
-  duplicates by domain concepts, not the request's wording; without a
-  canonical language the "already implemented" check is blind.
-- [One Feature at a Time](one-feature-at-a-time.md) — the execution rule
-  for the `ready-for-agent` queue: one ticket per pass.
+- [Investigation Map](wayfinder.md) organizes the questions of a large initiative.
+- [Feedback Loop](give-agent-a-way-to-verify.md) helps verify a claim before execution.
+- [Domain Vocabulary](domain-context-file.md) lets you search for duplicates by the meaning of concepts.
+- [One Feature at a Time](one-feature-at-a-time.md) limits the work on the ready queue.

@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [reflection, give-agent-a-way-to-verify, tdd-with-agent]
-source_rev: 58f57eb48a3a03000812870279cef64a7847f4d8
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Writer and Reviewer
@@ -105,7 +105,7 @@ For a small edit, you can start with [Reflection](reflection.md) and automated c
 
 ## Example
 
-Session A has implemented a rate limiter. The developer hands the result over for independent review.
+Session A has implemented a rate limiter. You hand the result over for independent review.
 
 > Review the rate limiter diff in a fresh context against PLAN.md. Find requirement violations and behavior bugs. For each finding, show the conditions under which it shows up and the code that causes it.
 

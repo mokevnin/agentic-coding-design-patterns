@@ -2,89 +2,61 @@
 kind: anti-pattern
 status: draft
 related: [give-agent-a-way-to-verify, feature-list-harness, tdd-with-agent]
-source_rev: 0467919769ae9e07e7dfb6a41d92d54afd014895
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Premature Success
 
 ## Also known as
 
-Premature success, the "works on my machine" of the agent era.
+Premature success, the agentic era's "works on my machine".
 
 ## Context
 
-The agent has finished a feature: the unit tests are green, curl returned a
-200, the build passed. It reports "done", the developer nods and moves on —
-or an autonomous session flips the status and takes the next task.
+The unit tests pass, curl returns 200, the build succeeds. The agent declares the feature done and takes the next task.
 
 ## Problem
 
-The work is declared done without an end-to-end check as a user. Units
-verify pieces, curl verifies an endpoint — nobody verified that the feature
-works whole: from the click in the interface to the result on the screen.
+Yet nobody has run the user scenario end to end. Checks of individual functions and of the endpoint can miss a bug in how data passes between the interface and the server.
 
 ## Why people do it
 
-- Green tests look like proof — though they verify only what is written in
-  them.
-- The end-to-end check is expensive: bringing up the environment and walking
-  the scenario by hand or via browser automation takes longer than running
-  the units.
-- The agent is sincerely confident in the success: it isn't lying, it is
-  extrapolating.
-- "It compiles and the tests pass" is the habitual human criterion — carried
-  over to an executor who writes both the code and the tests.
+- Passing tests look like sufficient proof, even though they cover only the cases they were given.
+- Setting up the environment and an end-to-end scenario takes extra time.
+- The agent extends the success of individual checks to the whole feature.
+- The team treats passing tests as the definition of done without checking whether the tests themselves are complete.
 
 ## Consequences
 
-- ➖ The feature "works" until the first user: the gap is discovered in
-  production or at the demo — the most expensive points.
-- ➖ The [Feature List](feature-list-harness.md) lies: a `passing` status
-  backed by units wouldn't survive a single click.
-- ➖ Trust in the agent's reports breaks — and with it all autonomous work:
-  "done" stops meaning anything.
-- ➖ Integration gaps accumulate: every "finished" feature adds its own, and
-  they have to be untangled in bulk.
+- ➖ A user or a demo is the first to hit the integration failure.
+- ➖ The status in the [feature list](feature-list-harness.md) does not match the product's behavior.
+- ➖ You have to re-check the agent's reports by hand.
+- ➖ Several missed integration bugs make later diagnosis harder.
 
 ## Signs
 
-- The agent's report carries no evidence: no end-to-end run output, no
-  screenshot — only words.
+- The report has no end-to-end check result.
 - "Verified" means "the unit tests passed".
-- Nobody has opened the application: not the agent through a browser, not a
-  human by hand.
-- The demo is the feature's first showing.
+- Nobody has opened the application since the implementation.
+- The feature is shown for the first time at the demo.
 
 ## A better way
 
-Separate "the code is written" from "the feature works" — and close the gap
-with a [Feedback Loop](give-agent-a-way-to-verify.md) carrying an end-to-end
-check: the agent walks the scenario as a user — for the web, through a
-browser with screenshots — and presents the evidence. The
-[Feature List](feature-list-harness.md) builds this rule in: only the
-end-to-end run flips a status. Units and [TDD](tdd-with-agent.md) remain —
-they catch regressions of the pieces — but they are not the work's finale.
+Include the user scenario in the [feedback loop](give-agent-a-way-to-verify.md). The agent should walk through it via the real interface and save the result. In the [feature list](feature-list-harness.md), tie the status to this check. Unit tests and [TDD](tdd-with-agent.md) continue to protect individual pieces of behavior.
 
 ## Example
 
 **Before:**
 
-> — The feature is done: all 14 tests pass.
+> The feature is done, all 14 tests pass.
 
 **After:**
 
-> Walk the scenario as a user: create a schedule through the UI, wait for
-> the report email in the test inbox, attach screenshots of both steps.
-> Done is when the scenario passes — not when the units are green.
+> Create a schedule through the UI, wait for the report email in the test inbox, and attach screenshots of both steps. Finish the task once this scenario passes.
 
 ## Related patterns and anti-patterns
 
-- [Feedback Loop](give-agent-a-way-to-verify.md) — the antidote: a check
-  with evidence instead of a "done" report.
-- [Feature List](feature-list-harness.md) — institutionalizes the rule: an
-  end-to-end run flips the status, not a feeling.
-- [TDD with an Agent](tdd-with-agent.md) — the units are needed, but they
-  insure the pieces, not the finale: a green red-green cycle doesn't cancel
-  the end-to-end check.
-- [Vibe Coding](vibe-coding.md) — the kindred spirit: there the code goes
-  unread, here the behavior goes unchecked.
+- [Feedback Loop](give-agent-a-way-to-verify.md) ties readiness to evidence from verification.
+- [Feature List](feature-list-harness.md) stores the statuses of verified scenarios.
+- [TDD with an Agent](tdd-with-agent.md) helps verify individual behavior before implementation.
+- [Vibe Coding](vibe-coding.md) describes a similar loss of control when accepting unverified code.

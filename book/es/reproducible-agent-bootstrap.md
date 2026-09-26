@@ -1,122 +1,124 @@
 ---
 group: project-org
-status: translated
+status: draft
 related: [isolated-parallel-work, progress-file, give-agent-a-way-to-verify]
-source_rev: f21809796e9353bbe866014510bf4a1cf5ea3b6d
+source_rev: 959018d2502c29a9c2d8977271bb39cc6e903d87
 ---
 
 # Inicio reproducible del agente
 
 ## Propósito
 
-Dar a cada sesión o worktree nuevo un comando que prepare dependencias y configuración local segura, y después demuestre que el estado inicial funciona. El agente parte de un baseline verde conocido en vez de gastar contexto en arqueología de arranque.
+Dar a una sesión nueva un único comando que prepare el entorno y verifique el estado inicial. Tras ejecutarlo, el agente sabe que el escenario base funciona y puede comparar con él los cambios posteriores.
 
 ## También conocido como
 
-Reproducible agent bootstrap, configuración con un comando, script inicializador, baseline verde.
+Reproducible agent bootstrap, one-command setup, initializer script, green baseline.
 
 ## Problema
 
-Una sesión nueva abre el repositorio y no sabe cómo ponerlo en marcha. El README enumera cinco comandos, uno está obsoleto, el `.env` debe reconstruirse desde un chat, la base necesita una migración manual y la verificación exige otro servicio. El agente prueba combinaciones, cambia configuración por accidente y termina ante una prueba fallida.
+Una sesión nueva abre el repositorio y no sabe cómo ponerlo en marcha. El README enumera cinco comandos, algunos ya obsoletos; el _.env_ hay que montarlo a partir de un mensaje del chat; la base de datos espera una migración manual, y la comprobación necesita un servicio aparte. El agente prueba variantes, cambia la configuración por accidente y veinte minutos después obtiene un test que falla.
 
-Ahora nadie sabe si falló la tarea, el agente o el entorno inicial. Empezar sobre un baseline rojo mezcla defectos del producto con defectos de instalación. Cada worktree repite el coste, así que el paralelismo multiplica preparación en vez de rendimiento.
+Si el test ya fallaba al principio, más tarde cuesta determinar la causa de un fallo nuevo. En un worktree separado la preparación manual se repite y encarece cada tarea paralela.
 
-«Instalar dependencias» no basta. Estar listo significa que existen las herramientas, hay configuración segura, los servicios o fixtures están preparados y pasa una comprobación smoke mínima de extremo a extremo.
+Un comando de «instalar dependencias» no basta. Estar listo significa que las herramientas necesarias están disponibles, se ha creado una configuración segura, los servicios están levantados o sustituidos por fixtures y pasa una comprobación smoke mínima de extremo a extremo.
 
 ## Solución
 
-Ofrece un único punto de entrada idempotente —como `make setup` o `./scripts/bootstrap`— que transforme un entorno limpio soportado en un **baseline verde verificado**.
+Prepara un comando idempotente, por ejemplo `make setup` o `./scripts/bootstrap`, que lleve un entorno soportado a un **estado inicial verificado**.
 
-El bootstrap tiene cuatro fases:
+El bootstrap ejecuta cuatro acciones en orden.
 
-1. **Validar prerrequisitos:** comprobar versiones de runtime y herramientas en vez de confiar en un PATH casual.
-2. **Preparar estado local:** dependencias, `.env` seguro, fixtures, migraciones y recursos propios de la instancia.
-3. **Iniciar o describir servicios:** el comando de arranque es conocido y no tiene pasos interactivos.
-4. **Demostrar preparación:** una comprobación smoke recorre un camino clave de usuario y devuelve un código claro.
+1. **Comprueba los requisitos previos**, incluidas las versiones del runtime y de las herramientas del sistema.
+2. **Prepara el estado local** con dependencias, configuración segura y datos de prueba.
+3. **Arranca los servicios** o indica un comando de arranque no interactivo conocido.
+4. **Verifica la preparación** con un test smoke corto del escenario clave.
 
-El comando debe poder repetirse con seguridad. No necesita secretos de producción, no toca datos de usuario y no oculta un baseline rojo. Si falta algo, el error indica la corrección concreta.
+El script debe poder ejecutarse de nuevo sin riesgo. No requiere secretos de producción, no toca datos de usuario y no enmascara un baseline rojo. Si falta un requisito previo, el error nombra el comando concreto que lo corrige.
 
-Bootstrap se ocupa del arranque, no de toda la matriz de pruebas, y no debe actualizar dependencias por su cuenta. La reproducibilidad requiere versiones fijadas y el mismo resultado hoy y en el siguiente worktree.
+El bootstrap verifica el estado inicial y usa versiones fijadas de las dependencias. La suite completa de tests se ejecuta aparte, según lo que exija la tarea.
 
 ## Estructura
 
+Una sesión nueva llega con un estado local desconocido e invoca un único comando.
+
 ```mermaid
 ---
-title: un comando convierte el estado local desconocido en un baseline verde
+title: un comando convierte un estado local desconocido en un baseline verde
 ---
 flowchart TB
   fresh["Sesión nueva<br/>estado desconocido<br/>make setup"]:::warn
-  validate["Validar<br/>versiones del runtime<br/>herramientas necesarias<br/>dependencias fijadas"]
-  prepare["Preparar<br/>configuración segura<br/>fixtures + migraciones<br/>recursos aislados"]
+  validate["Validación<br/>versiones del runtime<br/>herramientas necesarias<br/>dependencias bloqueadas"]
+  prepare["Preparación<br/>configuración segura<br/>fixtures + migraciones<br/>recursos aislados"]
   smoke["Comprobación smoke<br/>interfaz real<br/>código de salida claro"]
-  green["Verde<br/>empieza el trabajo"]:::accent
+  green["Verde<br/>empieza el trabajo en la tarea"]:::accent
   fresh --> validate --> prepare --> smoke --> green
-  note["cualquier fallo antes del verde es del entorno;<br/>cualquier fallo nuevo después es del cambio"]:::accent
+  note["primero se registra el resultado inicial;<br/>los fallos nuevos se comparan con él"]:::accent
   smoke -.- note
 ```
 
-Una sesión nueva con estado desconocido invoca un comando. Este valida herramientas, crea estado seguro y ejecuta una comprobación smoke. Solo el verde abre el trabajo; el rojo lo detiene y separa el fallo del entorno del futuro diff.
+El comando valida las herramientas, crea un estado seguro y ejecuta la comprobación smoke. Solo un resultado verde abre el trabajo en la tarea; uno rojo lo detiene y separa el problema del entorno del futuro diff.
 
 ## Participantes / Componentes
 
-- **Base soportada** — versiones explícitas de SO, runtime y herramientas.
-- **Comando bootstrap** — punto de entrada único e idempotente.
-- **Lockfile** — fija las versiones permitidas de dependencias.
-- **Configuración segura** — valores locales y fixtures sin secretos de producción.
-- **Recursos aislados** — puertos, bases y nombres de contenedores de esta instancia.
-- **Comprobación smoke** — prueba rápida de funcionamiento mínimo.
-- **Agente** — ejecuta bootstrap antes de profundizar y registra el resultado como baseline.
+- **Base soportada** define el sistema operativo y las versiones de las herramientas.
+- **Comando de bootstrap** prepara el entorno de forma repetible.
+- **Lockfile** fija las versiones de las dependencias.
+- **Configuración segura** usa valores locales y datos de prueba.
+- **Recursos aislados** separan los puertos, las bases y los contenedores de cada instancia.
+- **Comprobación smoke** verifica el escenario de funcionamiento mínimo.
+- **Agente** ejecuta la preparación antes de implementar y guarda el resultado.
 
 ## Cuándo aplicarlo
 
-- Desarrolladores, agentes, jobs de CI o worktrees nuevos abren el repositorio con frecuencia.
-- El arranque requiere más de un comando obvio o servicios externos.
-- Las sesiones son cortas y la preparación repetida consume contexto apreciable.
+- El repositorio lo abren con regularidad nuevos desarrolladores, agentes, jobs de CI o worktrees.
+- Arrancarlo requiere más de un comando obvio o servicios externos.
+- Las sesiones del agente son cortas, y repetir la configuración se come notablemente el contexto.
 - Las tareas paralelas necesitan instancias locales independientes.
-- A menudo se descubre que las pruebas ya fallaban antes del cambio.
+- A menudo resulta que los tests ya fallaban antes de empezar el cambio.
 
-Para una biblioteca sin dependencias de runtime, bootstrap puede ser una línea. El patrón exige un punto de entrada verificado, no un script grande.
+Para una biblioteca sencilla basta un comando corto de instalación y comprobación. El alcance del bootstrap depende de cómo esté construido el proyecto.
 
 ## Consecuencias y compromisos
 
-- ➕ Un fallo antes del verde pertenece al entorno; uno nuevo después pertenece al cambio.
-- ➕ Las sesiones se orientan antes y gastan contexto en el producto.
-- ➕ Worktrees y CI siguen el mismo camino, reduciendo «funciona en mi máquina».
-- ➕ La documentación de arranque se prueba al ejecutarse.
-- ➖ Bootstrap se convierte en un producto dentro del producto y necesita mantenimiento.
-- ➖ La preparación completa puede ser lenta; caché y un smoke enfocado ayudan sin saltar fases.
-- ➖ La idempotencia es difícil con bases y servicios; una repetición descuidada puede borrar datos.
-- ➖ Los fixtures locales pueden diferir demasiado de producción y dar falsa confianza.
+- ➕ El resultado inicial ayuda a separar los fallos existentes de los que aparecen tras el cambio.
+- ➕ Una sesión nueva se orienta antes y gasta el contexto en el trabajo de producto.
+- ➕ Los worktrees y la CI reciben el mismo camino de preparación, lo que reduce el efecto «en mi máquina funciona».
+- ➕ Ejecutarlo en un entorno limpio comprueba que el procedimiento de preparación sigue vigente.
+- ➖ El bootstrap se convierte en un producto dentro del producto y necesita mantenimiento cuando cambia el entorno.
+- ➖ La preparación completa puede ser lenta; hacen falta caché y un smoke rápido aparte, pero sin saltarse pasos a escondidas.
+- ➖ La idempotencia es difícil con bases de datos y servicios externos; una repetición descuidada puede destruir datos.
+- ➖ Los fixtures locales pueden diferir demasiado de producción y dar una falsa confianza.
 
 ## Implementación
 
-1. Escribe el camino desde un checkout limpio hasta la primera acción de usuario exitosa. Elimina pasos que solo viven en notas personales.
-2. Fija versiones de runtime y dependencias mediante lockfiles. Rechaza versiones incompatibles pronto y con un error útil.
-3. Crea configuración desde un ejemplo seguro. No copies tokens reales ni sobrescribas un `.env` existente implícitamente.
-4. Haz los pasos idempotentes: repetir confirma o actualiza de forma segura sin duplicar datos.
-5. Aísla la instancia: deriva base, puerto y proyecto Compose del nombre del worktree o de un parámetro.
-6. Termina con un smoke corto a través de la interfaz del usuario: HTTP, CLI o navegador.
-7. Devuelve estado distinto de cero ante cualquier fase incompleta e imprime el siguiente paso seguro.
-8. Ejecuta bootstrap en CI desde un entorno limpio para que no caduque sin ser visto.
+1. Anota el camino desde un checkout limpio hasta la primera acción de usuario exitosa. Elimina todos los pasos que solo viven en notas personales.
+2. Fija las versiones del runtime y de las dependencias con un lockfile. Comprueba al principio las versiones incompatibles, con un error comprensible.
+3. Crea la configuración a partir de un ejemplo seguro. No copies tokens reales ni sobrescribas un _.env_ existente sin una decisión explícita.
+4. Haz que repetir la ejecución sea seguro. Debe confirmar el estado necesario sin duplicar datos.
+5. Define la base, el puerto y el proyecto de Compose mediante un parámetro de instancia o el nombre del worktree.
+6. Termina con un test smoke a través de la interfaz de usuario del sistema, por ejemplo una petición HTTP o un comando CLI.
+7. Devuelve un código distinto de cero si alguna fase queda incompleta e imprime el siguiente paso seguro.
+8. Ejecuta el bootstrap en la CI sobre un entorno limpio para que el comando no se degrade sin que nadie lo note.
 
 ## Ejemplo
 
-Un servicio expone un comando:
+A continuación se muestra el esqueleto de un comando común de preparación de un servicio.
 
 ```make
 setup:
 	pnpm install --frozen-lockfile
-	cp -n .env.example .env.local || true
+	if [ ! -e .env.local ]; then cp .env.example .env.local; fi
 	docker compose up -d db
 	pnpm db:migrate
 	pnpm smoke
 ```
 
-El ejemplo muestra la forma, pero necesita endurecerse: `cp -n` no debe ocultar configuración inválida, el proyecto Compose y el puerto deben parametrizarse, y smoke debe esperar la base con timeout limitado.
+En un proyecto real hay que afinar este esqueleto. La condición conserva un archivo de configuración existente, y un error al copiar detiene `make`. El puerto y el proyecto de Compose deben diferir entre worktrees, y el test smoke debe esperar a que la base esté lista con un tiempo límite acotado.
 
-El agente empieza así:
+Una vez añadidas la comprobación de la versión del runtime y la generación del informe, el bootstrap puede mostrar el resultado en el siguiente formato. Es una muestra del informe deseado; el esqueleto de arriba todavía no lo imprime.
 
-```text
+```console
 $ make setup
 runtime: node 24.8.0 ✓
 dependencies: lockfile unchanged ✓
@@ -125,30 +127,30 @@ smoke: create and read note ✓
 baseline: green
 ```
 
-Si smoke falla antes de editar, el agente no inicia una funcionalidad y registra el problema del entorno aparte. Si la misma comprobación falla después, el límite causal es conocido.
+Si el test smoke falla antes de cualquier cambio, el agente registra el problema preexistente. Si el fallo apareció después de la implementación, empieza a investigar por el diff nuevo, teniendo en cuenta la posibilidad de un test inestable o de un cambio en el entorno externo.
 
 ## Antipatrones y errores comunes
 
-- **README en vez de comando.** Cinco pasos manuales divergen y se ejecutan distinto cada vez.
-- **Solo instalación.** Hay paquetes, pero no se verifican configuración, base ni camino de usuario.
-- **Secretos de producción.** El arranque local exige un token amplio de producción.
-- **Setup no idempotente.** La segunda ejecución duplica fixtures, reinicia datos o rompe la primera.
-- **Verde a cualquier precio.** `|| true` oculta un error y llama exitoso a un arranque parcial.
-- **Versiones flotantes.** El mismo comando instala mañana otro conjunto de dependencias.
-- **Recursos compartidos.** Todos los worktrees usan una base y un puerto, y chocan.
-- **Suite completa pesada.** Setup tarda una hora cuando un smoke de cinco minutos demuestra el arranque; la gente deja de ejecutarlo.
+- **README en lugar de un comando.** Cinco pasos manuales se alejan de la realidad y se ejecutan cada vez de forma algo distinta.
+- **Solo install.** Los paquetes están instalados, pero la configuración, la base y el camino del usuario no se han comprobado.
+- **Secretos de producción.** Para arrancar en local se exige un token de producción con permisos amplios.
+- **Setup no idempotente.** La segunda ejecución duplica los fixtures, reinicia la base o rompe la primera.
+- **Verde a cualquier precio.** `|| true` se traga un error significativo y declara exitoso un arranque incompleto.
+- **Versiones flotantes.** El mismo comando instala hoy un conjunto de dependencias distinto del de ayer.
+- **Recursos compartidos.** Todos los worktrees usan la misma base y el mismo puerto, así que las sesiones independientes se estorban entre sí.
+- **Ejecución completa pesada.** El setup tarda una hora aunque un smoke de cinco minutos basta para demostrar el arranque; los desarrolladores dejan de ejecutarlo.
 
 ## Usos conocidos
 
-- **El harness de Anthropic para agentes de larga duración** usa un agente inicializador que crea `init.sh`; cada sesión posterior inicia el servidor y ejecuta una prueba end-to-end básica antes de trabajar.
-- **Los contenedores de desarrollo** codifican runtime, paquetes y comandos de preparación en configuración versionada.
-- **CI desde un checkout limpio** demuestra continuamente que la instalación funciona sin el estado de la máquina del autor.
+- **El harness de Anthropic para agentes de larga duración** usa un initializer agent que crea `init.sh`, y cada sesión siguiente arranca el servidor y un test básico de extremo a extremo antes del trabajo nuevo.
+- **Dev containers y Codespaces** codifican el runtime, los paquetes del sistema y los comandos de preparación en una configuración versionada.
+- **La CI desde un checkout limpio** comprueba que la instalación es reproducible sin el estado local del autor.
 
-Fuente: [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents).
+El enfoque se describe en el artículo [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents).
 
 ## Patrones relacionados
 
-- [Trabajo paralelo aislado](isolated-parallel-work.md) — crea worktrees; bootstrap prepara cada uno y separa recursos externos.
-- [Diario de progreso](progress-file.md) — cuenta a una sesión nueva qué ocurrió después del baseline verificado.
-- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) — smoke es el primer bucle corto antes de implementar.
-- [Una funcionalidad a la vez](one-feature-at-a-time.md) — el inicio verde garantiza que la pasada empieza una funcionalidad nueva y no repara daños heredados desconocidos.
+- [Trabajo paralelo aislado](isolated-parallel-work.md) usa el bootstrap para cada worktree nuevo.
+- [Diario de progreso](progress-file.md) guarda el estado tras la comprobación inicial.
+- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) empieza con una comprobación corta del comportamiento base.
+- [Una funcionalidad a la vez](one-feature-at-a-time.md) usa un arranque verificado para una pasada acotada.

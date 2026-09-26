@@ -1,133 +1,143 @@
 ---
 group: verification
 status: draft
-related: [give-agent-a-way-to-verify, handoff, explore-plan-code-commit, vibe-coding]
-source_rev:
+related: [design-it-twice, give-agent-a-way-to-verify, handoff, explore-plan-code-commit, vibe-coding]
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Throwaway Prototype
 
 ## Intent
 
-Build a disposable prototype that answers a specific design question — "does this state model even fly?", "what should this look like?" — before writing the real implementation. What gets verified is the design, not the code: the prototype dies, the answer remains.
+Test a specific design question with a small, disposable prototype. After the experiment, the team keeps the conclusion and uses it when preparing the real implementation.
 
 ## Also known as
 
-Throwaway prototype, spike (in extreme programming terms), prototype-as-an- answer; `/prototype` in Matt Pocock's skills.
+Throwaway prototype, spike (in extreme programming terms), prototype-as-an-answer; `/prototype` in Matt Pocock's skills.
 
 ## Problem
 
-Some design questions cannot be settled by reasoning:
+Some decisions are hard to verify by discussion alone. A state model can look complete until it is applied to a sequence of real actions.
 
-- The state model is flawless on paper and in the plan — and on the third real scenario it turns out the transitions are awkward and half the cases don't fit. A text review doesn't catch this: the reviewer has the same limitations as the author — they too reason instead of running it.
-- An interface can't be chosen from a description. "A list or a kanban?" is an hour-long argument; two working variants settle it in a minute.
-- An argument in the plan has hit a dead end: both sides are plausible, the arguments have run out, and the decision is important and hard to reverse.
+For example, subscription cancellation and reactivation each work on their own, but when a subscription is reactivated before a deferred cancellation, the old event stays in the queue. To notice the bug, it helps to run the transitions and see the state after each one. For an interface, a prototype lets you try different ways of doing the same task and compare them in practice.
 
-Building for real just to check is expensive: if the model is wrong, the implementation gets redone. And a "quick" prototype without discipline quietly becomes production: code written without tests and error handling starts living forever, because it "already works".
+A full implementation just for such a check is expensive. A quick prototype cuts the cost, provided the team separates the experiment in advance from the code it will maintain.
 
 ## Solution
 
-State the question in one sentence — and build the cheapest artifact that answers it. The question decides the shape:
+State the question and pick the smallest experiment that can answer it.
 
-- **"Does this logic / state model feel right?"** — a tiny interactive terminal app that pushes the model through the cases that are hard to reason about on paper. After every action, the full state is printed: you can see what changed.
-- **"What should this look like?"** — several radically different interface variants on a single route with a switcher. Not three shades of one idea — different ideas.
+- For a **state model**, build a small tool with actions and visible state. A terminal works for a developer; for a discussion with a domain expert, a standalone HTML file with buttons and scenarios is more convenient.
+- For an **interface**, prepare several variants with a switcher and compare them on the same user scenario.
 
-The rules that make a prototype safe:
+Limit the amount of experimental code.
 
-1. **Throwaway from day one** — and clearly marked: named so a casual reader can see it is not production.
-2. **One command to run** — the developer starts it without thinking.
-3. **No persistence** — state lives in memory: storage is what the prototype *checks*, not what it depends on.
-4. **No polish** — no tests, no error handling beyond the minimum, no abstractions. The point is to learn fast.
+1. Mark the prototype explicitly in its name and description.
+2. Make it runnable with one command.
+3. Keep state in memory unless the question requires checking persistent storage.
+4. Add only the code the experiment needs.
 
-The agent is what made this pattern practical: a prototype that used to cost a day of work now costs tens of minutes — and throwing it away genuinely doesn't hurt.
+An agent can build such a tool quickly, so checking a decision becomes cheaper. This is especially useful when a wrong choice would mean reworking several modules.
 
-The finale is mandatory: the verdict — the answer and the question it settled — is recorded in the ticket or an ADR; the validated decision goes into the real implementation; the prototype itself is committed to a throwaway branch as a primary source, with a pointer left behind. Only the decision reaches main — not the prototype's code.
+Record the question, observations, and conclusion in a ticket or an ADR. Keep the prototype on a separate branch, linked from the decision. Build the real implementation from the verified requirements, with the usual tests and error handling.
 
 ## Structure
 
+The question determines the shape of the experiment. After the run, the conclusion and the experimental code are kept separately.
+
 ```mermaid
 ---
-title: the prototype dies — the answer remains
+title: an observation from the prototype becomes the basis for a decision
+config:
+  flowchart:
+    rankSpacing: 30
 ---
-flowchart LR
-  q["Design question<br/>one sentence —<br/>the form follows the question"]:::accent
-  logic["Logic runner<br/>a tiny terminal app,<br/>the model's hard cases"]
-  ui["A fan of UI variants<br/>different ideas on one route,<br/>a variant switcher"]
-  rules["disposability rules:<br/>marked as a prototype<br/>one command · no polish<br/>state in memory"]:::muted
-  run["The run<br/>the developer drives<br/>the hard cases personally"]
-  verdict["Verdict<br/>the answer — into a ticket or ADR<br/>the decision — into the real code<br/>the prototype — into a source branch<br/>not a line of it reaches main"]:::accent
-  q --> logic --> run
-  q --> ui --> run
-  run --> verdict
-  ui -.- rules
+flowchart TB
+  question{"What to check?"}:::accent
+  logic["Check the logic"]
+  ui["Compare UI variants"]
+  run["Run the hard scenarios"]
+  decision@{ shape: doc, label: "Conclusion in a ticket or ADR" }
+  branch["Prototype on a separate branch"]:::muted
+  code["Real implementation"]:::accent
+  question -- "model behavior" --> logic
+  question -- "interaction" --> ui
+  logic --> run
+  ui --> run
+  run -- "observations" --> decision
+  run -- "keep the experiment" --> branch
+  decision -- "verified requirements" --> code
 ```
 
-On the left is the question — it exists before the prototype and determines its shape: a question about logic produces a terminal runner, a question about looks produces a fan of interface variants. Both artifacts are built under the same disposability rules and land in the developer's hands: they drive the hard cases personally. On the right is the only surviving artifact: the verdict. The decision goes into the implementation, the prototype into a source branch, and not a line of prototype code reaches main.
+You run the scenarios and record the conclusion with a link to the prototype branch. The real implementation is built from the verified requirements. The experimental code stays on a separate branch as evidence of the check.
 
 ## Participants / Components
 
-- **The design question** — one sentence; it exists before the prototype and decides its shape. No question — no prototype.
-- **The prototype** — the disposable artifact: a terminal runner for logic or a fan of variants for UI.
-- **The developer** — drives the hard cases with their own hands and delivers the verdict; the prototype is built for their hands.
-- **The agent** — builds fast and without polish; the disposability discipline is held by the prompt.
-- **The verdict** — the recorded answer: what was checked, what was learned, what was decided.
+- **The design question** sets the goal of the experiment.
+- **The prototype** produces the observations you need.
+- **The developer** runs the scenarios and makes a decision based on the results.
+- **The agent** builds the minimal experiment tool.
+- **The conclusion** records the question checked, the observations, and the decision.
 
 ## When to use
 
-- A state model or logic with hard cases that are awkward to reason about on paper: subscriptions, order statuses, sync conflicts.
-- An interface choice: several working variants instead of an argument over descriptions.
-- An argument in the plan has stalled and the decision is hard to reverse: an hour of prototype is cheaper than a day of redo.
+- The model has sequences of states that are hard to verify by reasoning.
+- You need to compare interface variants in practice.
+- A hard-to-reverse decision lacks observations.
 
-Not needed when the question is answered by reading the code or the docs — or when the answer is obvious by any means cheaper than a prototype.
+First check whether the answer can be found by reading code or documentation. A prototype is needed when cheaper information is not enough.
 
 ## Consequences and trade-offs
 
-- ➕ The design is verified before the implementation: the "model didn't fit" redo doesn't happen, because the model was run in advance.
-- ➕ The argument becomes an experiment: instead of "it seems to me", both sides look at working variants.
-- ➕ The answer is cheap: without tests, polish, and persistence, a prototype costs a fraction of the real implementation.
-- ➖ The main risk — "just finish up this prototype": untested, unhandled code in production. The finale's discipline is part of the pattern.
-- ➖ The prototype answers only the question asked: "it worked in the prototype" doesn't generalize to load, security, and the edge cases it never touched.
-- ➖ Wasted time if the answer was obvious: the cheap means come first — code, documentation, a short argument.
+- ➕ A model error can surface before the full implementation.
+- ➕ Participants discuss the results of one shared experiment.
+- ➕ The limited scope lowers the cost of checking an idea.
+- ➖ Experimental code is easy to mistake for a ready foundation for the product.
+- ➖ The result applies only to the question checked and the conditions of the experiment.
+- ➖ A prototype wastes time if the answer is already available in the documentation.
 
 ## Implementation
 
-1. State the question in one sentence and put it in the prompt verbatim: "the prototype must answer question X."
-2. Choose the shape: logic — a terminal runner with commands and state printing; UI — several radically different variants with a switcher.
-3. Dictate the disposability rules: near its future place in the code, a name marked as a prototype, one command to run, state in memory, no tests or polish.
-4. Drive it yourself: ask the agent to prepare the hard cases, but the hands on the keyboard are yours. "Does it feel right" is answered by feel.
-5. Record the verdict in the ticket or an ADR: the question, the answer, the decision.
-6. Close it cleanly: the decision — into the real implementation (written anew, not copy-pasted from the prototype), the prototype — into a throwaway branch linked from the ticket, and nothing into main.
-7. Start a prototype in a fresh session from a [handoff](handoff.md): an extract of the question and the context instead of the discussion's tail.
+1. Write the question down in one sentence.
+2. Choose a terminal scenario, a UI mock-up, or another form that will produce the observations you need.
+3. Set the name, the run command, and the minimal constraints of the experiment.
+4. Run the hard scenarios and save the observations.
+5. Record the conclusion and the decision taken in a ticket or an ADR.
+6. Keep the prototype on a separate branch, and build the real implementation from the verified decision.
+7. For a separate prototype session, prepare a [handoff](handoff.md) with the question and the context.
 
 ## Example
 
-A continuation of the story from the [Session Handoff](handoff.md) chapter: the tariff migration plan hit the question of whether the event-based cancellation model survives corporate contracts with deferred start. The prototype session starts from the handoff document:
+In the story from the [Session Handoff](handoff.md) chapter, you need to check the cancellation model for corporate contracts with a deferred start. You hand a new session the document and the experiment task.
 
-> Read /tmp/handoff-cancellation-prototype.md. Build a throwaway terminal prototype of the cancellation model: commands subscribe, cancel <date>, reactivate, tick; after every command print the subscription's full state and the event queue. No tests, no storage — state in memory. Name it so it's obviously a prototype.
+> Read /tmp/handoff-cancellation-prototype.md. Build a throwaway terminal prototype of the cancellation model with the commands subscribe <start date>, cancel <date>, reactivate, and tick <date>. After each command, print the subscription state and the event queue. Keep state in memory and mark the prototype in its name.
 
-The agent assembles a runner started with a single command. The developer drives the scenarios: immediate cancellation — fine; cancellation with a date — fine; but on "deferred cancellation, then reactivation before it takes effect" the model breaks: the cancellation event stays in the queue and fires after the reactivation. Nobody had seen that case on paper.
+The first scenario checks the original question. You set the contract start to October 1, the cancellation to September 25, and move the clock to October 2. In this illustrative experiment, the start handler grants access even though the cancellation has already taken effect. This observation shows that a single queue of dated events is not enough. Processing the start has to take the active cancellation into account.
 
-The verdict goes into an ADR: the event model is confirmed with one amendment — reactivation displaces unexecuted cancellation events. The prototype goes to the `prototype/cancellation-model` branch, the link into the implementation ticket. The implementation is written from scratch against the approved model; not a line of the prototype reaches main.
+The second scenario checks reactivation before a deferred cancellation. If the old cancellation event stays in the queue, it will later close the restored subscription. The team records a separate rule: reactivation voids that event.
+
+The ADR keeps both observations and decisions, along with the boundaries of the experiment. The prototype stays in _prototype/cancellation-model_, and the implementation ticket gets a link to it. In the real code, both scenarios will be covered by tests. The observations described here illustrate possible prototype results; for your own project, the team gets them by actually running it.
 
 ## Anti-patterns and common mistakes
 
-- **"Just finish up this prototype."** The cardinal sin: code written as disposable rides into production. The implementation is written anew from the verdict — the prototype was a question, not a first version.
-- **A prototype without a question.** "Let's try it and see" produces code but no answer: nothing to record in a verdict, no reason to have built it.
-- **Polishing the disposable.** Tests, error handling, and abstractions in a prototype are waste: it will die before they pay off.
-- **Generalizing the verdict.** "It worked in the prototype" applies exactly to the question checked — not to load, not to security, not to the edge cases the run never touched.
-- **The prototype thrown away together with the answer.** The code was deleted, the verdict never written — a month later the question returns, and again there is nothing to answer it with.
+- **"Just finish up this prototype."** Experimental code may lack the safeguards a production system needs. Implement the chosen decision with the usual quality checks.
+- **A prototype without a question.** Without a criterion, you cannot tell which observations will end the experiment.
+- **Polishing the disposable.** Extra abstractions raise the cost of getting an answer.
+- **Generalizing the conclusion.** A successful scenario does not confirm load behavior or other conditions the experiment did not touch.
+- **A lost conclusion.** If the code is deleted without recording the result, the question will have to be investigated again.
 
 ## Known uses
 
-- **Matt Pocock's skills** use [/prototype](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md): a standalone HTML file with free-play actions and guided scenarios for logic, or switchable UI alternatives. The prototype is preserved on a separate branch linked from the task. A terminal runner remains a useful adaptation for developer-only exploration.
-- **Spike solutions in extreme programming** — the classic ancestor: a short throwaway experiment to retire technical risk before estimating and implementing.
-- **John Ousterhout's "design it twice"** — the kindred principle: force yourself to consider radically different designs; the fan of UI variants is its mechanization.
-- **Tracer bullets from The Pragmatic Programmer** — a useful contrast: tracer code stays and grows, a prototype gets thrown away. Mixing the two modes is what produces "a prototype in production".
+- **Matt Pocock's skills** implement the experiment through [/prototype](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md). For logic, the skill creates a standalone HTML file with free-play actions and step-by-step scenarios; for UI, switchable variants. The verified prototype is kept on a separate branch linked from the task.
+- **Spike solutions in extreme programming** retire technical risk with a short experiment.
+- **[Design It Twice](design-it-twice.md)** develops John Ousterhout's principle: compare substantially different design options before implementation.
+- **Tracer bullets from The Pragmatic Programmer** produce code that keeps evolving. A throwaway prototype keeps only the verified decision for a new implementation.
 
 ## Related patterns
 
-- [Feedback Loop](give-agent-a-way-to-verify.md) — the prototype is verification for decisions that have no machine oracle: here the pass/fail signal comes from the developer's hands and eyes.
-- [Session Handoff](handoff.md) — the standard entrance into a prototype: an extract of the question and the context for a clean session instead of the discussion's tail.
-- [Four Phases](explore-plan-code-commit.md) — the prototype's question is usually born in the plan phase: an argument that text can't settle gets taken to an experiment.
-- [Spec-Driven Development](spec-driven-development.md) — the prototype's verdict returns into the specification as a requirement or a constraint — before the implementation begins.
-- [Vibe Coding](vibe-coding.md) — the anti-pattern a prototype turns into when its code is accepted into production without understanding.
+- [Design It Twice](design-it-twice.md) compares alternative designs; a prototype checks questions that require observations.
+- [Feedback Loop](give-agent-a-way-to-verify.md) ties a decision to an observable check result.
+- [Session Handoff](handoff.md) preserves the question for a separate experiment.
+- [Four Phases](explore-plan-code-commit.md) lets you move a plan's uncertainty into a prototype.
+- [Spec-Driven Development](spec-driven-development.md) keeps the prototype's conclusion as a requirement or constraint.
+- [Vibe Coding](vibe-coding.md) describes accepting code without checking it against requirements. That is how a prototype ends when it is finished up into a production system.

@@ -2,251 +2,157 @@
 group: context
 status: draft
 related: [context-engineering, handoff, claude-md-memory]
-source_rev: 5df7b47a444c5c22419c5b424a05805eccc71275
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Diario de progreso
 
 ## Propósito
 
-Mantener junto al código un archivo-diario del trabajo largo — dónde estamos,
-qué sigue, qué ya se descartó — que el agente actualiza sobre la marcha y lee
-lo primero en una sesión nueva. Una ventana de contexto fresca recupera el
-panorama con un solo archivo, y no con arqueología por el código y las
-conversaciones.
+Llevar junto al código un diario del estado de un trabajo largo. El agente lo actualiza sobre la marcha y lo lee al inicio de una sesión nueva para saber qué queda por hacer y qué enfoques ya se han probado.
 
 ## También conocido como
 
-Progress file, progress log; `claude-progress.txt` del artículo de Anthropic
-sobre harnesses, `PROGRESS.md`.
+Progress file, progress log; _claude-progress.txt_ del artículo de Anthropic sobre harnesses, _PROGRESS.md_.
 
 ## Problema
 
-El trabajo no cupo en una ventana de contexto: una funcionalidad de varios
-días, una migración, una depuración larga. Cada sesión nueva — y cada
-compactación — empieza con amnesia:
+En una migración de varios días, las sesiones nuevas reciben el código y los commits, pero pueden no conocer las razones de una decisión a medio terminar.
 
-- La historia de git responde «qué cambió», pero calla lo principal: qué está
-  *sin terminar*, por qué se eligió este camino y qué ya se probó y se
-  descartó.
-- El agente con ventana fresca repite los callejones sin salida: la solución
-  rechazada ayer tras una hora de experimentos hoy vuelve a parecer
-  atractiva.
-- Recuperar el estado por el código sale caro: el agente quema media ventana
-  fresca leyendo diffs y archivos antes de dar el primer paso útil — y a
-  veces toma con seguridad lo que no toca.
+Por ejemplo, ayer el agente probó un adaptador sobre la API antigua y lo descartó por un modelo de reembolsos incompatible. En git quedó solo la implementación aceptada. Sin un registro de la razón, un agente nuevo puede volver a proponer el adaptador y repetir el mismo experimento. Reconstruir esas decisiones a partir de archivos y conversaciones retrasa el trabajo útil.
 
-Confiar en el resumen automático de la compactación es una lotería: qué
-sobrevive exactamente del contexto no lo decides tú.
+La compactación automática del contexto puede no conservar todas las razones de las decisiones. El diario permite elegirlas de forma explícita.
 
 ## Solución
 
-Un diario de estado en el repositorio, junto al código. El agente lo
-actualiza al final de cada paso significativo — es tan parte de terminar el
-paso como el commit. La sesión nueva empieza con un ritual: leer el diario y
-el git log reciente — y solo después trabajar.
+Crea un diario en el repositorio y actualízalo después de cada paso significativo. Una sesión nueva lee el diario y los últimos commits antes de continuar el trabajo.
 
-En el diario vive lo que no está en la historia de git:
+En el diario, guarda la información que falta en la historia de git.
 
-- **estado actual** — qué funciona, qué está en proceso;
-- **siguiente paso** — por dónde empezar si la sesión se corta ahora mismo;
-- **problemas conocidos** — los rastrillos que la siguiente sesión debe
-  conocer de antemano;
-- **enfoques descartados** — qué se probó y por qué no funcionó.
+- **El estado actual** muestra qué funciona y qué no está terminado todavía.
+- **El siguiente paso** fija la primera acción al retomar el trabajo.
+- **Los problemas conocidos** avisan de las limitaciones y los fallos encontrados.
+- **Los enfoques descartados** conservan los resultados de los experimentos y las razones del descarte.
 
-El diario y la historia de git se complementan y no se duplican: git responde
-«qué cambió en el código», el diario — «dónde estamos y hacia dónde vamos».
-Recontar los diffs en el diario no hace falta.
+Git muestra los cambios del código, y el diario explica el estado y la dirección del trabajo. Para los detalles de los commits basta con una referencia.
 
-El ritual no se apoya en la memoria del agente sino en la
-[memoria del proyecto](claude-md-memory.md): la regla «al empezar la sesión
-lee `PROGRESS.md`, al final de un paso significativo — actualízalo» vive ahí
-y rige en cada sesión automáticamente.
+Anota el procedimiento de lectura y actualización del diario en la [memoria del proyecto](claude-md-memory.md), para que las sesiones nuevas reciban esta instrucción.
 
 ## Estructura
 
+Cada sesión lee el estado guardado antes de trabajar y lo actualiza antes de pasar el relevo a la siguiente sesión.
+
 ```mermaid
 ---
-title: cada sesión deja artefactos claros a la siguiente
+title: el diario pasa el estado a la siguiente sesión
+config:
+  sequence:
+    mirrorActors: false
+    width: 130
+    height: 45
+    actorMargin: 35
+    messageMargin: 28
 ---
 sequenceDiagram
-  participant S1 as Sesión 1
+  participant A as Sesión A
   participant P as PROGRESS.md
-  participant G as historia de git
-  participant S2 as Sesión 2
-  participant S3 as Sesión 3
-
-  S1->>P: estado · siguiente paso · enfoques descartados
-  S1->>G: commits
-  Note over S1,S2: contexto perdido — ventana fresca
-  P->>S2: se lee lo primero
-  G->>S2: git log
-  S2->>P: se actualiza al final de cada paso
-  Note over S2,S3: contexto perdido — ventana fresca
-  P->>S3: continúa sin repetir el camino
+  participant G as Git
+  participant B as Sesión B
+  A->>G: Commit
+  A->>P: Estado + siguiente paso
+  Note over A,B: La sesión A ha terminado<br/>La sesión B empieza con un contexto nuevo
+  B->>P: Leer el diario
+  P-->>B: Decisiones y punto de continuación
+  B->>G: Revisar log y status
+  G-->>B: Commits + status
+  B->>P: Tras el trabajo: actualizar el diario
 ```
 
-Las sesiones se suceden, y entre ellas hay un corte: la ventana se acabó o se
-compactó, el contexto se perdió. La continuidad la dan los dos artefactos de
-abajo: el diario de progreso, que cada sesión actualiza sobre la marcha, y la
-historia de git con sus commits. La sesión nueva empieza leyendo ambos — el
-diario da el estado y la dirección, el git log los cambios reales — y
-continúa el trabajo desde donde se cortó la anterior, sin repetir su camino.
+El diario explica por qué el trabajo se detuvo en este punto y qué hacer a continuación. Git muestra los cambios reales; si no coinciden con el diario, la sesión nueva averigua primero el estado actual.
 
 ## Participantes / Componentes
 
-- **Diario de progreso** (`PROGRESS.md`) — estado, siguiente paso, problemas,
-  enfoques descartados; vive en el repositorio.
-- **Historia de git** — el complemento del diario: los cambios reales del
-  código y la posibilidad de volver a un estado funcional.
-- **Agente** — actualiza el diario sobre la marcha y lo lee lo primero en la
-  sesión nueva.
-- **Desarrollador** — fija el ritual y revisa el diario: en él se ve el
-  progreso sin excavar los diffs.
-- **Memoria del proyecto** — ancla el ritual para que no dependa de la
-  conversación.
+- **Diario de progreso** (_PROGRESS.md_) guarda el estado, el siguiente paso y las razones de las decisiones.
+- **Historia de git** conserva los cambios del código.
+- **Agente** lee el diario al arrancar y lo actualiza después de los pasos significativos.
+- **Desarrollador** fija el orden de trabajo y revisa las entradas.
+- **Memoria del proyecto** guarda la instrucción para llevar el diario.
 
 ## Cuándo aplicarlo
 
-- El trabajo es de entrada más grande que una sesión: funcionalidad de varios
-  días, migración, refactorización grande.
-- Las sesiones son largas y chocan regularmente con la compactación — el
-  diario asegura contra pérdidas en cada compresión de la ventana.
-- Sobre la tarea trabajan en alternancia varias sesiones, varios agentes o un
-  agente mezclado con un humano — el diario alinea el panorama para todos.
+- La tarea ocupa varias sesiones.
+- Las sesiones largas exigen compactar el contexto.
+- Distintas personas o agentes se turnan en el trabajo sobre una misma tarea.
 
-Para una tarea que cabe en una sesión el diario es excesivo: basta el plan
-dentro de la propia sesión.
+Para una tarea corta suele bastar un plan dentro de la sesión.
 
 ## Consecuencias y compromisos
 
-- ➕ Recuperar el estado cuesta un archivo: la sesión nueva da un paso útil
-  en un minuto, no tras media ventana de arqueología.
-- ➕ Los callejones sin salida no se repiten: el enfoque descartado está
-  anotado junto con el motivo.
-- ➕ El progreso es visible para el humano: mirar el diario es más rápido que
-  interrogar al agente o leer diffs.
-- ➖ Exige disciplina de actualización: una anotación saltada — y el diario
-  le miente a la siguiente sesión.
-- ➖ Crece sin cuidado: un diario en el que solo se escribe se convierte en
-  una segunda fuente de ruido (ver
-  [ingeniería de contexto](context-engineering.md)).
-- ➖ La tentación de duplicar git: recontar los diffs hincha el diario y no
-  añade señal.
+- ➕ Una sesión nueva encuentra antes el siguiente paso.
+- ➕ El agente ve las razones por las que se descartaron los enfoques ya probados.
+- ➕ Puedes evaluar el estado sin leer todos los diffs.
+- ➖ Una actualización omitida induce a error a la siguiente sesión.
+- ➖ Sin recortes, el propio diario se convierte en contexto sobrante (véase [ingeniería de contexto](context-engineering.md)).
+- ➖ Resumir los commits hace crecer el archivo sin explicar el estado del trabajo.
 
 ## Implementación
 
-1. Crea el archivo al comenzar un trabajo largo y ancla el ritual en la
-   [memoria del proyecto](claude-md-memory.md): «al empezar la sesión lee
-   `PROGRESS.md` y el `git log` reciente; al final de un paso significativo
-   actualiza `PROGRESS.md`».
-2. Mantén cuatro secciones: estado, siguiente paso, problemas conocidos,
-   enfoques descartados. «Siguiente paso» es la más valiosa: escríbelo de
-   modo que la sesión pueda cortarse en cualquier momento.
-3. Escribe «dónde estamos y por qué», no «qué cambió» — lo segundo ya está
-   anotado en git.
-4. Haz de la actualización parte de la definición de «paso terminado»:
-   código, tests, commit, diario.
-5. Mantén el diario corto: lo fresco arriba, las secciones ya trabajadas se
-   pliegan o se borran. El diario se lee cada sesión y obedece la misma
-   economía de atención que el resto del contexto.
-6. Los estados que el agente actualiza mecánicamente — por ejemplo, la lista
-   de funcionalidades con marcas «pasa/no pasa» — sácalos de la prosa a un
-   archivo estructurado aparte: el agente estropea el JSON con menos
-   frecuencia que el Markdown. Esa técnica se trata en el capítulo sobre la
-   lista de funcionalidades de la sección de organización del proyecto.
+1. Crea el diario y anota el procedimiento para usarlo en la [memoria del proyecto](claude-md-memory.md).
+2. Separa el estado, el siguiente paso, los problemas y los enfoques descartados. Formula el siguiente paso de modo que se pueda ejecutar tras un corte de la sesión.
+3. Explica las razones de las decisiones y el trabajo pendiente. Remite a los cambios del código mediante los commits.
+4. Incluye la actualización del diario en el cierre de cada paso significativo, junto con la verificación y el commit.
+5. Mantén el estado actual arriba y abrevia las entradas ya cerradas.
+6. Guarda los estados de las funcionalidades en un archivo estructurado aparte, donde el agente cambie campos concretos (véase [Lista de funcionalidades](feature-list-harness.md)).
 
-En las tuberías del desarrollo orientado a especificaciones el papel del
-diario para una funcionalidad concreta lo desempeña `tasks.md`: listas de
-tareas con marcas de finalización existen en
-[OpenSpec](openspec.md), y en
-[Superpowers](superpowers.md) el plan de tareas pequeñas está pensado
-explícitamente como un documento desde el que retomar el trabajo en cualquier
-punto. El diario de progreso es la misma técnica sin la tubería: un archivo
-para cualquier trabajo largo.
+En [OpenSpec](openspec.md), las marcas en _tasks.md_ y los planes de [Superpowers](superpowers.md) ayudan a continuar el trabajo sobre una funcionalidad. El diario complementa las marcas con las razones de las decisiones y los problemas abiertos; también puede usarse sin un toolkit de SDD.
 
 ## Ejemplo
 
-Está en marcha una migración de pagos de varios días a una pasarela nueva. En
-la raíz del repositorio — `PROGRESS.md`:
+Un equipo migra los pagos a una pasarela nueva y guarda el estado en _PROGRESS.md_.
 
 ```markdown
 # Migración de pagos a la pasarela PayFlow
 
 ## Estado
-Webhooks migrados y cubiertos con tests. El mapa de errores de la
-pasarela está listo. Reembolsos — en proceso.
+Webhooks migrados y cubiertos con tests. El mapa de errores de la pasarela está listo.
+Reembolsos — en proceso.
 
 ## Siguiente paso
 Migrar `RefundService`: es el último que llama al cliente viejo.
 Empezar por las claves de idempotencia — ver «Descartado».
 
 ## Problemas conocidos
-- El sandbox de la pasarela rechaza importes menores de 1.00 — en los
-  tests usamos 1.05.
+- El sandbox de la pasarela rechaza importes menores de 1.00 — en los tests usamos 1.05.
 
 ## Descartado
 - Un adaptador sobre la interfaz vieja: las claves de idempotencia de
-  PayFlow no encajan, sale más barato reescribir las llamadas
-  (detalles en el ADR-0007).
+  PayFlow no encajan, sale más barato reescribir las llamadas (detalles en ADR-0007).
 ```
 
-La sesión se corta a la mitad — la ventana se acabó. El desarrollador abre
-una nueva:
+Cuando se acaba la ventana, abres una sesión nueva.
 
-> Seguimos con la migración a PayFlow — empieza por PROGRESS.md.
+> Seguimos con la migración a PayFlow. Empieza por PROGRESS.md.
 
-El agente lee el diario y el git log, toma `RefundService` — y no vuelve a
-proponer el «adaptador elegante» que la sesión anterior tardó una hora en
-refutar: el motivo del rechazo está escrito. Al terminar los reembolsos,
-actualiza el estado y el siguiente paso — ahora también esta sesión puede
-cortarse sin peligro.
+El agente lee el diario y el git log, y luego continúa con `RefundService`. Ve la razón por la que se descartó el adaptador y no repite el experimento. Al terminar los reembolsos, el agente anota el resultado y el siguiente paso.
 
 ## Antipatrones y errores comunes
 
-- **Diario-dietario.** Recontar cada acción en vez del estado: el archivo
-  crece con cada sesión, y la siguiente gasta su ventana leyendo historia en
-  vez de trabajar.
-- **Duplicado del git log.** «Cambié X, añadí Y» — eso ya está anotado en los
-  commits. El diario responde a las preguntas que git no puede responder.
-- **Actualizar «luego».** Un diario rezagado respecto a la realidad es peor
-  que uno vacío: la sesión nueva trabaja con seguridad sobre una mentira.
-- **Estados en prosa.** Las marcas actualizadas mecánicamente en texto libre
-  el agente tarde o temprano las reformula o las machaca — su sitio es un
-  archivo estructurado al lado.
-- **El diario en vez del traspaso.** Las notas sobre la marcha no sustituyen
-  el empaquetado deliberado en la frontera de la sesión: el
-  [traspaso de sesión](handoff.md) tiene otro momento y otra densidad.
+- **Diario-bitácora.** Un historial completo de acciones dificulta encontrar el estado actual.
+- **Duplicado del git log.** La lista de archivos cambiados ya está en los commits. El diario necesita las razones de las decisiones y las tareas abiertas.
+- **Actualizar «luego».** Una entrada obsoleta lleva a la siguiente sesión a una acción equivocada.
+- **Estados dentro del relato.** Al reescribir el texto, las marcas pueden perderse. Usa campos estructurados.
+- **El diario en lugar del traspaso.** Para un objetivo nuevo, prepara un [traspaso](handoff.md) aparte que seleccione la información para la siguiente etapa.
 
 ## Usos conocidos
 
-- **El harness de Anthropic para agentes de larga duración** — la fuente
-  primaria: `claude-progress.txt` junto a la historia de git, el ritual de
-  inicio de sesión (git log → diario → lista de funcionalidades → prueba de
-  humo) y la regla de que cada sesión deja artefactos claros a la siguiente.
-- **La auto memory de Claude Code** — un diario a nivel de herramienta: el
-  agente lleva por su cuenta notas del proyecto en
-  `~/.claude/projects/<project>/memory/` y las carga en cada sesión; el
-  diario de progreso es la misma idea, pero sobre un trabajo concreto y
-  dentro del propio repositorio.
-- **Toolkits de SDD** — `tasks.md` con marcas de finalización en
-  [OpenSpec](openspec.md) y los
-  planes de [Superpowers](superpowers.md): un diario de progreso integrado en
-  la tubería de la funcionalidad.
-- **Las notas estructuradas** del artículo de Anthropic sobre ingeniería de
-  contexto — un agente que lleva un `NOTES.md` fuera de la ventana es el
-  mismo mecanismo en su forma general.
+- **El harness de Anthropic para agentes de larga duración** usa _claude-progress.txt_ junto con la historia de git y la lista de funcionalidades al inicio de la sesión.
+- **La auto memory de Claude Code** guarda notas sobre el proyecto a nivel de la herramienta. El diario del repositorio describe un trabajo largo concreto.
+- **Los toolkits de SDD** guardan tareas y marcas en [OpenSpec](openspec.md) y en los planes de [Superpowers](superpowers.md).
+- **Las notas estructuradas** del artículo de Anthropic sobre ingeniería de contexto conservan el estado fuera de la ventana.
 
 ## Patrones relacionados
 
-- [Traspaso de sesión](handoff.md) — el vecino en la capa de estado: el
-  diario se lleva sobre la marcha, el traspaso se escribe una vez en la
-  frontera de la sesión.
-- [Ingeniería de contexto](context-engineering.md) — el diario es la capa de
-  estado sacada fuera de la ventana, y obedece la misma regla de «corto y de
-  alta señal».
-- [Memoria del proyecto](claude-md-memory.md) — donde se ancla el ritual de
-  leer y actualizar el diario.
-- [Desarrollo orientado a especificaciones](spec-driven-development.md) — el
-  `tasks.md` de la tubería desempeña el papel del diario a escala de una
-  funcionalidad.
+- [Traspaso de sesión](handoff.md) prepara un documento para una transición concreta entre personas o agentes.
+- [Ingeniería de contexto](context-engineering.md) ayuda a seleccionar el contenido del diario.
+- [Memoria del proyecto](claude-md-memory.md) fija el procedimiento de lectura y actualización del diario.
+- [Desarrollo orientado a especificaciones](spec-driven-development.md) vincula el estado del trabajo con la especificación y las tareas.

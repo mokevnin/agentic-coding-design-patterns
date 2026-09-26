@@ -2,14 +2,14 @@
 group: project-org
 status: draft
 related: [claude-md-memory, context-engineering, handoff, tdd-with-agent, bloated-claude-md]
-source_rev: 58f57eb48a3a03000812870279cef64a7847f4d8
+source_rev: ebf44d297f082115f9c01e295d86d57ffca0d467
 ---
 
 # Skills
 
 ## Propósito
 
-Guardar un procedimiento recurrente en un skill que el agente carga cuando hace falta. El desarrollador obtiene un flujo de trabajo con nombre, versión y criterios de finalización que se puede usar en distintas sesiones.
+Guardar un procedimiento recurrente en un skill que el agente carga cuando hace falta. Obtienes un flujo de trabajo con nombre, versión y criterios de finalización que se puede usar en distintas sesiones.
 
 ## También conocido como
 
@@ -17,7 +17,7 @@ Skills, slash commands, comandos personalizados, packaged workflows.
 
 ## Problema
 
-En cada release el desarrollador vuelve a explicarle al agente el orden de preparación. Un día se olvida de mencionar la revisión de migraciones, y el agente publica la versión sin ella.
+En cada release vuelves a explicarle al agente el orden de preparación. Un día te olvidas de mencionar la revisión de migraciones, y el agente publica la versión sin ella.
 
 Si el procedimiento solo vive en la conversación, lo completa que sea cada ejecución depende del nuevo prompt. Un colega puede describir el mismo proceso de otra manera y obtener otro orden de acciones. Trasladar todo el procedimiento a la [memoria del proyecto](claude-md-memory.md) lo carga también en las sesiones que no tienen nada que ver con el release.
 
@@ -77,7 +77,7 @@ El procedimiento se guarda en git y pasa por revisión. Al invocarlo, el agente 
 
 ## Cuándo aplicarlo
 
-- El desarrollador explica una y otra vez el mismo procedimiento.
+- Explicas una y otra vez el mismo procedimiento.
 - El equipo necesita un orden común para el release, la revisión o el triaje.
 - Uno de los patrones del libro tiene que aplicarse con regularidad.
 
@@ -106,9 +106,9 @@ Para una tarea puntual, un skill aparte suele crear trabajo extra de mantenimien
 
 ## Ejemplo
 
-Cada release del servicio incluye el changelog, la subida de versión, la revisión de migraciones, el test de humo y la creación del release. El desarrollador quiere guardar este orden para no tener que reconstruirlo de memoria.
+Cada release del servicio incluye el changelog, la subida de versión, la revisión de migraciones, el test de humo y la creación del release. Quieres guardar este orden para no tener que reconstruirlo de memoria.
 
-Escribe el procedimiento en _.claude/skills/release/SKILL.md_.
+Escribes el procedimiento en _.claude/skills/release/SKILL.md_.
 
 ```markdown
 ---
@@ -126,7 +126,7 @@ disable-model-invocation: true
 5. Tag y release con el changelog en la descripción.
 ```
 
-Ahora el desarrollador invoca `/release`. Cuando el equipo añade la revisión de feature flags sin cerrar, cambia el skill mediante un pull request. Las siguientes ejecuciones reciben la nueva versión de la instrucción.
+Ahora invocas `/release`. Cuando el equipo añade la revisión de feature flags sin cerrar, cambia el skill mediante un pull request. Las siguientes ejecuciones reciben la nueva versión de la instrucción.
 
 Con el mismo principio, el pack de Matt Pocock guarda los procedimientos de traspaso de sesión, TDD, triaje, investigación y prototipado.
 

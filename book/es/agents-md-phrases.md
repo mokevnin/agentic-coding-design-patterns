@@ -1,19 +1,14 @@
 ---
-source_rev: 96fe9e06b86b7b38ac4da102b12e55b3fca4ee2b
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Frases para AGENTS.md
 
-Un pequeño conjunto de reglas universales que vale la pena añadir a la
-[memoria del proyecto](claude-md-memory.md) de casi cualquier repositorio. No
-son configuración del proyecto ni comandos de compilación: son posturas sobre
-*cómo* debe tomar decisiones el agente cuando la elección queda a su criterio.
+Aquí se reúnen reglas para la [memoria del proyecto](claude-md-memory.md) que ayudan al agente a tomar decisiones al elegir una implementación. Adáptalas a tu proyecto y añade solo las que cambien el comportamiento del agente en la dirección que buscas.
 
-El punto de partida es una lista de Marcos Hernanz que circuló por la red; las
-dos últimas son añadidos de
-[Kirill Mokevnin](https://x.com/mokevnin/status/2083152573679173830).
+La base es una lista de Marcos Hernanz. Las dos últimas formulaciones las añadió [Kirill Mokevnin](https://x.com/mokevnin/status/2083152573679173830).
 
-Bloque listo para copiar:
+Puedes copiar este bloque en el archivo de memoria del proyecto.
 
 ```markdown
 # AGENTS.md
@@ -24,86 +19,50 @@ Bloque listo para copiar:
 - Suggest best practices, even if they may require refactoring.
 ```
 
-Las reglas están en inglés: así las entiende cualquier herramienta que lea
-AGENTS.md; si quieres, tradúcelas al idioma del equipo. Ten presente el límite
-del capítulo [«Memoria del proyecto»](claude-md-memory.md): el archivo de
-memoria *guía* el comportamiento del agente, pero no lo garantiza. Y mantén la
-lista corta, o acabarás con [memoria hinchada](bloated-claude-md.md).
+Las reglas están en inglés. Si quieres, tradúcelas al idioma del equipo. Como explica el capítulo [«Memoria del proyecto»](claude-md-memory.md), el archivo _orienta_ el comportamiento del agente, pero no garantiza que se cumplan las reglas. Mantén la lista corta para que no se convierta en [memoria hinchada](bloated-claude-md.md).
 
 ## Do not preserve backward compatibility
 
-*No conserves la compatibilidad hacia atrás.*
+_No arrastres la compatibilidad hacia atrás._
 
-Por defecto el agente va sobre seguro: deja campos viejos «por si acaso»,
-acumula sobrecargas y amontona capas de compatibilidad alrededor de cada cambio.
-En código interno mantenido por un solo equipo, eso es lastre puro: ramas
-muertas y duplicación que nadie eliminará jamás. Esta regla permite al agente
-cambiar el código con decisión: renombrar, borrar, reescribir firmas.
+Por defecto, el agente puede dejar campos viejos «por si acaso» y añadir capas de compatibilidad alrededor de un cambio. En un módulo interno que controla por completo un solo equipo, esas capas a menudo crean trabajo de más. La regla permite al agente eliminar la interfaz antigua y actualizar sus llamadas en la misma edición.
 
-Límite: la regla encaja en aplicaciones y módulos internos. Para una biblioteca
-pública o una API externa, la compatibilidad *es* el contrato con los usuarios;
-allí habría que invertir la formulación.
+La regla encaja en aplicaciones y módulos internos si el equipo controla a sus consumidores. En una biblioteca pública o una API externa, la compatibilidad forma parte del contrato con los usuarios, así que allí hay que exigir explícitamente que se conserve.
 
 ## Choose the simplest implementation that fully meets the current requirements
 
-*Elige la implementación más simple que cubra por completo los requisitos
-actuales.*
+_Elige la implementación más simple que cubra por completo los requisitos actuales._
 
-El agente tiende a sobreingeniería: incorpora configurabilidad, abstracciones y
-puntos de extensión para tareas que aún no existen. Esta regla lo devuelve a
-YAGNI: resolver la tarea presente, no una futura imaginada. La palabra *fully*
-importa: no es licencia para recortar, sino la exigencia de cubrir los
-requisitos actuales por completo, y no más allá.
+El agente puede prever puntos de extensión para tareas que aún no existen. La regla lo devuelve al principio YAGNI y a los requisitos actuales. Por ejemplo, si hace falta un solo formato de exportación, un sistema universal de plugins añade código que por ahora nada justifica. La palabra _fully_ exige implementar todo el escenario acordado, incluido el manejo de errores.
 
-Pariente cercano del antipatrón
-[«Especificación prematura»](premature-specification.md): en ambos, el daño está
-en comprometer complejidad antes de que haya demanda para ella.
+El mismo problema aparece con la [especificación prematura](premature-specification.md), cuando el equipo elige cómo se construirá la solución antes de haber entendido la tarea.
 
 ## Prefer established, well-maintained libraries over custom implementations
 
-*Prefiere bibliotecas maduras y mantenidas antes que implementaciones propias.*
+_Prefiere bibliotecas maduras y mantenidas antes que implementaciones propias._
 
-Sin instrucciones, el agente escribirá con gusto su propio parser de fechas, su
-propia validación, su propio pool de conexiones: código que parece funcional
-pero nunca pasó por el dolor de la producción ajena. Esta regla inclina la
-elección hacia lo ya hecho: menos código que mantener, casos límite conocidos ya
-resueltos.
+El agente puede escribir su propio parser de fechas que pasa un ejemplo sencillo y falla en un cambio de huso horario. En una biblioteca madura esos casos pueden estar ya resueltos y cubiertos por pruebas. La regla empuja a revisar las soluciones existentes y a reducir el volumen de código que el equipo tendrá que mantener por su cuenta.
 
-Comprueba que la biblioteca sea de verdad *established* y *well-maintained* —un
-repo vivo, releases recientes—, o la dependencia se convertirá en un lastre.
+Antes de elegir una biblioteca, revisa el estado del repositorio, las releases y el soporte de los escenarios que necesitas. Una dependencia abandonada puede exigir más trabajo que una implementación propia.
 
 ## Fix the cause, not the symptom
 
-*Corrige la causa, no el síntoma.*
+_Encuentra y corrige la causa del error._
 
-Ante un test que falla o un error, el agente gravita hacia el parche local:
-ajustar la aserción, envolver en `try/catch`, adaptarlo a la entrada concreta.
-El síntoma desaparece, la causa permanece y reaparece al lado. Esta regla exige
-cavar hasta la raíz —por qué el valor era `null` en primer lugar— en vez de
-amortiguar la manifestación.
+Ante un test que falla, el agente puede añadir un `try/catch` tras el cual el síntoma desaparece. Si el error surgió por un `null` inesperado, esa corrección deja en su sitio el origen del valor incorrecto. La regla exige averiguar de dónde vino el `null` y qué contrato se violó.
 
-Combina bien con la [Reflexión](reflection.md): antes de arreglar, el agente
-explica *por qué* se rompió, y los parches se descartan en ese paso.
+La regla se puede combinar con la [reflexión](reflection.md). Antes de la edición, el agente explica la causa del fallo y tú compruebas si el cambio propuesto elimina esa causa.
 
 ## Suggest best practices, even if they may require refactoring
 
-*Propón buenas prácticas, aunque puedan requerir refactorización.*
+_Propón buenas prácticas, aunque puedan requerir refactorización._
 
-Un agente que optimiza para «terminar la tarea con el diff más pequeño» se
-encaja en silencio en código torcido y reproduce sus defectos. Esta regla le da
-voz: si nota que la tarea se resuelve mejor refactorizando el código de
-alrededor, que lo diga en lugar de rodearlo calladamente. La decisión sigue
-siendo del humano, pero al menos la elección se vuelve consciente.
+Un agente que busca el diff mínimo puede repetir un defecto del código vecino. La regla le permite proponer una refactorización y explicar cómo ayudará a resolver la tarea. Una persona valora el beneficio y acuerda el volumen de trabajo.
 
-El reverso: el agente puede proponer refactorización demasiado a menudo; mantén
-esta regla junto a las dos anteriores (implementación más simple, causa y no
-síntoma) para que las sugerencias sigan siendo pertinentes.
+El agente puede proponer refactorizaciones con demasiada frecuencia. Combina esta regla con la exigencia de elegir la implementación más simple y de establecer primero la causa del problema.
 
 ## Capítulos relacionados
 
-- [Memoria del proyecto](claude-md-memory.md) — dónde van estas frases y cómo
-  funciona el archivo de memoria.
-- [Memoria hinchada](bloated-claude-md.md) — por qué la lista debe mantenerse
-  corta.
-- [Ingeniería de contexto](context-engineering.md) — cada línea de memoria gasta
-  presupuesto de atención en cada sesión.
+- [Memoria del proyecto](claude-md-memory.md) explica dónde guardar estas reglas.
+- [Memoria hinchada](bloated-claude-md.md) muestra por qué la lista debe mantenerse corta.
+- [Ingeniería de contexto](context-engineering.md) explica cómo las instrucciones permanentes consumen el contexto de cada sesión.

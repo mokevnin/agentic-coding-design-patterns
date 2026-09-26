@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [claude-md-memory, domain-context-file, progress-file, handoff, spec-driven-development, bloated-claude-md]
-source_rev: 58f57eb48a3a03000812870279cef64a7847f4d8
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Ingeniería de contexto
@@ -17,11 +17,11 @@ Context engineering.
 
 ## Problema
 
-Un desarrollador puede pegar en el prompt todo el log de CI, con la idea de darle al agente más información. Pero el error que importa ocupa en él unas pocas líneas. El resto de la salida ocupa la ventana y dificulta encontrar la causa del fallo. La gestión del contexto empieza por seleccionar los datos para un paso concreto del trabajo.
+Puedes pegar en el prompt todo el log de CI, con la idea de darle al agente más información. Pero el error que importa ocupa en él unas pocas líneas. El resto de la salida ocupa la ventana y dificulta encontrar la causa del fallo. La gestión del contexto empieza por seleccionar los datos para un paso concreto del trabajo.
 
 **La degradación del contexto (context rot)** se manifiesta cuando el modelo aprovecha peor la información en una ventana larga. La magnitud del efecto depende del modelo y de la tarea, así que la capacidad de la ventana por sí sola no garantiza una respuesta precisa. La ventana tiene un **presupuesto de atención**. El término describe el problema práctico de seleccionar la información que el modelo debe tener en cuenta a la vez. Por ejemplo, la regla para ejecutar los tests puede perderse entre logs ya procesados. El agente amplía el contexto con cada llamada a una herramienta. Si guardas todos los listados y resultados de las comprobaciones, al final de la sesión ocuparán el espacio que necesita la siguiente decisión.
 
-La redacción del prompt resuelve solo una parte del problema. El desarrollador también tiene que decidir qué información verá el agente en cada paso y qué conservará al terminar el paso.
+La redacción del prompt resuelve solo una parte del problema. También tienes que decidir qué información verá el agente en cada paso y qué conservará al terminar el paso.
 
 ## Solución
 
@@ -75,14 +75,14 @@ Las instrucciones permanentes se cargan también en la siguiente sesión; el có
 - El coste de leer el contexto es notable en relación con el tamaño de la tarea.
 - Al final de una sesión larga el agente olvida reglas o repite propuestas ya descartadas.
 - Cuando el trabajo es más grande que una ventana de contexto y el estado hay que traspasarlo entre sesiones.
-- El desarrollador repite comandos y convenciones en cada sesión.
+- Repites comandos y convenciones en cada sesión.
 
 ## Consecuencias y compromisos
 
 - ➕ Al agente le resulta más fácil encontrar la información necesaria para la decisión actual.
 - ➕ Un contexto más pequeño reduce el coste de las llamadas al modelo.
 - ➕ Una sesión nueva y un colega nuevo reciben la misma versión del conocimiento del proyecto.
-- ➖ El desarrollador tiene que ampliar y revisar con regularidad los archivos de contexto.
+- ➖ Tienes que ampliar y revisar con regularidad los archivos de contexto.
 - ➖ Las instrucciones desactualizadas pueden llevar al agente a una decisión equivocada.
 - ➖ Si recortas demasiado, el agente suplirá la información que falta con suposiciones.
 
@@ -104,15 +104,15 @@ Los siguientes capítulos analizan estas técnicas en detalle.
 
 ## Ejemplo
 
-El desarrollador necesita averiguar por qué el test de integración de la pasarela de pagos falla a veces.
+Necesitas averiguar por qué el test de integración de la pasarela de pagos falla a veces.
 
-**El enfoque ingenuo.** El desarrollador pega tres mil líneas de log de CI y tres archivos de test. Sobre la marcha añade la regla «aquí están prohibidos los sleep en los tests». Tras unos cuantos intercambios el agente propone `sleep(5)`, aunque ese retardo solo oculta la inestabilidad. En un contexto lleno de log, la regla no influyó en la elección de la solución.
+**El enfoque ingenuo.** Pegas tres mil líneas de log de CI y tres archivos de test. Sobre la marcha añades la regla «aquí están prohibidos los sleep en los tests». Tras unos cuantos intercambios el agente propone `sleep(5)`, aunque ese retardo solo oculta la inestabilidad. En un contexto lleno de log, la regla no influyó en la elección de la solución.
 
-**El enfoque de ingeniería.** La regla sobre los sleep está en la memoria del proyecto. En la petición, el desarrollador indica dónde están el test y las ejecuciones fallidas.
+**El enfoque de ingeniería.** La regla sobre los sleep está en la memoria del proyecto. En la petición, indicas dónde están el test y las ejecuciones fallidas.
 
 > Averigua por qué es inestable _tests/integration/payment_gateway_test.py_. Mira las tres últimas ejecuciones fallidas en el job integration-tests.
 
-El agente lee los fragmentos fallidos de los logs, el test y el código relacionado. Encuentra una carrera entre el webhook y el sondeo de estado, pero la sesión tiene que terminar antes de la corrección. El desarrollador le pide que guarde el resultado de la investigación.
+El agente lee los fragmentos fallidos de los logs, el test y el código relacionado. Encuentra una carrera entre el webhook y el sondeo de estado, pero la sesión tiene que terminar antes de la corrección. Le pides que guarde el resultado de la investigación.
 
 > Prepara un handoff con la causa del fallo, las hipótesis comprobadas y la primera acción para la siguiente sesión.
 

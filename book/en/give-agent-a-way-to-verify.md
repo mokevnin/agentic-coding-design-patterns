@@ -2,74 +2,54 @@
 group: verification
 status: draft
 related: [tdd-with-agent, writer-reviewer, reflection, explore-plan-code-commit, premature-success, one-shotting]
-source_rev: 5df7b47a444c5c22419c5b424a05805eccc71275
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Feedback Loop
 
 ## Intent
 
-Give the agent a check with a binary outcome — tests, a build, a linter, a
-screenshot compared against a design — that it runs, reads, and iterates
-against until green. The verification loop closes inside the session, not
-through the developer.
+Give the agent a way to check the result, read the failure, and repeat the work until the criterion is met. The agent runs the check inside the session, and you receive the result together with the evidence.
 
 ## Also known as
 
-Give the agent a way to verify its work, verification loop, closed
-verification cycle.
+Give the agent a way to verify its work, verification loop, closed verification cycle.
 
 ## Problem
 
-The agent stops when the work *looks* done. If it has no check it can run,
-"looks done" is the only signal available to it. From there the familiar
-troubles begin:
+Without a check, the agent can stop at plausible code. For example, a validator accepts a valid promo code but gets an expired one wrong.
 
-- You become the feedback loop: every mistake waits for a human to notice
-  it. The session can't be left alone — you can't even step away for coffee.
-- The code is plausible but doesn't work: it compiles, reads smoothly, and
-  falls over on the edge case. Plausibility is what the model does best,
-  which is exactly why it can't be taken at its word.
-- "Done" means nothing: the agent sincerely reports success, because the
-  success criterion was never set anywhere.
+If there is no test, you have to notice the mistake yourself. Until then the agent considers the task done.
+
+The definition of done should describe observable behavior. Then the agent can tell a written implementation from a verified result.
 
 ## Solution
 
-Before the work starts, give the agent a check — anything that returns a
-pass/fail signal it can read: a test suite, a build exit code, a linter, a
-script that diffs output against a fixture, a screenshot against a design.
-And ask explicitly: run it, read the result, iterate until green.
+Before the start, set a check with a clear outcome. It can be a test, a build, or a comparison of the output with a reference. For a UI, provide a design and the criteria for visual comparison. Ask the agent to run the check after its changes, work through the failures, and repeat the cycle.
 
-From that moment the loop closes without you: the agent takes a step, runs
-the check, reads the failure, fixes it — and so on until it passes. Your
-involvement shifts from "noticing mistakes" to the two ends of the loop:
-setting the check at the entrance and accepting the evidence at the exit.
+The agent makes an edit, runs the check, and fixes the failure it finds. You choose the criteria before the work begins and assess the evidence at the end.
 
-How hard the check gates the stop is a ladder of four rungs, each trading
-setup for autonomy:
+The degree of automation of the loop can be chosen per task.
 
-1. **In one prompt** — "run the tests and iterate"; works on any task right
-   now.
-2. **A session goal** — the check becomes a condition re-verified after
-   every one of the agent's turns until it holds.
-3. **A deterministic gate** — a stop hook: a script blocks the session from
-   ending while the check is red.
-4. **A second opinion** — a subagent with a fresh context tries to refute
-   the result: the work is graded by someone other than whoever did it (see
-   [Writer and Reviewer](writer-reviewer.md)).
+1. **An instruction in the prompt** asks the agent to run the checks and fix the failures it finds.
+2. **A session goal** sets a condition the agent returns to after every step.
+3. **A deterministic gate** blocks completion until the required check passes.
+4. **A second opinion** adds a review in a fresh context to check completeness and quality (see [Writer and Reviewer](writer-reviewer.md)).
 
-And the final rule: evidence instead of assertions, and the evidence has to come from the environment, not from the agent's retelling. Output the agent pasted into its final message could just as well be made up: `4 passed` written without a run, or taken from a run before the last edit. Check against a record the harness kept — the tool call in the session log, the CI log, the exit code in a hook, a screenshot taken by the browser tool. Reading such evidence is faster than re-verifying yourself, and it is the only way to accept the work of a session you weren't watching.
+The evidence has to come from the environment, not from the agent's account. Output the agent reprinted in its final message could just as well be made up: `4 passed` written without a run, or taken from a run before the last edit. Check against a record the harness kept: the tool call in the session log, the CI log, the exit code in a hook, a screenshot from the browser tool. This data shows what exactly the agent checked and lets you accept the work without reconstructing the whole session.
 
 ## Structure
 
+In the diagram, the developer hands over the task and the verification criteria.
+
 ```mermaid
 ---
-title: evidence instead of a "done" assertion
+title: evidence instead of "done" assertions
 ---
 flowchart TB
   dev["Developer<br/>sets the check, accepts the work"]:::accent
   agent["Agent<br/>works and iterates"]
-  check["Check<br/>tests · build · linter<br/>diff vs fixture · screenshot<br/>signal: pass / fail"]
+  check["Check<br/>tests · build · linter<br/>diff vs reference · screenshot<br/>signal: pass / fail"]
   evidence["Evidence from the environment<br/>run log, CI log,<br/>exit code, screenshot"]:::accent
   dev -- "task + a way to verify" --> agent
   agent -- "runs and reads" --> check
@@ -78,141 +58,75 @@ flowchart TB
   evidence --> dev
 ```
 
-The developer stands at the ends of the loop: at the entrance they hand the
-agent the task together with a way to verify it, at the exit they accept the
-evidence. Inside the loop is a cycle with no human in it: the agent works,
-runs the check, reads the signal; a red signal sends it back to work, a
-green one opens the exit with evidence. The harder the gate at the exit
-(prompt → goal → hook → second opinion), the longer the loop can spin
-unattended.
+The agent repeats the cycle of edits and checks until it succeeds, then returns the evidence. A hook can enforce the exit condition, and an independent review can complement the automated checks.
 
 ## Participants / Components
 
-- **Developer** — sets the check and the criteria before the start; accepts
-  the work by its evidence.
-- **Agent** — works, runs the check, reads the signal, iterates.
-- **Check** — an oracle with a binary outcome: tests, build, linter, a diff
-  script, a screenshot against a design.
-- **Signal** — pass/fail, read by the agent inside the session.
-- **Evidence** — the check's output as recorded by the environment (session log, CI, hook), presented to the developer instead of the word "done".
+- **Developer** sets the criteria and accepts the result by its evidence.
+- **Agent** changes the code, runs the check, and works through the result.
+- **Check** evaluates the specified property of the result.
+- **Signal** tells the agent whether the criterion is met.
+- **Evidence** preserves the command, the output, or an image of the verified state. It is recorded by the environment, not by the agent.
 
 ## When to use
 
-- Anywhere the result is checkable — this is basic hygiene of working with
-  an agent, not a technique for special occasions.
-- Mandatory before leaving a session unattended: without a check,
-  autonomous work means autonomous accumulation of mistakes.
-- For UI — through screenshots: the agent compares the result with the
-  design and lists the differences.
-- If there is no check — the check comes first: in legacy code the agent's
-  first task is not "fix it" but "write a failing test that reproduces the
-  bug".
+- The result can be checked in a reproducible way.
+- The agent has to run several iterations without constant supervision.
+- A UI can be compared with a design against given criteria.
+- A bug can be reproduced by a test before the fix begins.
 
 ## Consequences and trade-offs
 
-- ➕ The loop closes without a human — the difference between a session you
-  watch and one you walk away from.
-- ➕ Mistakes are caught inside the cycle, at the cost of an agent
-  iteration, not at review at the cost of your time.
-- ➕ Evidence speeds up acceptance: reading test output is faster than
-  running the tests yourself.
-- ➖ The check has to exist or be built: in code without tests the pattern
-  starts with writing the check, and that is separate work.
-- ➖ The agent optimizes exactly for the check: a weak check produces green
-  garbage. The loop's quality equals the oracle's quality.
-- ➖ The check can be "hacked": a fitted test, a weakened condition, a
-  suppressed error. A ban on editing the check is part of the pattern.
+- ➕ The agent works through the failures it finds without waiting for a manual check of every step.
+- ➕ Some defects are caught before review.
+- ➕ The saved results show you how much verification was actually done.
+- ➖ If there is no check, preparing one takes separate work.
+- ➖ A weak check lets through an implementation that does not fully solve the task.
+- ➖ The agent may weaken the check to succeed. Changes to the criteria have to be controlled separately.
 
 ## Implementation
 
-1. State the criterion before the start and write it into the prompt: not
-   "build a validator" but "build a validator; cases: X — true, Y — false;
-   run the tests after implementing".
-2. No check — build one: ask the agent to first write a failing test that
-   reproduces the problem, and only then fix it (the disciplined form is
-   [TDD with an Agent](tdd-with-agent.md)).
-3. Close the loop explicitly: "run it, read the result, iterate until
-   green." Without that instruction the agent runs the check once — or not
-   at all.
-4. Forbid changing the check: editing a test, weakening a condition, and
-   suppressing an error are the developer's decisions, not moves within the
-   iteration. Anchor the ban with a hook if needed.
-5. Climb the ladder as autonomy grows: a supervised task needs only the
-   prompt; a session you walk away from — a goal or a hook; long autonomous
-   work — a review by a fresh subagent.
-6. Accept the work by the environment's records: the tool call log, the CI log, the hook's result. The agent retelling the output in its final message is not evidence.
-7. Anchor the verification commands in [Project Memory](claude-md-memory.md)
-   so the agent knows them in every session.
+1. Describe the expected behavior before implementation and state how to check it.
+2. If there is no check, start with a reproducing test (see [TDD with an Agent](tdd-with-agent.md)).
+3. Ask the agent to run the check after its edits, read the result, and fix the failures it finds.
+4. Protect the criteria from being fitted. Agree on any change to a test or weakening of a condition separately; if needed, enforce the restriction with a hook.
+5. For long autonomous work, add completion control and a review in a fresh context.
+6. Accept the work by the environment's records: the tool call log, the CI log, or the hook's result. A retelling of the result in the agent's final message does not count as evidence.
+7. Anchor the verification commands in [Project Memory](claude-md-memory.md) so the agent knows them in every session.
 
-In the spec-driven development toolkits the loop is built into the pipeline:
-in [OpenSpec](openspec.md) every task in
-`tasks.md` carries its own way of being verified, in [Superpowers](superpowers.md) the red–green–refactor cycle is
-mandatory inside every task, and in
-[Matt Pocock's skills](matt-pocock-skills.md) `/implement` doesn't finish
-without `/tdd` and the two-axis review.
+In [OpenSpec](openspec.md), [Superpowers](superpowers.md), and [Matt Pocock's skills](matt-pocock-skills.md), checks are part of the implementation workflow. The specific mechanism depends on the skill set and the task's criteria.
 
 ## Example
 
-The task is a promo code validator. The prompt sets the check together with
-the task:
+For a promo code validator, you set the cases to check together with the task.
 
-> Write validatePromoCode. Cases: SUMMER25 with an active promo — true; an
-> expired code — false with reason expired; a code from another region —
-> false with reason region; an empty string — false. Turn the cases into
-> tests, run them, and iterate until they pass. Don't edit the tests.
+> Write validatePromoCode. A valid SUMMER25 must be accepted. For an expired code return false with reason expired, for a code from another region return false with reason region. Reject an empty string. Turn the cases into tests, run them, and fix the implementation until they pass. Once the tests are agreed, don't change them without a separate discussion.
 
-The agent writes the implementation and the tests, runs them: two of four
-are red — the expired code passes, because the date comparison ignores the
-time zone. The agent fixes it, runs again — green. The session log shows the last
-test run after the final edit: 4 passed.
+The agent writes the tests and the implementation. The expired-code check fails because the date comparison ignores the time zone. After the fix, the agent runs the tests again. The session log shows the last test run after the final edit, with the result `4 passed`.
 
-The developer was doing something else the whole time: the time zone bug was
-caught and fixed inside the loop, at the cost of one agent iteration.
-Without the check it would have ridden to review — or to the users.
+You receive an implementation in which the time zone bug has already been found and fixed. Your involvement was needed only to set the scenarios and accept the result.
 
 ## Anti-patterns and common mistakes
 
-- **Taking it at its word.** "Done" without the check's output is not a
-  signal, it's politeness. Asking for evidence is not distrust, it's
-  protocol.
-- **Retold output.** `4 passed` in the final message is still the agent's words. Check it against the run in the session log or in CI.
-- **A weak oracle.** A check that is dishonestly easy to pass produces green
-  garbage: the agent optimizes for it, not for the task.
-- **A check exists, but no loop.** The tests sit in the repository, but
-  nobody asked the agent to run them — so it doesn't. The instruction is
-  what closes the loop.
-- **The agent edits the oracle.** A fitted test and a suppressed error look
-  like progress. Editing the check is always the developer's separate
-  decision.
-- **Unit tests as the finale.** Green units are not yet a working feature:
-  without an end-to-end check as the user, that's [premature success](premature-success.md).
+- **Taking it at its word.** A "done" message does not show what the agent checked. Ask for the run results.
+- **Retold output.** The line `4 passed` in the final message is still the agent's words. Check it against the run in the session log or in CI.
+- **A weak oracle.** The check may miss significant cases. Compare it with the task's requirements.
+- **A check that is never run.** Tests in the repository do not mean the agent ran them. Specify the command and the completion condition.
+- **Fitting the check.** A weakened condition hides the defect. Changes to the criterion need a separate decision.
+- **Unit tests as the finale.** For a user-facing feature, also check the end-to-end scenario, otherwise you risk [premature success](premature-success.md).
 
 ## Known uses
 
-- **Claude Code best practices** — the primary source: the check is "the
-  difference between a session you watch and one you walk away from"; the
-  before/after table of prompts with criteria.
-- **Claude Code** — the ladder mechanized: `/goal` as a session condition,
-  Stop hooks as a deterministic gate, review subagents as the second
-  opinion.
-- **Anthropic's harness for long-running agents** — the feature list with
-  `passing/failing` statuses that flip only after a real check, and the
-  end-to-end smoke test at the start of every session.
-- **SDD toolkits** — acceptance criteria and verifiable tasks as a
-  mandatory part of the pipeline: EARS in Kiro, `tasks.md` checklists in
-  Spec Kit and OpenSpec, mandatory TDD in Superpowers.
+- **Claude Code best practices** describe framing tasks with criteria and examples of verification.
+- **Agent tools** can support session goals, Stop hooks, and review subagents.
+- **Anthropic's harness for long-running agents** ties feature statuses to checks and runs a smoke test at the start of each session.
+- **SDD toolkits** include acceptance criteria in specifications and tasks, and Superpowers uses the TDD cycle.
 
 ## Related patterns
 
-- [TDD with an Agent](tdd-with-agent.md) — the disciplined form of the
-  loop: the check is written before the code, one per step.
-- [Writer and Reviewer](writer-reviewer.md) — verification by judgment for
-  what doesn't reduce to a binary oracle: quality, completeness, adherence
-  to the plan.
-- [Reflection](reflection.md) — the cheapest and weakest form of
-  verification: self-critique without an external oracle.
-- [Four Phases](explore-plan-code-commit.md) — the loop lives in the code
-  phase: the approved plan names the checks the agent verifies the
-  implementation against.
-- [Premature Success](premature-success.md) — the anti-pattern of declaring work done on green units without an end-to-end check as the user.
-- [One-Shotting](one-shotting.md) — the anti-pattern of expecting a finished feature from one pass with no verification cycle.
+- [TDD with an Agent](tdd-with-agent.md) starts each iteration with a test before the code changes.
+- [Writer and Reviewer](writer-reviewer.md) checks properties that require judgment.
+- [Reflection](reflection.md) helps find flaws through self-critique but needs external confirmation.
+- [Four Phases](explore-plan-code-commit.md) sets the checks in the plan and uses them during implementation.
+- [Premature Success](premature-success.md) occurs when work is declared done without an end-to-end check of the user scenario.
+- [One-Shotting](one-shotting.md) describes expecting a finished result from a single pass with no verification cycle.

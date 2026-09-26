@@ -2,76 +2,47 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, writer-reviewer, explore-plan-code-commit, premature-success]
-source_rev:
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # TDD with an Agent
 
 ## Intent
 
-Walk the agent through the red–green cycle with phase-specific prompts:
-first failing tests, frozen by a commit, then a minimal implementation until
-green — with no right to edit the tests. The oracle is written before the
-code and therefore doesn't inherit its bugs.
+Split writing the test and writing the implementation into explicit phases. First the agent confirms that the test fails for the expected reason, then it changes the code until the test passes. The frozen criteria help you notice when the result is being fitted.
 
 ## Also known as
 
-Test-driven development with agents, red–green–refactor, test-first.
+Test-driven development with an agent, red–green–refactor, test-first.
 
 ## Problem
 
-Ask the agent to "build the feature and cover it with tests" — and it will
-do exactly that, in that order: the implementation first, then tests for it.
-Such tests look like coverage but verify little:
+When the agent writes tests against a finished implementation, it can take the implementation's behavior for the expected one. A mistake in the logic then ends up in both the code and the check.
 
-- **The tests are copied off the code.** The agent writes them while looking
-  at the finished implementation — they repeat its structure and its bugs.
-  If a condition is inverted in the code, the test enshrines the inverted
-  condition as the norm.
-- **Tautology instead of verification.** The expected value is computed the
-  same way the code computes it — the test passes by construction and can
-  never disagree with the code.
-- **Fitting to the oracle.** If the tests already exist, an agent under
-  "make it green" pressure knows how to cheat: a stub instead of logic, a
-  special case hidden under a specific test.
+For example, a test computes a discount with the same formula the function uses. If the formula is wrong, both results will match. The expected value has to be obtained independently, from the requirement or from a worked example. Even an independent test can be passed with a special-case stub. That is why a check for overfitting is useful after green.
 
-A single "use TDD" instruction is not enough: without explicit phase gates
-the agent slides back into its habitual order — code, then tests.
+Separating the phases explicitly lets you see the test before the implementation and control changes to the criterion.
 
 ## Solution
 
-Separate the red and green phases into different prompts and keep the gate
-between them in the developer's hands.
+Put the red and green phases into separate prompts and keep the gate between them in your hands.
 
-1. **Declare the rules.** Say it outright: we work test-first — so the agent
-   doesn't create implementations or stubs ahead of time.
-2. **The red phase.** The agent writes tests from expected input/output
-   pairs, runs them, and confirms they fail. Implementation is explicitly
-   forbidden in this phase. A test that never failed proves nothing.
-3. **Freeze the oracle.** The tests are committed. From this moment they are
-   the reference, not a draft.
-4. **The green phase.** The agent writes minimal code until the tests pass,
-   running them and iterating — this is the
-   [Feedback Loop](give-agent-a-way-to-verify.md) with a ready-made oracle.
-   Editing the tests is forbidden: changing them is the developer's
-   decision.
-5. **The overfit check.** A fresh subagent looks at the implementation: is
-   it fitted to the specific tests (see
-   [Writer and Reviewer](writer-reviewer.md)).
-6. **Refactoring** — as a separate move after green, under the tests'
-   protection, not inside the cycle.
+1. **Set the order.** The agent writes the test first, then the implementation.
+2. **Get a red result.** The agent runs the test and shows that it fails because the behavior is missing.
+3. **Freeze the criterion.** Review the test and save it with a commit.
+4. **Get a green result.** The agent changes the implementation and repeats the [check](give-agent-a-way-to-verify.md). Changing the test requires a separate decision.
+5. **Check for overfitting.** A reviewer assesses whether the code solves the general case (see [Writer and Reviewer](writer-reviewer.md)).
+6. **Refactor** under the protection of the passing tests.
 
-Work in vertical slices: one test → one minimal implementation → the next
-test. All tests in bulk means verifying imagined behavior: the test
-structure gets locked in before the task is understood. And agree on the
-seams in advance: tests live on public boundaries, not on internals —
-otherwise they break from refactoring, not from behavior changes.
+Go through the cycle one behavior at a time. The next test takes into account what came out of the previous step. Before you start, agree on the public boundary where the result is checked, so that internal refactoring does not break a test without a change in behavior.
 
 ## Structure
 
+The diagram shows the path from a failing test to the implementation and an independent check.
+
 ```mermaid
 ---
-title: one prompt per phase — left alone, the agent blends them
+title: separate prompts set the order of TDD phases
 ---
 flowchart TB
   red["Red phase<br/>tests from the cases, run — they must fail<br/>implementation forbidden"]:::warn
@@ -83,153 +54,82 @@ flowchart TB
   refactor -. "next slice: one test — one implementation" .-> red
 ```
 
-The phases run left to right, each with its own prompt: the red one produces
-a failing oracle, the commit freezes it, the green one spins the
-implementation loop with the tests frozen, then a fresh pair of eyes checks
-the implementation for overfitting, and only after that comes refactoring
-under the tests' protection. The loop at the bottom is the vertical slices:
-the cycle repeats one test at a time, each next slice building on what the
-last one taught.
+The back loop repeats the cycle for the next scenario once the current one is confirmed.
 
 ## Participants / Components
 
-- **Developer** — supplies the cases and the seams, holds the phase gates,
-  is the sole authority over editing tests.
-- **Agent** — writes tests in the red phase and the implementation in the
-  green one; doesn't blend the phases, because each arrives as a separate
-  prompt.
-- **The test oracle** — failing in the red phase, frozen in the green one; a
-  specification of behavior independent of the implementation.
-- **Seams** — the agreed public boundaries the tests live on.
-- **Reviewer** — a fresh subagent checking the implementation for
-  overfitting.
+- **Developer** sets the expected behavior and approves changes to the criteria.
+- **Agent** writes the test and then the implementation, in sequence.
+- **Test** checks the requirement and is saved before the implementation.
+- **Testing seam** sets the public interface through which behavior is observed.
+- **Reviewer** looks for overfitting to special cases.
 
 ## When to use
 
-- Logic with verifiable input/output pairs: parsers, calculations,
-  validation, data transformations.
-- Bug fixes: a failing reproduction test before the fix is the cheapest
-  insurance against the bug's return.
-- Code where the cost of regression is high and the tests will live on as a
-  specification.
+- The result can be expressed as specific inputs and expected outputs.
+- A bug can be reproduced by a test before the fix.
+- Code where a regression is costly and the tests will live on as a specification.
 
-For interface markup, prototypes, and exploration the pattern is overkill:
-there is nothing to pin down with an input/output pair, and the
-[Feedback Loop](give-agent-a-way-to-verify.md) with screenshots or a
-[Throwaway Prototype](prototype-to-answer.md) works better.
+For a visual choice or an exploratory prototype, [screenshot checks](give-agent-a-way-to-verify.md) and a [throwaway experiment](prototype-to-answer.md) may fit better.
 
 ## Consequences and trade-offs
 
-- ➕ The oracle is independent of the implementation: the tests don't
-  inherit the code's bugs, because they were written before it.
-- ➕ Cheating is visible: with frozen tests a stub won't pass, and an
-  attempt to edit a test is an explicit violation, not a quiet tweak.
-- ➕ The tests read like a specification and survive refactorings — they are
-  bound to seams, not to internals.
-- ➖ Slower than a direct request: two phases, commits, an overfit check —
-  on a trivial edit this is bureaucracy.
-- ➖ The discipline rests on the developer: skip a gate, and the agent has
-  quietly slid into "code, then tests".
-- ➖ Quality is bounded by the seams: tests on badly chosen boundaries will
-  be brittle, no matter how many phases there are.
+- ➕ The test can be checked against the requirement before the implementation exists.
+- ➕ A change to a frozen criterion is visible in the diff.
+- ➕ Checking public behavior depends less on the code's internal structure.
+- ➖ Explicit phases and a review increase the cost of a small edit.
+- ➖ You have to control the order of steps and the reasons tests fail.
+- ➖ A poorly chosen seam makes tests brittle.
 
 ## Implementation
 
-1. Start with the declaration: "we're doing TDD: tests first, implementation
-   after."
-2. The red prompt: "write tests for cases X, Y, Z; run them and show they
-   fail; don't write the implementation." Supply the cases yourself — that's
-   your part of the specification; ask the agent to propose missed edge
-   cases.
-3. Agree on the seams before the tests: "what's the public boundary here?
-   which seams do we test at?" — reject tests on internals.
-4. Commit the red tests. From here the rule holds: only the developer
-   changes tests, as a separate decision.
-5. The green prompt: "implement until the tests pass; don't edit the tests;
-   run and iterate." Demand evidence — the test runner's output.
-6. After green — with a fresh context: "check that the implementation isn't
-   fitted to the tests: stubs, special cases for specific test inputs."
+1. Declare a test-first order of work.
+2. Agree on the expected cases and ask the agent to suggest missing edge cases.
+3. Choose the public interface for the check before writing the tests.
+4. Check the reason the first test fails and save it with a commit.
+5. Ask for the implementation to be changed until it passes, keeping the test as is. Get the run output.
+6. Hand the code to a fresh reviewer to look for special-case stubs and missing cases.
 7. Ask for refactoring separately, under the protection of green tests.
-8. Repeat one slice at a time; anchor the "red before green" and "don't edit
-   tests" rules in [Project Memory](claude-md-memory.md).
+8. Repeat the cycle for the next behavior. Anchor the order in [Project Memory](claude-md-memory.md).
 
-In the toolkits the cycle comes pre-assembled: in
-[Superpowers](superpowers.md) the `test-driven-development` skill is
-mandatory inside every plan task, in
-[Matt Pocock's skills](matt-pocock-skills.md) `/tdd` adds seams and vertical
-slices and moves refactoring out into review.
+[Superpowers](superpowers.md) includes `test-driven-development` in task implementation. In [Matt Pocock's pack](matt-pocock-skills.md), `/tdd` also sets testing seams and works one scenario at a time.
 
 ## Example
 
-The bug: a user with an expired session isn't logged out and stares at an
-infinite spinner. The developer starts with the red phase:
+When the session expires, the user sees an endless spinner. You start with a reproduction.
 
-> We're doing TDD. Write a test reproducing the bug: the session has
-> expired — an API request returns 401 — the user ends up on /login. Run it
-> and show that it fails. Don't write the fix yet.
+> We're doing TDD. Write a test for an expired session. The API returns 401, after which the user should end up on /login. Show that the test fails for this reason. Don't write the fix yet.
 
-The agent writes a test at the "HTTP client → response handler" seam and
-runs it: red — on a 401 the client goes into an infinite retry. The test is
-committed.
+The agent checks how the HTTP client behaves on a 401 response. The test fails because the client retries the request endlessly. You review the test and save it with a commit.
 
 > Now fix it. Don't edit the test; run it and iterate until green.
 
-The agent finds that the interceptor retries all errors indiscriminately,
-adds a 401 exception with a redirect — green, the test runner's output in
-the reply. The final touch:
+The agent fixes the shared interceptor, adding 401 handling that redirects to the login page. Once the test passes, you ask for a review.
 
-> With a fresh subagent: check that the fix isn't fitted to the test — that
-> the 401 handling works for all requests, not just the endpoint from the
-> test.
+> In a fresh context, check that the 401 handling applies to all requests and doesn't depend on the specific endpoint from the test.
 
-The reviewer confirms: the change is in the shared interceptor. The bug is
-closed, and its return is now caught by a test that was born before the fix
-— and therefore verifies the behavior instead of transcribing it from the
-code.
+The reviewer checks the shared interceptor. The test preserves the original scenario and will catch it if it breaks again.
 
 ## Anti-patterns and common mistakes
 
-- **Tests after the fact.** "Build the feature and cover it with tests"
-  produces tests copied off the implementation — coverage exists,
-  verification doesn't.
-- **Skipping red.** A test that never failed may be passing for any reason —
-  including that it verifies nothing.
-- **All tests in bulk.** Horizontal slicing locks in the test structure
-  before the task is understood; work in vertical slices.
-- **The agent edits the oracle.** Editing a test in the green phase is
-  rewriting the specification to match the answer. Only the developer, only
-  as a separate decision.
-- **Tests on internals.** Mocking internal collaborators and asserting on
-  private methods breaks with refactoring, not with behavior changes — the
-  seam was chosen wrong.
-- **A tautological oracle.** An expected value computed the same way as in
-  the code passes by construction. References come from an independent
-  source: the spec, a hand-worked example, a known-good answer.
+- **Tests written from the implementation.** The check can lock in a bug in the finished code. Derive the expected behavior from the requirement.
+- **Skipping red.** Without an observed failure it is unclear whether the test detects the original defect.
+- **All tests up front.** A large suite can lock in unverified assumptions. Add scenarios one after another.
+- **Fitting the criterion.** Weakening a test during the fix requires a separate discussion.
+- **Testing internals.** Tests of private methods can break after refactoring even though the behavior is preserved.
+- **A tautological oracle.** Computing the expected answer the same way repeats the implementation's mistake. Use an independent example or the requirement.
 
 ## Known uses
 
-- **Claude Code best practices** — the canonical phased workflow: tests from
-  input/output pairs with an explicit "we're doing TDD", confirming the
-  failure, committing the tests, implementing without the right to change
-  them, and an independent overfit check.
-- **Superpowers** — TDD as a mandatory mode: every plan item is implemented
-  by a subagent through red–green–refactor; the cycle can't be skipped.
-- **Matt Pocock's skills** — `/tdd`: pre-agreed seams, tracer-bullet
-  vertical slices, a ban on tautological tests, refactoring moved out into
-  review.
-- **Kent Beck, Test-Driven Development: By Example** — the primary source of
-  the practice itself; with agents it gets a second wind: a cycle that used
-  to demand human discipline can now be imposed by prompts.
+- **Claude Code best practices** describe confirming the failure, committing the tests, implementing, and checking for overfitting.
+- **Superpowers** makes TDD a mandatory part of executing the plan.
+- **Matt Pocock's skills** use `/tdd` with agreed testing seams.
+- **Kent Beck** described the practice in _Test-Driven Development: By Example_.
 
 ## Related patterns
 
-- [Feedback Loop](give-agent-a-way-to-verify.md) — the general pattern whose
-  disciplined form TDD is: the oracle is written before the code, one per
-  step.
-- [Writer and Reviewer](writer-reviewer.md) — the overfit check at the end
-  of the cycle: the implementation is judged by someone other than its
-  author.
-- [Four Phases](explore-plan-code-commit.md) — test cases are naturally born
-  in the plan phase: the approved plan names what counts as "works".
-- [Hypothesis-Driven Debugging](hypothesis-driven-debugging.md) establishes the cause of a defect before fixing it.
-- [Premature Success](premature-success.md) — the anti-pattern of taking green unit tests for a working feature.
+- [Feedback Loop](give-agent-a-way-to-verify.md) sets the general cycle of checking and fixing.
+- [Writer and Reviewer](writer-reviewer.md) helps detect overfitting after the tests pass.
+- [Four Phases](explore-plan-code-commit.md) lets you agree on the scenarios to check in the plan.
+- [Hypothesis-Driven Debugging](hypothesis-driven-debugging.md) helps establish the cause of a defect before the fix.
+- [Premature Success](premature-success.md) occurs when green unit tests are taken for a working feature.

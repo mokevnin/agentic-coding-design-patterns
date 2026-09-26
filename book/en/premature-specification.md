@@ -2,71 +2,56 @@
 kind: anti-pattern
 status: draft
 related: [explore-plan-code-commit]
-source_rev: 7f11d956633c1981bc349bb2fac1261b4125afe2
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Premature Specification
 
 ## Also known as
 
-«Преждевременная спецификация», "a solution instead of the problem".
+Premature Specification, "a solution instead of the problem".
 
 ## Context
 
-A developer gives an agent a task and, instead of the goal, immediately
-describes a concrete implementation: which functions to call, which library to
-use, in what order to perform the steps.
+You go straight to naming the functions, the library, and the call order before you have explained the goal of the task.
 
 ## Problem
 
-The agent is handed the technical details of "how to do it", bypassing "what is
-needed and why". The task is phrased as a ready-made implementation plan rather
-than a problem to be solved.
+The agent receives a ready-made plan and starts executing it. Without a description of the problem, it is hard for the agent to judge whether the chosen mechanism solves the original task.
 
 ## Why people do it
 
-- The illusion of control: a detailed instruction feels like it reduces risk.
-- A sense of speed: dictating your own plan is easier than explaining the goal.
-- Carrying over your own draft of a solution — possibly not the best one.
+- A detailed instruction creates a feeling of control over the result.
+- Dictating a plan you have already worked out seems faster than explaining the goal.
+- You carry your first idea for a solution into the request without comparing alternatives.
 
 ## Consequences
 
-- ➖ The agent doesn't bring its knowledge to bear on choosing the approach —
-  you lose the simpler or more reliable options it could have proposed.
-- ➖ A premature, often suboptimal solution gets locked in; later you end up
-  debugging your own early assumptions.
-- ➖ The solution space narrows: the agent optimizes the specified mechanism,
-  not the original goal.
-- ➖ It becomes harder to notice that the task itself is framed wrong.
+- ➖ It is harder for the agent to suggest a simpler approach when the implementation is already prescribed.
+- ➖ A premature, often suboptimal solution gets locked in; later you end up debugging your own early assumptions.
+- ➖ The agent polishes the specified mechanism even if the original task calls for a different solution.
+- ➖ It is harder to notice that the task itself is framed wrong.
 
 ## Signs
 
-- The prompt contains more "how" than "what" and "why".
+- The prompt has more "how" than "what" and "why".
 - Specific functions/libraries/steps are listed without justification.
-- Implementation techniques are named before the desired outcome is described.
+- Implementation techniques are named before the desired result is described.
 
 ## A better way
 
-Describe the goal, the context, the constraints, and the definition of done
-first — and leave the "how" to the agent. Pin down the implementation only
-where it is a genuine constraint (an API contract, an invariant, compatibility),
-and mark those places explicitly.
+First describe the goal, the constraints, and the completion criteria. Ask the agent to propose an approach. Specify a concrete implementation only where it follows from a mandatory contract or a compatibility requirement, and explain that constraint.
 
 ## Example
 
 **Before:**
 
-> Add a 300 ms debounce via `lodash.debounce` in the `onChange` handler of the
-> search field.
+> Add a 300 ms debounce using `lodash.debounce` in the search field's `onChange` handler.
 
 **After:**
 
-> The search field fires a request on every keystroke and overloads the
-> backend. I want the request to go out only once the user has finished typing.
-> Propose an approach; the component's external contract must not change.
+> The search field sends a request on every keystroke and overloads the backend. I want the request to go out only when the user has finished typing. Suggest an approach; the component's external contract must not change.
 
 ## Related patterns and anti-patterns
 
-- [Four Phases](explore-plan-code-commit.md) — the pattern
-  whose planning phase degrades into premature specification when you demand
-  detail before the problem is understood.
+- [Four Phases](explore-plan-code-commit.md) lets you explore the task before choosing an implementation.

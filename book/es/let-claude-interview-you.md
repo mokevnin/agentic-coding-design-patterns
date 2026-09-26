@@ -2,123 +2,135 @@
 group: task-setting
 status: draft
 related: [grilling, spec-driven-development, explore-plan-code-commit]
-source_rev:
+source_rev: 854c3716f433510f26cf8af5610b6c51b28396d9
 ---
 
 # Entrevista del agente
 
 ## Propósito
 
-Invertir el planteamiento de una tarea grande: en vez de escribir la especificación tú mismo, empezar con una descripción mínima y dejar que el agente te entreviste — hasta que de tus respuestas se arme una especificación autosuficiente. La ejecuta una sesión fresca con contexto limpio.
+Si los requisitos de una funcionalidad aún no están escritos, describe brevemente la idea al agente y pídele que te entreviste. El agente preguntará por escenarios que quizá pasaste por alto. A partir de tus respuestas redactará una especificación autosuficiente: un documento que se entiende sin leer la entrevista. Después, una sesión fresca implementa la tarea a partir de ella.
 
 ## También conocido como
 
-Let Claude interview you, la entrevista invertida.
+Let Claude interview you, la entrevista invertida, agent-led interview.
 
 ## Problema
 
-Una funcionalidad grande vive en tu cabeza — y de ahí sale mal:
+Supongamos que pides al agente que añada webhooks de pedidos. Te imaginas cómo debe funcionar la funcionalidad, pero aún no has escrito todos los escenarios. La experiencia te sugiere el camino habitual, y no ves las excepciones.
 
-- Escribir la especificación tú mismo es duro y sesgado: no sabes lo que no sabes. Los casos límite, las bifurcaciones de UX y los compromisos en los que no pensaste no llegarán al texto — no hay quien pregunte por ellos.
-- Volcarlo todo en un prompt largo da un montón de texto sin estructura: lo importante mezclado con lo obvio, y los agujeros siguen ahí.
-- Lo no dicho aflora en el peor momento: a mitad de la implementación el agente topa con una pregunta sin resolver — y la resuelve él solo, en silencio, como salga.
+Tu petición no dice qué hacer si el receptor responde despacio. Así que el agente tendrá que elegir la política de reintentos por su cuenta, ya durante la implementación. Incluso una descripción detallada de la idea puede conservar ese hueco, porque la escribes apoyándote en la misma experiencia. Por eso hace falta un interlocutor que pregunte qué debe pasar ante un fallo.
 
 ## Solución
 
-Empezar con lo mínimo y ceder la iniciativa al agente:
+Describe la intención en unas pocas frases y pide al agente que te pregunte por lo que podrías haber pasado por alto. Por ejemplo:
 
-> Quiero construir [descripción breve]. Entrevístame en detalle: pregunta por la implementación técnica, la UX, los casos límite, los riesgos y los compromisos. No hagas preguntas obvias — excava en las partes difíciles en las que quizá no pensé. Sigue hasta cubrirlo todo y luego escribe la especificación completa en SPEC.md.
+> Quiero construir [descripción breve]. Pregúntame por los escenarios de usuario, las restricciones y los errores que podría haber pasado por alto. Los hechos disponibles en el proyecto compruébalos tú mismo. Después de la conversación, escribe los requisitos y los criterios de aceptación en SPEC.md.
 
-Los roles se reparten limpiamente: el agente pregunta — y es bueno en ello, porque conoce los agujeros típicos de este tipo de funcionalidades; tú decides — cada respuesta fija una decisión que de otro modo habría aflorado a mitad de la implementación.
+El agente busca los puntos donde el comportamiento de la funcionalidad aún no está definido y te pregunta por ellos. Lo que está registrado en el proyecto, el agente lo averigua sin ti, y las decisiones de producto las tomas tú. Con cada respuesta decides algo que, de otro modo, el agente elegiría por su cuenta durante la implementación: por ejemplo, qué hacer con un receptor lento.
 
-El final de la entrevista es una especificación **autosuficiente**: nombra los archivos y las interfaces implicados, lista explícitamente lo que queda *fuera* del alcance y termina con un paso de verificación de extremo a extremo que demuestra que la funcionalidad funciona. La autosuficiencia es el criterio de listo: con una spec así se puede trabajar sin acceso a su autor.
+Al final, el agente escribe una **especificación autosuficiente**: un documento que el siguiente ejecutor entenderá sin leer la entrevista. Incluye los requisitos, los límites de la tarea y una comprobación de extremo a extremo, es decir, un escenario que muestra que la funcionalidad funciona en su conjunto.
 
-La ejecución ocurre en una sesión fresca: una ventana limpia dedicada entera a la implementación, con la especificación como fuente. La entrevista no se arrastra al contexto del ejecutor — todo lo valioso ya está en SPEC.md. El tiempo invertido en precisar la especificación rinde más que el tiempo invertido en vigilar la implementación.
+Empieza la implementación en una sesión fresca, una conversación nueva con el agente. La entrevista larga ya ocupó parte de la [ventana de contexto](glossary.md), el volumen de datos que el modelo tiene en cuenta en cada respuesta. Una sesión fresca empieza con la ventana limpia y la especificación. No ve la entrevista, así que todas las decisiones importantes de ella deben quedar escritas en el documento.
 
 ## Estructura
 
+En el diagrama empiezas con una idea corta, respondes a las preguntas del agente y obtienes una especificación.
+
 ```mermaid
 ---
-title: precisar la spec rinde más que vigilar la implementación
+title: la entrevista guarda las decisiones en la especificación
 ---
 flowchart TB
   prompt["Prompt mínimo<br/>la idea en dos frases"]:::accent
   interview["La entrevista<br/>el agente pregunta lo difícil,<br/>el desarrollador decide —<br/>pregunta a pregunta, hasta cubrir todo"]
-  spec["SPEC.md<br/>autosuficiente: archivos e interfaces,<br/>el «fuera de alcance» listado,<br/>comprobación de extremo a extremo"]:::accent
+  spec["SPEC.md<br/>autosuficiente: archivos e interfaces,<br/>el «fuera de alcance» listado,<br/>comprobación de extremo a extremo al final"]:::accent
   fresh["Sesión fresca<br/>ventana limpia + la especificación"]
   prompt --> interview --> spec
   spec -- "la frontera de sesiones: la entrevista queda atrás,<br/>la spec cruza" --> fresh
 ```
 
-A la izquierda, el prompt mínimo — la idea en un par de frases. En el centro, el ciclo de la entrevista: el agente pregunta por lo difícil, el desarrollador decide, pregunta a pregunta. A la derecha, el producto — una especificación autosuficiente con los archivos, los límites del alcance y la comprobación de extremo a extremo. La frontera discontinua la separa de la ejecución: la sesión fresca recibe la spec y una ventana limpia; la entrevista queda atrás.
+La frontera de sesiones del diagrama es el momento en que abres una sesión nueva y le pasas SPEC.md.
 
 ## Participantes / Componentes
 
-- **El desarrollador** — la fuente de las decisiones: responde, elige, recorta el alcance.
-- **El agente entrevistador** — pregunta por lo que no pensaste; con la instrucción de no preguntar lo obvio.
-- **SPEC.md** — el producto de la entrevista: una especificación autosuficiente con archivos, límites y comprobación.
-- **La sesión fresca** — el ejecutor: ventana limpia más la especificación, sin la cola de la entrevista.
+- **Desarrollador** toma las decisiones y limita el alcance de la tarea.
+- **Agente entrevistador** hace preguntas sobre los escenarios pasados por alto.
+- **SPEC.md** es el archivo con los requisitos y los criterios de aceptación.
+- **Sesión fresca** implementa la tarea según la especificación.
 
 ## Cuándo aplicarlo
 
-- Una funcionalidad grande cuyos requisitos están en tu cabeza pero no en papel — y escribirlos tú mismo no sale.
-- Trabajas solo o en un equipo pequeño sin analista dedicado: el agente cubre el rol de quien hace las preguntas incómodas.
-- Las specs que escribiste solo en el pasado acababan sistemáticamente con agujeros en los mismos sitios.
+- Tienes la idea de una funcionalidad grande, pero sus requisitos aún no están escritos.
+- El equipo necesita un interlocutor que ayude a comprobar si se han tenido en cuenta todos los escenarios.
+- Las especificaciones que escribías en solitario salían una y otra vez con agujeros en los mismos sitios.
 
-No hace falta para cambios pequeños — basta el planteamiento normal — ni cuando la especificación ya existe: un plan terminado no se entrevista, se [ataca](grilling.md).
+Un cambio pequeño suele bastar con encargárselo al agente. Y un plan terminado conviene más comprobarlo con [grilling](grilling.md): ahí el agente hace preguntas sobre un plan ya escrito.
 
 ## Consecuencias y compromisos
 
-- ➕ Las preguntas destapan lo que no habías pensado: el agente conoce los agujeros típicos — reintentos, carreras, estados vacíos, permisos.
-- ➕ La especificación nace estructurada y autosuficiente — una entrada lista para la [tubería SDD](spec-driven-development.md).
-- ➕ El ejecutor recibe contexto limpio: la ventana no está sepultada bajo una hora de negociaciones.
-- ➖ La entrevista cuesta tiempo y paciencia: docenas de preguntas seguidas agotan.
-- ➖ La calidad cuelga de la instrucción: sin el «no preguntes lo obvio» el agente empieza con «¿qué framework usamos?».
-- ➖ Las respuestas desganadas lo devalúan todo: un «como mejor te parezca» a cada pregunta da una especificación hecha de conjeturas del agente — para eso no hacía falta entrevistarse.
+- ➕ Al responder a las preguntas del agente, encuentras errores y restricciones que aún no habíais discutido.
+- ➕ La especificación puede servir de base para el [desarrollo orientado a especificaciones (SDD)](spec-driven-development.md).
+- ➕ El ejecutor recibe solo las decisiones seleccionadas, sin toda la historia de la entrevista.
+- ➖ Una entrevista detallada te quita tiempo y atención.
+- ➖ Si el agente no ve el código, puede preguntarte por cosas que ya están registradas en el proyecto.
+- ➖ Si no tomas decisiones, el agente llenará la especificación con sus propias suposiciones.
 
 ## Implementación
 
-1. Escribe el prompt mínimo: la idea en una o dos frases más la petición de entrevistarte — con un explícito «excava lo difícil, no preguntes lo obvio».
-2. Responde como dueño: cada respuesta es una decisión. Si no sabes, dilo: «no lo sé — propón opciones» es mejor que una elección al azar.
-3. Exige el final como archivo: la especificación completa en `SPEC.md`, no un resumen en el chat.
-4. Comprueba la autosuficiencia: archivos e interfaces nombrados, el «fuera de alcance» listado, al final el paso de verificación de extremo a extremo. ¿Falta algo? — otra ronda de preguntas.
-5. Ejecuta con una sesión fresca: contexto nuevo, `SPEC.md` de entrada. Para trabajo mayor que una sesión, la spec entra en la [tubería SDD](spec-driven-development.md) — como plan y tareas.
+1. Describe la idea en unas pocas frases y pide al agente que averigüe qué escenarios pasaste por alto.
+2. Discute con el agente las opciones de respuesta. Si aún no hay decisión, anota una pregunta abierta.
+3. Pide al agente que guarde la especificación en _SPEC.md_.
+4. Relee los requisitos, las restricciones y la comprobación de extremo a extremo. Precisa los puntos que el ejecutor no entenderá sin la entrevista.
+5. Pasa el documento a una sesión fresca. Si el trabajo es largo, añade a la especificación un plan y tareas según [SDD](spec-driven-development.md).
 
-### Cuando otra persona conoce la respuesta
+### Si la respuesta la conoce otra persona
 
-Si el desarrollador desconoce una regla de negocio, identifica quién puede explicarla y qué decisión necesita esa respuesta. Pide al agente un cuestionario separado con el contexto de la tarea, preguntas por orden de importancia y espacio para responder. Debe poder usarlo un experto que no participó en la conversación.
+A veces el agente pregunta por una regla que no conoces. Entonces averigua quién puede explicarla y qué decisión depende de la respuesta. Pide al agente que prepare un cuestionario aparte para esa persona: el contexto de la tarea, las preguntas por orden de importancia y espacio para las respuestas. Como el contexto de la tarea está en el propio cuestionario, se le puede dar a un experto que no participó en tu conversación con el agente.
 
-Antes de migrar la facturación, por ejemplo, el equipo financiero debe aclarar los reembolsos por periodos parcialmente utilizados y las excepciones contractuales. Conserva «no lo sé» como pregunta abierta. Tras recibir las respuestas, el desarrollador las revisa y pide al agente actualizar los requisitos.
+Por ejemplo, preparas una migración de facturación y el equipo de finanzas tiene que precisar las reglas de reembolso. Entonces el agente preguntará en el cuestionario qué ocurre si el cliente usó solo una parte del periodo y qué excepciones prevé el contrato. Si a alguna pregunta responden «no lo sé», anótala como abierta. Cuando lleguen las respuestas, compruébalas y pide al agente que actualice los requisitos.
 
-El skill [to-questionnaire](https://github.com/mattpocock/skills/blob/main/skills/productivity/to-questionnaire/SKILL.md) prepara el documento aclarando primero el destinatario y la información necesaria. Enviarlo e incorporar las respuestas siguen siendo pasos separados del equipo.
+Preparar un cuestionario así lo sabe hacer el skill [to-questionnaire](https://github.com/mattpocock/skills/blob/main/skills/productivity/to-questionnaire/SKILL.md). Un [skill](glossary.md) es un procedimiento repetible escrito en instrucciones para el agente. Primero, to-questionnaire te pregunta a quién va dirigido el cuestionario y qué información hay que obtener. Pero enviar el cuestionario y trasladar las respuestas a la especificación lo tiene que hacer el propio equipo: el skill no lo hace.
 
 ## Ejemplo
 
-El desarrollador quiere webhooks para las integraciones y escribe exactamente eso:
+Volvamos a los webhooks de pedidos. Empiezas con esta petición:
 
-> Quiero añadir webhooks para que los clientes reciban eventos de pedidos. Entrevístame en detalle, excava lo que no haya considerado y luego escribe la especificación en SPEC.md.
+> Quiero añadir webhooks para que los clientes reciban eventos de pedidos. Entrevístame en detalle, excava en lo que no he pensado y luego escribe la especificación en SPEC.md.
 
-El agente pregunta — de una en una, con recomendación en cada pregunta: qué eventos van en la primera versión; qué hacer si el receptor devuelve un 500 — recomiendo reintentos exponenciales con tope; ¿se firma el payload? — recomiendo HMAC; ¿garantizamos el orden de los eventos?; ¿qué hay de la deduplicación en el cliente? En «¿qué pasa si un receptor es consistentemente lento y acumula cola?» el desarrollador se detiene: no lo había pensado en absoluto — deciden desactivar el webhook tras N fallos, con notificación.
+El agente te pregunta por turnos qué hacer ante errores de entrega. Cuando pregunta por un receptor que responde despacio de forma constante, te das cuenta de que pasaste por alto ese escenario. Acuerdas con el agente: tras un número dado de fallos el webhook se desactiva y el cliente recibe una notificación.
 
-Veinte preguntas después, en `SPEC.md` está la especificación: los eventos y su formato, la política de reintentos, la firma, «fuera de alcance: la UI de configuración — siguiente iteración» y la comprobación de extremo a extremo — «crear un pedido, ver el evento entregado en un receptor de prueba, tumbar el receptor, ver los reintentos y la desactivación». El desarrollador abre una sesión fresca: «implementa según SPEC.md» — y el ejecutor trabaja con un documento donde la pregunta del receptor lento ya está decidida.
+El agente escribe estas condiciones en _SPEC.md_ junto con el formato de los eventos, la firma y la política de reintentos. Este es el fragmento sobre la desactivación del webhook que acordaste:
+
+```markdown
+Desactivamos el webhook tras cinco intentos de entrega fallidos seguidos.
+Un fallo es una respuesta fuera del rango 200–299 o la ausencia de respuesta
+en 10 segundos. Una entrega correcta pone el contador a cero.
+Tras el quinto fallo dejamos de enviar y creamos una sola notificación
+en el panel del cliente. El propio cliente puede volver a activar el webhook.
+```
+
+El fragmento tiene un umbral, una forma de contar los fallos y un resultado observable. Por eso se puede construir con él una comprobación de extremo a extremo. Esta reproduce cinco fallos y confirma que el webhook está desactivado y que el cliente recibió la notificación. Un escenario aparte intercala una entrega correcta entre los fallos y comprueba que el contador se reinició.
+
+Son las condiciones de un producto de ejemplo. En tu producto, elige valores acordes con tu carga y tus requisitos de entrega.
 
 ## Antipatrones y errores comunes
 
-- **«Como mejor te parezca» a todo.** La entrevista funciona solo mientras las decisiones son tuyas: un agente que se responde a sí mismo produce una especificación de conjeturas.
-- **Entrevista sin archivo.** Las decisiones que se quedan en la conversación mueren con la sesión — el final es siempre `SPEC.md`.
-- **Ejecutar en la misma sesión.** La ventana está sepultada bajo la entrevista, y el ejecutor arrastra una hora de negociación en vez de un contexto limpio. La spec es autosuficiente — dale una sesión fresca.
-- **Preguntas obvias.** Sin el explícito «excava lo difícil» el agente entrevista por la superficie — y los agujeros se quedan donde estaban.
-- **Entrevista en vez de grilling.** Si el plan ya está escrito, reconstruirlo a preguntas llega tarde — hay que [atacarlo](grilling.md).
+- **«Lo que tú veas mejor» para todo.** Si respondes así a cada pregunta, en el documento acabarán las conjeturas del agente en vez de tus decisiones.
+- **Entrevista sin archivo.** Las decisiones importantes quedan solo en la conversación, y la siguiente sesión no las verá.
+- **Ejecutar en una ventana llena.** Una entrevista larga ocupa sitio en la ventana de contexto que hará falta para la implementación. Pasa la especificación acordada a una sesión fresca.
+- **Solo preguntas obvias.** Si el agente pregunta solo por lo que ya está claro, los huecos pasan desapercibidos. Pídele que pregunte por las excepciones y restricciones que aún no habéis discutido. En el prompt del ejemplo, para eso están las palabras «excava en lo que no he pensado».
+- **Otra entrevista sobre un plan terminado.** Si el plan ya está escrito, comprueba sus decisiones con [grilling](grilling.md), no con una entrevista nueva.
 
 ## Usos conocidos
 
-- **Claude Code best practices** — la fuente primaria con el prompt ya hecho: la entrevista vía AskUserQuestion, «dig into the hard parts I might not have considered», la especificación a SPEC.md, la ejecución en sesión fresca.
-- **Kiro** — las sesiones de especificación como modo del IDE: la misma idea integrada en la herramienta — los requisitos nacen en un diálogo con aprobaciones por fases.
-- **Skills de Matt Pocock** — `/grill-with-docs`: una entrevista que lee la base de código en paralelo y asienta sus decisiones en CONTEXT.md y los ADR.
+- **Claude Code best practices** aconsejan hacer la entrevista mediante la herramienta AskUserQuestion, guardar el resultado en SPEC.md e implementarlo en una sesión fresca.
+- **Kiro** redacta los requisitos en diálogo contigo, y tú los confirmas por fases.
+- **Los skills de Matt Pocock** guardan los resultados de `/grill-with-docs` en CONTEXT.md y en ADR, registros de decisiones de arquitectura.
 
 ## Patrones relacionados
 
-- [Grilling](grilling.md) — el vecino espejo: la entrevista *construye* una especificación desde cero, el grilling *ataca* un plan terminado.
-- [Desarrollo orientado a especificaciones](spec-driven-development.md) — el receptor del resultado: SPEC.md es una entrada lista de la tubería.
-- [Cuatro fases](explore-plan-code-commit.md) — la escala menor: allí el agente explora y planifica solo; aquí el plan nace de tus decisiones.
-- [Especificación prematura](premature-specification.md) — el antipatrón del que protege la entrevista: la especificación se arma de decisiones sobre preguntas, no de conjeturas tempranas sobre la implementación.
+- [Grilling](grilling.md) comprueba un plan ya escrito.
+- [Desarrollo orientado a especificaciones](spec-driven-development.md) toma el resultado de la entrevista como base del plan.
+- [Cuatro fases](explore-plan-code-commit.md) separan la exploración de la tarea de su implementación.
+- [Especificación prematura](premature-specification.md) es un antipatrón: eliges la implementación antes de haber precisado los requisitos.

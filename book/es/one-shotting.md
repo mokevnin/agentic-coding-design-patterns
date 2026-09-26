@@ -2,95 +2,61 @@
 kind: anti-pattern
 status: draft
 related: [one-feature-at-a-time, give-agent-a-way-to-verify, tracer-bullet-tickets]
-source_rev: 0467919769ae9e07e7dfb6a41d92d54afd014895
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # One-shotting
 
 ## También conocido como
 
-One-shotting, «hazlo todo en un prompt».
+One-shotting, «hazlo todo con un solo prompt».
 
 ## Contexto
 
-Una tarea grande se plantea con un solo prompt: «haz la aplicación»,
-«implementa la funcionalidad entera» — y de una sola pasada se espera el
-resultado terminado. A veces es el desarrollador, inspirado por las demos
-de las redes; a veces, un agente autónomo al que no le pusieron marco.
+Pides «haz una aplicación» y esperas un resultado terminado tras una sola pasada, sin comprobaciones intermedias. Una demo exitosa puede reforzar esa expectativa.
 
 ## Problema
 
-De una pasada sin comprobaciones intermedias ni iteraciones se espera una
-funcionalidad entera o una aplicación entera. El one-shotting es el modo
-demo trasladado al modo trabajo: un primer resultado impresionante tomado
-por proceso normal.
+El primer resultado parece completo, aunque el agente todavía no ha verificado los escenarios ni las restricciones. El problema surge cuando ese resultado se acepta como una aplicación terminada.
 
 ## Por qué se hace
 
-- Las demos de las redes: «hice una app de un solo golpe en una tarde» —
-  solo sobreviven y se enseñan los aciertos.
-- El primer resultado impresiona de verdad: un agente puede llegar lejos
-  con un prompt — por el camino feliz.
-- Montar el ciclo — plan, comprobaciones, iteraciones — parece burocracia
-  cuando «se puede simplemente pedir».
+- Una demo muestra una ejecución exitosa y puede no revelar cuántos intentos fallaron.
+- El agente crea rápidamente un escenario principal convincente.
+- La planificación y las comprobaciones repetidas parecen innecesarias tras un primer resultado exitoso.
 - La ventana de contexto parece infinita hasta que se acaba.
 
 ## Consecuencias
 
-- ➖ El frente es más ancho que la ventana: el contexto muere a mitad,
-  dejando un reguero de piezas a medias — ninguna terminada, ninguna
-  verificada.
-- ➖ Un error al principio de la pasada se arrastra por todo el resultado:
-  sin puntos de control, nada pudo atraparlo.
-- ➖ Plausibilidad en vez de funcionamiento: el resultado parece terminado
-  exactamente hasta la primera ejecución.
-- ➖ La limpieza cuesta más de lo que habrían costado las iteraciones: la
-  siguiente sesión primero averigua qué de lo generado funciona.
+- ➖ La ventana puede acabarse en medio de varias partes sin terminar.
+- ➖ El error de una decisión temprana se propaga al código posterior.
+- ➖ La primera ejecución revela defectos que no se veían al leer.
+- ➖ La siguiente sesión pierde tiempo en averiguar en qué estado está el trabajo.
 
 ## Señales
 
-- Un prompt del tamaño de un épico — y una expectativa del tamaño de un
-  release.
-- En toda la pasada, ni una comprobación: ni test, ni ejecución, ni
-  captura.
-- El resultado «casi funciona»: en todas partes falta algo pequeño.
+- El prompt describe un release grande y no se prevén resultados intermedios.
+- El agente no ejecuta los tests ni la aplicación sobre la marcha.
+- Varios escenarios quedan «casi funcionando».
 - La siguiente sesión empieza con arqueología.
 
 ## Cómo hacerlo mejor
 
-Reconocerle al one-shotting su género — las demos y el reconocimiento («a
-ver hasta dónde llega») — y no confundirlo con un proceso. El modo de
-trabajo se arma con patrones: el trabajo grande se trocea — en
-[tickets trazadores](tracer-bullet-tickets.md) o una
-[lista de funcionalidades](feature-list-harness.md); se ejecuta a
-[una funcionalidad por pasada](one-feature-at-a-time.md); y cada pasada se
-cierra con un [bucle de retroalimentación](give-agent-a-way-to-verify.md).
-El mismo volumen de trabajo, los mismos prompts — pero cada paso aterriza
-verificado, y el corte en cualquier punto cuesta un paso, no todo.
+Usa una primera pasada rápida para explorar la idea. Para una implementación de producción, prepara [tickets trazadores](tracer-bullet-tickets.md) o una [lista de funcionalidades](feature-list-harness.md), termina [una funcionalidad a la vez](one-feature-at-a-time.md) y verifica cada resultado con un [bucle de retroalimentación](give-agent-a-way-to-verify.md). Así, si la sesión se corta, quedan las partes ya verificadas y una tarea en curso.
 
 ## Ejemplo
 
-**Antes:**
+**Antes**
 
-> Hazme un gestor de tareas: equipos, tablero kanban, notificaciones,
-> control de acceso. Ah, y modo oscuro.
+> Haz un gestor de tareas con equipos, tablero kanban, notificaciones, permisos de acceso y tema oscuro.
 
-**Después:**
+**Después**
 
-> Lo desplegamos en una especificación y lo troceamos en tickets. El primer
-> trazador: «una tarea se crea y aparece en el tablero» — a través del
-> esquema, la API y la UI, verificado por el navegador. De uno en uno; el
-> siguiente, tras la pasada en verde del anterior.
+> Primero preparamos una especificación y los tickets. El primer ticket debe permitir crear una tarea y verla en el tablero. Implementa los cambios necesarios en el esquema, la API y la UI, verifica el escenario en el navegador y luego pasa al siguiente.
 
 ## Patrones y antipatrones relacionados
 
-- [Una funcionalidad a la vez](one-feature-at-a-time.md) — el antídoto
-  directo: el marco de la pasada contra el intento de hacerlo todo de
-  golpe.
-- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) — lo que al
-  one-shotting le falta por definición: verificación dentro del proceso,
-  no esperanza al final.
-- [Tickets trazadores](tracer-bullet-tickets.md) — cómo un épico del
-  tamaño de un prompt se vuelve una cola ejecutable.
-- [Vibe coding](vibe-coding.md) — el antipatrón pareja: el one-shotting
-  espera todo de un prompt, el vibe coding acepta todo lo que salió de él.
+- [Una funcionalidad a la vez](one-feature-at-a-time.md) limita el alcance de una pasada.
+- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) permite corregir errores sobre la marcha.
+- [Tickets trazadores](tracer-bullet-tickets.md) convierte una tarea grande en partes verificables.
+- [Vibe coding](vibe-coding.md) describe aceptar código generado sin entenderlo ni verificarlo.

@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [claude-md-memory, domain-context-file, progress-file, handoff, spec-driven-development, bloated-claude-md]
-source_rev: 58f57eb48a3a03000812870279cef64a7847f4d8
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Context Engineering
@@ -17,11 +17,11 @@ Context engineering.
 
 ## Problem
 
-A developer may paste the whole CI log into the prompt, hoping to give the agent more information. But the relevant error takes up only a few lines of it. The rest of the output occupies the window and makes it harder to find the cause of the failure. Context management starts with selecting the data for a specific step of the work.
+You may paste the whole CI log into the prompt, hoping to give the agent more information. But the relevant error takes up only a few lines of it. The rest of the output occupies the window and makes it harder to find the cause of the failure. Context management starts with selecting the data for a specific step of the work.
 
 **Context rot** shows up when the model makes worse use of information in a long window. The size of the effect depends on the model and the task, so the window's capacity by itself does not guarantee an accurate answer. The window has an **attention budget**. The term describes the practical problem of selecting the information the model must take into account at the same time. For example, the rule for running tests can get lost among logs that are already spent. The agent adds to the context with every tool call. If you keep all the listings and check results, by the end of the session they will take up the space needed for the next decision.
 
-The wording of the prompt solves only part of the problem. The developer also needs to decide what information the agent will see at each step and what it will keep after the step is done.
+The wording of the prompt solves only part of the problem. You also need to decide what information the agent will see at each step and what it will keep after the step is done.
 
 ## Solution
 
@@ -75,14 +75,14 @@ Persistent instructions are loaded into the next session as well; it reads the t
 - The cost of reading context is noticeable relative to the size of the task.
 - By the end of a long session the agent forgets rules or repeats proposals that were already rejected.
 - When the work is bigger than one context window and state has to be handed over between sessions.
-- The developer repeats commands and conventions in every session.
+- You repeat commands and conventions in every session.
 
 ## Consequences and trade-offs
 
 - ➕ It is easier for the agent to find the information needed for the current decision.
 - ➕ A smaller context reduces the cost of model calls.
 - ➕ A new session and a new colleague get the same version of the project's knowledge.
-- ➖ The developer has to regularly add to and review the context files.
+- ➖ You have to regularly add to and review the context files.
 - ➖ Stale instructions can steer the agent toward a wrong decision.
 - ➖ If you cut too much, the agent will fill in the missing information with assumptions.
 
@@ -104,15 +104,15 @@ The following chapters cover these techniques in detail.
 
 ## Example
 
-The developer needs to find out why the payment gateway integration test sometimes fails.
+You need to find out why the payment gateway integration test sometimes fails.
 
-**The naive approach.** The developer pastes three thousand lines of CI log and three test files. Along the way they add the rule "we don't allow sleeps in tests". After a few exchanges the agent proposes `sleep(5)`, even though such a delay only hides the flakiness. In a context filled with the log, the rule did not affect the choice of solution.
+**The naive approach.** You paste three thousand lines of CI log and three test files. Along the way you add the rule "we don't allow sleeps in tests". After a few exchanges the agent proposes `sleep(5)`, even though such a delay only hides the flakiness. In a context filled with the log, the rule did not affect the choice of solution.
 
-**The engineered approach.** The sleep rule lives in the project memory. In the request, the developer points to where the test and the failed runs are.
+**The engineered approach.** The sleep rule lives in the project memory. In the request, you point to where the test and the failed runs are.
 
 > Figure out why _tests/integration/payment_gateway_test.py_ is flaky. Look at the last three failed runs in the integration-tests job.
 
-The agent reads the failing log fragments, the test, and the related code. It finds a race between the webhook and status polling, but the session has to end before the fix. The developer asks it to save the results of the investigation.
+The agent reads the failing log fragments, the test, and the related code. It finds a race between the webhook and status polling, but the session has to end before the fix. You ask it to save the results of the investigation.
 
 > Put together a handoff with the cause of the failure, the hypotheses checked, and the first action for the next session.
 

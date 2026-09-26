@@ -2,14 +2,14 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, tdd-with-agent, prototype-to-answer]
-source_rev:
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Hypothesis-Driven Debugging
 
 ## Intent
 
-Find the cause of a defect through reproduction and discriminating experiments. The developer defines the observed symptom and scope; the agent tests explanations before changing production code.
+Find the cause of a defect through reproduction and discriminating experiments. You define the observed symptom and scope; the agent tests explanations before changing production code.
 
 ## Also known as
 

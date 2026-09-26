@@ -1,52 +1,35 @@
 ---
-source_rev: 41ffe61445820e8cf04a836addf315d74618f395
+source_rev: 959018d2502c29a9c2d8977271bb39cc6e903d87
 ---
 
 # Glossary
 
-**Agent** — an LLM-based program the developer assigns tasks to, and which carries
-them out by producing and changing code.
+**Agent** carries out tasks using an LLM and tools. In this book it reads and changes code, runs checks, and saves the results of its work.
 
-**Task setting** — how the developer states to the agent what needs to be done and
-why.
+**Task setting** explains to the agent what needs to be done and why.
 
-**Context** — the data the agent sees while working: instructions, code, history,
-attached materials.
+**Context** includes the instructions, code, history, and other data available to the agent while it works.
 
-**Specification** — a description of what the system should do and why:
-scenarios, requirements, constraints, and acceptance criteria. The technical
-solution belongs in the plan, not the specification.
+**Specification** describes the system's goal, scenarios, requirements, constraints, and acceptance criteria. The technical approach is described in the plan.
 
-**Plan** — a description of how to implement the specification: the
-architectural approach, affected parts of the system, work sequence, and ways
-to verify it.
+**Plan** explains how to implement the specification, which parts of the system to change, and how to verify the result.
 
-**Context window** — the limited amount of text and data a model can take into
-account in one session.
+**Context window** limits the amount of data the model can take into account in a single call.
 
-**Skill** — a saved procedure for an agent: instructions and, when needed,
-scripts, templates, and reference material for a recurring workflow.
+**Skill** saves a recurring procedure as instructions and, when needed, supplements it with scripts, templates, and reference material.
 
-**Subagent** — a separate agent instance with its own context, to which the main
-agent delegates a bounded part of the work.
+**Subagent** carries out a bounded part of a task in a separate context on behalf of the main agent.
 
-**Oracle** — an independent source of a right-or-wrong answer: a test, linter,
-build, screenshot, reference result, or verifiable user scenario.
+**Oracle** gives grounds for judging whether a result is correct. This role can be played by a test, a reference output, or a verifiable user scenario.
 
-**Testing seam** — a system boundary through which behavior can be observed and
-verified without coupling the test to implementation details.
+**Testing seam** lets you observe the system's behavior without coupling to internal implementation details.
 
-**Tracer-bullet ticket** — a small vertical slice of functionality that crosses
-the necessary system layers and ends in independently verifiable behavior.
+**Tracer-bullet ticket** describes a small vertical slice of functionality through the necessary system layers with an independently verifiable result.
 
-**Brownfield** — an existing system with accumulated constraints, contracts,
-and decision history. **Greenfield** — a new system where those constraints do
-not yet exist.
+**Brownfield** means working with an existing system and its accumulated constraints. **Greenfield** means building a new system.
 
-**SDD** — Spec-Driven Development: an approach in which an agreed specification
-guides planning and implementation.
+**SDD** stands for Spec-Driven Development. In this approach an agreed specification guides planning and implementation.
 
-**Pattern** — a proven solution to a recurring problem of interacting with an agent.
+**Pattern** describes a recurring problem and a way to solve it.
 
-**Anti-pattern** — a common way to make things worse: a tempting but harmful move
-that has a better replacement.
+**Anti-pattern** describes a common mistaken move, its consequences, and a suitable replacement.

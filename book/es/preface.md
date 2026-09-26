@@ -1,24 +1,13 @@
 ---
-source_rev: cd183077a183e2eb5932824fcf7573f7adbe8e10
+source_rev: 2fb6dfbf49ff27fa705c37ac5f146580b339bed3
 ---
 
 # Prefacio
 
-La «Banda de los Cuatro» dio en su momento a la programación orientada a objetos
-un vocabulario común: en lugar de reinventar una solución cada vez, los ingenieros
-empezaron a nombrarla — «Observador», «Estrategia», «Fábrica».
+La «Banda de los Cuatro» dio a la programación orientada a objetos un vocabulario común: «Observador», «Estrategia», «Fábrica». Por ejemplo, le dices a un colega: «Aquí encaja una Estrategia». No hace falta explicar cómo funciona: tu colega ya conoce esa solución.
 
-La programación con agentes está hoy donde estaba la POO antes de que existiera el
-catálogo de patrones: las técnicas se conocen, pero carecen de nombres comunes y
-el conocimiento está disperso en artículos, charlas y código de frameworks. Este
-libro es un intento de reunir ese catálogo para agentes y LLM: nombrar las
-soluciones recurrentes y describir sus fuerzas y compromisos.
+Las técnicas de trabajo con agentes de programación también se repiten de un proyecto a otro. Este libro es su catálogo. Con él podrás nombrar una solución, entender cómo funciona y comparar sus ventajas e inconvenientes con las de otras.
 
-Como todo catálogo de patrones, es ante todo una compilación: la mayoría de las
-soluciones no las inventó el autor, sino que se reunieron de fuentes
-existentes — las guías de ingeniería de Anthropic, las prácticas de la
-comunidad, paquetes de skills, artículos y charlas; las fuentes primarias se
-citan en los capítulos. A ellas se suman los hallazgos e ideas propios del
-autor, probados en su práctica.
+La mayoría de las soluciones no las inventó el autor, sino que las reunió de las guías de ingeniería de Anthropic, las prácticas de la comunidad, paquetes de [skills](glossary.md), artículos y charlas. Encontrarás los enlaces a las fuentes primarias en los capítulos. Además, el autor añade al catálogo hallazgos e ideas de su propia práctica.
 
-El libro es vivo y abierto. Los patrones se añaden y se refinan. Para proponer un patrón nuevo o [ampliar un capítulo existente](https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md#extend-an-existing-pattern) con tu experiencia, consulta [CONTRIBUTING](https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md).
+El libro es vivo y abierto: se le añaden patrones nuevos y se refinan los existentes. Si quieres proponer un patrón nuevo o [ampliar un capítulo existente](https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md#extend-an-existing-pattern) con tu experiencia, lee [CONTRIBUTING](https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md).

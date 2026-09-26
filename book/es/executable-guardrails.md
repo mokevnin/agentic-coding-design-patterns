@@ -1,15 +1,15 @@
 ---
 group: context
-status: translated
+status: draft
 related: [claude-md-memory, give-agent-a-way-to-verify, isolated-parallel-work]
-source_rev: f21809796e9353bbe866014510bf4a1cf5ea3b6d
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Límites ejecutables
 
 ## Propósito
 
-Trasladar las reglas críticas del trabajo del agente desde el texto a mecanismos que no puedan olvidarse por accidente: permisos, sandboxes, hooks y comprobaciones deterministas. Dentro del área permitida el agente trabaja libremente; fuera de ella, el sistema —no la atención del modelo— detiene las acciones peligrosas o inválidas.
+Fijar las reglas críticas del trabajo del agente con permisos de acceso, un sandbox, hooks y comprobaciones automáticas. Dentro del área permitida, el agente actúa por su cuenta. Si intenta salir de sus límites, el sistema lo detiene.
 
 ## También conocido como
 
@@ -17,93 +17,94 @@ Executable guardrails, policy as code, restricciones aplicadas, raíles para age
 
 ## Problema
 
-`AGENTS.md` dice «no cambies las migraciones», «no expongas secretos» y «ejecuta las pruebas antes de terminar». El agente suele obedecer, pero el texto sigue siendo un consejo. El contexto se llena, la regla se pierde entre otras instrucciones o una herramienta lanza un proceso inesperado, y el límite falla justo cuando hacía falta.
+En _AGENTS.md_ está escrita la prohibición de cambiar las migraciones. El agente puede pasarla por alto en un contexto largo o llamar a una herramienta que modifique el archivo como efecto secundario. El texto de la prohibición no detendrá la escritura por sí solo. Una regla crítica necesita un mecanismo que compruebe la acción antes de ejecutarla.
 
-Pedir confirmación antes de cada comando es más seguro, pero causa fatiga de aprobación: el desarrollador pulsa Permitir mecánicamente y se convierte en un motor de políticas lento y poco fiable. El extremo opuesto —quitar toda restricción para ganar autonomía— amplía el radio del error.
+Confirmar cada comando también exige atención. Tras decenas de peticiones iguales, puedes empezar a aprobarlas mecánicamente. Quitar todas las restricciones reduce el número de peticiones, pero amplía el área que puede afectar un error.
 
-No todas las reglas son iguales. «Prefiere funciones pequeñas» requiere juicio y pertenece a la guía. «No escribas fuera del repositorio» es inequívoca y debe aplicarla una máquina. Dejar una regla determinista solo en el prompt vuelve probabilístico un comportamiento que puede garantizarse.
+No todas las reglas son iguales. «Prefiere funciones pequeñas» requiere juicio y pertenece a la guía. «No escribas fuera del repositorio» se comprueba de forma inequívoca y debe aplicarlo una máquina. Si una regla determinista se queda solo en el prompt, el proyecto confía en un cumplimiento probabilístico de algo que se puede garantizar.
 
 ## Solución
 
-Separa las reglas en **recomendaciones** e **invariantes**. Conserva las recomendaciones en la memoria del proyecto; expresa los invariantes como límites ejecutables:
+Separa las reglas en **recomendaciones** e **invariantes**. Deja las recomendaciones en la memoria del proyecto, donde el agente puede tener en cuenta el contexto. Para los invariantes que se comprueban de forma inequívoca, elige el mecanismo adecuado.
 
-1. **Sandboxing** restringe directorios, red y procesos.
-2. **Permisos** aprueban previamente un conjunto estrecho de acciones seguras e implican a una persona fuera de él.
-3. **Hooks previos** inspeccionan la intención antes de ejecutar y bloquean operaciones prohibidas.
-4. **Hooks posteriores o de parada** inspeccionan el resultado e impiden terminar sin la evidencia obligatoria.
-5. **CI** repite comprobaciones críticas fuera de la sesión y protege la rama objetivo.
+1. **El sandbox** restringe los directorios, la red y los procesos disponibles.
+2. **Los permisos** admiten de antemano un conjunto estrecho de acciones seguras y exigen la decisión de una persona fuera de él.
+3. **Un hook previo a la acción** comprueba la intención antes de ejecutar y bloquea lo prohibido.
+4. **Un hook posterior o de parada** comprueba el resultado y no deja dar el trabajo por terminado sin la señal obligatoria.
+5. **La CI** repite las comprobaciones críticas fuera de la sesión del agente y protege la rama objetivo.
 
-Un buen límite es pequeño, determinista y explicable. Devuelve la razón y un siguiente paso seguro, no solo una negativa. El objetivo es definir un área segura amplia dentro de la cual no hagan falta aprobaciones constantes.
+Un límite debe comprobar una condición estrecha y explicar el motivo de la negativa. Junto con la negativa, devuelve un siguiente paso permitido. Así el agente puede seguir trabajando dentro del área permitida sin confirmaciones constantes.
 
 ## Estructura
 
+El mecanismo comprueba la acción antes de ejecutarla. La política determina si puede ejecutarse de inmediato, si necesita la confirmación de una persona o si está prohibida.
+
 ```mermaid
 ---
-title: la instrucción orienta; la política ejecutable sostiene el límite
+title: la decisión de la política determina el camino permitido de la acción
+config:
+  flowchart:
+    rankSpacing: 30
 ---
-flowchart LR
-  action["Acción del agente<br/>herramienta + argumentos"]
-  policy["Política ejecutable<br/>sandbox · permisos<br/>pre-tool hook · allowlist<br/>permitir / denegar / preguntar"]:::accent
-  run["Se ejecuta con seguridad"]
-  block["Se bloquea con explicación"]:::warn
-  ask["Escalado a un humano"]:::accent
-  gate["Puerta de resultado<br/>pruebas · CI · auditoría"]
-  action --> policy
-  policy --> run
-  policy --> block
-  policy --> ask
-  run --> gate
+flowchart TB
+  action["Herramienta + argumentos"] --> policy{"¿Política?"}:::accent
+  policy -- "permitir" --> run["Ejecutar la acción"]
+  policy -- "preguntar" --> human{"¿Aprobado<br/>por una persona?"}
+  policy -- "denegar" --> block["Negativa + motivo"]:::warn
+  human -- "sí" --> run
+  human -- "no" --> block
+  run --> check["Comprobar el resultado"]:::accent
 ```
 
-La instrucción textual orienta al agente, pero no forma una barrera. Cada acción atraviesa una política ejecutable: las acciones seguras se ejecutan, las prohibidas se bloquean y las ambiguas se escalan. Después, una puerta independiente verifica el resultado.
+La confirmación de una persona abre solo la rama prevista por la política. No anula las prohibiciones estrictas del sandbox ni de los hooks. Ante una negativa, el agente recibe el motivo y un siguiente paso permitido. Tras la ejecución, una comprobación aparte confirma los requisitos del resultado.
 
 ## Participantes / Componentes
 
-- **Política** — una regla breve con un límite comprobable objetivamente.
-- **Agente** — propone una acción y recibe un resultado estructurado.
-- **Mecanismo de aplicación** — sandbox, allowlist, hook, permiso de archivos o puerta de CI.
-- **Área segura** — acciones permitidas sin intervención humana.
-- **Escalado** — vía estrecha para una acción que no puede permitirse ni negarse automáticamente.
-- **Auditoría** — registro de decisiones sin secretos ni contenido innecesario.
+- **La política** define una regla que se comprueba de forma inequívoca.
+- **El agente** propone una acción y recibe el resultado de la comprobación.
+- **El mecanismo de restricción** comprueba la acción mediante el sandbox, los permisos, una allowlist, un hook o la CI.
+- **El área segura** incluye las acciones permitidas sin intervención humana.
+- **El escalado** pasa a una persona la acción que no se puede permitir ni prohibir automáticamente.
+- **La auditoría** guarda la regla que se activó, sin secretos ni datos innecesarios.
 
 ## Cuándo aplicarlo
 
-- Romper la regla podría borrar datos, revelar un secreto, modificar un sistema externo o dañar un lanzamiento.
-- El agente trabaja sin supervisión constante o inicia subprocesos.
-- La misma prohibición se repite en los prompts.
-- La condición se comprueba rápida y objetivamente mediante comando, ruta, diff o código de salida.
-- El equipo quiere menos aprobaciones manuales sin conceder acceso sin control.
+- Violar la regla puede borrar datos, revelar un secreto, modificar un sistema externo o estropear un lanzamiento.
+- El agente trabaja sin supervisión constante o lanza procesos hijos.
+- La misma regla prohibitiva hay que repetirla en los prompts.
+- Las condiciones se comprueban de forma rápida e inequívoca por el comando, la ruta, el diff o el código de salida.
+- El equipo quiere reducir el número de confirmaciones manuales sin ampliar el acceso del agente sin control.
 
-No conviertas gustos en hooks. «Mantén la arquitectura simple» no puede calcularse de forma fiable en milisegundos; pertenece a una guía o revisión.
+El requisito «la arquitectura debe ser simple» no tiene una comprobación rápida e inequívoca. Déjalo como guía para el diseño y la revisión. Un hook con una condición así o bloqueará trabajo legítimo o creará una apariencia de control.
 
 ## Consecuencias y compromisos
 
-- ➕ Los invariantes críticos se cumplen independientemente de la presión de contexto o la calidad de una respuesta.
-- ➕ La autonomía crece dentro del área segura porque los comandos rutinarios no interrumpen al desarrollador.
-- ➕ Las negativas son observables y reproducibles: se conocen la regla y la razón.
-- ➕ La política versionada se revisa y se comporta igual para todo el equipo.
-- ➖ Un límite defectuoso bloquea trabajo útil, por lo que necesita pruebas positivas y negativas.
-- ➖ Los hooks síncronos añaden latencia; las comprobaciones pesadas deben ir en un hook de parada o en CI.
-- ➖ Las allowlists tienden a crecer; una excepción amplia como «permitir cualquier shell» destruye el límite.
-- ➖ El sandbox reduce el impacto, pero no demuestra que el código sea correcto ni sustituye las pruebas.
+- ➕ Los invariantes críticos se cumplen independientemente de lo lleno que esté el contexto y de la calidad de una respuesta concreta.
+- ➕ El agente ejecuta comandos permitidos conocidos sin tu intervención.
+- ➕ La negativa muestra qué regla se activó y por qué.
+- ➕ La política se guarda en git, pasa revisión y funciona igual para todo el equipo.
+- ➖ Un error en un límite bloquea trabajo útil; los límites necesitan un conjunto de pruebas positivas y negativas.
+- ➖ Los hooks síncronos añaden latencia, así que conviene llevar las comprobaciones pesadas a un hook de parada o a la CI.
+- ➖ La allowlist crece poco a poco; una regla amplia como «permitir cualquier shell» destruye el sentido del límite.
+- ➖ El sandbox reduce el radio de impacto, pero no demuestra que el código sea correcto ni sustituye las pruebas.
 
 ## Implementación
 
-1. Reúne prohibiciones repetidas de instrucciones e incidentes. Pregunta si cada violación puede detectarse sin interpretar la intención.
-2. Describe cada regla como permitir, negar o preguntar. Empieza por invariantes estrechos y arriesgados: rutas de escritura, dominios de red, publicación y secretos.
-3. Aplica cada límite en la capa correcta. El sandbox del SO restringe archivos y red; un hook previo comprueba comandos; las pruebas y CI comprueban resultados.
-4. Haz útil la negativa: nombra la regla, muestra el área segura y ofrece una acción que el usuario pueda aprobar explícitamente.
-5. Prueba ambos lados: la operación peligrosa se bloquea y la segura más cercana pasa. Prueba también el escape de entrada y los timeouts.
-6. Registra auditoría mínima sin tokens, secretos ni datos completos de usuarios.
-7. Ajusta límites con evidencia, corrigiendo falsos positivos de forma estrecha en vez de añadir excepciones universales.
+1. Reúne las prohibiciones repetidas de las instrucciones y del historial de incidentes. Para cada una, determina si la violación se puede detectar sin adivinar la intención del agente.
+2. Describe en una tabla las acciones que el sistema permite, bloquea o pasa a confirmación. Empieza por las restricciones críticas de escritura y publicación.
+3. Pon el límite en el nivel correcto. El sandbox del SO restringe el acceso a archivos y red; un hook previo a la herramienta comprueba un comando concreto; las pruebas y la CI comprueban la calidad del resultado.
+4. En la respuesta a una negativa, nombra la regla y el siguiente paso permitido.
+5. Comprueba que el mecanismo bloquea la acción prohibida y deja pasar la permitida más cercana. Añade comprobaciones del escapado de la entrada y del tiempo de espera.
+6. Lleva una auditoría mínima de las decisiones, pero no registres tokens, el contenido de archivos secretos ni datos completos de usuarios.
+7. Analiza los bloqueos falsos y ajusta la condición concreta que los provocó.
 
 ## Ejemplo
 
-El agente puede modificar `./app`, ejecutar pruebas y leer documentación. No puede escribir fuera del repositorio ni publicar sin aprobación. La memoria conserva la regla humana:
+El agente puede modificar el servicio en _./app_, ejecutar pruebas y leer la documentación. La escritura fuera del repositorio está prohibida y la publicación requiere confirmación. En la memoria del proyecto queda una regla general de trabajo.
 
 > Trabaja dentro de la tarea y prefiere cambios reversibles.
 
-La política ejecutable es precisa:
+Primero anotamos las decisiones de política deseadas en una notación ilustrativa. Es pseudocódigo para discutir las reglas, que aún hay que expresar con la configuración del sandbox y los permisos elegidos.
 
 ```text
 write path ./app/**          allow
@@ -115,29 +116,59 @@ network registry.npmjs.org   allow
 network *                    deny: domain not approved
 ```
 
-Si el agente intenta `git push`, el sistema no espera que recuerde un párrafo: la acción entra en escalado explícito. Escribir `~/.ssh/config` se bloquea. `make test` se ejecuta sin preguntar, por lo que la seguridad no se convierte en clics sin sentido.
+Después de configurar los mecanismos, comprobamos las decisiones esperadas. La llamada a `git push` debe pedir confirmación, la escritura en _~/.ssh/config_ debe bloquearse y `make test` debe ejecutarse sin preguntar. El bloque de pseudocódigo por sí mismo no establece esas restricciones.
+
+Un límite real y estrecho se puede mostrar con la prohibición de hacer commit de cambios en las migraciones. Guarda el siguiente script como _.git/hooks/pre-commit_ en un repositorio de prueba con un directorio _.git_ normal y hazlo ejecutable con `chmod +x .git/hooks/pre-commit`.
+
+```sh
+#!/bin/sh
+set -eu
+
+changes=$(git diff --cached --name-only -- db/migrations/)
+if [ -n "$changes" ]; then
+    printf '%s\n' 'Blocked: staged migration changes require review.' >&2
+    exit 1
+fi
+printf '%s\n' 'Allowed: no staged migration changes.'
+```
+
+En este script, `git diff --cached` comprueba los cambios preparados para el commit. Si entre ellos hay un archivo de _db/migrations/_, el hook devuelve el código 1 y Git detiene el commit. En un repositorio temporal, llamar al hook antes y después de añadir una migración da este resultado.
+
+```console
+$ .git/hooks/pre-commit
+Allowed: no staged migration changes.
+$ mkdir -p db/migrations
+$ touch db/migrations/001.sql
+$ git add db/migrations/001.sql
+$ .git/hooks/pre-commit
+Blocked: staged migration changes require review.
+$ echo $?
+1
+```
+
+Este hook protege el momento del commit. No prohíbe escribir el archivo y se puede desactivar, así que una restricción obligatoria necesita una comprobación fuera del control del agente, por ejemplo en la CI con protección de rama. Para prohibir la propia escritura se usan los permisos de archivos o el sandbox.
 
 ## Antipatrones y errores comunes
 
-- **Todo en el prompt.** Las prohibiciones deterministas compiten con el contexto de la tarea y a veces pierden.
-- **Bloquearlo todo.** Cada comando pide aprobación y genera consentimiento mecánico.
-- **Permitir todo el shell.** Una allowlist estrecha se convierte en un bypass universal.
-- **Hook inteligente.** Un LLM lento juzga cada comando y vuelve el límite caro e impredecible.
-- **Negativa silenciosa.** El agente solo ve un código distinto de cero y busca un rodeo.
-- **Secretos en auditoría.** La protección copia datos sensibles en el log.
-- **Protección solo local.** Los invariantes críticos deben repetirse en CI o protección de rama.
+- **Todo en el prompt.** Las prohibiciones deterministas compiten por la atención con la descripción de la tarea y a veces pierden.
+- **Prohibirlo todo.** Cada comando requiere confirmación; te cansas y empiezas a aprobar sin leer.
+- **Permitir el shell entero.** Una allowlist estrecha se sustituye por un bypass universal de todo el modelo de amenazas.
+- **Un hook con inteligencia.** Un hook lento con LLM intenta juzgar la intención de cada comando y vuelve el límite caro e impredecible.
+- **Negativa silenciosa.** El agente solo ve un código distinto de cero y empieza a buscar un rodeo en vez de un camino seguro.
+- **Secretos en la auditoría.** La propia protección contra fugas copia datos sensibles en el log.
+- **Protección solo local.** El agente desactiva el hook o no lo ejecuta; un invariante crítico debe repetirse en la CI o en la protección de rama.
 
 ## Usos conocidos
 
-- **GitHub Copilot hooks** ejecutan comandos en puntos clave; el hook previo puede permitir o negar herramientas, y otros validan estado y registran auditoría.
-- **Claude Code sandboxing** aplica límites de archivos y red a nivel del SO, incluidos los subprocesos, y permite libertad dentro de ellos.
-- **Git hooks y CI** son la forma preagente del patrón: formato, pruebas y política de rama son ejecutables, no consejos.
+- **GitHub Copilot hooks** ejecutan comandos en puntos clave de la sesión. El hook previo a la herramienta puede permitir o rechazar la llamada; otros hooks comprueban el estado y llevan la auditoría.
+- **Claude Code sandboxing** fija restricciones del sistema de archivos y de la red a nivel del SO, incluidos los procesos hijos, y permite trabajar libremente dentro del área permitida.
+- **Git hooks y la CI** aplican el mismo principio al formato del commit, a las pruebas y a las reglas de la rama.
 
-Fuentes: [GitHub Copilot hooks](https://docs.github.com/en/copilot/concepts/agents/hooks), [Claude Code sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing).
+Los mecanismos se describen en la documentación de [GitHub Copilot hooks](https://docs.github.com/en/copilot/concepts/agents/hooks) y en el artículo sobre [Claude Code sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing).
 
 ## Patrones relacionados
 
-- [Memoria del proyecto](claude-md-memory.md) — guarda recomendaciones; los límites ejecutables toman las reglas que deben activarse siempre.
-- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) — comprueba el resultado, mientras los límites restringen las acciones permitidas.
-- [Trabajo paralelo aislado](isolated-parallel-work.md) — los worktrees reducen choques; el sandbox y los permisos aplican sus fronteras.
-- [Memoria hinchada](bloated-claude-md.md) — intentar sustituir mecanismos por una lista creciente de prohibiciones.
+- [Memoria del proyecto](claude-md-memory.md) guarda las recomendaciones y explica el propósito de las restricciones.
+- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) comprueba que el resultado obtenido sea correcto.
+- [Trabajo paralelo aislado](isolated-parallel-work.md) usa worktrees cuyos límites se pueden fijar con el sandbox y los permisos.
+- [Memoria hinchada](bloated-claude-md.md) describe la acumulación de prohibiciones que conviene llevar a mecanismos ejecutables.

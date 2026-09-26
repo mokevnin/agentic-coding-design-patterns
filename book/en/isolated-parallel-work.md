@@ -1,15 +1,15 @@
 ---
 group: project-org
-status: translated
+status: draft
 related: [one-feature-at-a-time, writer-reviewer, give-agent-a-way-to-verify]
-source_rev:
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Isolated Parallel Work
 
 ## Intent
 
-Run several agent tasks at the same time while giving each one its own branch and working tree, hiding its neighbors' uncommitted changes, and transferring its result as a verifiable commit. Parallelism becomes a set of independent changes with an explicit integration point instead of a race between processes writing to one directory.
+Give each parallel task its own branch and working tree. The agent verifies the change in its own directory and hands off the result as a commit. The integrator merges finished changes one at a time.
 
 ## Also known as
 
@@ -17,47 +17,49 @@ Worktree per task, branch per agent, isolated checkout, parallel worktrees.
 
 ## Problem
 
-One agent is already changing authentication when the developer starts a second one to update the documentation. Both processes are open in the same checkout. The second sees the first agent's half-written files, treats them as the baseline, and formats them along the way. The first runs tests against a mixture of both changes. Then one of them commits and captures the other's lines.
+One agent is changing authentication while a second one updates the documentation in the same checkout. The second sees the first one's unfinished files and formats them. Now the tests run against a mixture of changes, and one agent's commit can capture someone else's lines.
 
-The main problem is not a merge conflict. A conflict at least stops integration and reveals the collision. A shared checkout creates **hidden mixing before the commit**:
+A shared checkout mixes changes before they are even committed. This makes several routine operations harder.
 
 - `git diff` no longer answers which task produced a line;
-- one task is verified against another task's code, producing a false green signal;
+- one task is verified against another task's code and produces a false green signal;
 - an agent can delete or rewrite an unfamiliar change as “unnecessary”;
-- rollback and review become dangerous because the change boundary is gone;
+- during review and rollback it is hard to tell where a task begins and ends;
 - two processes compete for the Git index, generated files, and local dependencies.
 
-An ordinary branch does not solve this problem. A working directory can have only one branch checked out at a time, while uncommitted files belong to the directory rather than the task. Switching the branch underneath running processes is even more dangerous.
+Just creating branches does not separate the working files. A directory has one branch checked out, so switching it affects every process that uses that directory.
 
-A full clone per task provides isolation, but needlessly duplicates history and makes cleanup harder. Git worktree provides multiple working directories linked to one repository: each has its own `HEAD`, index, and files, while sharing Git objects.
+Separate clones isolate the work but duplicate history. Git worktree lets you create several directories, each with its own `HEAD`, index, and files, over a shared Git object store.
 
 ## Solution
 
-Give every parallel task **its own branch and its own worktree**. Assign it an explicit ownership scope and completion criterion. The agent works only inside its directory, verifies the result there, and finishes with a commit. The commit is the handoff boundary: before it, the change belongs to the task; after it, the change is ready for integration.
+Give each task **its own branch and worktree**, an ownership scope, and a completion criterion. The agent changes and verifies files inside its own directory. The verified commit is the result that can be handed off for integration.
 
-Integrate finished branches one at a time. Before merging, update the branch from the target, resolve conflicts in the context of its task, and run its checks again. This turns uncontrolled concurrent writes to shared files into ordinary, observable Git integration.
+Integrate finished branches one at a time. Before merging, update the branch from the target, resolve conflicts in the context of its task, and run the checks again. This turns competition from uncontrolled writes to shared files into ordinary, observable Git integration.
 
-The pattern rests on four boundaries:
+The following rules keep the isolation in place.
 
-1. **Filesystem boundary:** one worktree belongs to one task or session.
-2. **Ownership boundary:** what the task may change, and what it must leave alone, is known in advance.
-3. **Handoff boundary:** tasks exchange commits, not uncommitted files from a shared directory.
-4. **Integration boundary:** only one workflow updates the target branch at a time and confirms the combined green result.
+1. **A working directory** belongs to one task or session.
+2. **An ownership scope** defines which changes are allowed.
+3. **The result is handed off** through a verified commit.
+4. **Integration** updates the target branch sequentially and verifies the combined state.
 
 ## Structure
 
+In the diagram, each task runs its own cycle in a separate worktree.
+
 ```mermaid
 ---
-title: one task — one branch — one worktree
+title: each task gets its own branch and worktree
 ---
 flowchart LR
   target["Target branch<br/>origin/main<br/>shared starting point"]
   a["Task A · agent A<br/>branch: agent/auth<br/>worktree: ../project-auth<br/>edit → verify → commit"]
   b["Task B · agent B<br/>branch: agent/docs<br/>worktree: ../project-docs<br/>edit → verify → commit"]
   c["Task C · agent C<br/>branch: agent/tests<br/>worktree: ../project-tests<br/>edit → verify → commit"]
-  integrator["Integrator<br/>1. update branch<br/>2. resolve conflicts<br/>3. merge one commit<br/>4. verify composition"]:::accent
+  integrator["Integrator<br/>1. update branch<br/>2. resolve conflicts<br/>3. merge one commit<br/>4. verify the result"]:::accent
   merged["Integrated branch<br/>main + A + B + C<br/>combined check is green"]
-  env["worktrees isolate files and indexes;<br/>ports, databases and containers need separate isolation"]:::warn
+  env["worktrees isolate files and the index;<br/>ports, databases and containers need separate isolation"]:::warn
   target --> a --> integrator
   target --> b --> integrator
   target --> c --> integrator
@@ -65,68 +67,76 @@ flowchart LR
   b -.- env
 ```
 
-One target branch produces independent branches and working trees. In each worktree, an agent completes its task cycle and produces a separate commit. The integrator accepts commits one at a time and checks the assembled state after each one. If tasks overlap, the collision appears at a controlled point—during the update or merge—instead of halfway through someone else's session.
+The integrator accepts commits one at a time and verifies the assembled state. Overlaps between tasks surface when branches are updated and merged.
 
 ## Participants / Components
 
-- **Target branch** — the state into which the changes will eventually be assembled, usually `main` or a shared feature branch.
-- **Task** — an independent piece of work with a file scope and a verifiable result.
-- **Task branch** — the history of one change; its name connects commits to the task.
-- **Worktree** — a separate directory with its own working files and Git index.
-- **Agent** — works only in the assigned worktree and does not integrate neighboring tasks on its own initiative.
-- **Integrator** — a developer or dedicated process that chooses merge order, resolves overlaps, and runs the combined check.
-- **Environment contract** — rules for resources outside Git: ports, databases, containers, caches, and temporary files.
+- **Target branch** collects finished changes, for example in `main`.
+- **Task** defines an independent result and a scope of changes.
+- **Task branch** holds the history of its implementation.
+- **Worktree** contains the working files and a separate Git index.
+- **Agent** works in its assigned directory.
+- **Integrator** decides the merge order and verifies the combined result.
+- **Environment contract** separates ports, databases, containers, and temporary files.
 
 ## When to use
 
-- Two or more independent tasks can genuinely be performed at the same time.
-- One agent implements a change while another writes tests, documentation, or investigates the codebase.
-- You need to compare several implementations without overwriting the experiments.
-- A long-running task must not block an urgent fix in the same repository.
-- Parallel sessions run locally or through an automated harness.
+- Two or more independent tasks can genuinely be done at the same time.
+- One agent implements a change while another writes tests or documentation, or researches the code.
+- You need to compare several implementations without overwriting experiment results.
+- A long task must not block an urgent fix in the same repository.
+- Parallel sessions are started locally or by an automated harness.
 
-Do not apply the pattern automatically to two tightly coupled changes in the same module. If the tasks constantly need each other's uncommitted state, they are not parallel tasks but one task split artificially in half. Run it sequentially or find a real boundary first.
+If two changes constantly need each other's uncommitted results, do them sequentially. Parallel work pays off once you have split out parts that can be verified on their own.
 
 ## Consequences and trade-offs
 
-- ➕ Uncommitted changes are physically separated, so an agent cannot accidentally include a neighboring diff in its commit.
-- ➕ Verification belongs to a specific change: tests run on the clean task branch and then again on the integrated state.
-- ➕ Abandoning work is cheap: a failed experiment can be removed with its branch and worktree without untangling a shared directory.
-- ➕ Review is simpler: one commit or PR corresponds to one task and one owner.
-- ➖ Parallelism does not eliminate conflicts; it moves them to an explicit integration point. Poor decomposition produces a queue of difficult merges.
-- ➖ Every worktree needs dependencies and its own environment configuration; without fast bootstrap, setup consumes the gain.
-- ➖ Git isolates files, not external resources. Identical ports, one test database, or a shared cache directory can still race.
-- ➖ More active branches mean more coordination cost: integration needs an owner and a clear dependency order.
+- ➕ The tasks' working files are separated into different directories.
+- ➕ A check in a branch applies to that specific task, and re-running it after the merge evaluates the combined behavior.
+- ➕ A failed experiment can be deleted together with its own worktree.
+- ➕ One PR ties the result to the task and to the participant responsible for it.
+- ➖ Poorly split tasks still produce difficult merge conflicts.
+- ➖ Each worktree needs dependencies installed and its own environment configuration; without a fast bootstrap, setup eats the gain.
+- ➖ Git isolates files but not external resources. Identical ports, a single test database, or a shared cache directory still create races.
+- ➖ A large number of branches needs someone responsible for integration and a dependency order.
 
 ## Implementation
 
-1. Split work by outcomes, not by agents. Every task needs a name, completion criterion, ownership scope, and known dependencies.
-2. Fix the starting point and create separate branches with worktrees:
+1. Identify self-contained results. For each task, write down the completion criterion, the ownership scope, and the dependencies.
+2. Pin the starting point and create separate branches with worktrees.
 
-   ```bash git fetch origin git worktree add -b agent/auth ../project-auth origin/main git worktree add -b agent/docs ../project-docs origin/main ```
+   ```bash
+   git fetch origin
+   git worktree add -b agent/auth ../project-auth origin/main
+   git worktree add -b agent/docs ../project-docs origin/main
+   ```
 
-   `git worktree list` shows every active directory and branch. Git prevents the same branch from being used in two worktrees unless you forcibly bypass the safeguard.
-3. Run the project's standard setup in every directory. A command such as `make setup` should bring a fresh worktree to a reproducible green state; manual per-instance setup does not scale.
-4. Give the agent both the task and the boundary: “work only in this directory; do not switch branches; do not touch changes outside the listed scope; finish with a verified commit.”
-5. Separate external environment resources. Assign different ports, container names, test databases, and temporary directories. Mount secrets read-only or replace them with safe local values.
-6. Every agent verifies its change on its own branch and creates one meaningful commit. Unfinished state is not passed to neighboring tasks as a dependency.
-7. The integrator chooses an order based on dependencies. Before merging, each branch incorporates the current target branch, resolves conflicts, and repeats its check.
-8. Run a combined-state check after every merge. Two green branches do not guarantee a green composition.
-9. After integration, remove clean worktrees with the standard command:
+   `git worktree list` shows all active directories and branches. Git will not let you accidentally use the same branch in two worktrees unless you force past the protection.
+3. Run the project's standard setup in each directory. A command like `make setup` should bring a fresh worktree to a reproducible green state; configuring every instance by hand does not scale.
+4. Give the agent the task and the rules for working in its assigned directory. Specify which files it may change and what verified result it must return.
+5. Separate the external environment. Assign different ports, container names, test databases, and temporary directories. Secrets are best mounted read-only or replaced with safe local values.
+6. Each agent verifies its change inside its branch and creates one meaningful commit. Unfinished state is not passed to neighbors as a dependency.
+7. The integrator picks the order based on dependencies. Before merging, each branch pulls in the current target branch, resolves conflicts, and repeats its check.
+8. After each merge, run a check of the combined state. Two green branches do not guarantee a green composition.
+9. After integration, remove clean worktrees with the standard command.
 
-   ```bash git worktree remove ../project-auth git worktree remove ../project-docs git worktree prune ```
+   ```bash
+   git worktree remove ../project-auth
+   git worktree remove ../project-docs
+   git worktree prune
+   ```
 
-   Do not blindly delete the directory: `git worktree remove` refuses to remove a worktree with uncommitted files, preserving unfinished work.
+   Use `git worktree remove`. It refuses to delete a worktree with uncommitted files, so no work gets lost.
 
-### Resolve conflicts from intent
+### Resolving conflicts by intent
 
-Ask the agent to recover the purpose of both changes from commits, PRs, and originating issues. It should explain which requirements the combined version preserves. If the requirements conflict, agree on the intended behavior before continuing integration.
+On a conflict, ask the agent to reconstruct the purpose of both changes from the commits, PRs, and original tasks. It should explain which requirements the combined version preserves. If the requirements are incompatible, agree on the desired behavior before continuing the integration.
 
-One branch might add a request timeout while another limits retries. Choosing only one side can lose the other constraint. Check both behaviors and their interaction after merging, including when Git merges automatically. The [resolving-merge-conflicts](https://github.com/mattpocock/skills/blob/main/skills/engineering/resolving-merge-conflicts/SKILL.md) skill uses this intent recovery; stage only files belonging to the current integration and preserve unrelated changes.
+For example, one branch adds a request timeout and another limits the number of retries. Picking only one side can lose the other constraint. After combining them, verify both behaviors and how they work together. Even Git's automatic merge needs this check. The [resolving-merge-conflicts](https://github.com/mattpocock/skills/blob/main/skills/engineering/resolving-merge-conflicts/SKILL.md) skill relies on recovering the original intent; stage only the files of the current integration and leave unrelated changes alone.
 
 ## Example
 
-A team is preparing an online store release. It needs to add request rate limiting and independently update the operations page. The developer creates two worktrees from the same `origin/main`:
+A team is preparing rate limiting and an operations page for an online store. You create two worktrees from the same `origin/main`.
 
 ```text
 shop/                 main, integration only
@@ -134,18 +144,18 @@ shop-rate-limit/      agent/rate-limit, code + tests
 shop-runbook/         agent/runbook, docs + link checks
 ```
 
-The first agent changes middleware and tests; the second changes the runbook. Both run `make setup`, followed by their checks. The documentation agent cannot see half-written middleware, and the first agent's tests do not pick up accidental changes from the second. The result is two commits:
+The first agent changes the middleware and tests; the second writes the runbook. Each runs `make setup` and its own checks in a separate directory. The result is two commits.
 
 ```text
 4d23f91 feat: add API rate limiting
 8a771bc docs: document rate-limit operations
 ```
 
-The documentation depends on the final metric names, so the integrator merges the code first. It then updates the runbook branch, notices that the metric is now called `rate_limit_rejected_total`, fixes the reference, and runs the documentation check. The semantic conflict appears where it can be seen and resolved instead of being silently hidden in a shared working directory.
+The runbook depends on the final metric names, so the integrator merges the code first. It then updates the documentation branch and notices the rename to `rate_limit_rejected_total`. It fixes the reference and repeats the documentation check before merging.
 
 ```mermaid
 ---
-title: merge order follows dependency, not readiness
+title: dependencies define the merge order
 ---
 gitGraph
   commit id: "origin/main"
@@ -164,33 +174,33 @@ gitGraph
   merge agent/runbook
 ```
 
-Both branches start from the same point and commit independently. Merge order comes from the dependency, not from who finished first: `agent/runbook` first pulls in the already-merged code and only then fixes the metric name — so the mismatch surfaces as a separate commit on its own branch instead of an edit in the middle of someone else's session.
+In the diagram, both branches start from the same point. The `agent/runbook` branch receives the merged code before it is finished, so the metric-name fix shows up as a separate documentation commit.
 
-If both instances need a local server, one worktree is not enough: assign `PORT=4101` to the first and `PORT=4102` to the second, and give the test databases different names. Otherwise filesystem isolation will be sound while the processes continue to break each other's state through the environment.
+Local servers need different ports, for example `PORT=4101` and `PORT=4102`, and separate test databases. A worktree separates files, but shared external resources can still create races.
 
 ## Anti-patterns and common mistakes
 
-- **Shared checkout.** Several agents write to one directory. This is not parallel development but collaborative editing without a protocol.
-- **Branch without a worktree.** Processes take turns switching the branch in one directory, changing files underneath one another.
-- **Worktree without an owner.** Several tasks are sent to one isolated directory, merely moving the mixing somewhere else.
+- **Shared checkout.** Several agents writing to one directory mix their unfinished changes.
+- **Branch without a worktree.** Processes take turns switching the branch in one directory; files change underneath them.
+- **Worktree without an owner.** Several tasks in one directory mix their edits again.
 - **Splitting by files instead of outcomes.** “You change the controller; you write the tests” creates two halves that cannot be independently verified and completed.
-- **Shared infrastructure.** Separate directories start the same Compose project or use one database or port, causing races outside Git.
-- **Parallel merging.** Several processes update the target branch at the same time. The serialization point disappears and green checks quickly become stale.
-- **Integration without re-verification.** Every branch is green in isolation, but nobody runs their composition.
+- **Shared infrastructure.** Different directories start the same Compose project, use one database or one port, and get races outside Git.
+- **Parallel merging.** Several processes update the target branch at the same time. The serialization point disappears and green checks quickly go stale.
+- **Integration without re-verification.** Every branch is green on its own, but nobody has run their composition.
 - **Endless worktrees.** Finished directories are never removed, branches lose their owners, and a week later nobody knows where valuable work remains.
 
 ## Known uses
 
-- **Claude Code** recommends separate worktrees for parallel CLI sessions so their edits do not collide, and uses the same technique when fanning work out across files.
-- **Anthropic's C compiler experiment** ran every agent in its own container with a separate clone and protected tasks with simple locks. This is a heavier version of the same boundaries: separate working state, task ownership, and serialized Git synchronization.
-- **Git worktree** is Git's standard mechanism for multiple working trees attached to one repository, allowing branches to remain checked out at the same time without full clones.
+- **Claude Code** recommends separate worktrees for parallel CLI sessions so their changes do not collide, and uses the same technique when fanning work out across files.
+- **Anthropic's C compiler experiment** used separate containers and agent clones, task locks, and synchronization through Git.
+- **Git worktree** supports several working trees of one repository without full clones.
 
-Sources: [Claude Code best practices](https://code.claude.com/docs/en/best-practices), [Building a C compiler with a team of parallel Claudes](https://www.anthropic.com/engineering/building-c-compiler), [Git worktree documentation](https://git-scm.com/docs/git-worktree).
+The examples are described in [Claude Code best practices](https://code.claude.com/docs/en/best-practices), the [C compiler experiment](https://www.anthropic.com/engineering/building-c-compiler), and the [Git worktree documentation](https://git-scm.com/docs/git-worktree).
 
 ## Related patterns
 
-- [One Feature at a Time](one-feature-at-a-time.md) — defines the task size inside a worktree: parallelism does not justify a broad unfinished front.
-- [Writer and Reviewer](writer-reviewer.md) — a useful special case of two isolated sessions: the second gets a clean context and reviews the first one's finished commit.
-- [Feedback Loop](give-agent-a-way-to-verify.md) — provides a local readiness signal for every branch and a combined signal after integration.
-- [Four Phases](explore-plan-code-commit.md) — the commit finishes work on the branch and becomes a safe handoff boundary.
-- **Reproducible Agent Bootstrap** — a future neighboring pattern that turns preparation of a new worktree into one fast, verifiable command.
+- [One Feature at a Time](one-feature-at-a-time.md) bounds the work inside a single worktree.
+- [Writer and Reviewer](writer-reviewer.md) splits implementation and review between sessions.
+- [Feedback Loop](give-agent-a-way-to-verify.md) verifies branches before and after integration.
+- [Four Phases](explore-plan-code-commit.md) ends the cycle with a verified commit.
+- [Reproducible Agent Bootstrap](reproducible-agent-bootstrap.md) prepares a new worktree with a single verifiable command.

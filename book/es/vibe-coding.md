@@ -2,118 +2,81 @@
 kind: anti-pattern
 status: draft
 related: [prototype-to-answer, spec-driven-development, premature-success]
-source_rev: 0467919769ae9e07e7dfb6a41d92d54afd014895
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Vibe coding
 
 ## También conocido como
 
-Vibe coding — el término de Andrej Karpathy: «entregarse del todo a las
-vibraciones... y olvidar que el código siquiera existe».
+Vibe coding, el término de Andrej Karpathy para el desarrollo a base de peticiones al modelo sin prestar atención al código generado.
 
 ## Contexto
 
-El desarrollador describe el objetivo en una frase, el agente genera, el
-desarrollador acepta todo lo que arranca y parece funcionar. El diff no se
-lee; los errores se curan pegando el mensaje de vuelta al chat. En un
-prototipo de fin de semana esto es embriagadoramente productivo — y el
-hábito se muda al proyecto real.
+Describes el objetivo, el agente genera código y aceptas un resultado que se ejecuta y parece funcionar. Reenvías los errores al chat sin leer el diff. El hábito de un experimento rápido pasa a un proyecto de producción.
 
 ## Problema
 
-El producto de la conversación se acepta sin comprensión y sin
-verificación: el código no se leyó, los requisitos no están anotados en
-ninguna parte, el criterio de aceptación es «parece que funciona». En una
-base de código viva crece una capa de la que nadie sabe decir qué *debe*
-hacer.
+En la base de código aparece un comportamiento que nadie ha contrastado con los requisitos. En el siguiente cambio, al equipo le cuesta determinar qué hay que conservar y qué fue un resultado casual de la generación.
 
 ## Por qué se hace
 
-- La velocidad embriaga: una funcionalidad en una tarde contra una semana —
-  cuesta obligarse a frenar para leer un diff.
-- En los prototipos funciona de verdad: ahí el precio del error es cero, y
-  el hábito se fija como «la manera normal de trabajar».
-- Leer código ajeno aburre, y el del agente además es largo.
-- «El agente conoce este framework mejor que yo» — cierto, y de ahí no se
-  sigue que el resultado sea correcto.
+- Un primer resultado rápido quita las ganas de dedicar tiempo a la revisión.
+- En un experimento donde un error cuesta poco, este método permite comprobar una idea rápidamente.
+- Un diff generado grande exige esfuerzo para leerlo.
+- El conocimiento que el agente tiene del framework se toma como prueba de que el resultado es correcto.
 
 ## Consecuencias
 
-- ➖ Código sin dueño: nadie entiende cómo está hecha la funcionalidad — no
-  hay quien la revise, la arregle o la haga crecer.
-- ➖ La intención se pierde: al mes no se distingue «así se diseñó» de «así
-  salió» — los requisitos existían solo en una cabeza y un chat.
-- ➖ Los casos límite y la seguridad son desconocidos: nadie los comprobó,
-  porque el criterio era «parece que funciona».
-- ➖ Cada cambio siguiente cuesta más: la capa de código no comprendido
-  crece, y el agente construye lo nuevo sobre lo viejo sin verificar.
+- ➖ Al equipo le cuesta corregir y evolucionar un código cuyo funcionamiento no entiende.
+- ➖ Sin requisitos, no se puede reconstruir la intención original.
+- ➖ Los casos límite sin comprobar pueden aparecer ante los usuarios.
+- ➖ Los cambios nuevos se apoyan en un volumen cada vez mayor de comportamiento sin verificar.
 
 ## Señales
 
-- El diff se fusionó sin leer.
-- A «¿cómo funciona esto?» la respuesta es «ni idea, lo escribió el
-  agente».
-- Los requisitos se reconstruyen leyendo el código, porque no existen en
-  ningún otro sitio.
-- El argumento de calidad es «pero funciona».
+- Un diff se fusiona sin leerlo.
+- Los participantes no saben explicar cómo funciona el código aceptado.
+- Los requisitos se reconstruyen leyendo el código, porque no están en ningún otro sitio.
+- La calidad se justifica solo con una ejecución exitosa.
 
 ## Cómo hacerlo mejor
 
-Separar los modos por el precio del error. Al vibe, su zona legítima: los
-[prototipos desechables](prototype-to-answer.md), los scripts de un solo
-uso, los experimentos — todo lo que muere antes de necesitar ser
-comprendido. Al código real, el proceso real: la intención se anota (una
-[especificación](spec-driven-development.md) o al menos el plan de las
-[cuatro fases](explore-plan-code-commit.md)), el resultado se verifica (el
-[bucle de retroalimentación](give-agent-a-way-to-verify.md)) y el diff se
-lee — tú mismo o un [revisor con contexto fresco](writer-reviewer.md). La
-línea es simple: el código que va a vivir debe ser comprendido por alguien.
+Elige la profundidad de la verificación según el coste de un error y la vida del código. Para un [prototipo desechable](prototype-to-answer.md) basta con comprobar su pregunta concreta. Para el código de producción, fija los requisitos en una [especificación](spec-driven-development.md) o en un [plan](explore-plan-code-commit.md), verifica el comportamiento con un [bucle de retroalimentación](give-agent-a-way-to-verify.md) y haz una [revisión](writer-reviewer.md).
 
 ```mermaid
 ---
 title: el modo lo eligen el coste del error y la vida del código
 ---
 quadrantChart
-  x-axis "Muere esta semana" --> "Vivirá en producción"
+  x-axis "Morirá esta semana" --> "Vivirá en producción"
   y-axis "Coste del error bajo" --> "Coste del error alto"
-  quadrant-1 Especificar y revisar
+  quadrant-1 Especificación y revisión
   quadrant-2 Prueba de extremo a extremo
-  quadrant-3 El vibe vale
-  quadrant-4 Leer el diff
+  quadrant-3 Experimento rápido
+  quadrant-4 Lectura del diff
   Prototipo de landing: [0.15, 0.18]
-  Script de un solo uso: [0.28, 0.3]
+  Script puntual: [0.28, 0.3]
   Script de migración: [0.3, 0.78]
   Panel interno: [0.72, 0.32]
   Página de pago: [0.85, 0.88]
 ```
 
-Ambos ejes se necesitan a la vez. Un prototipo de landing y un script de un solo uso están en la esquina inferior izquierda, donde el vibe es honesto y no cuesta nada. Una página de pago exige el proceso completo. La esquina peligrosa es la superior izquierda: un script de migración morirá en una hora, pero un error en él puede dejar ya nada que reparar; una vida corta no elimina la prueba de extremo a extremo.
+El diagrama tiene en cuenta la vida del código y el coste del error. Un prototipo de landing admite una comprobación breve, mientras que una página de pago exige el proceso completo. Un script de migración también necesita una comprobación minuciosa aunque se ejecute una sola vez, porque un error puede afectar a los datos existentes.
 
 ## Ejemplo
 
-**Antes:**
+**Antes**
 
-> — Haz la página de pago de la suscripción. — … — Funciona, fusiónalo.
+> Haz la página de pago de la suscripción. Se abrió y parece que funciona, se puede fusionar.
 
-**Después:**
+**Después**
 
-> Para el prototipo del landing — vibe sin leer: muere esta semana. Para el
-> pago — especificación con criterios, implementación por plan, recorrido
-> completo del escenario de pago y revisión del diff con un subagente
-> fresco: este código manejará dinero más tiempo del que recordaremos esta
-> conversación.
+> Para la página de pago, primero acordamos los requisitos, luego los implementamos y verificamos el escenario completo. Antes de fusionar, revisamos el diff. Este código procesará pagos reales.
 
 ## Patrones y antipatrones relacionados
 
-- [Prototipo desechable](prototype-to-answer.md) — la forma legal del
-  vibe: código desechable con pregunta y veredicto, en vez de código sin
-  dueño.
-- [Desarrollo orientado a especificaciones](spec-driven-development.md) —
-  el polo opuesto: la intención queda escrita y sobrevive a la
-  conversación.
-- [Éxito prematuro](premature-success.md) — el compañero fiel: el código
-  sin leer *y* el comportamiento sin comprobar.
-- [One-shotting](one-shotting.md) — el hermano de la misma cultura de
-  demos: allí se espera todo de un prompt, aquí se acepta todo lo que salió
-  de él.
+- [Prototipo desechable](prototype-to-answer.md) limita el experimento a una pregunta concreta.
+- [Desarrollo orientado a especificaciones](spec-driven-development.md) conserva los requisitos para verificar la implementación.
+- [Éxito prematuro](premature-success.md) describe declarar el trabajo terminado sin una verificación de extremo a extremo.
+- [One-shotting](one-shotting.md) describe la expectativa de un producto terminado tras una sola pasada.

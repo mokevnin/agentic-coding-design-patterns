@@ -2,44 +2,44 @@
 group: task-setting
 status: draft
 related: [grilling, spec-driven-development, explore-plan-code-commit]
-source_rev:
+source_rev: 854c3716f433510f26cf8af5610b6c51b28396d9
 ---
 
 # Agent-Led Interview
 
 ## Intent
 
-Flip the setup of a large task: instead of writing the specification yourself, start with a minimal description and let the agent interview you — until your answers assemble into a self-contained specification. A fresh session with a clean context executes it.
+If the requirements for a feature aren't written down yet, briefly describe the idea to the agent and ask it to interview you. The agent will ask about scenarios you may have missed. From your answers, it will put together a self-contained specification — a document that can be understood without reading the interview. Then a fresh session implements the task from it.
 
 ## Also known as
 
-Let Claude interview you, the reverse interview.
+Let Claude interview you, the reverse interview, agent-led interview.
 
 ## Problem
 
-A large feature lives in your head — and comes out of there badly:
+Say you ask the agent to add order webhooks. You picture how the feature should work, but you haven't written down all the scenarios yet. Experience suggests the usual path to you, and you don't notice the exceptions.
 
-- Writing the specification yourself is hard and one-sided: you don't know what you don't know. The edge cases, UX forks, and trade-offs you never thought about won't make it into the text — there is nobody to ask about them.
-- Dumping everything into one long prompt yields a pile of text without structure: the important mixed with the obvious, and the holes still in place.
-- The unsaid surfaces at the worst moment: mid-implementation the agent hits an unresolved question — and silently resolves it itself, however it happens to.
+Your request doesn't say what to do if the receiver responds slowly. So the agent will have to choose the retry policy on its own, already during implementation. Even a detailed description of the idea can keep this gap, because you write it from the same experience. That's why you need a counterpart who will ask what should happen on failure.
 
 ## Solution
 
-Start with the minimum and hand the initiative to the agent:
+Describe the intent in a few sentences and ask the agent to question you about what you might have overlooked. For example:
 
-> I want to build [a brief description]. Interview me in detail: ask about the technical implementation, UX, edge cases, risks, and trade-offs. Don't ask obvious questions — dig into the hard parts I might not have considered. Keep going until we've covered everything, then write the complete specification to SPEC.md.
+> I want to build [a brief description]. Ask me about user scenarios, constraints and errors I might have missed. Check facts available in the project yourself. After the discussion, write the requirements and acceptance criteria to SPEC.md.
 
-The roles split cleanly: the agent asks — and it is good at this, because it knows the typical holes of features of this kind; you decide — every answer pins down a decision that would otherwise have surfaced mid-implementation.
+The agent looks for places where the feature's behavior is not yet defined and asks you about them. What is recorded in the project, the agent finds out without you, and you make the product decisions. With each answer, you settle something the agent would otherwise choose on its own during implementation: for example, what to do with a slow receiver.
 
-The interview's finale is a **self-contained** specification: it names the files and interfaces involved, explicitly lists what is *out of* scope, and ends with an end-to-end verification step that proves the feature works. Self-containedness is the readiness criterion: such a spec can be worked from with no access to its author.
+At the end, the agent writes a **self-contained specification** — a document the next implementer will understand without reading the interview. It includes the requirements, the scope boundaries and an end-to-end check, that is, a scenario that shows the feature works as a whole.
 
-Execution happens in a fresh session: a clean window devoted entirely to the implementation, with the specification as the source. The interview is not dragged into the executor's context — everything valuable in it is already in SPEC.md. Time spent making the specification precise pays off more than time spent watching the implementation.
+Start the implementation in a fresh session — a new conversation with the agent. The long interview has already taken up part of the [context window](glossary.md), the amount of data the model takes into account in every response. A fresh session starts with a clean window and the specification. It doesn't see the interview, so every important decision from it must be written down in the document.
 
 ## Structure
 
+In the diagram, you start with a short idea, answer the agent's questions and get a specification.
+
 ```mermaid
 ---
-title: a precise spec pays off more than watching the implementation
+title: the interview saves decisions in the specification
 ---
 flowchart TB
   prompt["A minimal prompt<br/>the idea in two sentences"]:::accent
@@ -50,75 +50,87 @@ flowchart TB
   spec -- "the session boundary: the interview stays behind,<br/>the spec crosses" --> fresh
 ```
 
-On the left, the minimal prompt — the idea in a couple of sentences. In the center, the interview loop: the agent asks about the hard parts, the developer decides, question by question. On the right, the product — a self-contained specification with the files, the scope boundaries, and the end-to-end check. The dashed boundary separates it from execution: a fresh session receives the spec and a clean window; the interview stays behind.
+The session boundary in the diagram is the moment you open a new session and hand it SPEC.md.
 
 ## Participants / Components
 
-- **The developer** — the source of decisions: answers, chooses, cuts scope.
-- **The interviewing agent** — asks about what you haven't thought of; instructed not to ask the obvious.
-- **SPEC.md** — the interview's product: a self-contained specification with files, boundaries, and a check.
-- **The fresh session** — the executor: a clean window plus the specification, without the interview's tail.
+- **Developer** makes decisions and limits the scope of the task.
+- **Interviewing agent** asks questions about missed scenarios.
+- **SPEC.md** is the file with the requirements and acceptance criteria.
+- **Fresh session** implements the task from the specification.
 
 ## When to use
 
-- A large feature whose requirements exist in your head but not on paper — and writing them yourself isn't working.
-- You are solo or a small team with no dedicated analyst: the agent covers the role of the person who asks the uncomfortable questions.
-- Specs you wrote alone in the past kept turning out to have holes in the same places.
+- You have an idea for a large feature, but its requirements aren't written down yet.
+- The team needs a counterpart to help check that all scenarios are covered.
+- Specifications you wrote alone kept turning out to have holes in the same places.
 
-Not needed for small edits — a normal task statement suffices — and when a specification already exists: a finished plan isn't interviewed into existence, it gets [attacked](grilling.md).
+A small edit is usually enough to simply hand to the agent. And a finished plan is better checked with [Grilling](grilling.md): there the agent asks questions about a plan that is already written.
 
 ## Consequences and trade-offs
 
-- ➕ The questions expose what you hadn't thought about: the agent knows the typical holes — retries, races, empty states, permissions.
-- ➕ The specification is born structured and self-contained — a ready input for the [SDD pipeline](spec-driven-development.md).
-- ➕ The executor gets a clean context: the window isn't buried under an hour of negotiations.
-- ➖ The interview costs time and patience: dozens of questions in a row wear you down.
-- ➖ Quality hangs on the instruction: without "don't ask the obvious" the agent starts with "which framework are we using".
-- ➖ Careless answers devalue everything: a "whatever you think is best" to every question yields a specification made of the agent's guesses — you might as well have skipped the interview.
+- ➕ By answering the agent's questions, you find mistakes and constraints you haven't discussed yet.
+- ➕ The specification can serve as the basis for [spec-driven development (SDD)](spec-driven-development.md).
+- ➕ The implementer receives only the selected decisions, without the whole interview history.
+- ➖ A detailed interview takes your time and attention.
+- ➖ If the agent doesn't see the code, it may ask you about things already recorded in the project.
+- ➖ If you don't make decisions, the agent will fill the specification with its own assumptions.
 
 ## Implementation
 
-1. Write the minimal prompt: the idea in one or two sentences plus the request to interview — with an explicit "dig into the hard parts, don't ask the obvious".
-2. Answer as the owner: every answer is a decision. If you don't know, say so: "I don't know — propose options" beats a random pick.
-3. Demand the finale as a file: the complete specification in `SPEC.md`, not a summary in the chat.
-4. Check the self-containedness: the files and interfaces are named, the "out of scope" is listed, an end-to-end verification step closes it. Something missing — another round of questions.
-5. Execute with a fresh session: a new context, `SPEC.md` as the input. For work bigger than one session, the spec goes into the [SDD pipeline](spec-driven-development.md) — as a plan and tasks.
+1. Describe the idea in a few sentences and ask the agent to find out which scenarios you missed.
+2. Discuss the answer options with the agent. If there is no decision yet, write down an open question.
+3. Ask the agent to save the specification to _SPEC.md_.
+4. Reread the requirements, constraints and end-to-end check. Clarify the places the implementer won't understand without the interview.
+5. Hand the document to a fresh session. If the work is long, add a plan and tasks to the specification following [SDD](spec-driven-development.md).
 
 ### When someone else knows the answer
 
-If the developer lacks a business rule, identify who can explain it and which decision needs the answer. Ask the agent for a separate questionnaire with task context, prioritized questions, and answer space. The document should be usable by an expert who was absent from the conversation.
+Sometimes the agent asks about a rule you don't know. Then find out who can explain it and which decision depends on the answer. Ask the agent to prepare a separate questionnaire for that person: the task context, questions in order of importance and space for the answers. Since the task context is in the questionnaire itself, it can be given to an expert who didn't take part in your conversation with the agent.
 
-Before a billing migration, for example, the finance team may need to clarify refunds for partly used periods and contractual exceptions. Preserve “I do not know” as an open question. After receiving answers, the developer reviews them and asks the agent to update the requirements.
+For example, you are preparing a billing migration, and the finance team has to clarify the refund rules. Then the agent will ask in the questionnaire what happens if the customer used only part of the period, and which exceptions the contract provides for. If a question gets an "I don't know", record it as open. When the answers arrive, check them and ask the agent to update the requirements.
 
-The [to-questionnaire](https://github.com/mattpocock/skills/blob/main/skills/productivity/to-questionnaire/SKILL.md) skill prepares this document by first clarifying the recipient and required information. Sending it and incorporating the answers remain separate team steps.
+The [to-questionnaire](https://github.com/mattpocock/skills/blob/main/skills/productivity/to-questionnaire/SKILL.md) skill can prepare such a questionnaire. A [skill](glossary.md) is a repeatable procedure written down in instructions for the agent. First, to-questionnaire asks you who the questionnaire is addressed to and what information needs to be obtained. But the team has to send the questionnaire and carry the answers into the specification itself: the skill doesn't do that.
 
 ## Example
 
-A developer wants webhooks for integrations and writes exactly that:
+Back to the order webhooks. You start with this request:
 
 > I want to add webhooks so clients get order events. Interview me in detail, dig into what I haven't considered, then write the specification to SPEC.md.
 
-The agent asks — one at a time, with a recommendation for each: which events in the first version; what to do when the receiver returns a 500 — I recommend exponential retries with a cap; should the payload be signed — I recommend HMAC; do we guarantee event ordering; what about client-side deduplication. On "what happens when a receiver is consistently slow and builds up a queue" the developer stops: he hadn't thought about it at all — they decide to disable the webhook after N failures, with a notification.
+The agent questions you one by one about what to do on delivery errors. When it asks about a receiver that is consistently slow, you realize you missed this scenario. You agree with the agent: after a set number of failures the webhook is disabled, and the client gets a notification.
 
-Twenty questions later `SPEC.md` holds the specification: the events and their format, the retry policy, the signing, "out of scope: the settings UI — next iteration", and the end-to-end check — "create an order, see the delivered event in a test receiver, take the receiver down, see the retries and the disable". The developer opens a fresh session: "implement from SPEC.md" — and the executor works from a document in which the slow-receiver question is already decided.
+The agent writes these conditions into _SPEC.md_ together with the event format, the signature and the retry policy. Here is the fragment about disabling the webhook that you agreed on:
+
+```markdown
+Disable the webhook after five consecutive failed delivery attempts.
+A failure is a response outside the 200–299 range or no response
+within 10 seconds. A successful delivery resets the counter to zero.
+After the fifth failure, stop sending and create one notification
+in the client's dashboard. The client can re-enable the webhook themselves.
+```
+
+The fragment has a threshold, a way of counting failures and an observable result. So an end-to-end check can be built from it. The check reproduces five failures and confirms that the webhook is disabled and the client got a notification. A separate scenario inserts a successful delivery between failures and checks that the counter was reset.
+
+These are the conditions of a sample product. In your own product, pick values that fit your load and delivery requirements.
 
 ## Anti-patterns and common mistakes
 
-- **"Whatever you think is best" to everything.** The interview works only while the decisions are yours: an agent answering itself produces a specification made of guesses.
-- **An interview without the file.** Decisions left in the conversation die with the session — the finale is always `SPEC.md`.
-- **Executing in the same session.** The window is buried under the interview, and the executor drags an hour of negotiation instead of a clean context. The spec is self-contained — give it a fresh session.
-- **Obvious questions.** Without an explicit "dig into the hard parts" the agent interviews across the surface — and the holes stay put.
-- **An interview instead of grilling.** If the plan is already written, rebuilding it with questions is too late — it needs to be [attacked](grilling.md).
+- **"Whatever you think is best" to everything.** If you answer every question that way, the agent's guesses end up in the document instead of your decisions.
+- **An interview without a file.** Important decisions remain only in the conversation, and the next session won't see them.
+- **Executing in a filled window.** A long interview takes up space in the context window that the implementation will need. Hand the agreed specification to a fresh session.
+- **Only obvious questions.** If the agent asks only about what is clear anyway, the gaps go unnoticed. Ask it to question you about exceptions and constraints you haven't discussed yet. The prompt in the example has the words "dig into what I haven't considered" for this.
+- **Another interview on a finished plan.** If the plan is already written, check its decisions with [Grilling](grilling.md), not a new interview.
 
 ## Known uses
 
-- **Claude Code best practices** — the primary source with the ready-made prompt: the interview via AskUserQuestion, "dig into the hard parts I might not have considered", the specification into SPEC.md, execution by a fresh session.
-- **Kiro** — spec sessions as an IDE mode: the same idea built into the tool — requirements born in a dialogue with phase-gate approvals.
-- **Matt Pocock's skills** — `/grill-with-docs`: an interview that reads the codebase in parallel and settles its decisions into CONTEXT.md and ADRs.
+- **Claude Code best practices** advise running the interview through the AskUserQuestion tool, saving the outcome to SPEC.md and implementing it in a fresh session.
+- **Kiro** drafts requirements in a dialogue with you, and you confirm them phase by phase.
+- **Matt Pocock's skills** save the outcomes of `/grill-with-docs` to CONTEXT.md and ADRs — architectural decision records.
 
 ## Related patterns
 
-- [Grilling](grilling.md) — the mirror neighbor: the interview *builds* a specification from nothing, grilling *attacks* a finished plan.
-- [Spec-Driven Development](spec-driven-development.md) — the receiver of the result: SPEC.md is a ready pipeline input.
-- [Four Phases](explore-plan-code-commit.md) — the smaller scale: there the agent explores and plans itself; here the plan is born from your decisions.
-- [Premature Specification](premature-specification.md) — the anti-pattern the interview guards against: the specification assembles from decisions on questions, not from early guesses about the implementation.
+- [Grilling](grilling.md) checks a plan that is already written.
+- [Spec-Driven Development](spec-driven-development.md) takes the interview's result as the basis of the plan.
+- [Four Phases](explore-plan-code-commit.md) separate exploring the task from implementing it.
+- [Premature Specification](premature-specification.md) is an anti-pattern: you choose the implementation before you've clarified the requirements.

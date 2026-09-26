@@ -4,57 +4,75 @@ kind: tool
 checked_on: 2026-09-21
 status: draft
 related: [spec-driven-development, explore-plan-code-commit]
-source_rev:
+source_rev: f3e4f9c57d10532c8d3b2d7e7a1c65c0f4fc5090
 ---
 
 # Skills de Matt Pocock
 
-*Comandos y capacidades comprobados el 21 de septiembre de 2026.*
+_Comandos y capacidades comprobados el 21 de septiembre de 2026._
 
-El [pack de skills de Matt Pocock](https://github.com/mattpocock/skills) es una implementación del [desarrollo orientado a especificaciones](spec-driven-development.md) como un conjunto de skills para agentes de código. A diferencia de Spec Kit y OpenSpec, que apilan los artefactos en un directorio del repositorio, este pack construye la tubería sobre el **gestor de incidencias**: la especificación se publica como una issue, las tareas como tickets enlazados, y el trabajo sigue después el proceso habitual del equipo.
+[El pack de skills de Matt Pocock](https://github.com/mattpocock/skills) implementa el [desarrollo orientado a especificaciones](spec-driven-development.md) mediante un conjunto de [procedimientos para el agente de código](skills-as-packaged-workflows.md). La especificación y los tickets vinculados van al **tracker**, donde el equipo sigue con su trabajo habitual.
 
 ## Instalación y configuración
 
-Dos vías: la editable — `npx skills@latest add mattpocock/skills` (los skills se copian al repositorio, listos para forkear y editar) — y la gestionada, vía el marketplace oficial de plugins de Claude Code (`/plugin install mattpocock-skills`). Después, `/setup-matt-pocock-skills` se ejecuta una vez por repositorio: el skill de configuración detecta el tracker desde el repositorio y confirma la elección (GitHub, GitLab y Markdown local tienen plantillas; otros trackers, como Linear, usan el flujo descrito por el usuario), el vocabulario de etiquetas de triaje (`needs-triage`, `ready-for-agent`, `ready-for-human`…) y la disposición de los documentos de dominio; la configuración aterriza en `docs/agents/`.
+Para una instalación editable, usa `npx skills@latest add mattpocock/skills`. Para una instalación gestionada a través del marketplace de Claude Code existe el comando `/plugin install mattpocock-skills`. Tras instalar, ejecuta una vez `/setup-matt-pocock-skills`, que acuerda el tracker, las etiquetas de triaje y la ubicación de los documentos de dominio. La configuración se guarda en _docs/agents/_. Hay plantillas para GitHub, GitLab y archivos Markdown locales. Para otros trackers, incluido Linear, el skill registra cómo trabajar con ellos a partir de la descripción del usuario.
 
 ## Flujo de trabajo
 
-El flujo principal «idea → producción» se monta con skills a lo largo de las fases de SDD:
+El proceso principal consta de varias fases.
 
-1. **Una entrevista en vez de un prompt en bruto.** `/grill-me` te entrevista *a ti* sin piedad: preguntas independientes por rondas mediante `grilling`, con una respuesta recomendada para cada una. Las preguntas que dependen de decisiones pendientes esperan a otra ronda; los hechos los busca el propio skill en la base de código y las decisiones se las deja al humano. La variante `/grill-with-docs` mantiene por el camino la documentación de dominio vía `domain-modeling`: el glosario en `CONTEXT.md` y los ADR se escriben en el momento en que una decisión cristaliza.
-2. **Especificación.** `/to-spec` sintetiza la conversación ya trabajada en una especificación autocontenida (un PRD, en esencia) — sin nueva entrevista — y la publica en el tracker con la etiqueta `ready-for-agent`. La especificación omite rutas concretas y listados ordinarios porque caducan. Puede incluir un fragmento breve de un prototipo cuando expresa con más precisión una decisión, como un modelo de estados. Un paso aparte es elegir las «costuras» de testing: el skill se las presenta al usuario para su visto bueno, prefiriendo las costuras existentes a las nuevas.
-3. **Tareas.** `/to-tickets` corta la especificación en **tickets bala trazadora** — cortes verticales «a través de todas las capas: esquema, API, UI, tests», cada uno dimensionado para caber en una ventana de contexto fresca y cada uno declarando explícitamente qué tickets lo bloquean. En un tracker real las aristas se vuelven enlaces de bloqueo nativos; en la variante local, texto en el archivo del ticket. La regla de ejecución es «trabaja el frente»: toma cualquier ticket cuyos bloqueadores estén todos cerrados. La excepción son los refactors mecánicos amplios: no se cortan en rebanadas sino que se secuencian como expand–contract.
-4. **Implementación.** `/implement` conduce el trabajo desde la especificación o los tickets: dentro, `/tdd` en las costuras preacordadas, typechecking y tests con regularidad, la suite completa al final.
-5. **Revisión.** `/implement` termina con `/code-review`: dos ejes — conformidad con los estándares del repositorio y conformidad con la especificación original — comprobados por subagentes paralelos para no contaminarse el contexto mutuamente.
+1. **Entrevista.** `/grill-me` plantea, mediante `grilling`, rondas de preguntas independientes con recomendaciones. Las preguntas que dependen de puntos sin resolver pasan a la siguiente ronda. Los hechos los busca el skill en el código; las decisiones las acuerda con el humano. `/grill-with-docs` guarda además los términos en _CONTEXT.md_ y las decisiones arquitectónicas en ADR mediante `domain-modeling`.
+2. **Especificación.** `/to-spec` reúne los requisitos de la discusión y publica un documento con la etiqueta `ready-for-agent`. No incluye rutas de archivos concretas ni listados ordinarios, porque caducan rápido. La excepción es un fragmento breve de un prototipo que fija con más precisión una decisión tomada, por ejemplo un modelo de estados. Los límites de testing el skill los acuerda con el usuario.
+3. **Tareas.** `/to-tickets` crea tickets trazadores, cada uno con un resultado verificable propio y enlaces de bloqueo. El agente elige un ticket cuyas dependencias estén cerradas. Para una refactorización mecánica amplia se usa expand–contract.
+4. **Implementación.** `/implement` ejecuta la tarea con `/tdd` en los límites acordados y lanza la comprobación de tipos y los tests.
+5. **Revisión.** `/code-review` comprueba los estándares del proyecto y los requisitos de la especificación en contextos separados.
 
-Alrededor de la tubería principal hay skills para la escala y los bordes del proceso:
+El diagrama muestra qué artefactos conectan la conversación con la implementación.
 
-- `/wayfinder` — cuando el trabajo es más grande que una especificación: la idea se despliega en un mapa de tickets de investigación en el tracker, y el agente los resuelve de uno en uno hasta que el camino queda claro.
-- `/triage` — las issues entrantes pasan por las etiquetas canónicas (`needs-triage` → `ready-for-agent` / `ready-for-human`) y acaban como un brief listo para el agente.
-- `/prototype` responde a una pregunta de diseño con un archivo HTML interactivo para lógica o variantes de UI intercambiables. El prototipo se conserva en una rama separada enlazada desde la tarea.
-- `/handoff` — compactar la conversación en un documento de traspaso para la siguiente sesión, referenciando los artefactos ya creados en vez de duplicarlos.
+```mermaid
+---
+title: las decisiones acordadas pasan de la conversación a tareas verificables
+---
+flowchart TB
+  talk["Entrevista y decisiones"] --> spec["Especificación en el tracker"]
+  talk --> domain["Vocabulario del dominio y ADR"]:::muted
+  spec --> tickets["Tickets con dependencias"]
+  tickets --> ready["Elección de una tarea sin dependencias bloqueantes"]
+  ready --> code["Implementación con tests"]
+  code --> review["Revisión según estándares y especificación"]:::accent
+  domain -.-> code
+```
+
+En este diagrama el tracker guarda los requisitos y la cola de trabajo. El vocabulario y los ADR aportan a la tarea el significado de los términos y las razones de las decisiones, y la revisión contrasta el resultado con la especificación original.
+
+Otros skills dan soporte a etapas adicionales del trabajo.
+
+- `/wayfinder` crea un mapa de preguntas de investigación para una idea grande.
+- `/triage` lleva las incidencias entrantes hasta un brief y el estado de lista para trabajar.
+- `/prototype` pone a prueba una pregunta de diseño. Para la lógica crea un archivo HTML independiente con escenarios controlables; para la UI, varias variantes intercambiables. El prototipo se conserva en una rama separada enlazada desde la tarea.
+- `/handoff` traspasa el estado del trabajo a la siguiente sesión.
 - `/diagnosing-bugs` organiza el [diagnóstico mediante hipótesis](hypothesis-driven-debugging.md).
-- `/to-questionnaire` prepara preguntas para la persona que tiene la información que falta.
-- `/wizard` genera un script interactivo para pasos manuales de configuración o migración.
-- `/writing-for-agents` ayuda a escribir instrucciones y documentos para agentes; sustituye y amplía `writing-great-skills`.
+- `/to-questionnaire` prepara un cuestionario para la persona que dispone de la información que falta.
+- `/wizard` crea un script interactivo para pasos manuales de configuración o migración.
+- `/writing-for-agents` ayuda a redactar instrucciones y documentos para el agente. Es el nuevo nombre del ampliado `writing-great-skills`.
 
 ## Artefactos
 
 | Artefacto | Dónde vive |
-|-----------|------------|
+| ---------- | ----------- |
 | Especificación (PRD) | Una issue del tracker con la etiqueta `ready-for-agent` |
-| Tickets con aristas de bloqueo | El tracker (o archivos en `.scratch/<funcionalidad>/issues/`, si el tracker es local) |
-| `CONTEXT.md` | Raíz del repositorio: el glosario de dominio |
-| ADR | `docs/adr/`: decisiones arquitectónicas |
-| Documento de handoff | El directorio temporal del SO — deliberadamente fuera del repo |
+| Tickets con enlaces de bloqueo | El tracker (o archivos en _.scratch/\<funcionalidad\>/issues/_, si el tracker es local) |
+| _CONTEXT.md_ | Raíz del repositorio: el glosario de dominio |
+| ADR | _docs/adr/_: decisiones arquitectónicas |
+| Documento de handoff | El directorio temporal del SO — deliberadamente fuera del repositorio |
 
 ## En qué se diferencia
 
-- Una tubería sobre el tracker: la especificación y los tickets viven donde viven las tareas de los humanos — el proceso del equipo no se bifurca.
-- La entrevista como primera fase: el pack asume que los agujeros de la idea salen más baratos *antes* de la especificación, conversando.
-- Tickets bala trazadora: el corte no es en «capas» (modelo, API, UI) sino en cortes verticales con un grafo de bloqueos explícito — cada ticket lleva la funcionalidad a un estado verificable.
-- La documentación de dominio como subproducto: el glosario y los ADR se escriben durante la entrevista, y el resto de skills están obligados a usar ese vocabulario.
+- Las especificaciones y los tickets viven en el tracker junto con las tareas del equipo.
+- La entrevista ayuda a descubrir la incertidumbre antes de escribir la especificación.
+- Cada ticket trazador termina en un comportamiento verificable y declara explícitamente sus dependencias.
+- El glosario y los ADR se completan durante la discusión y los usan el resto de skills.
 
 ## Cuándo elegirlo
 
-El pack de Matt Pocock es la opción para quien ya vive en un agente de código y un gestor de incidencias y quiere SDD sin una herramienta nueva en el stack: la tubería se monta con skills y los artefactos aterrizan en issues familiares. La instalación gestionada está disponible en Claude Code; la vía editable funciona en Codex y otros agentes. Si quieres un marco rígido con archivos-artefacto fijos en el repositorio, queda más cerca [OpenSpec](openspec.md); filosóficamente el vecino más próximo es [Superpowers](superpowers.md) — otro pack de skills, con puntos de control más estrictos.
+El pack encaja con un equipo que quiere organizar el SDD dentro de un agente de código y del tracker que ya tiene. La instalación gestionada está disponible en Claude Code; la editable permite adaptar los procedimientos al proyecto. [OpenSpec](openspec.md) es cómodo para guardar el paquete de cambio en el repositorio, y [Superpowers](superpowers.md) ofrece otro conjunto de skills con puntos de control obligatorios.

@@ -1,70 +1,50 @@
 ---
-source_rev: 7e55f190b32a442a316091c9b62608c9ee3aaaec
+source_rev: 9d4fa9eb519a20d480ec3d62833d521e412bdb0e
 ---
 
 # Cómo leer este libro
 
 ## Qué es un patrón
 
-Un patrón describe un problema recurrente y una forma probada de resolverlo,
-expresada de modo que la solución pueda aplicarse muchas veces sin reinventarla.
-Un patrón no es código listo para usar, sino una idea que adaptas a tu contexto.
+Un patrón es una forma de resolver un problema que aparece una y otra vez. De un patrón tomas el principio y lo adaptas a las restricciones de tu proyecto.
+
+Por ejemplo, el principio del [bucle de retroalimentación](give-agent-a-way-to-verify.md) es este: dale al agente una comprobación que pueda ejecutar por sí mismo. Si será un test, un build o la comparación de la salida con una referencia, lo decides tú.
 
 ## Estructura de un capítulo
 
-El libro contiene tres tipos de material: patrones, antipatrones y perfiles de
-herramientas. Los patrones siguen una única plantilla para que los capítulos
-sean comparables:
+La parte principal del libro son capítulos de tres tipos: patrones, antipatrones y perfiles de herramientas. Los capítulos de patrones siguen una plantilla común. Estas son sus secciones principales:
 
-- **Propósito** — qué resuelve el patrón.
-- **Problema** — la situación y las fuerzas que llevan al patrón.
-- **Solución** — la idea a nivel de principio.
-- **Estructura** — un diagrama de los recursos compartidos.
-- **Cuándo aplicarlo** y **Consecuencias** — condiciones y compromisos.
-- **Implementación** y **Ejemplo** — cómo llevarlo a cabo.
-- **Antipatrones**, **Usos conocidos**, **Patrones relacionados**.
+- **Propósito** — qué problema resuelve el patrón.
+- **Problema** — en qué situación surge el problema y qué restricciones tiene.
+- **Solución** — el principio en que se apoya el patrón.
+- **Estructura** — un diagrama: qué participantes tiene el patrón y cómo se relacionan.
+- **Cuándo aplicarlo** y **Consecuencias** — en qué condiciones encaja el patrón y qué compromisos tiene.
+- **Implementación** y **Ejemplo** — cómo aplicar el principio en la práctica.
+- **Antipatrones**, **Usos conocidos** y **Patrones relacionados** — errores frecuentes, práctica y enfoques vecinos.
 
-Los antipatrones parten de una acción errónea pero tentadora, explican sus
-consecuencias y ofrecen un reemplazo positivo. Los perfiles de OpenSpec,
-Superpowers y los skills de Matt Pocock funcionan como fichas prácticas:
-instalación, flujo de trabajo, artefactos, diferencias y criterios de elección.
-Como los comandos dependen de las versiones, cada perfil indica la fecha en que
-se comprobó.
+Un antipatrón es una acción tentadora pero errónea. En un capítulo sobre un antipatrón verás a qué conduce y qué hacer en su lugar.
+
+En los perfiles de [OpenSpec](openspec.md), [Superpowers](superpowers.md) y los [skills de Matt Pocock](matt-pocock-skills.md) verás cómo trabajar con cada herramienta y cuándo elegirla. Los comandos dependen de la versión de la herramienta, por eso cada perfil indica cuándo se comprobaron.
 
 ## Grupos
 
-Los patrones se agrupan por área del trabajo con un agente: planteamiento de la
-tarea, desarrollo orientado a especificaciones, trabajo con el contexto,
-verificación y organización del proyecto. Los **antipatrones** viven en una
-sección aparte: errores comunes al interactuar con un agente y su análisis. La
-agrupación es visible en el [contenido](SUMMARY.md); dentro del repositorio todos
-los capítulos son planos, cómodos de leer también en GitHub.
+En el [contenido](SUMMARY.md) los patrones se dividen en grupos por área del trabajo con el agente. Los **antipatrones** están en una sección aparte. En el repositorio todos los capítulos de un idioma están en un mismo directorio, así que el libro también es cómodo de leer directamente en GitHub.
 
 ## Cómo elegir un patrón
 
-No hace falta leer el libro en orden. Empieza por la situación en la que estás:
+Busca en la tabla una situación parecida a la tuya y empieza por el patrón de la segunda columna.
 
-| Situación | Empieza por | Qué obtienes | Coste principal |
-|-----------|-------------|--------------|-----------------|
-| Un cambio pequeño pero no obvio | [Cuatro fases](explore-plan-code-commit.md) | Un enfoque acordado antes de cambiar código | Una revisión separada del plan |
-| La idea aún solo está en tu cabeza | [Entrevista del agente](let-claude-interview-you.md) | Una definición autocontenida de la tarea | Hay que responder preguntas |
-| Un plan terminado parece demasiado perfecto | [Grilling](grilling.md) | Huecos descubiertos y decisiones explícitas | La conversación puede revelar más trabajo |
-| La funcionalidad durará más de una sesión | [Desarrollo orientado a especificaciones](spec-driven-development.md) | Especificación, plan y tareas verificables | Hay que mantener los artefactos |
-| Necesitas demostrar la corrección | [Bucle de retroalimentación](give-agent-a-way-to-verify.md) | Un ciclo verificable hasta el resultado | La calidad queda limitada por el oráculo |
-| El trabajo es demasiado grande o se expande | [Una funcionalidad a la vez](one-feature-at-a-time.md) y [tickets trazadores](tracer-bullet-tickets.md) | Cortes pequeños y terminados | Más puntos de coordinación |
-| El trabajo debe continuar en un contexto nuevo | [Diario de progreso](progress-file.md) o [traspaso de sesión](handoff.md) | Un estado de trabajo recuperable | Los documentos exigen disciplina |
-| No sabes si una idea sobrevivirá a la realidad | [Prototipo desechable](prototype-to-answer.md) | Respuesta a una pregunta de diseño | Hay que desechar el prototipo |
+| Situación | Por dónde empezar | Qué obtienes | Coste principal |
+| ---------- | --------------- | ---------------- | --------------- |
+| Un cambio pequeño pero no evidente | [Cuatro fases](explore-plan-code-commit.md) | Apruebas el plan y solo entonces el agente escribe código | Un paso más antes del código: lees el plan |
+| La idea solo está en tu cabeza | [Entrevista del agente](let-claude-interview-you.md) | Una especificación en el archivo SPEC.md que una sesión nueva entiende sin la entrevista | Tendrás que responder a las preguntas del agente |
+| Un plan terminado parece demasiado liso | [Grilling](grilling.md) | El agente encuentra huecos en el plan y tú tomas las decisiones sobre ellos | Puede resultar que hay más trabajo del que parecía |
+| La funcionalidad no cabe en una sesión | [Desarrollo orientado a especificaciones](spec-driven-development.md) | Especificación, plan y tareas con un resultado verificable | Hay que actualizar los documentos cuando cambian los requisitos |
+| Necesitas pruebas de que el código funciona | [Bucle de retroalimentación](give-agent-a-way-to-verify.md) | El agente corrige el código hasta que pasa la comprobación y adjunta su resultado | Una comprobación débil dejará pasar un error |
+| El trabajo es demasiado grande o se desborda | [Una funcionalidad a la vez](one-feature-at-a-time.md) y [tickets trazadores](tracer-bullet-tickets.md) | Partes pequeñas, y el agente verifica cada una por completo | Más partes pequeñas y conexiones entre ellas que vigilar |
+| El trabajo debe continuar en una sesión nueva | [Diario de progreso](progress-file.md) o [traspaso de sesión](handoff.md) | La sesión nueva empieza donde se detuvo la anterior | Un documento desactualizado confundirá a la sesión nueva |
+| No está claro si la idea funcionará en la práctica | [Prototipo desechable](prototype-to-answer.md) | La respuesta a una pregunta de diseño concreta | El prototipo habrá que tirarlo |
 
-El diario de progreso se mantiene continuamente; el traspaso de sesión se crea
-en un límite concreto de contexto. La reflexión pide al autor que critique su
-propio resultado, mientras que [Escritor y revisor](writer-reviewer.md) entrega
-la comprobación a un contexto nuevo. TDD es una forma estricta del bucle de
-retroalimentación para comportamientos que se pueden expresar como tests.
+Algunos patrones resuelven problemas parecidos, pero en momentos distintos del trabajo. Por ejemplo, el agente actualiza el diario de progreso a medida que avanza. Y antes de cambiar de sesión, le pides al agente que prepare un documento de traspaso. La sesión nueva puede leer ambos documentos y saber qué está hecho y desde qué paso continuar.
 
-La [Lista de funcionalidades](feature-list-harness.md) guarda el estado
-verificable de todo el trabajo, mientras Una funcionalidad a la vez limita el
-alcance de una sola pasada. Los tickets trazadores sirven para dividir una
-funcionalidad grande ya entendida en cortes verticales con dependencias. El
-[Mapa de investigación](wayfinder.md) se aplica antes, cuando la ruta al
-resultado todavía se desconoce y primero hay que resolver preguntas de
-investigación.
+En la [lista de funcionalidades](feature-list-harness.md) ves el estado de todo el trabajo. Y según la regla de [una funcionalidad a la vez](one-feature-at-a-time.md), el agente termina y verifica una funcionalidad antes de tomar la siguiente. Si todavía no sabes cómo resolver el problema, empieza por el [mapa de investigación](wayfinder.md): ayuda a cerrar las preguntas antes de que armes la siguiente cola de tareas.

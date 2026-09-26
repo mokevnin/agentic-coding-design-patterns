@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [reflection, give-agent-a-way-to-verify, tdd-with-agent]
-source_rev: 58f57eb48a3a03000812870279cef64a7847f4d8
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Escritor y revisor
@@ -105,7 +105,7 @@ Para un cambio pequeño puedes empezar por la [reflexión](reflection.md) y las 
 
 ## Ejemplo
 
-La sesión A implementó un limitador de peticiones. El desarrollador entrega el resultado para una revisión independiente.
+La sesión A implementó un limitador de peticiones. Entregas el resultado para una revisión independiente.
 
 > Revisa el diff del limitador en un contexto fresco según PLAN.md. Encuentra incumplimientos de los requisitos y errores de comportamiento. Para cada hallazgo, muestra las condiciones en que se manifiesta y el código que lo provoca.
 

@@ -2,71 +2,49 @@
 group: context
 status: draft
 related: [context-engineering, domain-context-file, bloated-claude-md]
-source_rev: 5df7b47a444c5c22419c5b424a05805eccc71275
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Project Memory
 
 ## Intent
 
-Keep a persistent file with the project's rules — commands, conventions,
-boundaries — in the repository, and have the agent read it automatically at
-the start of every session. A rule is written down once — and holds in every
-new context window, instead of being retold in every conversation.
+Keep a persistent file in the repository with the project's commands, conventions, and constraints, which the agent reads at the start of every session. You write a rule down once, and the following sessions get it from the file.
 
 ## Also known as
 
-CLAUDE.md, AGENTS.md, memory file; in other tools — project rules, custom
-instructions.
+CLAUDE.md, AGENTS.md, memory file, project rules, custom instructions.
 
 ## Problem
 
-Every agent session starts with a clean context window. The agent doesn't know
-how the project builds, what runs the tests, what the team's conventions are,
-and what must not be touched here. The developer explains all this in the
-conversation — and the explanation dies with the session:
+A new session may not know how the team builds the project and runs the tests. You explain the rules in the conversation, but the next session needs the same clarifications. This is most noticeable with a non-standard verification command.
 
-- The same clarifications get typed anew every session: "we use pnpm, not
-  npm", "tests go through make test", "don't touch that folder".
-- The agent makes the same mistake for the second week in a row — there is no
-  way to tell it about it *for good*.
-- The knowledge lives in one developer's head. The colleague at the next desk
-  explains the same things to their agent — in different words and with
-  different success.
+For example, the agent runs the usual test script, although the project requires `make test` with fixture setup. You correct the command in the chat. If the rule is kept only in the conversation, a colleague in a new session will run into the same failure.
 
-Keeping these rules in the task's specification is no way out either: they are
-not about the task, they are about the project — and they are needed in every
-task.
+Project rules are needed across different tasks. It is more convenient to keep them separate from the specification of a particular feature.
 
 ## Solution
 
-A file at the repository root that the agent loads at the start of every
-session. Into it goes what you would otherwise have to explain again: build
-and test commands, code and commit conventions, boundaries ("always X",
-"never Y"), the project's non-obvious quirks.
+Create a file in the repository that the agent loads at startup. Write down in it the commands and non-obvious conventions that would otherwise have to be explained in every session. Specify module boundaries if the agent cannot reliably reconstruct them from the code.
 
-The file grows through simple triggers:
+Add to the file when you see a recurring need for context.
 
 - the agent made the same mistake a second time;
-- a code review caught something the agent was obliged to know about this
-  codebase;
-- you are typing a clarification you already typed last session;
-- a new teammate would need the same context to be productive.
+- a review caught something the agent was obliged to know about this codebase;
+- you are typing a clarification you already typed in the previous session;
+- a new colleague would need the same context to be productive.
 
-The file lives under version control, so the rules are shared by the whole
-team and go through regular review. Edit the text — and you change the
-behavior of every agent on the project starting from the next session.
+Keep the file under version control. Then the team can discuss edits in review, and new sessions get an agreed version of the rules.
 
-An important boundary: this is context, not configuration. The memory file
-*guides* the agent's behavior but does not guarantee it. Prohibitions that
-must hold always — "don't push to main", "don't touch prod" — get duplicated
-by mechanics: hooks, permissions, tool settings.
+The memory file guides the agent's behavior but does not guarantee the rules are followed. Enforce critical prohibitions, such as not writing to a protected branch, with permissions and hooks.
 
 ## Structure
 
+The diagram shows the memory levels of Claude Code.
+
 ```mermaid
 ---
-title: a rule is written once — and read every session
+title: a saved rule is available to every session
 ---
 flowchart LR
   org["organization<br/>managed policy"]
@@ -74,7 +52,7 @@ flowchart LR
   project["project — shared, in git<br/>./CLAUDE.md · AGENTS.md"]:::accent
   local["local — in .gitignore<br/>CLAUDE.local.md"]
   nested["nested CLAUDE.md files<br/>in subdirectories — on demand"]:::muted
-  window["Session context window<br/>layers are concatenated at launch:<br/>from the broadest scope to the narrowest<br/>every line costs tokens in every session"]
+  window["Session context window<br/>layers are concatenated at launch:<br/>from the broadest level to the narrowest<br/>every line costs tokens in every session"]
   org --> window
   user --> window
   project --> window
@@ -82,106 +60,58 @@ flowchart LR
   nested -.-> window
 ```
 
-Memory is layered: the organization level (managed policy), the user's
-personal level, the project level, and a local file with personal settings for
-the specific repository. At session start the layers are concatenated into the
-window — from broad to narrow, so project rules are read after personal ones,
-and local ones last. The team layer — the project file in git — is the subject
-of this pattern; the other levels complement it without replacing it. Nested
-memory files in subdirectories are loaded not at launch but on demand — when
-the agent starts working with files next to them.
+The organization sets a managed policy, the user keeps personal preferences, and the team records the project rules in git. A local file supplements them with the developer's settings for a specific repository. Nested files provide instructions for individual directories when the agent works with them. The pattern is about the team file that goes through review together with the code.
 
 ## Participants / Components
 
-- **Project memory file** (`./CLAUDE.md`, `./AGENTS.md`) — the team's rules;
-  lives in git, goes through review.
-- **User's personal file** (`~/.claude/CLAUDE.md`) — the developer's
-  preferences across all their projects.
-- **Local file** (`CLAUDE.local.md` in `.gitignore`) — personal to this
-  project: sandbox URLs, test data.
-- **Developer and team** — grow the file by triggers and clean it regularly.
-- **Agent** — reads the layers at launch; on request, appends new rules
-  itself.
+- **Project memory file** (_./CLAUDE.md_, _./AGENTS.md_) keeps the team's rules in git and goes through review.
+- **User's personal file** (_~/.claude/CLAUDE.md_) keeps the developer's preferences for their projects.
+- **Local file** (_CLAUDE.local.md_ in _.gitignore_) holds the developer's settings for this project.
+- **Developer and team** add rules based on observed failures and review the file regularly.
+- **Agent** reads the instructions and, on request, appends new rules.
 
 ## When to use
 
-- In any repository where an agent works regularly — this is the first file
-  worth creating.
-- It pays off especially when project conventions diverge from tool defaults:
-  non-standard commands, a house style, strict module boundaries.
-- When several people and several agents work on one codebase — the file
-  aligns the rules for everyone.
+- The agent works in the repository regularly.
+- The project's conventions diverge from the tools' default settings.
+- Several developers and agents need shared working rules.
 
 ## Consequences and trade-offs
 
-- ➕ Rules outlive the session: "explain once" instead of "explain every
-  time".
-- ➕ Knowledge becomes the team's: rules live in git, not in someone's head,
-  and every agent on the project shares one picture of the world.
-- ➕ Edits are cheap: it's markdown under review — changing a rule costs one
-  line of diff.
-- ➖ The file competes for the context window: every line is tokens in every
-  session of every developer (see [context engineering](context-engineering.md)).
-- ➖ Without care it degrades into a dump: rules get duplicated and
-  contradictory, and the agent starts ignoring half of them.
-- ➖ It is not an enforcement mechanism: critical prohibitions recorded only
-  in memory will one day be violated.
+- ➕ New sessions get the saved rules without repeated explanations.
+- ➕ The team keeps a shared version of the rules in git and discusses changes in review.
+- ➕ Refining a rule takes only a small Markdown edit.
+- ➖ Every line takes up space in the context of every session that reads the file (see [context engineering](context-engineering.md)).
+- ➖ Without review, duplicates and contradictions accumulate in the file.
+- ➖ Text instructions do not guarantee that critical prohibitions are respected.
 
 ## Implementation
 
-1. Generate a starting file — in Claude Code that's `/init`: the agent studies
-   the codebase itself and finds the commands and conventions. Strip from the
-   result everything the agent can derive from the code on its own (directory
-   layout, dependency lists): those are tokens without signal. Keep what the
-   code doesn't show.
-2. Write verifiable statements: "indentation — two spaces", "run `make test`
-   before committing" — not "format neatly" and "test your changes".
-3. Keep the file short — on the order of two hundred lines. The longer it
-   gets, the worse it is followed: rules drown in each other.
-4. Split growing instructions by location: rules needed only by part of the
-   codebase go into modular files scoped to paths (in Claude Code —
-   `.claude/rules/` with a `paths` field), so they load only when the agent
-   works with matching files.
-5. Separate the levels: team content — in the project file under git,
-   personal-for-all-projects — at the user level, personal-for-this-project —
-   in a local file under `.gitignore`.
-6. Grow it on the "explaining this for the second time" trigger — and ask the
-   agent directly: "add this rule to CLAUDE.md". Clean it regularly: a stale
-   rule is worse than a missing one.
+1. Generate a starter file with the `/init` command in Claude Code. Check the commands and conventions it found, then delete the retelling of the directory structure and dependencies. Keep the information that is hard for the agent to get from the code.
+2. Phrase actions so they can be checked. For example, "run `make test` before committing" sets a specific verification command.
+3. Keep the file short. A guideline of two hundred lines helps you notice growth, but each rule still has to solve an observed problem.
+4. Move rules for individual parts of the project into files bound to paths. In Claude Code this is what _.claude/rules/_ with the `paths` field is for.
+5. Keep team rules in git, personal preferences at the user level, and local repository settings in a file under _.gitignore_.
+6. If you explain the same rule a second time, ask the agent to add it to the memory file. Regularly delete outdated instructions.
 
-### AGENTS.md: one memory for every agent
+### Shared memory through AGENTS.md
 
-The [AGENTS.md](https://agents.md/) convention puts the same rules into a file
-with a standard name that dozens of tools read — Codex, Cursor, Copilot,
-Gemini CLI, and others; the format is stewarded by the Agentic AI Foundation
-under the Linux Foundation and used by more than 60 thousand open-source
-repositories. In a monorepo the files nest: an agent takes the one closest to
-the code being edited.
+The [AGENTS.md](https://agents.md/) convention sets a common name for the instructions file across agent tools, including Codex, Cursor, Copilot, and Gemini CLI. In a monorepo, nested files let you refine the rules for individual directories.
 
-Claude Code reads `CLAUDE.md`, so for a team with AGENTS.md a symlink is
-enough — `ln -s AGENTS.md CLAUDE.md` — or an `@AGENTS.md` import as the first
-line of CLAUDE.md if Claude-specific instructions need to be appended. One
-memory, no duplication.
+For a team with AGENTS.md, the _CLAUDE.md_ file can point to it via `ln -s AGENTS.md CLAUDE.md`. Another option uses an `@AGENTS.md` import at the top of _CLAUDE.md_ and lets you add separate instructions for Claude.
 
 ### In the spec-driven development toolkits
 
-The SDD frameworks have their own embodiments of the same pattern — a
-persistent file the agent checks against at every phase:
+SDD frameworks also keep project rules in persistent documents that the agent uses in different phases of the work.
 
-- **GitHub Spec Kit** — the "constitution" (`/speckit.constitution`):
-  immutable project principles the specification and plan are validated
-  against.
-- **OpenSpec** — `openspec/project.md`: the project's stack, conventions, and
-  context, shared by all changes.
-- **Kiro** — steering files (product, tech, structure) attached to every spec
-  session.
-- **Matt Pocock's skills** — the pack sits on top of AGENTS.md and keeps it
-  deliberately thin: procedures move into skills, only rules stay in memory.
+- **GitHub Spec Kit** keeps the project's principles in a constitution, which is created through `/speckit.constitution` and checked against the specification and plan.
+- **OpenSpec** keeps the project's shared context in its configuration documents.
+- **Kiro** attaches steering files describing the product, technologies, and project structure.
+- **Matt Pocock's skills** move procedures into skills, so that AGENTS.md keeps only short project rules.
 
 ## Example
 
-A fragment of a small service's memory file — short, concrete, only what the
-code doesn't show:
+Below is a fragment of a small service's memory with commands and conventions that are hard to infer from the code.
 
 ```markdown
 # Project: billing-service
@@ -198,61 +128,35 @@ code doesn't show:
 ## Boundaries
 - Domains talk only through events; direct imports across
   `src/domains/*` are forbidden
-- No sleeps in tests — explicit waits only
+- No sleep in tests — explicit waits only
 ```
 
-The agent gets the task "add a failed-charge notification to billing" and
-reaches for a direct import of the notifications module — but the domain
-boundary rule is already in the window, and it builds the interaction through
-an event. The conversation says not a word about it.
+The agent gets a task to add a failed-charge notification to billing. The memory says that domains interact through events, so the agent uses an event to trigger the notification. You do not have to repeat this rule in the task.
 
-A week later, review catches an agent commit with `npm install` instead of
-pnpm. The developer closes the hole for good:
+A week later, review finds that the agent ran `npm install` in a pnpm project. You extend the memory.
 
-> Add to CLAUDE.md: dependencies are installed only with pnpm;
-> package-lock.json must never appear in the repository.
+> Add a rule to CLAUDE.md that dependencies are installed only through pnpm. State that package-lock.json must not appear in the repository.
 
-From the next session on, every agent on the project knows this rule.
+The next session will get this rule when it reads the project memory.
 
 ## Anti-patterns and common mistakes
 
-- **Bloated memory.** Hundreds of lines, duplicates, and contradictions — the
-  agent ignores half of it, because the important is indistinguishable from
-  the noise. A mistake so common it gets [its own chapter](bloated-claude-md.md) in the
-  anti-patterns section.
-- **A dump of derivables.** Directory layout, dependency lists, an
-  architecture overview — the agent sees all of that in the code itself. It
-  doesn't belong in memory: tokens spent, no signal.
-- **Expecting enforcement.** "Never push to main" in a memory file is a wish,
-  not a prohibition. Duplicate hard boundaries with hooks and permissions.
-- **Personal content in the team file.** Your sandbox URLs and taste
-  preferences belong at the personal and local levels, not in the shared file
-  under git.
-- **Write and forget.** Rules go stale while the agent keeps confidently
-  following them. Cleaning the memory is as regular a chore as updating
-  dependencies.
+- **Bloated memory.** Duplicates and contradictions make it harder to find the applicable rules. This mistake is covered in a separate chapter, [Bloated Memory](bloated-claude-md.md).
+- **A dump of derivables.** A retelling of the directory structure and dependencies takes up context, although the agent can get this information from the project files.
+- **Expecting enforcement.** A text prohibition on pushing to main does not block the command. Enforce the boundary with permissions.
+- **Personal content in the team file.** Keep personal sandbox URLs and the developer's preferences at the user or local level.
+- **Write and forget.** Outdated instructions can steer the agent toward the wrong decision. Review them together with changes to the project.
 
 ## Known uses
 
-- **Claude Code** — `CLAUDE.md` with its hierarchy of levels (organization →
-  user → project → local), generation via `/init`, modular `.claude/rules/`
-  scoped to paths; alongside it — auto memory, the notes the agent keeps
-  about the project on its own.
-- **AGENTS.md** — the cross-tool convention: 60k+ repositories, including
-  Apache Airflow and Temporal; OpenAI's monorepo holds 88 nested files.
-- **Editor rules** — `.cursor/rules` in Cursor, custom instructions in GitHub
-  Copilot: the same idea in tool-specific formats.
-- **SDD toolkits** — `project.md` in [OpenSpec](openspec.md), the constitution
-  in GitHub Spec Kit, steering files in Kiro.
+- **Claude Code** uses _CLAUDE.md_, generation via `/init`, and modular rules in _.claude/rules/_. Auto memory supplements them with the agent's notes.
+- **AGENTS.md** sets a common instructions format for several agent tools.
+- **Editor rules** implement the same idea through _.cursor/rules_ in Cursor and custom instructions in GitHub Copilot.
+- **SDD toolkits** keep shared principles in the GitHub Spec Kit constitution, Kiro's steering files, and OpenSpec's context documents.
 
 ## Related patterns
 
-- [Context Engineering](context-engineering.md) — the memory file is the
-  persistent layer of context: it loads every session and competes for the
-  attention budget.
-- [Domain Vocabulary](domain-context-file.md) — the other axis of the
-  persistent layer: "what words mean", not "how we work".
-- [Spec-Driven Development](spec-driven-development.md) — project conventions
-  serve as the standing input of the SDD pipeline; in the toolkits the
-  pattern is embodied by the constitution, project.md, and steering files.
-- [Bloated Memory](bloated-claude-md.md) — the anti-pattern this pattern degrades into without regular pruning.
+- [Context Engineering](context-engineering.md) helps select information for the persistent memory file.
+- [Domain Vocabulary](domain-context-file.md) supplements working instructions with definitions of the project's terms.
+- [Spec-Driven Development](spec-driven-development.md) uses the project's conventions when preparing the specification and plan.
+- [Bloated Memory](bloated-claude-md.md) describes a memory file that, without review, has accumulated duplicates, contradictions, and a retelling of the code.

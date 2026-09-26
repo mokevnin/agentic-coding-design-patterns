@@ -1,98 +1,111 @@
 ---
 group: sdd
 kind: tool
-checked_on: 2026-09-15
+checked_on: 2026-09-21
 status: draft
 related: [spec-driven-development]
-source_rev: 41ffe61445820e8cf04a836addf315d74618f395
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # OpenSpec
 
-*Comandos y capacidades comprobados el 15 de septiembre de 2026.*
+_Comandos y capacidades comprobados el 21 de septiembre de 2026._
 
-[OpenSpec](https://github.com/Fission-AI/OpenSpec) (Fission-AI) construye el
-[desarrollo orientado a especificaciones](spec-driven-development.md) no
-alrededor de una funcionalidad sino de un **cambio** con ciclo de vida
-propose → review → apply → archive. La idea clave es separar «lo que ya es» de
-«lo que está cambiando»: las especificaciones permanentes del sistema se
-actualizan con deltas, como las migraciones actualizan el esquema de una base
-de datos.
+[OpenSpec](https://github.com/Fission-AI/OpenSpec), de Fission-AI, organiza el [SDD](spec-driven-development.md) alrededor de un **cambio** con las etapas propose, review, apply y archive. Las especificaciones permanentes describen el sistema, y los deltas registran los cambios propuestos a los requisitos.
 
-OpenSpec es un toolkit agnóstico respecto al agente: soporta más de 30 agentes y
-asistentes de código, incluidos Claude Code, Codex, Cursor y GitHub Copilot.
+OpenSpec soporta distintos agentes y asistentes de código, incluidos Claude Code, Codex, Cursor y GitHub Copilot.
 
 ## Instalación
 
-El CLI se distribuye por npm (requiere Node.js ≥ 20.19):
+La CLI se instala con npm y requiere Node.js ≥ 20.19.
 
 ```sh
 npm install -g @fission-ai/openspec@latest
 openspec init
 ```
 
-`openspec init` crea el directorio `openspec/` y registra los comandos slash
-con el prefijo `/opsx:`; `openspec update` refresca las instrucciones de los
-agentes tras una actualización.
+`openspec init` crea el directorio _openspec/_ y registra comandos slash con el prefijo `/opsx:`; `openspec update` actualiza las instrucciones para los agentes tras una actualización.
 
 ## Flujo de trabajo
 
-El conjunto de comandos depende del perfil elegido
-(`openspec config profile`). El perfil por defecto lleva un cambio por cuatro
-pasos:
+El conjunto de comandos depende del perfil. Elígelo con `openspec config profile` y luego ejecuta `openspec update` en el proyecto para aplicar la elección a las instrucciones del agente. El flujo básico recorre los siguientes pasos.
 
-1. `/opsx:explore` — modo de reflexión antes de cualquier artefacto: el agente
-   lee el código y sopesa opciones sin cambiar nada.
-2. `/opsx:propose <idea>` — propuesta formal de cambio: se crea el paquete de
-   artefactos (ver abajo). La revisión del paquete es el punto de control
-   antes de la primera línea de código.
-3. `/opsx:apply` — implementación siguiendo el checklist de tareas.
-4. `/opsx:archive` — mover el cambio completado al archivo e incorporar sus
-   deltas a las especificaciones permanentes.
+1. `/opsx:explore` ayuda a explorar el código y comparar opciones antes de preparar artefactos.
+2. `/opsx:propose <idea>` crea un paquete de propuesta que revisas antes de implementar.
+3. `/opsx:apply` ejecuta las tareas del checklist.
+4. `/opsx:archive` propone sincronizar los deltas con las especificaciones permanentes, si aún no se ha hecho, y mueve el cambio al archivo.
 
-El perfil extendido añade comandos para trabajos largos: `/opsx:new`,
-`/opsx:continue`, `/opsx:ff` (fast-forward), `/opsx:verify` (contrastar la
-implementación con los artefactos), `/opsx:bulk-archive` y `/opsx:onboard`
-(desplegar OpenSpec en un proyecto existente).
+El perfil ampliado incluye `/opsx:new`, `/opsx:continue`, `/opsx:ff`, `/opsx:verify`, `/opsx:bulk-archive` y `/opsx:onboard`. Dan soporte a la preparación por etapas, la verificación y el archivado de cambios grandes.
 
-Tras el merge, ejecuta `/opsx:archive`: sus deltas se funden en las
-especificaciones permanentes y el cambio pasa al archivo — la historia de
-decisiones queda en el repositorio.
+Al terminar un cambio, ejecuta `/opsx:archive` y confirma la sincronización de deltas propuesta. Si las especificaciones ya se actualizaron con `/opsx:sync`, no hace falta sincronizar de nuevo. El archivado conserva los artefactos del cambio; el orden respecto al merge lo decide el equipo en su propio proceso.
 
-La forma del comando depende del agente. Por ejemplo, Codex puede mostrar
-`$openspec-propose`, mientras Cursor y GitHub Copilot usan `/opsx-propose`;
-`openspec init` imprime la sintaxis para la herramienta elegida.
+El diagrama muestra cómo un paquete de cambio conecta la implementación con la descripción permanente del sistema.
+
+```mermaid
+---
+title: el delta actualiza la especificación permanente tras revisar el cambio
+---
+flowchart TB
+  base["Especificación permanente"] --> delta["Delta propuesto"]
+  delta --> review["El desarrollador revisa la propuesta"]
+  review --> code["Implementación y verificación de escenarios"]
+  code --> sync["Sincronización acordada del delta"]:::accent
+  sync --> updated["Especificación actualizada"]
+  sync --> archive["Paquete de cambio en el archivo"]
+```
+
+Aquí la especificación se guarda aparte de la propuesta. La sincronización traslada los requisitos aceptados desde el delta, y el archivo guarda la explicación y la historia del cambio.
+
+La sintaxis depende del agente. Codex puede mostrar `$openspec-propose`, mientras que Cursor y GitHub Copilot usan la forma `/opsx-propose`. `openspec init` imprime la sintaxis exacta de la herramienta elegida.
 
 ## Artefactos
 
-Todo vive en `openspec/`, en dos zonas:
+El directorio _openspec/_ separa las especificaciones permanentes de los paquetes de cambio.
 
 | Ruta | Qué contiene |
-|------|--------------|
-| `openspec/specs/` | Especificaciones permanentes — el modelo actual de lo que *ya está construido* |
-| `openspec/changes/<cambio>/proposal.md` | Por qué cambiamos esto |
-| `openspec/changes/<cambio>/specs/` | Deltas de requisitos con escenarios concretos |
-| `openspec/changes/<cambio>/design.md` | Enfoque técnico |
-| `openspec/changes/<cambio>/tasks.md` | Checklist de implementación |
-| `openspec/changes/archive/` | Cambios completados |
+| ------ | ----------- |
+| _openspec/specs/_ | Especificaciones permanentes — el modelo actual de lo que _ya está construido_ |
+| _openspec/changes/\<cambio\>/proposal.md_ | Por qué cambiamos esto |
+| _openspec/changes/\<cambio\>/specs/_ | Deltas de requisitos con escenarios concretos |
+| _openspec/changes/\<cambio\>/design.md_ | Enfoque técnico |
+| _openspec/changes/\<cambio\>/tasks.md_ | Checklist de implementación |
+| _openspec/changes/archive/_ | Cambios completados |
+
+## Ejemplo de cambio de un requisito
+
+En un servicio de entrega de eventos, un webhook se desactiva tras cinco fallos seguidos. La especificación permanente en _openspec/specs/webhooks/spec.md_ contiene esta regla.
+
+```markdown
+### Requirement: Delivery failure cutoff
+El sistema SHALL desactivar el webhook tras cinco intentos fallidos seguidos.
+
+#### Scenario: Failed deliveries reach cutoff
+- **WHEN** el quinto intento de entrega seguido falla
+- **THEN** el webhook se desactiva
+```
+
+El equipo acordó otro umbral para destinatarios temporalmente no disponibles. En el paquete de cambio, el agente crea un delta en _openspec/changes/raise-cutoff/specs/webhooks/spec.md_. Para el requisito modificado conserva el encabezado y da el nuevo requisito con su escenario completo.
+
+```markdown
+## MODIFIED Requirements
+
+### Requirement: Delivery failure cutoff
+El sistema SHALL desactivar el webhook tras diez intentos fallidos seguidos.
+
+#### Scenario: Failed deliveries reach cutoff
+- **WHEN** el décimo intento de entrega seguido falla
+- **THEN** el webhook se desactiva
+```
+
+En este ejemplo, `MODIFIED Requirements` indica la sustitución de un requisito existente. Tras la implementación y la verificación, el equipo confirma la sincronización en `/opsx:archive`. En el _spec.md_ permanente, el requisito `Delivery failure cutoff` contiene ahora el umbral de diez y el escenario correspondiente; el marcador `MODIFIED Requirements` sigue formando parte del delta archivado. Si la propuesta se rechaza, la regla permanente con el umbral de cinco no cambia. El formato de secciones y escenarios se describe en la [documentación de OpenSpec](https://github.com/Fission-AI/OpenSpec/blob/main/docs/concepts.md).
 
 ## En qué se diferencia
 
-- La especificación no es un documento de usar y tirar, sino un modelo del
-  sistema siempre actual: en cualquier momento se ve qué está obligado a hacer
-  el sistema *ahora mismo*.
-- Deltas en vez de reescrituras: un cambio describe la diferencia respecto a
-  los requisitos actuales, no todo el sistema desde cero.
-- Apuesta explícita por el brownfield: los autores describen el proceso como
-  «fluid, not rigid; iterative, not waterfall» — la tubería está pensada para
-  una base de código viva, no solo para greenfield.
-- Trabajo en equipo: las especificaciones pertenecen al equipo, con dashboard
-  compartido, coordinación entre repositorios e integración por MCP.
+- Las especificaciones permanentes describen el comportamiento requerido actual del sistema.
+- Un delta registra la diferencia entre los requisitos actuales y los propuestos.
+- El proceso está pensado para cambios sucesivos en una base de código existente.
+- Las especificaciones compartidas ayudan al equipo a acordar los requisitos y la historia de sus cambios.
 
 ## Cuándo elegirlo
 
-OpenSpec es la mejor opción cuando el trabajo ocurre en un sistema existente y
-el valor principal es un modelo de requisitos acumulativo y siempre actual. Si
-lo que necesitas es la tubería lineal más simple para funcionalidades nuevas,
-encajan mejor toolkits más lineales como GitHub Spec Kit (véase
-[Enlaces útiles](resources.md)).
+OpenSpec encaja en un sistema existente cuyos requisitos hay que mantener junto con el código. Para un proceso basado en skills con puntos de control obligatorios, considera [Superpowers](superpowers.md), y para trabajar a través del tracker, compara [el pack de Matt Pocock](matt-pocock-skills.md).

@@ -2,168 +2,113 @@
 group: context
 status: draft
 related: [context-engineering, handoff, claude-md-memory]
-source_rev: 5df7b47a444c5c22419c5b424a05805eccc71275
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Progress Journal
 
 ## Intent
 
-Keep a journal file of long-running work next to the code — where we are,
-what's next, what has already been discarded — which the agent updates as it
-works and reads first thing in a new session. A fresh context window recovers
-the picture from one file, not by archaeology through code and conversations.
+Keep a journal of the state of long-running work next to the code. The agent updates it as it goes and reads it at the start of a new session to learn what remains to be done and which approaches have already been tried.
 
 ## Also known as
 
-Progress file, progress log; `claude-progress.txt` from the Anthropic
-harnesses article, `PROGRESS.md`.
+Progress file, progress log; _claude-progress.txt_ from Anthropic's article on harnesses, _PROGRESS.md_.
 
 ## Problem
 
-The work didn't fit into one context window: a multi-day feature, a
-migration, a long debugging hunt. Every new session — and every compaction —
-starts with amnesia:
+During a multi-day migration, new sessions get the code and the commits but may not know the reasons behind an unfinished decision.
 
-- Git history answers "what changed" but is silent on what matters most: what
-  is *unfinished*, why this path was chosen, and what has already been tried
-  and discarded.
-- An agent with a fresh window retraces dead ends: the solution rejected
-  yesterday after an hour of experiments looks attractive again today.
-- Recovering state from the code is expensive: the agent burns half of the
-  fresh window reading diffs and files before making its first useful move —
-  and sometimes confidently picks up the wrong thing.
+For example, yesterday the agent tried an adapter over the old API and rejected it because of an incompatible refund model. Only the accepted implementation remained in git. Without a record of the reason, a new agent may propose the adapter again and repeat the same experiment. Reconstructing such decisions from files and conversations delays useful work.
 
-Relying on auto-summarization at compaction is a lottery: what exactly
-survives from the context is not decided by you.
+Automatic context compaction may not preserve all the reasons for decisions. The journal lets you choose them explicitly.
 
 ## Solution
 
-A state journal in the repository, next to the code. The agent updates it at
-the end of every significant step — as much a part of finishing the step as
-the commit. A new session starts with a ritual: read the journal and the
-recent git log — and only then work.
+Create a journal in the repository and update it after each significant step. A new session reads the journal and the latest commits before continuing the work.
 
-The journal holds what git history doesn't:
+In the journal, keep the information that the git history does not provide.
 
-- **current state** — what works, what is in progress;
-- **next step** — where to start if the session gets cut off right now;
-- **known problems** — the rakes the next session must know about in advance;
-- **discarded approaches** — what was tried and why it didn't work.
+- **Current state** shows what works and what is not yet finished.
+- **Next step** sets the first action after resuming.
+- **Known problems** warn about limitations and failures that have been found.
+- **Discarded approaches** keep the results of experiments and the reasons for rejecting them.
 
-The journal and git history complement each other and don't duplicate: git
-answers "what changed in the code", the journal — "where we are and where
-we're going". Retelling diffs in the journal is unnecessary.
+Git shows the code changes, and the journal explains the state and direction of the work. For commit details, a reference is enough.
 
-The ritual rests not on the agent's memory but on
-[Project Memory](claude-md-memory.md): the rule "at session start read
-`PROGRESS.md`, at the end of a significant step — update it" lives there and
-applies in every session automatically.
+Write the procedure for reading and updating the journal into [project memory](claude-md-memory.md), so that new sessions get this instruction.
 
 ## Structure
 
+Each session reads the saved state before working and updates it before handing over to the next session.
+
 ```mermaid
 ---
-title: every session leaves clear artifacts for the next one
+title: the journal hands the state to the next session
+config:
+  sequence:
+    mirrorActors: false
+    width: 130
+    height: 45
+    actorMargin: 35
+    messageMargin: 28
 ---
 sequenceDiagram
-  participant S1 as Session 1
+  participant A as Session A
   participant P as PROGRESS.md
-  participant G as git history
-  participant S2 as Session 2
-  participant S3 as Session 3
-
-  S1->>P: state · next step · discarded approaches
-  S1->>G: commits
-  Note over S1,S2: context lost — fresh window
-  P->>S2: read first thing
-  G->>S2: git log
-  S2->>P: updated at the end of every step
-  Note over S2,S3: context lost — fresh window
-  P->>S3: continues without retracing
+  participant G as Git
+  participant B as Session B
+  A->>G: Commit
+  A->>P: State + next step
+  Note over A,B: Session A has ended<br/>Session B starts with a fresh context
+  B->>P: Read the journal
+  P-->>B: Decisions and the resume point
+  B->>G: Check log and status
+  G-->>B: Commits + status
+  B->>P: After the work: update the journal
 ```
 
-Sessions come one after another, and between them is a break: the window ran
-out or got compacted, the context is lost. Continuity is provided by the two
-artifacts below: the progress journal, which every session updates as it
-works, and the git history with its commits. A new session begins by reading
-both — the journal gives the state and the direction, the git log the actual
-changes — and continues the work from where the previous one broke off,
-without retracing its path.
+The journal explains why the work stopped at this point and what to do next. Git shows the actual changes; if it diverges from the journal, the new session first finds out the current state.
 
 ## Participants / Components
 
-- **Progress journal** (`PROGRESS.md`) — state, next step, problems,
-  discarded approaches; lives in the repository.
-- **Git history** — the journal's complement: the actual code changes and the
-  ability to roll back to a working state.
-- **Agent** — updates the journal as it works and reads it first thing in a
-  new session.
-- **Developer** — sets the ritual and reviews the journal: it shows progress
-  without digging through diffs.
-- **Project memory** — anchors the ritual so it doesn't depend on the
-  conversation.
+- **Progress journal** (_PROGRESS.md_) keeps the state, the next step, and the reasons for decisions.
+- **Git history** preserves the code changes.
+- **Agent** reads the journal at startup and updates it after significant steps.
+- **Developer** sets the order of work and checks the entries.
+- **Project memory** keeps the instruction for maintaining the journal.
 
 ## When to use
 
-- The work is known to be bigger than one session: a multi-day feature, a
-  migration, a large refactoring.
-- Sessions are long and regularly hit compaction — the journal insures
-  against losses at every squeeze of the window.
-- Several sessions, several agents, or an agent alternating with a human work
-  on the task — the journal aligns the picture for everyone.
+- The task takes several sessions.
+- Long sessions require context compaction.
+- Different people or agents take turns working on the same task.
 
-For a task that fits in one session the journal is overkill: the in-session
-plan is enough.
+For a short task, a plan within the session is usually enough.
 
 ## Consequences and trade-offs
 
-- ➕ State recovery costs one file: a new session makes a useful move within
-  a minute, not after half a window of archaeology.
-- ➕ Dead ends are not retraced: a discarded approach is recorded along with
-  the reason.
-- ➕ Progress is visible to humans: glancing at the journal is faster than
-  interrogating the agent or reading diffs.
-- ➖ Demands update discipline: one skipped entry — and the journal lies to
-  the next session.
-- ➖ Grows without care: a journal that is only written to becomes a second
-  source of noise (see [context engineering](context-engineering.md)).
-- ➖ The temptation to duplicate git: retelling diffs bloats the journal and
-  adds no signal.
+- ➕ A new session finds the next step faster.
+- ➕ The agent sees the reasons for rejecting approaches that have already been tried.
+- ➕ You can assess the state without reading all the diffs.
+- ➖ A missed update misleads the next session.
+- ➖ Without trimming, the journal itself becomes excess context (see [context engineering](context-engineering.md)).
+- ➖ Retelling commits makes the file bigger without explaining the state of the work.
 
 ## Implementation
 
-1. Create the file at the start of long-running work and anchor the ritual in
-   [Project Memory](claude-md-memory.md): "at session start read
-   `PROGRESS.md` and the recent `git log`; at the end of a significant step
-   update `PROGRESS.md`".
-2. Keep four sections: state, next step, known problems, discarded
-   approaches. "Next step" is the most valuable: write it so the session
-   could be cut off at any moment.
-3. Write "where we are and why", not "what changed" — the latter is already
-   recorded in git.
-4. Make the update part of the definition of "step finished": code, tests,
-   commit, journal.
-5. Keep the journal short: fresh on top, worked-through sections collapsed or
-   deleted. The journal is read every session and obeys the same attention
-   economics as the rest of the context.
-6. Statuses the agent updates mechanically — say, a feature list with
-   "passing/failing" marks — move out of the prose into a separate structured
-   file: agents corrupt JSON less often than Markdown. That technique is
-   covered in the feature-list chapter of the project organization section.
+1. Create the journal and write the procedure for using it into [project memory](claude-md-memory.md).
+2. Set out the state, the next step, the problems, and the discarded approaches. Phrase the next step so that it can be carried out after the session breaks off.
+3. Explain the reasons for decisions and the unfinished work. Refer to code changes through commits.
+4. Make updating the journal part of finishing a significant step, together with verification and a commit.
+5. Keep the current state at the top, and shorten entries that are done with.
+6. Keep feature statuses in a separate structured file where the agent changes specific fields (see [Feature List](feature-list-harness.md)).
 
-In spec-driven development pipelines the role of the journal for a single
-feature is played by `tasks.md`: task lists with completion marks exist in
-[OpenSpec](openspec.md), and in
-[Superpowers](superpowers.md) the plan of small tasks is explicitly designed
-as a document from which work can be resumed at any point. The progress
-journal is the same technique without the pipeline: one file for any
-long-running work.
+In [OpenSpec](openspec.md), the marks in _tasks.md_ and the plans of [Superpowers](superpowers.md) help continue the work on a feature. The journal supplements the marks with the reasons for decisions and open problems; it can also be used without an SDD toolkit.
 
 ## Example
 
-A multi-day migration of payments to a new gateway is underway. At the
-repository root — `PROGRESS.md`:
+A team is migrating payments to a new gateway and keeps the state in _PROGRESS.md_.
 
 ```markdown
 # Migrating payments to the PayFlow gateway
@@ -181,64 +126,33 @@ Start with idempotency keys — see "Discarded".
 
 ## Discarded
 - An adapter over the old interface: PayFlow idempotency keys don't fit,
-  rewriting the call sites is cheaper (details in ADR-0007).
+  rewriting the calls is cheaper (details in ADR-0007).
 ```
 
-The session breaks off midway — the window ran out. The developer opens a new
-one:
+When the window runs out, you open a new session.
 
-> Continuing the PayFlow migration — start with PROGRESS.md.
+> Continuing the PayFlow migration. Start with PROGRESS.md.
 
-The agent reads the journal and the git log, picks up `RefundService` — and
-does not re-propose the "elegant adapter" that the previous session spent an
-hour disproving: the reason for the rejection is written down. Finishing the
-refunds, it updates the state and the next step — now this session, too, can
-break off safely.
+The agent reads the journal and the git log, then continues with `RefundService`. It sees the reason the adapter was rejected and does not repeat the experiment. After finishing the refunds, the agent records the result and the next step.
 
 ## Anti-patterns and common mistakes
 
-- **A journal-turned-diary.** Retelling every action instead of the state:
-  the file grows with each session, and the next one spends its window
-  reading history instead of working.
-- **A duplicate of git log.** "Changed X, added Y" — that's already recorded
-  in the commits. The journal answers the questions git cannot.
-- **Updating "later".** A journal lagging behind reality is worse than an
-  empty one: the new session confidently works from a lie.
-- **Statuses in prose.** Machine-updated marks in free text will sooner or
-  later get rephrased or clobbered by the agent — their place is in a
-  structured file nearby.
-- **The journal instead of a handoff.** Running notes don't replace the
-  deliberate packing at the session boundary: [Session Handoff](handoff.md)
-  has a different moment and a different density.
+- **A journal-turned-diary.** A full history of actions makes it harder to find the current state.
+- **A duplicate of git log.** The list of changed files is already available in the commits. The journal needs the reasons for decisions and the open tasks.
+- **Updating "later".** A stale entry steers the next session toward the wrong action.
+- **Statuses in prose.** Marks can get lost when the text is rewritten. Use structured fields.
+- **The journal instead of a handoff.** For a new goal, prepare a separate [handoff](handoff.md) that selects the information for the next stage.
 
 ## Known uses
 
-- **Anthropic's harness for long-running agents** — the primary source:
-  `claude-progress.txt` beside the git history, the session-start ritual
-  (git log → journal → feature list → smoke test), and the rule that every
-  session leaves clear artifacts for the next one.
-- **Claude Code's auto memory** — a journal at the tool level: the agent
-  keeps its own notes about the project in
-  `~/.claude/projects/<project>/memory/` and loads them into every session;
-  the progress journal is the same idea, but about one specific piece of work
-  and inside the repository itself.
-- **SDD toolkits** — `tasks.md` with completion marks in
-  [OpenSpec](openspec.md) and the
-  plans of [Superpowers](superpowers.md): a progress journal built into the
-  feature pipeline.
-- **Structured note-taking** from the Anthropic context engineering article —
-  an agent keeping a `NOTES.md` outside the window is the same mechanism in
-  its general form.
+- **Anthropic's harness for long-running agents** uses _claude-progress.txt_ together with the git history and a feature list at session start.
+- **Claude Code's auto memory** keeps notes about the project at the tool level. The journal in the repository describes a specific piece of long-running work.
+- **SDD toolkits** keep tasks and marks in [OpenSpec](openspec.md) and in the plans of [Superpowers](superpowers.md).
+- **Structured notes** from Anthropic's article on context engineering keep state outside the window.
 
 ## Related patterns
 
-- [Session Handoff](handoff.md) — the neighbor in the state layer: the
-  journal is kept as the work goes, the handoff is written once at the
-  session boundary.
-- [Context Engineering](context-engineering.md) — the journal is the state
-  layer moved out of the window, and it obeys the same "short and
-  high-signal" rule.
-- [Project Memory](claude-md-memory.md) — where the ritual of reading and
-  updating the journal is anchored.
-- [Spec-Driven Development](spec-driven-development.md) — the pipeline's
-  `tasks.md` plays the journal's role at the scale of a single feature.
+- [Session Handoff](handoff.md) prepares a document for a specific transition between people or agents.
+- [Context Engineering](context-engineering.md) helps select the journal's contents.
+- [Project Memory](claude-md-memory.md) sets the procedure for reading and updating the journal.
+- [Spec-Driven Development](spec-driven-development.md) ties the state of the work to the specification and the tasks.

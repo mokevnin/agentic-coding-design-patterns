@@ -1,15 +1,15 @@
 ---
 group: verification
 status: draft
-related: [give-agent-a-way-to-verify, handoff, explore-plan-code-commit, vibe-coding]
-source_rev:
+related: [design-it-twice, give-agent-a-way-to-verify, handoff, explore-plan-code-commit, vibe-coding]
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Prototipo desechable
 
 ## Propósito
 
-Construir un prototipo desechable que responda a una pregunta de diseño concreta — «¿este modelo de estados siquiera vuela?», «¿qué aspecto debería tener esto?» — antes de escribir la implementación real. Lo que se verifica es el diseño, no el código: el prototipo muere, la respuesta queda.
+Comprobar una pregunta de diseño concreta con un prototipo pequeño y desechable. Tras el experimento, el equipo conserva la conclusión y la usa al preparar la implementación real.
 
 ## También conocido como
 
@@ -17,117 +17,127 @@ Throwaway prototype, spike (en términos de la programación extrema), prototipo
 
 ## Problema
 
-Algunas preguntas de diseño no se resuelven razonando:
+Algunas decisiones son difíciles de comprobar solo con una discusión. Un modelo de estados puede parecer completo hasta que se aplica a una secuencia de acciones reales.
 
-- El modelo de estados es impecable sobre el papel y en el plan — y en el tercer escenario real resulta que las transiciones son incómodas y la mitad de los casos no encaja. La revisión textual no lo caza: el revisor tiene las mismas limitaciones que el autor — también razona en vez de ejecutar.
-- Una interfaz no se elige por descripción. «¿Lista o kanban?» es una discusión de una hora; dos variantes funcionando la resuelven en un minuto.
-- La discusión del plan llegó a un punto muerto: ambas partes son plausibles, los argumentos se agotaron, y la decisión es importante y difícil de revertir.
+Por ejemplo, la cancelación de una suscripción y su reactivación funcionan cada una por separado, pero si la suscripción se reactiva antes de una cancelación diferida, el evento antiguo se queda en la cola. Para notar el error, conviene ejecutar las transiciones y ver el estado tras cada una. En una interfaz, el prototipo permite probar distintas formas de hacer la misma tarea y compararlas en la práctica.
 
-Construir de verdad solo para comprobar es caro: si el modelo está mal, la implementación se rehace. Y un prototipo «rápido» sin disciplina se convierte sigilosamente en producción: código escrito sin tests ni manejo de errores empieza a vivir para siempre, porque «ya funciona».
+Una implementación completa solo para esa comprobación sale cara. Un prototipo rápido reduce el coste, siempre que el equipo separe de antemano el experimento del código que va a mantener.
 
 ## Solución
 
-Formular la pregunta en una sola frase — y construir el artefacto más barato que la responda. La pregunta decide la forma:
+Formula la pregunta y elige el experimento mínimo capaz de responderla.
 
-- **«¿Esta lógica / modelo de estados se siente correcto?»** — una mini-app interactiva de terminal que empuja el modelo por los casos difíciles de razonar sobre el papel. Tras cada acción se imprime el estado completo: se ve qué cambió.
-- **«¿Qué aspecto debería tener?»** — varias variantes de interfaz radicalmente distintas en una sola ruta con un conmutador. No tres matices de una idea — ideas distintas.
+- Para un **modelo de estados**, crea una herramienta pequeña con acciones y estado visible. La terminal le sirve a un desarrollador; para discutir con un experto del dominio, es más cómodo un archivo HTML independiente con botones y escenarios.
+- Para una **interfaz**, prepara varias variantes con un conmutador y compáralas en el mismo escenario de usuario.
 
-Las reglas que hacen seguro un prototipo:
+Limita el volumen de código experimental.
 
-1. **Desechable desde el primer día** — y claramente marcado: con un nombre del que un lector casual entienda que no es producción.
-2. **Un comando para ejecutarlo** — el desarrollador lo arranca sin pensar.
-3. **Sin persistencia** — el estado vive en memoria: el almacenamiento es lo que el prototipo *comprueba*, no aquello de lo que depende.
-4. **Sin pulido** — ni tests, ni manejo de errores más allá del mínimo, ni abstracciones. El objetivo es aprender rápido.
+1. Marca el prototipo explícitamente en el nombre y la descripción.
+2. Haz que arranque con un solo comando.
+3. Guarda el estado en memoria, salvo que la pregunta exija comprobar el almacenamiento persistente.
+4. Añade solo el código que necesita el experimento.
 
-El agente es lo que hizo práctico este patrón: un prototipo que costaba un día de trabajo ahora cuesta decenas de minutos — y de verdad no duele tirarlo.
+El agente puede montar una herramienta así rápidamente, así que comprobar una decisión sale más barato. Esto es especialmente útil cuando una elección equivocada obligaría a rehacer varios módulos.
 
-El final es obligatorio: el veredicto — la respuesta y la pregunta que cerró — se anota en el ticket o en un ADR; la decisión validada va a la implementación real; el propio prototipo se commitea a una rama desechable como fuente primaria, con un puntero. A main llega solo la decisión — no el código del prototipo.
+Anota la pregunta, las observaciones y la conclusión en el ticket o en un ADR. Guarda el prototipo en una rama separada, enlazada desde la decisión. Construye la implementación real a partir de los requisitos comprobados, con las pruebas y el manejo de errores habituales.
 
 ## Estructura
 
+La pregunta determina la forma del experimento. Tras la ejecución, la conclusión y el código experimental se guardan por separado.
+
 ```mermaid
 ---
-title: el prototipo muere — la respuesta queda
+title: la observación del prototipo se convierte en base para la decisión
+config:
+  flowchart:
+    rankSpacing: 30
 ---
-flowchart LR
-  q["Pregunta de diseño<br/>una sola frase —<br/>la forma sigue a la pregunta"]:::accent
-  logic["Ejecutor de lógica<br/>mini-app de terminal,<br/>los casos difíciles del modelo"]
-  ui["Abanico de variantes UI<br/>ideas distintas en una ruta,<br/>conmutador de variantes"]
-  rules["reglas de desechabilidad:<br/>marcado como prototipo<br/>un comando · sin pulido<br/>estado en memoria"]:::muted
-  run["La ejecución<br/>el desarrollador prueba<br/>los casos difíciles en persona"]
-  verdict["Veredicto<br/>la respuesta — al ticket o al ADR<br/>la decisión — al código real<br/>el prototipo — a una rama-fuente<br/>ni una línea suya llega a main"]:::accent
-  q --> logic --> run
-  q --> ui --> run
-  run --> verdict
-  ui -.- rules
+flowchart TB
+  question{"¿Qué comprobar?"}:::accent
+  logic["Comprobar la lógica"]
+  ui["Comparar variantes de UI"]
+  run["Ejecutar los escenarios difíciles"]
+  decision@{ shape: doc, label: "Conclusión en el ticket o ADR" }
+  branch["Prototipo en una rama separada"]:::muted
+  code["Implementación real"]:::accent
+  question -- "comportamiento del modelo" --> logic
+  question -- "interacción" --> ui
+  logic --> run
+  ui --> run
+  run -- "observaciones" --> decision
+  run -- "guardar el experimento" --> branch
+  decision -- "requisitos comprobados" --> code
 ```
 
-A la izquierda, la pregunta — existe antes que el prototipo y determina su forma: una pregunta sobre lógica produce un ejecutor de terminal, una sobre el aspecto — un abanico de variantes de interfaz. Ambos artefactos se construyen bajo las mismas reglas de desechabilidad y caen en manos del desarrollador: él mismo conduce los casos difíciles. A la derecha, el único artefacto superviviente: el veredicto. La decisión va a la implementación, el prototipo a una rama-fuente, y ni una línea de código del prototipo llega a main.
+Tú ejecutas los escenarios y anotas la conclusión con un enlace a la rama del prototipo. La implementación real se construye a partir de los requisitos comprobados. El código experimental queda en una rama separada como evidencia de la comprobación.
 
 ## Participantes / Componentes
 
-- **La pregunta de diseño** — una sola frase; existe antes que el prototipo y decide su forma. Sin pregunta no hay prototipo.
-- **El prototipo** — el artefacto desechable: un ejecutor de terminal para la lógica o un abanico de variantes para la UI.
-- **El desarrollador** — conduce los casos difíciles con sus propias manos y emite el veredicto; el prototipo se construye para sus manos.
-- **El agente** — construye rápido y sin pulido; la disciplina de desechabilidad la sostiene el prompt.
-- **El veredicto** — la respuesta anotada: qué se comprobó, qué se aprendió, qué se decidió.
+- **La pregunta de diseño** fija el objetivo del experimento.
+- **El prototipo** permite obtener las observaciones necesarias.
+- **El desarrollador** ejecuta los escenarios y toma la decisión según los resultados.
+- **El agente** construye la herramienta mínima del experimento.
+- **La conclusión** guarda la pregunta comprobada, las observaciones y la decisión.
 
 ## Cuándo aplicarlo
 
-- Un modelo de estados o una lógica con casos difíciles de razonar sobre el papel: suscripciones, estados de pedidos, conflictos de sincronización.
-- La elección de una interfaz: varias variantes funcionando en vez de una discusión sobre descripciones.
-- La discusión del plan se atascó y la decisión es difícil de revertir: una hora de prototipo es más barata que un día de rehacer.
+- El modelo tiene secuencias de estados difíciles de comprobar razonando.
+- Hay que comparar variantes de interfaz en la práctica.
+- A una decisión difícil de revertir le faltan observaciones.
 
-No hace falta cuando la pregunta se responde leyendo el código o la documentación — ni cuando la respuesta es obvia por cualquier medio más barato que un prototipo.
+Primero comprueba si la respuesta se puede obtener leyendo el código o la documentación. El prototipo hace falta cuando la información más barata no basta.
 
 ## Consecuencias y compromisos
 
-- ➕ El diseño se verifica antes de la implementación: el rehacer de «el modelo no encajó» no ocurre, porque el modelo se ejecutó de antemano.
-- ➕ La discusión se convierte en experimento: en vez de «me parece», ambas partes miran variantes funcionando.
-- ➕ La respuesta es barata: sin tests, pulido ni persistencia, el prototipo cuesta una fracción de la implementación real.
-- ➖ El riesgo principal — «termina este prototipo»: código sin tests ni manejo de errores en producción. La disciplina del final es parte del patrón.
-- ➖ El prototipo responde solo a la pregunta planteada: «en el prototipo funcionaba» no se generaliza a la carga, la seguridad ni los casos límite que no tocó.
-- ➖ Tiempo perdido si la respuesta era obvia: primero los medios baratos — el código, la documentación, una discusión corta.
+- ➕ Un error del modelo puede aparecer antes de la implementación completa.
+- ➕ Los participantes discuten los resultados de un mismo experimento.
+- ➕ El volumen limitado reduce el coste de comprobar una idea.
+- ➖ El código experimental se confunde fácilmente con una base lista para el producto.
+- ➖ El resultado vale solo para la pregunta comprobada y las condiciones del experimento.
+- ➖ El prototipo hace perder tiempo si la respuesta ya está en la documentación.
 
 ## Implementación
 
-1. Formula la pregunta en una sola frase y ponla en el prompt literalmente: «el prototipo debe responder a la pregunta X».
-2. Elige la forma: lógica — un ejecutor de terminal con comandos e impresión del estado; UI — varias variantes radicalmente distintas con conmutador.
-3. Dicta las reglas de desechabilidad: cerca de su futuro lugar en el código, nombre marcado como prototipo, un comando de arranque, estado en memoria, sin tests ni pulido.
-4. Condúcelo tú mismo: pide al agente preparar los casos difíciles, pero las manos en el teclado son las tuyas. «¿Se siente correcto?» se responde con la sensación.
-5. Anota el veredicto en el ticket o en un ADR: la pregunta, la respuesta, la decisión.
-6. Cierra con limpieza: la decisión — a la implementación real (escrita de nuevo, no copiada del prototipo), el prototipo — a una rama desechable enlazada desde el ticket, y a main — nada.
-7. El prototipo en una sesión fresca empieza por un [traspaso](handoff.md): el extracto de la pregunta y el contexto en vez de la cola de la discusión.
+1. Escribe la pregunta en una sola frase.
+2. Elige un escenario de terminal, una maqueta de UI u otra forma que dé las observaciones necesarias.
+3. Define el nombre, el comando de arranque y las restricciones mínimas del experimento.
+4. Ejecuta los escenarios difíciles y guarda las observaciones.
+5. Anota la conclusión y la decisión tomada en el ticket o en un ADR.
+6. Guarda el prototipo en una rama separada y construye la implementación real a partir de la decisión comprobada.
+7. Para una sesión aparte del prototipo, prepara un [traspaso](handoff.md) con la pregunta y el contexto.
 
 ## Ejemplo
 
-Continuación de la historia del capítulo sobre el [traspaso de sesión](handoff.md): el plan de migración de tarifas chocó con la pregunta de si el modelo de cancelaciones basado en eventos aguanta los contratos corporativos con inicio diferido. La sesión del prototipo empieza por el documento de traspaso:
+En la historia del capítulo sobre el [traspaso de sesión](handoff.md) hay que comprobar el modelo de cancelaciones para contratos corporativos con inicio diferido. Le pasas a una sesión nueva el documento y la tarea del experimento.
 
-> Lee /tmp/handoff-cancellation-prototype.md. Monta un prototipo desechable de terminal del modelo de cancelaciones: comandos subscribe, cancel <fecha>, reactivate, tick; tras cada comando imprime el estado completo de la suscripción y la cola de eventos. Sin tests ni almacenamiento — estado en memoria. Nómbralo de modo que se vea que es un prototipo.
+> Lee /tmp/handoff-cancellation-prototype.md. Monta un prototipo desechable de terminal del modelo de cancelaciones con los comandos subscribe <fecha de inicio>, cancel <fecha>, reactivate y tick <fecha>. Tras cada comando imprime el estado de la suscripción y la cola de eventos. Guarda el estado en memoria y marca el prototipo en el nombre.
 
-El agente monta un ejecutor que arranca con un solo comando. El desarrollador conduce los escenarios: cancelación inmediata — bien; cancelación con fecha — bien; pero en «cancelación diferida y reactivación antes de que surta efecto» el modelo se rompe: el evento de cancelación se queda en la cola y se dispara después de la reactivación. Sobre el papel nadie había visto ese caso.
+El primer escenario comprueba la pregunta original. Fijas el inicio del contrato el 1 de octubre, la cancelación el 25 de septiembre y adelantas el reloj al 2 de octubre. En este experimento ilustrativo, el manejador del inicio da acceso aunque la cancelación ya ha entrado en vigor. Esta observación muestra que una sola cola de eventos con fecha no basta. Al procesar el inicio hay que tener en cuenta la cancelación vigente.
 
-El veredicto va a un ADR: el modelo de eventos queda confirmado con una enmienda — la reactivación desplaza los eventos de cancelación no ejecutados. El prototipo va a la rama `prototype/cancellation-model`, el enlace al ticket de implementación. La implementación se escribe desde cero contra el modelo aprobado; ni una línea del prototipo llega a main.
+El segundo escenario comprueba la reactivación antes de una cancelación diferida. Si el evento de cancelación antiguo se queda en la cola, más tarde cerrará la suscripción restaurada. El equipo fija una regla aparte: la reactivación anula ese evento.
+
+En el ADR se guardan ambas observaciones y decisiones junto con los límites del experimento. El prototipo queda en _prototype/cancellation-model_, y el ticket de implementación recibe un enlace a él. En el código real, ambos escenarios quedarán protegidos por pruebas. Las observaciones descritas ilustran resultados posibles del prototipo; en su propio proyecto, el equipo los obtiene ejecutándolo de verdad.
 
 ## Antipatrones y errores comunes
 
-- **«Termina este prototipo».** El pecado capital: código escrito como desechable se cuela en producción. La implementación se escribe de nuevo a partir del veredicto — el prototipo era una pregunta, no una primera versión.
-- **Un prototipo sin pregunta.** «Probemos y veamos» produce código pero no respuesta: nada que anotar en el veredicto, ninguna razón para haberlo construido.
-- **Pulir lo desechable.** Tests, manejo de errores y abstracciones en un prototipo son desperdicio: morirá antes de que se amorticen.
-- **Generalizar el veredicto.** «En el prototipo funcionaba» se aplica exactamente a la pregunta comprobada — no a la carga, ni a la seguridad, ni a los casos límite que la ejecución no tocó.
-- **El prototipo tirado junto con la respuesta.** Se borró el código y no se anotó el veredicto — al mes la pregunta vuelve, y otra vez no hay con qué responderla.
+- **«Termina este prototipo».** El código experimental puede carecer de las protecciones que necesita un sistema en producción. Implementa la decisión tomada con los controles de calidad habituales.
+- **Un prototipo sin pregunta.** Sin un criterio no se puede saber qué observaciones darán por terminado el experimento.
+- **Pulir lo desechable.** Las abstracciones de más aumentan el coste de obtener la respuesta.
+- **Generalizar la conclusión.** El éxito de un escenario no confirma la carga ni otras condiciones que el experimento no tocó.
+- **Una conclusión perdida.** Si se borra el código sin anotar el resultado, habrá que investigar la pregunta otra vez.
 
 ## Usos conocidos
 
-- **Skills de Matt Pocock** usan [/prototype](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md): un archivo HTML con acciones libres y escenarios guiados para lógica, o variantes de UI intercambiables. El prototipo se conserva en una rama separada enlazada desde la tarea. Un ejecutor de terminal sigue siendo una adaptación útil cuando participa solo el desarrollador.
-- **Las spike solutions de la programación extrema** — el antecesor clásico: un experimento corto y desechable para retirar el riesgo técnico antes de estimar e implementar.
-- **El «design it twice» de John Ousterhout** — el principio emparentado: obligarse a considerar diseños radicalmente distintos; el abanico de variantes de UI es su mecanización.
-- **Las balas trazadoras de The Pragmatic Programmer** — un contraste útil: el código trazador se queda y crece, el prototipo se tira. Mezclar los dos modos es lo que produce «un prototipo en producción».
+- **Los skills de Matt Pocock** implementan el experimento mediante [/prototype](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md). Para la lógica, el skill crea un archivo HTML independiente con acciones libres y escenarios paso a paso; para la UI, variantes intercambiables. El prototipo comprobado se guarda en una rama separada enlazada desde la tarea.
+- **Las spike solutions de la programación extrema** eliminan un riesgo técnico con un experimento corto.
+- **[Diseña dos veces](design-it-twice.md)** desarrolla el principio de John Ousterhout: comparar variantes de diseño sustancialmente distintas antes de la implementación.
+- **Las balas trazadoras de The Pragmatic Programmer** dan código que sigue evolucionando. El prototipo desechable conserva solo la decisión comprobada para una implementación nueva.
 
 ## Patrones relacionados
 
-- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) — el prototipo es la verificación para decisiones sin oráculo mecánico: aquí la señal de «pasa / no pasa» la dan las manos y los ojos del desarrollador.
-- [Traspaso de sesión](handoff.md) — la entrada estándar al prototipo: el extracto de la pregunta y el contexto para una sesión limpia en vez de la cola de la discusión.
-- [Cuatro fases](explore-plan-code-commit.md) — la pregunta del prototipo suele nacer en la fase de plan: la discusión que el texto no resuelve se lleva al experimento.
-- [Desarrollo orientado a especificaciones](spec-driven-development.md) — el veredicto del prototipo vuelve a la especificación como requisito o restricción — antes de que empiece la implementación.
-- [Vibe coding](vibe-coding.md) — el antipatrón en el que se convierte el prototipo cuando su código se acepta en producción sin comprensión.
+- [Diseña dos veces](design-it-twice.md) compara diseños alternativos; el prototipo comprueba preguntas que requieren observaciones.
+- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) vincula la decisión con un resultado de comprobación observable.
+- [Traspaso de sesión](handoff.md) conserva la pregunta para un experimento aparte.
+- [Cuatro fases](explore-plan-code-commit.md) permite llevar la incertidumbre del plan a un prototipo.
+- [Desarrollo orientado a especificaciones](spec-driven-development.md) conserva la conclusión del prototipo como requisito o restricción.
+- [Vibe coding](vibe-coding.md) describe aceptar código sin contrastarlo con los requisitos. Así termina el prototipo que se completó hasta convertirlo en el sistema de producción.

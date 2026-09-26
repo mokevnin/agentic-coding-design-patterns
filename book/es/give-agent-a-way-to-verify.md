@@ -2,76 +2,54 @@
 group: verification
 status: draft
 related: [tdd-with-agent, writer-reviewer, reflection, explore-plan-code-commit, premature-success, one-shotting]
-source_rev: 5df7b47a444c5c22419c5b424a05805eccc71275
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Bucle de retroalimentación
 
 ## Propósito
 
-Dar al agente una comprobación con resultado binario — tests, una
-compilación, un linter, una captura comparada con el diseño — que él mismo
-ejecuta, lee e itera hasta el verde. El bucle de verificación se cierra
-dentro de la sesión, no a través del desarrollador.
+Dar al agente una forma de comprobar el resultado, leer el fallo y repetir el trabajo hasta cumplir el criterio. El agente ejecuta la comprobación dentro de la sesión, y tú recibes el resultado junto con la evidencia.
 
 ## También conocido como
 
-Give the agent a way to verify its work, verification loop, ciclo cerrado de
-verificación.
+Give the agent a way to verify its work, verification loop, ciclo cerrado de verificación.
 
 ## Problema
 
-El agente se detiene cuando el trabajo *parece* terminado. Si no tiene una
-comprobación que pueda ejecutar, «parece terminado» es la única señal a su
-alcance. A partir de ahí empiezan los males conocidos:
+Sin comprobación, el agente puede detenerse en un código verosímil. Por ejemplo, un validador acepta un código promocional válido pero se equivoca con uno caducado.
 
-- El bucle de retroalimentación eres tú: cada error espera a que lo note un
-  humano. La sesión no se puede dejar sola — no puedes alejarte ni a por un
-  café.
-- El código es plausible pero no funciona: compila, se lee con fluidez y se
-  cae en el caso límite. La plausibilidad es lo que mejor hace el modelo, y
-  justo por eso no se le puede creer bajo palabra.
-- «Listo» no significa nada: el agente informa del éxito con sinceridad,
-  porque el criterio de éxito no quedó fijado en ninguna parte.
+Si no hay test, el error tienes que notarlo tú. Hasta entonces, el agente da la tarea por terminada.
+
+El criterio de terminado debe describir un comportamiento observable. Así el agente puede distinguir una implementación escrita de un resultado verificado.
 
 ## Solución
 
-Antes de empezar el trabajo, dar al agente una comprobación — cualquiera que
-devuelva una señal de «pasa / no pasa» que él pueda leer: una suite de
-tests, el código de salida de la compilación, un linter, un script que
-compara la salida con un patrón, una captura contra el diseño. Y pedirlo
-explícitamente: ejecútala, lee el resultado, itera hasta el verde.
+Antes de empezar, define una comprobación con un resultado claro. Puede ser un test, una compilación o la comparación de la salida con una referencia. Para una interfaz, aporta un diseño y los criterios de comparación visual. Pide al agente que ejecute la comprobación tras sus cambios, analice los fallos y repita el ciclo.
 
-Desde ese momento el bucle se cierra sin ti: el agente da un paso, ejecuta
-la comprobación, lee el fallo, lo arregla — y así hasta que pasa. Tu
-participación se desplaza de «notar errores» a los dos extremos del bucle:
-fijar la comprobación a la entrada y aceptar la evidencia a la salida.
+El agente hace una edición, ejecuta la comprobación y corrige el fallo encontrado. Tú eliges los criterios antes de empezar el trabajo y evalúas la evidencia al final.
 
-Cuán duro bloquea la comprobación la parada es una escalera de cuatro
-peldaños; cada uno cambia configuración por autonomía:
+El grado de automatización del bucle se puede elegir según la tarea.
 
-1. **En un solo prompt** — «ejecuta los tests e itera»; funciona en
-   cualquier tarea ahora mismo.
-2. **Objetivo de sesión** — la comprobación se vuelve una condición que se
-   reverifica tras cada turno del agente hasta cumplirse.
-3. **Puerta determinista** — un hook de parada: un script bloquea el final
-   de la sesión mientras la comprobación esté en rojo.
-4. **Segunda opinión** — un subagente con contexto fresco intenta refutar
-   el resultado: el trabajo no lo califica quien lo hizo (ver
-   [Escritor y revisor](writer-reviewer.md)).
+1. **Una instrucción en el prompt** pide al agente ejecutar las comprobaciones y corregir los fallos encontrados.
+2. **Un objetivo de sesión** fija una condición a la que el agente vuelve tras cada paso.
+3. **Una puerta determinista** bloquea la finalización mientras la comprobación obligatoria no pase.
+4. **Una segunda opinión** añade una revisión en un contexto fresco para comprobar la completitud y la calidad (ver [Escritor y revisor](writer-reviewer.md)).
 
-Y la regla final: evidencia en vez de afirmaciones, y la evidencia debe venir del entorno, no del relato del agente. Una salida que el agente copió en su mensaje final también pudo inventarla: escribir `4 passed` sin ejecutar nada o tomarlo de una ejecución anterior a la última edición. Verifica contra un registro que guardó el harness: la llamada a la herramienta en el log de la sesión, el log de CI, el código de salida en un hook, una captura hecha por la herramienta de navegador. Leer esa evidencia es más rápido que reverificar tú mismo, y es la única forma de aceptar el trabajo de una sesión que no vigilabas.
+La evidencia debe venir del entorno, no del relato del agente. Una salida que el agente copió en su mensaje final también pudo inventarla: escribir `4 passed` sin ejecutar nada o tomarlo de una ejecución anterior a la última edición. Verifica contra un registro que guardó el harness: la llamada a la herramienta en el log de la sesión, el log de CI, el código de salida en un hook, una captura de la herramienta de navegador. Estos datos muestran qué comprobó exactamente el agente y te permiten aceptar el trabajo sin reconstruir toda la sesión.
 
 ## Estructura
 
+En el diagrama, el desarrollador entrega la tarea y los criterios de verificación.
+
 ```mermaid
 ---
-title: evidencia en vez de un «listo» afirmado
+title: evidencia en vez de afirmaciones de «listo»
 ---
 flowchart TB
   dev["Desarrollador<br/>define la comprobación, acepta el trabajo"]:::accent
   agent["Agente<br/>trabaja e itera"]
-  check["Comprobación<br/>tests · build · linter<br/>diff contra patrón · captura<br/>señal: pasa / no pasa"]
+  check["Comprobación<br/>tests · build · linter<br/>diff contra referencia · captura<br/>señal: pasa / no pasa"]
   evidence["Evidencia del entorno<br/>registro de ejecuciones, log de CI,<br/>código de salida, captura"]:::accent
   dev -- "tarea + forma de verificar" --> agent
   agent -- "ejecuta y lee" --> check
@@ -80,146 +58,75 @@ flowchart TB
   evidence --> dev
 ```
 
-El desarrollador está en los extremos del bucle: a la entrada entrega al
-agente la tarea junto con la forma de verificarla, a la salida acepta la
-evidencia. Dentro del bucle hay un ciclo sin humano: el agente trabaja,
-ejecuta la comprobación, lee la señal; la señal roja lo devuelve al trabajo,
-la verde abre la salida con evidencia. Cuanto más dura la puerta de salida
-(prompt → objetivo → hook → segunda opinión), más tiempo puede girar el
-bucle sin vigilancia.
+El agente repite el ciclo de ediciones y comprobaciones hasta tener éxito, y luego devuelve la evidencia. Un hook puede fijar la condición de salida, y una revisión independiente puede complementar las comprobaciones automáticas.
 
 ## Participantes / Componentes
 
-- **Desarrollador** — fija la comprobación y los criterios antes de empezar;
-  acepta el trabajo por su evidencia.
-- **Agente** — trabaja, ejecuta la comprobación, lee la señal, itera.
-- **Comprobación** — un oráculo con resultado binario: tests, compilación,
-  linter, script de diff, captura contra el diseño.
-- **Señal** — pasa / no pasa, leída por el agente dentro de la sesión.
-- **Evidencia** — la salida de la comprobación tal como la registró el entorno (log de la sesión, CI, hook), presentada al desarrollador en lugar de la palabra «listo».
+- **Desarrollador** fija los criterios y acepta el resultado por su evidencia.
+- **Agente** cambia el código, ejecuta la comprobación y analiza el resultado.
+- **Comprobación** evalúa la propiedad especificada del resultado.
+- **Señal** indica al agente si el criterio se cumple.
+- **Evidencia** conserva el comando, la salida o una imagen del estado verificado. La registra el entorno, no el agente.
 
 ## Cuándo aplicarlo
 
-- Dondequiera que el resultado sea comprobable — es higiene básica del
-  trabajo con un agente, no una técnica para ocasiones especiales.
-- Obligatorio antes de dejar una sesión sin vigilancia: sin comprobación, el
-  trabajo autónomo significa acumulación autónoma de errores.
-- Para UI — mediante capturas: el agente compara el resultado con el diseño
-  y enumera las diferencias.
-- Si no hay comprobación — primero la comprobación: en código legado la
-  primera tarea del agente no es «arréglalo» sino «escribe un test que
-  falle y reproduzca el bug».
+- El resultado se puede comprobar de forma reproducible.
+- El agente debe hacer varias iteraciones sin supervisión constante.
+- Una interfaz se puede comparar con un diseño según criterios dados.
+- Un bug se puede reproducir con un test antes de empezar la corrección.
 
 ## Consecuencias y compromisos
 
-- ➕ El bucle se cierra sin humano — la diferencia entre una sesión que
-  vigilas y una de la que te alejas.
-- ➕ Los errores se atrapan dentro del ciclo, al precio de una iteración del
-  agente, no en la revisión al precio de tu tiempo.
-- ➕ La evidencia acelera la aceptación: leer la salida de los tests es más
-  rápido que ejecutarlos tú mismo.
-- ➖ La comprobación hay que tenerla o construirla: en código sin tests el
-  patrón empieza por escribir la comprobación, y ese es trabajo aparte.
-- ➖ El agente optimiza exactamente para la comprobación: una comprobación
-  débil produce basura verde. La calidad del bucle es la calidad del
-  oráculo.
-- ➖ La comprobación se puede «hackear»: un test amañado, una condición
-  suavizada, un error suprimido. La prohibición de editar la comprobación
-  es parte del patrón.
+- ➕ El agente analiza los fallos encontrados sin esperar una comprobación manual de cada paso.
+- ➕ Parte de los defectos se detecta antes de la revisión.
+- ➕ Los resultados guardados te muestran cuánta verificación se hizo realmente.
+- ➖ Si no hay comprobación, prepararla requiere un trabajo aparte.
+- ➖ Una comprobación débil deja pasar una implementación que no resuelve la tarea por completo.
+- ➖ El agente puede debilitar la comprobación para tener éxito. Los cambios en los criterios hay que controlarlos por separado.
 
 ## Implementación
 
-1. Formula el criterio antes de empezar y escríbelo en el prompt: no «haz
-   un validador» sino «haz un validador; casos: X — true, Y — false;
-   ejecuta los tests tras implementar».
-2. Si no hay comprobación — constrúyela: pide al agente escribir primero un
-   test que falle y reproduzca el problema, y solo después arreglar (la
-   forma disciplinada es [TDD con agente](tdd-with-agent.md)).
-3. Cierra el bucle explícitamente: «ejecuta, lee el resultado, itera hasta
-   el verde». Sin esa instrucción el agente ejecuta la comprobación una
-   vez — o ninguna.
-4. Prohíbe cambiar la comprobación: editar un test, suavizar una condición
-   y suprimir un error son decisiones del desarrollador, no jugadas de la
-   iteración. Ancla la prohibición con un hook si hace falta.
-5. Sube por la escalera según crezca la autonomía: a una tarea vigilada le
-   basta el prompt; a una sesión de la que te alejas — un objetivo o un
-   hook; al trabajo autónomo largo — la revisión de un subagente fresco.
-6. Acepta el trabajo por los registros del entorno: el log de llamadas a herramientas, el log de CI, el resultado del hook. El relato de la salida en el mensaje final del agente no es evidencia.
-7. Ancla los comandos de verificación en la
-   [memoria del proyecto](claude-md-memory.md) para que el agente los
-   conozca en cada sesión.
+1. Describe el comportamiento esperado antes de la implementación e indica cómo comprobarlo.
+2. Si no hay comprobación, empieza con un test que reproduzca el problema (ver [TDD con agente](tdd-with-agent.md)).
+3. Pide al agente ejecutar la comprobación tras sus ediciones, leer el resultado y corregir los fallos encontrados.
+4. Protege los criterios del amaño. Acuerda por separado cualquier cambio en un test o debilitamiento de una condición; si hace falta, fija la restricción con un hook.
+5. Para trabajo autónomo largo, añade control de finalización y una revisión en un contexto fresco.
+6. Acepta el trabajo por los registros del entorno: el log de llamadas a herramientas, el log de CI o el resultado del hook. El relato del resultado en el mensaje final del agente no cuenta como evidencia.
+7. Fija los comandos de verificación en la [memoria del proyecto](claude-md-memory.md) para que el agente los conozca en cada sesión.
 
-En los toolkits del desarrollo orientado a especificaciones el bucle está
-integrado en la tubería: en [OpenSpec](openspec.md) cada tarea de `tasks.md`
-lleva su forma de verificarse, en [Superpowers](superpowers.md)
-el ciclo red–green–refactor es obligatorio dentro de cada tarea, y en los
-[skills de Matt Pocock](matt-pocock-skills.md) `/implement` no termina sin
-`/tdd` y la revisión de dos ejes.
+En [OpenSpec](openspec.md), [Superpowers](superpowers.md) y las [skills de Matt Pocock](matt-pocock-skills.md), las comprobaciones forman parte del flujo de implementación. El mecanismo concreto depende del conjunto de skills y de los criterios de la tarea.
 
 ## Ejemplo
 
-La tarea — un validador de códigos promocionales. El prompt fija la
-comprobación junto con la tarea:
+Para un validador de códigos promocionales, fijas los casos a comprobar junto con la tarea.
 
-> Escribe validatePromoCode. Casos: SUMMER25 con promoción activa — true;
-> un código caducado — false con motivo expired; un código de otra región —
-> false con motivo region; cadena vacía — false. Convierte los casos en
-> tests, ejecútalos e itera hasta que pasen. No edites los tests.
+> Escribe validatePromoCode. Un SUMMER25 vigente debe aceptarse. Para un código caducado devuelve false con motivo expired, para un código de otra región devuelve false con motivo region. Rechaza la cadena vacía. Convierte los casos en tests, ejecútalos y corrige la implementación hasta que pasen. Una vez acordados los tests, no los cambies sin una discusión aparte.
 
-El agente escribe la implementación y los tests, los ejecuta: dos de cuatro
-en rojo — el código caducado pasa, porque la comparación de fechas ignora la
-zona horaria. El agente lo arregla, ejecuta de nuevo — verde. El log de la
-sesión muestra la última ejecución tras la edición final: 4 passed.
+El agente escribe los tests y la implementación. La comprobación del código caducado falla porque la comparación de fechas ignora la zona horaria. Tras la corrección, el agente vuelve a ejecutarlos. El log de la sesión muestra la última ejecución de los tests tras la edición final, con el resultado `4 passed`.
 
-El desarrollador estuvo todo ese tiempo en otra cosa: el bug de la zona
-horaria fue atrapado y corregido dentro del bucle, al precio de una
-iteración del agente. Sin la comprobación habría llegado a la revisión — o a
-los usuarios.
+Recibes una implementación en la que el bug de la zona horaria ya se encontró y corrigió. Tu participación solo hizo falta para fijar los escenarios y aceptar el resultado.
 
 ## Antipatrones y errores comunes
 
-- **Creer bajo palabra.** «Listo» sin la salida de la comprobación no es
-  una señal, es cortesía. Pedir evidencia no es desconfianza, es protocolo.
-- **Salida relatada.** `4 passed` en el mensaje final sigue siendo palabra del agente. Contrástalo con la ejecución en el log de la sesión o en CI.
-- **Oráculo débil.** Una comprobación deshonestamente fácil de pasar
-  produce basura verde: el agente optimiza para ella, no para la tarea.
-- **Hay comprobación, pero no hay bucle.** Los tests están en el
-  repositorio, pero nadie pidió al agente ejecutarlos — y no los ejecuta.
-  El bucle lo cierra la instrucción.
-- **El agente edita el oráculo.** Un test amañado y un error suprimido
-  parecen progreso. Editar la comprobación es siempre una decisión aparte
-  del desarrollador.
-- **Tests unitarios como final.** Unidades en verde aún no son una
-  funcionalidad que funciona: sin la comprobación de extremo a extremo como
-  usuario, eso es [éxito prematuro](premature-success.md).
+- **Creer bajo palabra.** Un mensaje de «listo» no muestra qué comprobó el agente. Exige los resultados de la ejecución.
+- **Salida relatada.** La línea `4 passed` en el mensaje final sigue siendo palabra del agente. Contrástala con la ejecución en el log de la sesión o en CI.
+- **Oráculo débil.** La comprobación puede pasar por alto casos significativos. Contrástala con los requisitos de la tarea.
+- **Comprobación sin ejecución.** Que haya tests en el repositorio no significa que el agente los ejecutara. Fija el comando y la condición de finalización.
+- **Amañar la comprobación.** Una condición debilitada oculta el defecto. Los cambios del criterio requieren una decisión aparte.
+- **Tests unitarios como final.** Para una funcionalidad de usuario, comprueba también el escenario de extremo a extremo; si no, te arriesgas al [éxito prematuro](premature-success.md).
 
 ## Usos conocidos
 
-- **Claude Code best practices** — la fuente primaria: la comprobación es
-  «la diferencia entre una sesión que vigilas y una de la que te alejas»;
-  la tabla de antes/después de prompts con criterios.
-- **Claude Code** — la escalera mecanizada: `/goal` como condición de
-  sesión, los Stop hooks como puerta determinista, los subagentes de
-  revisión como segunda opinión.
-- **El harness de Anthropic para agentes de larga duración** — la lista de
-  funcionalidades con estados `passing/failing` que solo cambian tras una
-  comprobación real, y la prueba de humo de extremo a extremo al comienzo
-  de cada sesión.
-- **Toolkits de SDD** — criterios de aceptación y tareas verificables como
-  parte obligatoria de la tubería: EARS en Kiro, las listas `tasks.md` en
-  Spec Kit y OpenSpec, el TDD obligatorio en Superpowers.
+- **Claude Code best practices** describen cómo plantear tareas con criterios y ejemplos de verificación.
+- **Las herramientas de agentes** pueden admitir objetivos de sesión, Stop hooks y subagentes de revisión.
+- **El harness de Anthropic para agentes de larga duración** vincula los estados de las funcionalidades con comprobaciones y ejecuta una prueba de humo al comienzo de cada sesión.
+- **Los toolkits de SDD** incluyen criterios de aceptación en las especificaciones y las tareas, y Superpowers usa el ciclo TDD.
 
 ## Patrones relacionados
 
-- [TDD con agente](tdd-with-agent.md) — la forma disciplinada del bucle: la
-  comprobación se escribe antes del código, una por paso.
-- [Escritor y revisor](writer-reviewer.md) — verificación por juicio para lo
-  que no se reduce a un oráculo binario: calidad, completitud, adherencia
-  al plan.
-- [Reflexión](reflection.md) — la forma más barata y más débil de
-  verificación: autocrítica sin oráculo externo.
-- [Cuatro fases](explore-plan-code-commit.md) — el bucle vive en la fase de
-  código: el plan aprobado nombra las comprobaciones con las que el agente
-  coteja la implementación.
-- [Éxito prematuro](premature-success.md) — el antipatrón de dar el trabajo por hecho con unidades en verde, sin comprobación de extremo a extremo como usuario.
-- [One-shotting](one-shotting.md) — el antipatrón de esperar una funcionalidad terminada de una sola pasada, sin ciclo de verificación.
+- [TDD con agente](tdd-with-agent.md) empieza cada iteración con un test antes de cambiar el código.
+- [Escritor y revisor](writer-reviewer.md) comprueba propiedades que requieren juicio.
+- [Reflexión](reflection.md) ayuda a encontrar defectos mediante autocrítica, pero necesita confirmación externa.
+- [Cuatro fases](explore-plan-code-commit.md) fija las comprobaciones en el plan y las usa durante la implementación.
+- [Éxito prematuro](premature-success.md) surge cuando el trabajo se declara terminado sin una comprobación de extremo a extremo del escenario de usuario.
+- [One-shotting](one-shotting.md) describe esperar un resultado terminado de una sola pasada, sin ciclo de verificación.

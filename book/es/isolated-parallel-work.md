@@ -1,63 +1,65 @@
 ---
 group: project-org
-status: translated
+status: draft
 related: [one-feature-at-a-time, writer-reviewer, give-agent-a-way-to-verify]
-source_rev:
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Trabajo paralelo aislado
 
 ## Propósito
 
-Ejecutar varias tareas de agentes al mismo tiempo dando a cada una su propia rama y árbol de trabajo, ocultando los cambios sin commit de las tareas vecinas y transfiriendo el resultado mediante un commit verificable. El paralelismo se convierte en un conjunto de cambios independientes con un punto de integración explícito, no en una carrera entre procesos que escriben en un mismo directorio.
+Asignar a cada tarea paralela su propia rama y su propio árbol de trabajo. El agente verifica el cambio en su directorio y entrega el resultado como un commit. El integrador fusiona los cambios terminados de uno en uno.
 
 ## También conocido como
 
-Worktree per task, branch per agent, checkout aislado, worktrees paralelos.
+Worktree per task, branch per agent, isolated checkout, worktrees paralelos.
 
 ## Problema
 
-Un agente ya está modificando la autenticación cuando el desarrollador inicia otro para actualizar la documentación. Ambos procesos están abiertos en el mismo checkout. El segundo ve los archivos a medio escribir del primero, los toma como estado inicial y los formatea de paso. El primero ejecuta las pruebas sobre una mezcla de ambos cambios. Después, uno hace commit e incluye líneas del otro.
+Un agente cambia la autenticación mientras un segundo actualiza la documentación en el mismo checkout. El segundo ve los archivos inacabados del primero y los formatea. Ahora las pruebas se ejecutan sobre una mezcla de cambios, y el commit de un agente puede capturar líneas ajenas.
 
-El problema principal no es un conflicto de merge. Un conflicto al menos detiene la integración y muestra el lugar del choque. Un checkout compartido crea una **mezcla oculta antes del commit**:
+Un checkout compartido mezcla los cambios antes incluso del commit. Esto complica varias operaciones habituales.
 
-- `git diff` deja de responder qué tarea produjo una línea;
-- la verificación de una tarea se ejecuta sobre el código de otra y produce una señal verde falsa;
-- un agente puede borrar o reescribir un cambio desconocido por considerarlo «innecesario»;
-- revertir y revisar se vuelve peligroso porque se ha perdido el límite del cambio;
+- `git diff` ya no responde qué tarea produjo una línea;
+- la comprobación de una tarea se ejecuta sobre el código de otra y da una falsa señal verde;
+- un agente puede borrar o reescribir un cambio desconocido por considerarlo «sobrante»;
+- en la revisión y la reversión cuesta determinar los límites de la tarea;
 - dos procesos compiten por el índice de Git, los archivos generados y las dependencias locales.
 
-Una rama normal no resuelve el problema. Un directorio de trabajo solo puede tener una rama activa a la vez, mientras que los archivos sin commit pertenecen al directorio y no a la tarea. Cambiar de rama bajo procesos en ejecución es aún más peligroso.
+Crear ramas sin más no separa los archivos de trabajo. En un directorio hay una sola rama activa, así que cambiarla afecta a todos los procesos que usan ese directorio.
 
-Un clon completo por tarea ofrece aislamiento, pero duplica el historial innecesariamente y complica la limpieza. Git worktree ofrece varios directorios de trabajo vinculados al mismo repositorio: cada uno tiene su propio `HEAD`, índice y archivos, mientras comparte los objetos de Git.
+Los clones separados aíslan el trabajo, pero duplican la historia. Git worktree permite crear varios directorios, cada uno con su propio `HEAD`, índice y archivos, sobre un almacén de objetos de Git compartido.
 
 ## Solución
 
-Asigna a cada tarea paralela **su propia rama y su propio worktree**. Dale un ámbito de propiedad y un criterio de finalización explícitos. El agente trabaja solo dentro de su directorio, verifica allí el resultado y termina con un commit. El commit es el límite de traspaso: antes de él, el cambio pertenece a la tarea; después, está listo para integrarse.
+Asigna a cada tarea **su propia rama y su propio worktree**, un ámbito de responsabilidad y un criterio de finalización. El agente cambia y verifica archivos dentro de su directorio. El commit verificado es el resultado que se puede entregar para la integración.
 
-Integra las ramas terminadas de una en una. Antes del merge, actualiza la rama desde la rama objetivo, resuelve los conflictos en el contexto de su tarea y repite las comprobaciones. Así, las escrituras concurrentes e incontroladas sobre archivos compartidos se convierten en una integración de Git normal y observable.
+Integra las ramas terminadas de una en una. Antes de fusionar, actualiza la rama desde la rama objetivo, resuelve los conflictos en el contexto de su tarea y vuelve a ejecutar las comprobaciones. Así la competencia deja de ser una escritura descontrolada en archivos compartidos y se convierte en una integración de Git normal y observable.
 
-El patrón se sostiene sobre cuatro límites:
+Las siguientes reglas sostienen el aislamiento.
 
-1. **Límite del sistema de archivos:** un worktree pertenece a una tarea o sesión.
-2. **Límite de responsabilidad:** se sabe de antemano qué puede modificar la tarea y qué debe dejar intacto.
-3. **Límite de traspaso:** las tareas intercambian commits, no archivos sin commit de un directorio compartido.
-4. **Límite de integración:** solo un flujo actualiza la rama objetivo en cada momento y confirma el resultado verde combinado.
+1. **El directorio de trabajo** pertenece a una sola tarea o sesión.
+2. **El ámbito de responsabilidad** define qué cambios están permitidos.
+3. **La entrega del resultado** se hace mediante un commit verificado.
+4. **La integración** actualiza la rama objetivo de forma secuencial y verifica el estado combinado.
 
 ## Estructura
 
+En el diagrama, cada tarea recorre su propio ciclo en un worktree separado.
+
 ```mermaid
 ---
-title: una tarea — una rama — un worktree
+title: cada tarea recibe su propia rama y su worktree
 ---
 flowchart LR
   target["Rama objetivo<br/>origin/main<br/>punto de partida común"]
-  a["Tarea A · agente A<br/>rama: agent/auth<br/>worktree: ../project-auth<br/>editar → verificar → commit"]
-  b["Tarea B · agente B<br/>rama: agent/docs<br/>worktree: ../project-docs<br/>editar → verificar → commit"]
-  c["Tarea C · agente C<br/>rama: agent/tests<br/>worktree: ../project-tests<br/>editar → verificar → commit"]
-  integrator["Integrador<br/>1. actualizar la rama<br/>2. resolver conflictos<br/>3. mergear un commit<br/>4. verificar lo ensamblado"]:::accent
-  merged["Rama integrada<br/>main + A + B + C<br/>la comprobación combinada está verde"]
-  env["el worktree aísla archivos e índice;<br/>puertos, bases y contenedores se aíslan aparte"]:::warn
+  a["Tarea A · agente A<br/>rama: agent/auth<br/>worktree: ../project-auth<br/>cambio → comprobación → commit"]
+  b["Tarea B · agente B<br/>rama: agent/docs<br/>worktree: ../project-docs<br/>cambio → comprobación → commit"]
+  c["Tarea C · agente C<br/>rama: agent/tests<br/>worktree: ../project-tests<br/>cambio → comprobación → commit"]
+  integrator["Integrador<br/>1. actualizar la rama<br/>2. resolver conflictos<br/>3. fusionar un commit<br/>4. verificar el conjunto"]:::accent
+  merged["Rama integrada<br/>main + A + B + C<br/>la comprobación común está en verde"]
+  env["el worktree aísla los archivos y el índice;<br/>puertos, bases y contenedores se aíslan aparte"]:::warn
   target --> a --> integrator
   target --> b --> integrator
   target --> c --> integrator
@@ -65,68 +67,76 @@ flowchart LR
   b -.- env
 ```
 
-Una rama objetivo da origen a ramas y árboles de trabajo independientes. En cada worktree, un agente completa el ciclo de su tarea y produce un commit separado. El integrador acepta los commits de uno en uno y comprueba el estado ensamblado después de cada uno. Si las tareas se solapan, el choque aparece en un punto controlado —durante la actualización o el merge— y no a mitad de la sesión de otro agente.
+El integrador acepta los commits de uno en uno y verifica el estado ensamblado. Los solapamientos entre tareas aparecen al actualizar y fusionar las ramas.
 
 ## Participantes / Componentes
 
-- **Rama objetivo** — el estado en el que finalmente se ensamblan los cambios, normalmente `main` o una rama de funcionalidad compartida.
-- **Tarea** — una unidad de trabajo independiente con un ámbito de archivos y un resultado verificable.
-- **Rama de la tarea** — el historial de un cambio; su nombre vincula los commits con la tarea.
-- **Worktree** — un directorio separado con sus propios archivos de trabajo e índice de Git.
-- **Agente** — trabaja solo en el worktree asignado y no integra tareas vecinas por iniciativa propia.
-- **Integrador** — un desarrollador o proceso dedicado que decide el orden de merge, resuelve solapamientos y ejecuta la comprobación combinada.
-- **Contrato del entorno** — reglas para los recursos que quedan fuera de Git: puertos, bases de datos, contenedores, cachés y archivos temporales.
+- **Rama objetivo** reúne los cambios terminados, por ejemplo en `main`.
+- **Tarea** define un resultado independiente y un ámbito de cambios.
+- **Rama de la tarea** guarda la historia de su implementación.
+- **Worktree** contiene los archivos de trabajo y un índice de Git propio.
+- **Agente** trabaja en el directorio asignado.
+- **Integrador** decide el orden de fusión y verifica el resultado común.
+- **Contrato de entorno** separa puertos, bases de datos, contenedores y archivos temporales.
 
 ## Cuándo aplicarlo
 
-- Dos o más tareas independientes se pueden realizar de verdad al mismo tiempo.
+- Dos o más tareas independientes pueden hacerse realmente a la vez.
 - Un agente implementa un cambio mientras otro escribe pruebas o documentación, o investiga el código.
-- Hay que comparar varias implementaciones sin sobrescribir los experimentos.
+- Necesitas comparar varias implementaciones sin sobrescribir los resultados de los experimentos.
 - Una tarea larga no debe bloquear una corrección urgente en el mismo repositorio.
-- Las sesiones paralelas se ejecutan localmente o mediante un harness automatizado.
+- Las sesiones paralelas se lanzan en local o mediante un harness automático.
 
-No apliques el patrón automáticamente a dos cambios estrechamente vinculados dentro del mismo módulo. Si las tareas necesitan continuamente el estado sin commit de la otra, no son tareas paralelas, sino una sola tarea dividida artificialmente. Ejecútala de forma secuencial o encuentra primero un límite real.
+Si dos cambios necesitan constantemente los resultados sin commit del otro, hazlos de forma secuencial. El trabajo paralelo compensa una vez que has separado partes con comprobación propia.
 
 ## Consecuencias y compromisos
 
-- ➕ Los cambios sin commit están separados físicamente, por lo que un agente no puede incluir por accidente el diff vecino en su commit.
-- ➕ La verificación pertenece a un cambio concreto: las pruebas se ejecutan en la rama limpia de la tarea y después se repiten sobre el estado integrado.
-- ➕ Abandonar trabajo es barato: un experimento fallido se elimina con su rama y worktree sin desenredar un directorio compartido.
-- ➕ La revisión es más sencilla: un commit o PR corresponde a una tarea y un propietario.
-- ➖ El paralelismo no elimina los conflictos, sino que los traslada a un punto de integración explícito. Una mala división produce una cola de merges difíciles.
-- ➖ Cada worktree necesita dependencias y su propia configuración de entorno; sin un bootstrap rápido, la preparación consume la ventaja.
-- ➖ Git aísla archivos, no recursos externos. Los mismos puertos, una única base de pruebas o un directorio de caché compartido todavía pueden provocar carreras.
-- ➖ Cuantas más ramas estén activas, mayor será el coste de coordinación: la integración necesita un propietario y un orden claro de dependencias.
+- ➕ Los archivos de trabajo de las tareas quedan separados en directorios distintos.
+- ➕ La comprobación en una rama se refiere a una tarea concreta, y repetirla tras la fusión evalúa el comportamiento conjunto.
+- ➕ Un experimento fallido se puede borrar junto con su worktree.
+- ➕ Un PR vincula el resultado con la tarea y con el participante responsable.
+- ➖ Las tareas mal divididas siguen produciendo conflictos de fusión difíciles.
+- ➖ Cada worktree necesita instalar dependencias y configurar su entorno; sin un bootstrap rápido, la preparación se come la ganancia.
+- ➖ Git aísla archivos, pero no recursos externos. Los mismos puertos, una única base de pruebas o un directorio de caché común siguen creando carreras.
+- ➖ Un gran número de ramas requiere un responsable de la integración y un orden de dependencias.
 
 ## Implementación
 
-1. Divide el trabajo por resultados, no por agentes. Cada tarea necesita un nombre, un criterio de finalización, un ámbito de propiedad y dependencias conocidas.
-2. Fija el punto de partida y crea ramas separadas con worktrees:
+1. Separa resultados autónomos. Para cada tarea, anota el criterio de finalización, el ámbito de responsabilidad y las dependencias.
+2. Fija el punto de partida y crea ramas separadas con worktrees.
 
-   ```bash git fetch origin git worktree add -b agent/auth ../project-auth origin/main git worktree add -b agent/docs ../project-docs origin/main ```
+   ```bash
+   git fetch origin
+   git worktree add -b agent/auth ../project-auth origin/main
+   git worktree add -b agent/docs ../project-docs origin/main
+   ```
 
-   `git worktree list` muestra todos los directorios y ramas activos. Git impide usar la misma rama en dos worktrees salvo que se fuerce la omisión de esta protección.
-3. Ejecuta la preparación estándar del proyecto en cada directorio. Un comando como `make setup` debe llevar un worktree nuevo a un estado verde reproducible; la configuración manual de cada instancia no escala.
-4. Entrega al agente tanto la tarea como el límite: «trabaja solo en este directorio; no cambies de rama; no toques cambios fuera del ámbito indicado; termina con un commit verificado».
-5. Separa los recursos externos del entorno. Asigna puertos, nombres de contenedores, bases de pruebas y directorios temporales distintos. Monta los secretos como solo lectura o sustitúyelos por valores locales seguros.
-6. Cada agente verifica su cambio dentro de su propia rama y crea un commit con sentido. El estado inacabado no se entrega como dependencia a las tareas vecinas.
-7. El integrador elige el orden según las dependencias. Antes del merge, cada rama incorpora la rama objetivo actual, resuelve los conflictos y repite su comprobación.
-8. Ejecuta una comprobación del estado combinado después de cada merge. Dos ramas verdes no garantizan una composición verde.
-9. Tras la integración, elimina los worktrees limpios con el comando estándar:
+   `git worktree list` muestra todos los directorios y ramas activos. Git no deja usar por accidente la misma rama en dos worktrees salvo que se fuerce la omisión de esta protección.
+3. Ejecuta en cada directorio la preparación estándar del proyecto. Un comando como `make setup` debe llevar un worktree nuevo a un estado verde reproducible; configurar cada instancia a mano no escala.
+4. Entrega al agente la tarea y las reglas de trabajo en el directorio asignado. Indica qué archivos puede cambiar y qué resultado verificado debe devolver.
+5. Separa el entorno externo. Asigna puertos, nombres de contenedores, bases de pruebas y directorios temporales distintos. Es mejor montar los secretos como solo lectura o sustituirlos por valores locales seguros.
+6. Cada agente verifica su cambio dentro de su rama y crea un único commit con sentido. El estado inacabado no se pasa a las tareas vecinas como dependencia.
+7. El integrador elige el orden según las dependencias. Antes de fusionar, cada rama incorpora la rama objetivo actual, resuelve los conflictos y repite su comprobación.
+8. Después de cada fusión, ejecuta la comprobación del estado común. Dos ramas verdes no garantizan una composición verde.
+9. Tras la integración, elimina los worktrees limpios con el comando estándar.
 
-   ```bash git worktree remove ../project-auth git worktree remove ../project-docs git worktree prune ```
+   ```bash
+   git worktree remove ../project-auth
+   git worktree remove ../project-docs
+   git worktree prune
+   ```
 
-   No borres el directorio a ciegas: `git worktree remove` se niega a eliminar un worktree con archivos sin commit y así conserva el trabajo inacabado.
+   Usa `git worktree remove`. El comando se niega a eliminar un worktree con archivos sin commit, para que no se pierda trabajo.
 
 ### Resolver conflictos a partir de la intención
 
-Pide al agente reconstruir el propósito de ambos cambios mediante commits, PR e issues originales. Debe explicar qué requisitos conserva la versión combinada. Si son incompatibles, acuerda el comportamiento esperado antes de continuar la integración.
+Ante un conflicto, pide al agente que reconstruya el propósito de ambos cambios a partir de los commits, los PR y las tareas originales. Debe explicar qué requisitos conserva la versión combinada. Si los requisitos son incompatibles, acuerda el comportamiento deseado antes de continuar la integración.
 
-Una rama puede añadir un tiempo límite a las solicitudes y otra limitar los reintentos. Elegir solo un lado puede perder la otra restricción. Comprueba ambos comportamientos y su interacción después de fusionar, incluso cuando Git lo hace automáticamente. El skill [resolving-merge-conflicts](https://github.com/mattpocock/skills/blob/main/skills/engineering/resolving-merge-conflicts/SKILL.md) usa esta recuperación de intenciones; añade al índice solo los archivos de la integración y conserva los cambios ajenos.
+Por ejemplo, una rama añade un tiempo límite a las peticiones y otra limita el número de reintentos. Elegir solo un lado puede perder la otra restricción. Después de combinarlas, comprueba ambos comportamientos y su funcionamiento conjunto. Incluso la fusión automática de Git requiere esta comprobación. El skill [resolving-merge-conflicts](https://github.com/mattpocock/skills/blob/main/skills/engineering/resolving-merge-conflicts/SKILL.md) se basa en recuperar las intenciones originales; añade al índice solo los archivos de la integración actual y conserva los cambios ajenos.
 
 ## Ejemplo
 
-Un equipo prepara el lanzamiento de una tienda en línea. Necesita añadir un límite de frecuencia de peticiones y actualizar de forma independiente la página de operaciones. El desarrollador crea dos worktrees desde el mismo `origin/main`:
+Un equipo prepara la limitación de frecuencia de peticiones y una página de operaciones para una tienda en línea. Creas dos worktrees desde el mismo `origin/main`.
 
 ```text
 shop/                 main, solo integración
@@ -134,18 +144,18 @@ shop-rate-limit/      agent/rate-limit, código + pruebas
 shop-runbook/         agent/runbook, documentación + comprobación de enlaces
 ```
 
-El primer agente cambia el middleware y las pruebas; el segundo, el runbook. Ambos ejecutan `make setup` y luego sus comprobaciones. El agente de documentación no ve un middleware a medio escribir y las pruebas del primero no reciben cambios accidentales del segundo. El resultado son dos commits:
+El primer agente cambia el middleware y las pruebas; el segundo escribe el runbook. Cada uno ejecuta `make setup` y sus comprobaciones en un directorio separado. El resultado son dos commits.
 
 ```text
 4d23f91 feat: add API rate limiting
 8a771bc docs: document rate-limit operations
 ```
 
-La documentación depende de los nombres definitivos de las métricas, así que el integrador incorpora primero el código. Después actualiza la rama del runbook, descubre que la métrica ahora se llama `rate_limit_rejected_total`, corrige la referencia y ejecuta la comprobación de documentación. El conflicto semántico aparece donde se puede ver y resolver, en lugar de quedar oculto dentro de un directorio de trabajo compartido.
+El runbook depende de los nombres definitivos de las métricas, así que el integrador fusiona primero el código. Después actualiza la rama de documentación y detecta el cambio de nombre a `rate_limit_rejected_total`. Corrige la referencia y repite la comprobación de la documentación antes de fusionar.
 
 ```mermaid
 ---
-title: el orden de fusión lo marca la dependencia, no la disponibilidad
+title: las dependencias definen el orden de fusión
 ---
 gitGraph
   commit id: "origin/main"
@@ -164,33 +174,33 @@ gitGraph
   merge agent/runbook
 ```
 
-Ambas ramas parten del mismo punto y hacen commits de forma independiente. El orden de fusión lo marca la dependencia, no quién terminó antes: `agent/runbook` primero incorpora el código ya fusionado y solo después corrige el nombre de la métrica, de modo que la discrepancia aparece como un commit propio en su rama y no como una edición en mitad de la sesión ajena.
+En el diagrama, ambas ramas parten del mismo punto. La rama `agent/runbook` recibe el código fusionado antes de terminar, por eso la corrección del nombre de la métrica aparece como un commit de documentación separado.
 
-Si ambas instancias necesitan un servidor local, un worktree no basta: asigna `PORT=4101` a la primera y `PORT=4102` a la segunda, y da nombres distintos a las bases de pruebas. De lo contrario, el aislamiento del sistema de archivos será correcto mientras los procesos siguen rompiendo el estado del otro a través del entorno.
+Los servidores locales necesitan puertos distintos, por ejemplo `PORT=4101` y `PORT=4102`, y bases de pruebas separadas. El worktree separa los archivos, pero los recursos externos compartidos todavía pueden crear carreras.
 
 ## Antipatrones y errores comunes
 
-- **Checkout compartido.** Varios agentes escriben en un mismo directorio. Esto no es desarrollo paralelo, sino edición colaborativa sin protocolo.
-- **Rama sin worktree.** Los procesos se turnan para cambiar de rama en un directorio y se modifican los archivos bajo sus pies.
-- **Worktree sin propietario.** Se envían varias tareas a un único directorio aislado; la mezcla simplemente se traslada a otro lugar.
-- **División por archivos en vez de resultados.** «Tú cambias el controlador; tú escribes las pruebas» crea dos mitades que no se pueden verificar ni terminar de forma independiente.
-- **Infraestructura compartida.** Directorios separados inician el mismo proyecto de Compose o usan una base o un puerto común, provocando carreras fuera de Git.
-- **Merge en paralelo.** Varios procesos actualizan la rama objetivo a la vez. El punto de serialización desaparece y las comprobaciones verdes quedan obsoletas rápidamente.
-- **Integración sin volver a verificar.** Cada rama está verde por separado, pero nadie ejecuta su composición.
-- **Worktrees eternos.** Los directorios terminados no se eliminan, las ramas pierden sus propietarios y una semana después nadie sabe dónde queda trabajo valioso.
+- **Checkout compartido.** Varios agentes que escriben en un mismo directorio mezclan sus cambios inacabados.
+- **Rama sin worktree.** Los procesos se turnan para cambiar de rama en un mismo directorio; los archivos cambian bajo sus pies.
+- **Worktree sin propietario.** Varias tareas en un mismo directorio vuelven a mezclar sus cambios.
+- **División por archivos en vez de resultados.** «Tú cambias el controlador; tú, las pruebas» crea dos mitades que no se pueden verificar ni terminar de forma independiente.
+- **Infraestructura compartida.** Directorios distintos arrancan el mismo proyecto de Compose, usan una misma base o un mismo puerto y obtienen carreras fuera de Git.
+- **Fusión en paralelo.** Varios procesos actualizan la rama objetivo a la vez. El punto de serialización desaparece y las comprobaciones verdes quedan obsoletas enseguida.
+- **Integración sin volver a verificar.** Cada rama está en verde por separado, pero nadie ha ejecutado su composición.
+- **Worktrees eternos.** Los directorios terminados no se eliminan, las ramas pierden a sus propietarios y una semana después nadie sabe dónde quedó el trabajo valioso.
 
 ## Usos conocidos
 
-- **Claude Code** recomienda worktrees separados para sesiones CLI paralelas, de modo que sus cambios no choquen, y usa la misma técnica al distribuir trabajo entre muchos archivos.
-- **El experimento de Anthropic con un compilador de C** ejecutó cada agente en su propio contenedor con un clon separado y protegió las tareas con bloqueos simples. Es una versión más pesada de los mismos límites: estado de trabajo separado, propiedad de la tarea y sincronización serializada mediante Git.
-- **Git worktree** es el mecanismo estándar de Git para mantener varios árboles de trabajo vinculados a un repositorio, lo que permite tener varias ramas abiertas al mismo tiempo sin clones completos.
+- **Claude Code** recomienda worktrees separados para sesiones CLI paralelas, de modo que sus cambios no choquen, y usa la misma técnica al repartir trabajo masivamente entre archivos.
+- **El experimento de Anthropic con un compilador de C** usó contenedores y clones separados para los agentes, bloqueos de tareas y sincronización mediante Git.
+- **Git worktree** admite varios árboles de trabajo de un mismo repositorio sin clones completos.
 
-Fuentes: [Buenas prácticas de Claude Code](https://code.claude.com/docs/en/best-practices), [Building a C compiler with a team of parallel Claudes](https://www.anthropic.com/engineering/building-c-compiler), [documentación de Git worktree](https://git-scm.com/docs/git-worktree).
+Los ejemplos se describen en [Claude Code best practices](https://code.claude.com/docs/en/best-practices), el [experimento con el compilador de C](https://www.anthropic.com/engineering/building-c-compiler) y la [documentación de Git worktree](https://git-scm.com/docs/git-worktree).
 
 ## Patrones relacionados
 
-- [Una funcionalidad a la vez](one-feature-at-a-time.md) — define el tamaño de la tarea dentro de un worktree: el paralelismo no justifica un frente amplio e inacabado.
-- [Escritor y revisor](writer-reviewer.md) — un caso particular útil de dos sesiones aisladas: la segunda recibe un contexto limpio y revisa el commit terminado de la primera.
-- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) — proporciona una señal local de preparación para cada rama y una señal combinada tras la integración.
-- [Cuatro fases](explore-plan-code-commit.md) — el commit termina el trabajo en la rama y se convierte en un límite seguro de traspaso.
-- **Inicio reproducible del agente** — un futuro patrón vecino que convierte la preparación de un worktree nuevo en un comando rápido y verificable.
+- [Una funcionalidad a la vez](one-feature-at-a-time.md) acota el trabajo dentro de un solo worktree.
+- [Escritor y revisor](writer-reviewer.md) reparte la implementación y la revisión entre sesiones.
+- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) verifica las ramas antes y después de la integración.
+- [Cuatro fases](explore-plan-code-commit.md) cierra el ciclo con un commit verificado.
+- [Inicio reproducible del agente](reproducible-agent-bootstrap.md) prepara un worktree nuevo con un único comando verificable.

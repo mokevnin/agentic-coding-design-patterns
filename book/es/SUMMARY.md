@@ -9,6 +9,7 @@
 * [Cuatro fases](explore-plan-code-commit.md)
 * [Entrevista del agente](let-claude-interview-you.md)
 * [Grilling](grilling.md)
+* [Diseña dos veces](design-it-twice.md)
 * [Tickets trazadores](tracer-bullet-tickets.md)
 
 ## Desarrollo orientado a especificaciones

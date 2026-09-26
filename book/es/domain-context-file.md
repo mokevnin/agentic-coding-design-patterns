@@ -2,84 +2,54 @@
 group: context
 status: draft
 related: [context-engineering, claude-md-memory]
-source_rev: cde391f829d2528cb5d410d8085d0e2057b4d049
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Vocabulario del dominio
 
 ## Propósito
 
-Fijar el lenguaje canónico del proyecto en el repositorio: un glosario de
-términos del dominio y un registro de decisiones arquitectónicas que el agente
-lee en cada sesión. Un concepto — una palabra, y cada decisión no evidente
-tiene su porqué escrito: cura la deriva de términos, los renombrados en
-círculo y los intentos de «arreglar» lo deliberado.
+Registrar en el repositorio los términos del proyecto y las razones de las decisiones de arquitectura. El agente podrá cotejar con ellos los nombres en el código y las propuestas de cambio del sistema. Para cada concepto el equipo elige un nombre, y para una decisión no evidente guarda su justificación.
 
 ## También conocido como
 
-CONTEXT.md, glosario del dominio; el lenguaje ubicuo (ubiquitous language) de
-DDD llevado a un archivo; ADR — architecture decision records.
+CONTEXT.md, glosario del dominio, lenguaje ubicuo (ubiquitous language) de DDD; architecture decision records (ADR).
 
 ## Problema
 
-Un proyecto vivo tiene un lenguaje propio, y no está escrito en ninguna parte:
+Un proyecto tiene su propio lenguaje, que un participante nuevo no siempre puede reconstruir a partir del código. Por ejemplo, en una plataforma educativa, la inscripción en un curso y una suscripción de pago pueden dar un acceso parecido, pero tener fundamentos distintos.
 
-- Un concepto lleva tres nombres. «Cuenta» en la conversación, `Customer` en
-  el código, `client` en la tabla nueva. El agente, sin conocer el canon, usa
-  legítimamente cualquiera — y cada sesión añade sinónimos.
-- El agente propone renombrados. Para él `Enrollment` parece un nombre raro
-  para una suscripción — y lo «mejora» a `Subscription`, rompiendo el lenguaje
-  con el que el equipo habla con el negocio.
-- Las decisiones pierden su porqué. Medio año después nadie — ni humano ni
-  agente — recuerda que la comunicación de los servicios mediante eventos en
-  vez de llamadas directas fue una elección consciente. El agente ve
-  «complejidad innecesaria» y propone REST — y hay que rebatirlo de nuevo en
-  cada sesión.
+Si el agente los considera sinónimos, renombrará `Enrollment` a `Subscription` y ligará el acceso al pago. Los estudiantes corporativos pueden perder entonces el acceso, aunque sus inscripciones se pagaron de otra forma.
 
-La [memoria del proyecto](claude-md-memory.md) no cierra este agujero:
-responde a «cómo trabajamos» — comandos, convenciones, límites. «Qué
-significan las palabras» es otro eje, y volcar el glosario en el archivo
-general de reglas significa hincharlo.
+La razón de la separación original puede haber quedado solo en una conversación antigua. Sin un registro, el equipo tiene que explicarla de nuevo cada vez que alguien propone «simplificar» el modelo.
+
+La [memoria del proyecto](claude-md-memory.md) guarda las instrucciones de trabajo. Las definiciones de los conceptos del dominio conviene llevarlas a un vocabulario aparte y conectarlo a la sesión a través del archivo de memoria.
 
 ## Solución
 
-Dos artefactos en el repositorio que el agente recibe en cada sesión.
+Guarda en el repositorio un glosario y un registro de decisiones que el agente pueda usar al trabajar en una tarea.
 
-**El glosario** — `CONTEXT.md`: la lista de términos del dominio. El formato
-es estricto y deliberadamente pobre:
+**El glosario** en _CONTEXT.md_ define los términos del dominio. Le basta un formato breve.
 
-- Una palabra canónica por concepto; los demás sinónimos se listan bajo la
-  marca «evitar».
-- Definición de una o dos frases: qué *es* la cosa, no qué hace.
-- Solo términos de este dominio. Los conceptos generales de programación —
-  timeouts, reintentos, patrones — no viven en el vocabulario, aunque el
-  proyecto esté lleno de ellos.
-- Nada de detalles de implementación: el vocabulario no es una especificación
-  ni un borrador.
+- Cada concepto tiene un único nombre aceptado. Las demás variantes se enumeran con la marca «evitar».
+- La definición explica el sentido del concepto en una o dos frases.
+- El vocabulario incluye solo los conceptos a los que el proyecto da un sentido especial.
+- Los detalles de implementación se quedan en el código y en los planes técnicos.
 
-**El registro de decisiones** — `docs/adr/`: notas breves de «qué decidimos y
-por qué», un archivo por decisión. Un ADR se crea solo cuando se cumplen las
-tres condiciones: la decisión es difícil de revertir, sorprendería a un lector
-sin contexto, y es el resultado de una elección real entre alternativas. Basta
-un párrafo — el valor está en que la decisión y su motivo quedan *escritos*,
-no en secciones rellenadas.
+**El registro de decisiones** en _docs/adr/_ guarda la decisión tomada y su razón en un archivo aparte. En esta variante del patrón, el ADR hace falta para una elección difícil de revertir y difícil de entender sin contexto. El registro debe explicar qué alternativas consideró el equipo y por qué eligió una de ellas. Para un caso sencillo basta un párrafo.
 
-A partir de ahí el vocabulario trabaja en ambos sentidos. El agente coteja con
-él su propio discurso y el código — y deja de criar sinónimos. Y cuando el
-desarrollador usa una palabra que choca con el glosario, el agente está
-obligado a discutir: «el glosario define cancellation como anular el pedido
-completo, pero parece que hablas de una parcial — ¿cuál de las dos?» El
-término nuevo se anota en el vocabulario en el momento en que se asienta — sin
-dejarlo para luego.
+El agente coteja los términos con el vocabulario y aclara las discrepancias antes de cambiar el código. Por ejemplo, si cancellation significa cancelar todo el pedido, una petición de cancelación parcial exige una aclaración. Cuando el equipo ha acordado un concepto nuevo, el agente anota su definición de inmediato.
 
 ## Estructura
 
+En el diagrama, el glosario y el registro de decisiones entran en el contexto del agente.
+
 ```mermaid
 ---
-title: un concepto — una palabra; cada decisión tiene su porqué escrito
+title: el vocabulario guarda los términos, los ADR explican las decisiones
 ---
 flowchart LR
-  glossary["CONTEXT.md<br/>glosario: canon + listas «evitar»<br/>sin detalles de implementación"]:::accent
+  glossary["CONTEXT.md<br/>glosario: canon + «evitar»<br/>sin detalles de implementación"]:::accent
   adr["docs/adr/<br/>decisiones: qué y por qué<br/>registros de un párrafo"]
   map["CONTEXT-MAP.md<br/>si hay varios dominios"]:::muted
   session["Sesión del agente<br/>términos y código se cotejan con el vocabulario"]
@@ -92,94 +62,50 @@ flowchart LR
   session -. "el término asentado se fija en el vocabulario al momento" .-> glossary
 ```
 
-A la izquierda, los artefactos: el glosario con sus términos canónicos y el
-registro de decisiones; en repositorios grandes con varios dominios los une un
-mapa de contextos (`CONTEXT-MAP.md` — dónde vive cada vocabulario y cómo se
-comunican los contextos). Ambos artefactos entran en la sesión del agente
-junto con la capa permanente del contexto. Dentro de la sesión funciona el
-ciclo de cotejo: el agente detecta un conflicto de término y pide aclaración
-al desarrollador, el desarrollador dictamina la palabra canónica — y esta se
-fija en el vocabulario de inmediato. La flecha discontinua de vuelta es esa
-actualización: el vocabulario crece en el momento en que el término
-cristaliza, no al final de la semana.
+Si un término de la tarea difiere del vocabulario, el agente pide una aclaración al desarrollador y guarda la definición aceptada. La flecha discontinua muestra esa actualización. En un proyecto con varios dominios, _CONTEXT-MAP.md_ indica dónde están los vocabularios y cómo se relacionan sus contextos.
 
 ## Participantes / Componentes
 
-- **Glosario** (`CONTEXT.md`) — términos canónicos con definiciones y listas
-  «evitar».
-- **Registro de decisiones** (`docs/adr/`) — notas de un párrafo sobre
-  decisiones no evidentes con su porqué.
-- **Mapa de contextos** (`CONTEXT-MAP.md`) — para repositorios con varios
-  dominios: qué contextos hay, dónde viven sus vocabularios, cómo se
-  relacionan.
-- **Desarrollador** — fuente y árbitro del lenguaje: aprueba términos,
-  resuelve disputas.
-- **Agente** — coteja discurso y código con el vocabulario, cuestiona los
-  conflictos, actualiza el vocabulario cuando las decisiones se asientan.
+- **Glosario** (_CONTEXT.md_) guarda las definiciones y los sinónimos no deseados.
+- **Registro de decisiones** (_docs/adr/_) explica las elecciones de arquitectura no evidentes.
+- **Mapa de contextos** (_CONTEXT-MAP.md_) conecta los vocabularios de varios dominios.
+- **Desarrollador** aprueba los términos y resuelve las contradicciones.
+- **Agente** coteja el texto y el código con el vocabulario y anota las definiciones acordadas.
 
 ## Cuándo aplicarlo
 
-- El dominio tiene lenguaje propio: términos de negocio que no deben
-  difuminarse — facturación, logística, seguros, educación.
-- El proyecto vive mucho tiempo y sobrevivirá a cientos de sesiones: sin
-  canon, el lenguaje deriva con cada una.
-- El agente ya confunde términos, llama a un concepto de formas distintas o
-  propone renombrar lo que se llama así a propósito.
-- La base de código está dividida en varios dominios y una palabra significa
-  cosas distintas en lugares distintos — hace falta el mapa de contextos.
+- El dominio usa términos cuyo sentido importa conservar, por ejemplo en facturación o en educación.
+- En el proyecto trabajan distintas personas y agentes que necesitan un vocabulario común.
+- El agente ya confunde términos, llama a un mismo concepto de formas distintas o propone renombrar algo que se llama así a propósito.
+- En dominios distintos una misma palabra tiene sentidos diferentes.
 
-Para una utilidad de fin de semana el vocabulario es excesivo: el lenguaje no
-tendrá tiempo de derivar.
+Para una utilidad pequeña y de un solo uso, un vocabulario aparte no suele compensar.
 
 ## Consecuencias y compromisos
 
-- ➕ El agente habla el mismo idioma que el código y que tú: los nombres del
-  código nuevo coinciden con el lenguaje del equipo sin recordatorios.
-- ➕ La deriva de renombrados se detiene: el agente solo puede «mejorar» un
-  nombre canónico cuestionando el vocabulario explícitamente.
-- ➕ Las decisiones dejan de «arreglarse»: el ADR responde al «por qué es así»
-  antes de que el agente proponga rehacerlo.
-- ➕ El vocabulario también sirve a las personas: el desarrollador nuevo recibe
-  el lenguaje del proyecto del mismo archivo que el agente.
-- ➖ Un artefacto más que mantener: un vocabulario desactualizado desinforma
-  con aire de autoridad.
-- ➖ Exige disciplina del momento: el término se fija cuando se asienta — si lo
-  dejas para luego, se pierde.
-- ➖ La tentación de hinchar: los detalles de implementación y los términos
-  generales convierten el vocabulario en un vertedero, y un ADR por cada
-  estornudo devalúa el registro.
+- ➕ Los nombres nuevos en el código concuerdan con el lenguaje del equipo.
+- ➕ Antes de renombrar, el agente tiene que explicar la discrepancia con el vocabulario.
+- ➕ El ADR ayuda a evaluar una propuesta de rehacer algo teniendo en cuenta las razones originales.
+- ➕ Un desarrollador nuevo aprende los términos en el mismo documento que lee el agente.
+- ➖ El equipo tiene que mantener las definiciones al día.
+- ➖ Si se aplaza la anotación de un término acordado, la siguiente sesión puede elegir otro nombre.
+- ➖ Las definiciones sobrantes y los registros de decisiones triviales dificultan encontrar el contexto necesario.
 
 ## Implementación
 
-1. Crea con pereza: `CONTEXT.md` — cuando se asiente el primer término,
-   `docs/adr/` — cuando aparezca la primera decisión digna de registro. No
-   hacen falta plantillas vacías.
-2. Mantén pobre el formato del glosario: término, una o dos frases de «qué
-   es», lista «evitar». Sé categórico: de los sinónimos sobrevive uno.
-3. Filtra en la puerta: solo conceptos únicos de este dominio. Si un término
-   aparecería en cualquier proyecto, aquí no pinta nada.
-4. Crea los ADR según los tres criterios — difícil de revertir, sorprendente
-   sin contexto, elección real. Un párrafo: contexto, decisión, motivo.
-   Numera secuencialmente (`0001-...`, `0002-...`).
-5. Conecta el vocabulario a cada sesión — lo más simple: un import desde la
-   [memoria del proyecto](claude-md-memory.md) (en Claude Code — la línea
-   `@CONTEXT.md` en CLAUDE.md).
-6. Encarga al agente defender el lenguaje: pídele cotejar los términos y
-   discutir ante un conflicto, y anotar lo resuelto en el vocabulario de
-   inmediato.
-7. En un repositorio con varios dominios añade `CONTEXT-MAP.md`: la lista de
-   contextos, sus vocabularios y las relaciones entre ellos; los vocabularios
-   se mudan junto a sus módulos.
+1. Crea _CONTEXT.md_ cuando se haya acordado el primer término, y _docs/adr/_ cuando aparezca una decisión que haya que explicar a un lector futuro.
+2. Para cada término, escribe una definición breve y los sinónimos no deseados. Elige un único nombre para usar en el proyecto.
+3. Añade solo los conceptos cuyo sentido depende del dominio.
+4. En el ADR, anota el contexto, la decisión tomada y la razón de la elección. Numera los archivos de forma consecutiva (`0001-...`, `0002-...`).
+5. Conecta el vocabulario a través de la [memoria del proyecto](claude-md-memory.md). En Claude Code puedes usar para ello la línea `@CONTEXT.md` en CLAUDE.md.
+6. Pide al agente que detecte contradicciones en los términos y anote las definiciones acordadas justo después de la discusión.
+7. En un proyecto con varios dominios, coloca los vocabularios junto a los módulos y conéctalos mediante _CONTEXT-MAP.md_.
 
-En los [skills de Matt Pocock](matt-pocock-skills.md) el patrón lo implementa
-el skill `domain-modeling`: mantiene CONTEXT.md y los ADR según las reglas
-descritas, mientras los demás skills del pack — la entrevista, la
-especificación, la implementación — leen el vocabulario como fuente del
-lenguaje.
+En las [skills de Matt Pocock](matt-pocock-skills.md), el skill `domain-modeling` mantiene CONTEXT.md y los ADR. Los demás skills usan estos documentos durante la entrevista, la preparación de la especificación y la implementación.
 
 ## Ejemplo
 
-El glosario de una plataforma educativa — corto y categórico:
+A continuación se muestra el glosario de una plataforma educativa.
 
 ```markdown
 # Aprendizaje
@@ -189,8 +115,7 @@ El contexto de cursar: desde la inscripción hasta el certificado.
 ## Lenguaje
 
 **Inscripción (Enrollment)**:
-El hecho del acceso de un estudiante a un curso. Se crea al apuntarse,
-vive hasta su revocación.
+El hecho del acceso de un estudiante a un curso. Se crea al apuntarse, vive hasta su revocación.
 _Evitar_: suscripción, compra, acceso
 
 **Cohorte (Cohort)**:
@@ -202,74 +127,39 @@ Inscripción con todos los módulos obligatorios completados.
 _Evitar_: graduación, cierre del curso
 ```
 
-Y un ADR, `docs/adr/0003-enrollment-not-subscription.md`:
+La razón de la elección del nombre la guarda el ADR _docs/adr/0003-enrollment-not-subscription.md_.
 
 ```markdown
 # La inscripción no está ligada al pago
 
 El acceso al curso y la facturación están separados a propósito: las
-inscripciones también las crean contratos corporativos y becas, donde no
-existe suscripción alguna. Por eso Enrollment es una entidad propia, no un
-estado de Subscription.
+inscripciones las crean tanto contratos corporativos como becas, donde no
+existe suscripción alguna. Por eso Enrollment existe como entidad aparte.
 ```
 
-El desarrollador plantea la tarea: «haz que al cancelar la suscripción el
-estudiante pierda el acceso al curso». El agente, tras leer el vocabulario,
-responde con una pregunta:
+Pides que el estudiante pierda el acceso al curso al cancelar la suscripción. El agente lee el vocabulario y aclara la tarea.
 
-> El glosario marca «suscripción» como evitar — aquí esto es Enrollment, y
-> según el ADR-0003 no está ligado al pago. ¿Quieres revocar las
-> inscripciones creadas específicamente por facturación, o todas las
-> inscripciones del usuario?
+> En el vocabulario, el nombre aceptado para el acceso al curso es Enrollment. Según el ADR-0003, la inscripción no está necesariamente ligada al pago. ¿Hay que revocar solo las inscripciones creadas mediante facturación o todas las inscripciones del usuario?
 
-La ambigüedad que en el código se habría convertido en un bug para los
-estudiantes corporativos murió en la primera réplica. Sin el vocabulario el
-agente habría ligado obedientemente Enrollment a la facturación — y de paso
-habría «mejorado» los nombres.
+La aclaración permite conservar el acceso de los estudiantes corporativos, cuyas inscripciones no están ligadas a una suscripción personal. Detectas la ambigüedad antes de que se convierta en una condición para retirar el acceso.
 
 ## Antipatrones y errores comunes
 
-- **Vocabulario-especificación.** En las definiciones se cuelan detalles de
-  implementación, nombres de tablas y órdenes de llamada — el vocabulario se
-  convierte en un duplicado caducante del código. Define *qué es*; el resto
-  vive en el código y las especificaciones.
-- **Vocabulario-enciclopedia.** Los términos generales de programación y las
-  obviedades hinchan el archivo — las palabras del dominio se ahogan (ver
-  [ingeniería de contexto](context-engineering.md): cada línea cuesta
-  atención).
-- **Sinónimos sin árbitro.** Anotar todas las variantes de «como se dice
-  aquí» sin elegir el canon es legalizar la deriva en vez de detenerla.
-- **Vocabulario muerto.** El archivo existe pero no está conectado a la
-  sesión y no se actualiza con las decisiones — al mes miente, y el agente
-  con él.
-- **Un ADR por cada estornudo.** Las notas sobre decisiones triviales
-  entierran las importantes. Los tres criterios son un filtro en la puerta,
-  no una formalidad.
+- **Vocabulario-especificación.** Los nombres de tablas y el orden de las llamadas se quedan obsoletos enseguida. Deja en el vocabulario el sentido de los conceptos y describe la implementación en el código y en los planes técnicos.
+- **Vocabulario-enciclopedia.** Los términos generales de programación dificultan encontrar los conceptos del proyecto y ocupan contexto (véase [ingeniería de contexto](context-engineering.md)).
+- **Sinónimos sin árbitro.** Una lista de todas las variantes sin elegir el nombre principal conserva la ambigüedad.
+- **Vocabulario muerto.** Un documento que nadie lee ni actualiza se va alejando poco a poco del lenguaje del proyecto.
+- **Un ADR por cada estornudo.** Entre registros de decisiones triviales cuesta más encontrar las razones de las elecciones de arquitectura.
 
 ## Usos conocidos
 
-- **Skills de Matt Pocock** — el skill `domain-modeling`: CONTEXT.md con el
-  formato «término + evitar», ADR de un párrafo con los tres criterios, mapa
-  de contextos para repos multi-dominio; la fuente primaria del patrón en su
-  forma agéntica.
-- **Domain-Driven Design** — el lenguaje ubicuo y los bounded contexts de
-  Eric Evans: la raíz de la idea, aquí trasladada de las cabezas del equipo a
-  un archivo para el agente.
-- **La convención ADR** — los architecture decision records de Michael Nygard
-  y herramientas como adr-tools; una práctica con una década de historia que
-  el agente lee como contexto.
-- **Kiro** — el archivo de steering product.md como análogo parcial: contexto
-  de producto conectado a cada sesión de especificación.
+- **Skills de Matt Pocock** implementan el patrón mediante `domain-modeling`, que mantiene el vocabulario, los ADR y el mapa de contextos.
+- **Domain-Driven Design** de Eric Evans introduce el lenguaje ubicuo y los contextos delimitados en los que se apoya este patrón.
+- **La convención ADR** de Michael Nygard y herramientas como adr-tools ayudan a conservar las razones de las decisiones de arquitectura.
+- **Kiro** conecta el contexto del producto mediante el archivo de steering product.md.
 
 ## Patrones relacionados
 
-- [Memoria del proyecto](claude-md-memory.md) — el eje vecino de la capa
-  permanente: «cómo trabajamos» frente a «qué significan las palabras»; el
-  vocabulario se conecta a la sesión a través de ella.
-- [Ingeniería de contexto](context-engineering.md) — el vocabulario y los ADR
-  forman parte de la capa permanente del contexto y obedecen su economía:
-  corto y de alta señal.
-- [Desarrollo orientado a especificaciones](spec-driven-development.md) — las
-  especificaciones escritas en el lenguaje canónico no divergen entre sí en
-  los términos; el vocabulario es el denominador común de todos los
-  artefactos.
+- [Memoria del proyecto](claude-md-memory.md) conecta el vocabulario a la sesión del agente.
+- [Ingeniería de contexto](context-engineering.md) ayuda a seleccionar la información para el vocabulario y los ADR.
+- [Desarrollo orientado a especificaciones](spec-driven-development.md) usa el vocabulario común al escribir especificaciones.

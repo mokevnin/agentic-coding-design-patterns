@@ -2,235 +2,154 @@
 group: task-setting
 status: draft
 related: [spec-driven-development, one-feature-at-a-time, wayfinder, prototype-to-answer, one-shotting]
-source_rev: 5df7b47a444c5c22419c5b424a05805eccc71275
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Tickets trazadores
 
 ## Propósito
 
-Trocear un plan o una especificación en tickets trazadores: rebanadas
-verticales estrechas a través de todas las capas, cada una demostrable por
-sí sola y del tamaño de una ventana de contexto fresca, con dependencias
-bloqueantes explícitas entre tickets. El agente recibe trozos ejecutables,
-no un épico.
+Dividir la especificación en tickets pequeños con un comportamiento comprobable de extremo a extremo. Cada ticket atraviesa las capas del sistema que necesita, cabe en una sesión de trabajo e indica explícitamente sus dependencias.
 
 ## También conocido como
 
-Tracer-bullet tickets, rebanadas verticales, trazadores; `/to-tickets` en
-los skills de Matt Pocock.
+Tracer-bullet tickets, rebanadas verticales, trazadores; `/to-tickets` en los skills de Matt Pocock.
 
 ## Problema
 
-La especificación está aprobada — y es un épico. Entregársela al agente tal
-cual no funciona, y las formas habituales de trocear fallan:
+Una especificación grande puede no caber en una sola pasada. Dividirla por capas técnicas, además, aplaza la comprobación del comportamiento.
 
-- Entera no cabe en la ventana: el agente que recibe «implementa la spec»
-  intenta previsiblemente [resolverla de un golpe](one-feature-at-a-time.md)
-  y deja un reguero de trabajo a medias.
-- Trocear por capas — «primero todo el esquema, luego toda la API, luego
-  toda la UI» — da piezas que no se pueden demostrar: si el sistema
-  funciona se sabrá solo en la integración del final, el punto más caro.
-- Los trozos sin dependencias explícitas son una trampa para el ejecutor:
-  el agente toma una tarea que depende de lo no hecho y empieza a inventar
-  los detalles que faltan.
+Por ejemplo, después de crear todo el esquema y la API, el usuario aún no puede configurar una exportación. Un desajuste entre interfaces solo aparecerá cuando la UI esté lista. Un escenario estrecho de crear una sola programación permite comprobar antes cómo interactúan las capas. Para el siguiente escenario hay que indicar explícitamente la dependencia de la creación de programaciones, que ya funciona.
 
 ## Solución
 
-Trocear en vertical y declarar las dependencias. Cada ticket es un
-**trazador**: como una bala trazadora, atraviesa una trayectoria estrecha
-pero completa por todas las capas del sistema — esquema, API, interfaz,
-tests — y muestra hacia dónde va la ráfaga.
+Delimita los **tickets trazadores** por resultado para el usuario. La primera rebanada pasa por los cambios mínimos de esquema, API, UI y tests necesarios para un escenario. Las siguientes rebanadas amplían el camino que ya funciona.
 
-Las reglas de la rebanada:
+Comprueba cada ticket con las siguientes condiciones.
 
-- **Vertical, no horizontal**: un camino estrecho por todas las capas, no
-  un trozo ancho de una capa.
-- **Demostrable por sí sola**: el ticket terminado se puede enseñar o
-  verificar sin esperar al resto.
-- **Del tamaño de una ventana fresca**: el agente saca el ticket en una
-  sesión, con margen para las iteraciones de verificación.
-- **El prefactoring, como primer ticket**: si conviene hacer fácil el
-  cambio primero, eso es una rebanada aparte al frente de la cola.
+- Abarca todas las capas necesarias para el comportamiento elegido.
+- El resultado se puede comprobar al terminar el ticket.
+- En la sesión queda sitio para la implementación y para corregir errores.
+- La preparación necesaria del código va en un primer ticket aparte con su propia comprobación.
 
-Cada ticket declara sus **bloqueadores** — qué tickets deben terminar antes
-de que pueda empezar. Un ticket sin bloqueadores se puede tomar de
-inmediato; el conjunto de esos tickets es la frontera, visible en el
-tracker.
+En cada ticket indica los **bloqueos**. El conjunto de tickets abiertos con las dependencias cerradas forma la frontera, de la que se puede elegir trabajo.
 
-El troceado pasa por el desarrollador: el agente presenta el desglose como
-lista — título, bloqueadores, qué comportamiento de extremo a extremo hace
-funcionar el ticket — e itera con los comentarios: ¿demasiado grueso? ¿las
-dependencias son correctas? ¿qué fusionar, qué dividir? Los tickets
-aprobados se publican en el tracker con relaciones de bloqueo nativas.
+El agente te muestra los títulos, las dependencias y los resultados comprobables. Después de que precises el tamaño y los bloqueos, publica los tickets acordados en el tracker.
 
-La excepción son las **refactorizaciones anchas**: un cambio mecánico con
-radio de impacto en toda la base (renombrar una columna, retipar un símbolo
-compartido) no se rebana en vertical. Se lleva como **expand–contract**:
-primero expandir — añadir la forma nueva junto a la vieja para que nada se
-rompa; luego migrar los puntos de llamada por lotes — cada lote su propio
-ticket bloqueado por la expansión; y un ticket final de contracción borra
-la forma vieja cuando no queda ningún llamador.
+Para un cambio masivo de interfaz usa **expand–contract**. Primero añade la forma nueva conservando la vieja, luego migra a los consumidores en tandas separadas. El último ticket elimina la forma vieja cuando han terminado todas las migraciones.
 
 ## Estructura
 
+Un ticket de extremo a extremo atraviesa todas las capas necesarias para un escenario. En el diagrama, cada columna termina con su propia comprobación del comportamiento.
+
 ```mermaid
 ---
-title: una rebanada estrecha por todas las capas — demostrable por sí sola
+title: cada rebanada de extremo a extremo da un escenario que funciona
 ---
-flowchart LR
-  spec["La spec<br/>un épico aprobado"]:::accent
-  subgraph slices["cada ticket atraviesa esquema, API, UI y tests"]
-    direction LR
-    t1["ticket 1"]:::accent
-    t2["ticket 2"]:::accent
-    t3["ticket 3"]:::accent
-    t1 --> t2 --> t3
+flowchart TB
+  subgraph create["Ticket A: crear una nota"]
+    direction TB
+    a_ui["UI: formulario"] --> a_api["API: creación"]
+    a_api --> a_db[("Datos: escritura")]
+    a_db --> a_test["Test: nota guardada"]:::accent
   end
-  frontier["La frontera<br/>tickets sin bloqueadores;<br/>uno por sesión,<br/>cada uno aterriza en verde"]
-  horizontal["para contrastar: la rebanada horizontal —<br/>un trozo ancho de una capa —<br/>solo se puede demostrar en la integración del final"]:::warn
-  spec --> slices --> frontier
-  t2 -.- horizontal
+  subgraph search["Ticket B: encontrar una nota"]
+    direction TB
+    b_ui["UI: barra de búsqueda"] --> b_api["API: búsqueda"]
+    b_api --> b_db[("Datos: consulta")]
+    b_db --> b_test["Test: nota encontrada"]:::accent
+  end
+  subgraph horizontal["División por capas"]
+    direction TB
+    h_db["Ticket 1: todo el esquema"] --> h_api["Ticket 2: toda la API"]
+    h_api --> h_ui["Ticket 3: toda la UI"]
+    h_ui --> h_test["Comprobación tras el ensamblaje"]:::warn
+  end
 ```
 
-A la izquierda, la especificación-épico. En el centro, su troceado: cada
-ticket atraviesa todas las capas en una franja estrecha, y las flechas de
-bloqueo ordenan los tickets en un orden parcial. Abajo, para contrastar, el
-troceado horizontal por capas: piezas anchas, ninguna demostrable antes de
-la integración final. A la derecha, la ejecución: una frontera de tickets
-sin bloquear, uno por sesión, cada uno aterrizando en verde.
+Las flechas dentro de las columnas muestran el contenido del ticket y el límite de su comprobación. El orden de trabajo entre tickets lo fija un grafo de dependencias aparte.
+
+```mermaid
+---
+title: la frontera la forman los tickets con dependencias cerradas
+---
+flowchart TB
+  create["✓ Creación de nota"]:::muted
+  search["Búsqueda — disponible"]:::accent
+  archive["Archivado — disponible"]:::accent
+  filter["Búsqueda en el archivo — bloqueada"]:::warn
+  create --> search
+  create --> archive
+  search --> filter
+  archive --> filter
+```
+
+En este ejemplo, la búsqueda y el archivado dependen de la creación de notas ya terminada y forman la frontera. La búsqueda en el archivo se puede tomar cuando terminen ambas ramas. El agente elige un ticket disponible y lo comprueba entero.
 
 ## Participantes / Componentes
 
-- **La especificación** — la fuente del troceado: el «qué construimos»
-  aprobado.
-- **El ticket trazador** — una rebanada vertical: comportamiento de extremo
-  a extremo, criterios de aceptación, lista de bloqueadores.
-- **Las dependencias bloqueantes** — el orden parcial explícito; la
-  frontera se calcula a partir de ellas.
-- **El desarrollador** — aprueba la granularidad y las dependencias; el
-  agente propone, el humano decide.
-- **El agente ejecutor** — toma un ticket de la frontera y lo lleva hasta
-  el final en una ventana fresca.
+- **Especificación** fija el comportamiento esperado.
+- **Ticket** describe el escenario de extremo a extremo, los criterios y las dependencias.
+- **Bloqueos** determinan el orden de trabajo admisible.
+- **Desarrollador** acuerda el tamaño de los tickets y las dependencias.
+- **Agente** lleva el ticket disponible elegido hasta un resultado comprobado.
 
 ## Cuándo aplicarlo
 
-- Trabajo aprobado mayor que una sesión: una especificación, un plan
-  grande, el resultado de un [mapa de investigación](wayfinder.md).
-- Se busca paralelismo: la frontera permite que varias sesiones trabajen a
-  la vez sin pisarse.
-- Es la mecánica concreta del paso «tareas» de la
-  [tubería SDD](spec-driven-development.md) — cuando `tasks.md` hace falta
-  como cola ejecutable y no como lista de control.
+- La especificación o el plan aprobados ocupan varias sesiones.
+- Las rebanadas independientes pueden ejecutarse en paralelo.
+- En [SDD](spec-driven-development.md) hace falta un orden explícito de ejecución de las tareas.
 
-No hace falta para trabajo de una sesión — basta un plan. Y no para la
-exploración: el trabajo confuso lo aclara primero el
-[mapa de investigación](wayfinder.md); los tickets se cortan de lo ya
-claro.
+Para una sola sesión suele bastar un plan. Si aún no se conoce la forma de resolver el problema, usa primero el [mapa de investigación](wayfinder.md).
 
 ## Consecuencias y compromisos
 
-- ➕ Cada ticket aterriza verde y demostrable: no hay explosión de
-  integración al final, porque la integración ocurre dentro de cada
-  rebanada.
-- ➕ El tamaño de ventana significa que al ejecutor siempre le alcanza el
-  contexto — y el corte de sesión cuesta un ticket.
-- ➕ La frontera da paralelismo barato y una imagen honesta del progreso.
-- ➖ Trocear es una destreza: rebanadas demasiado gruesas no caben en la
-  ventana, demasiado finas entierran el trabajo en sobrecostes.
-- ➖ Las refactorizaciones anchas rompen la regla de verticalidad — piden
-  el modo aparte expand–contract.
-- ➖ Infraestructura de tracker: tickets, dependencias, estados — para un
-  trabajo pequeño es burocracia.
+- ➕ Cada rebanada comprueba la interacción de las capas necesarias antes de terminar toda la funcionalidad.
+- ➕ Un ticket pequeño deja más contexto para la comprobación y las correcciones.
+- ➕ Las dependencias explícitas ayudan a elegir el trabajo disponible y a coordinar a los ejecutores.
+- ➖ Los tickets demasiado grandes no caben en una sesión, y los diminutos aumentan el coste de coordinación.
+- ➖ Una refactorización masiva necesita un orden aparte, expand–contract.
+- ➖ Los tickets, sus estados y los bloqueos requieren mantenimiento.
 
 ## Implementación
 
-1. Reúne el contexto: la especificación o el plan están en la conversación;
-   estudia la base de código antes de trocear y busca oportunidades de
-   prefactoring: «haz fácil el cambio y luego haz el cambio fácil».
-2. Trocea en vertical: cada ticket describe un comportamiento de extremo a
-   extremo desde el usuario — no «hacer la tabla» sino «el horario se crea
-   y aparece en la lista».
-3. Declara los bloqueadores de cada ticket; sin bloqueadores — candidato a
-   la frontera.
-4. Presenta el desglose al desarrollador como lista e itera: granularidad,
-   dependencias, fusiones y divisiones.
-5. Publica en el tracker en orden de dependencias, con bloqueo nativo y
-   criterios de aceptación. Evita rutas de archivos y fragmentos de código
-   en los tickets — caducan; la excepción son piezas ricas en decisiones de
-   los [prototipos](prototype-to-answer.md), que codifican una decisión con
-   más precisión que la prosa.
-6. La refactorización ancha llévala aparte: ticket de expansión → lotes de
-   migración por radio de impacto → ticket de contracción bloqueado por
-   todos los lotes.
-7. Ejecuta la frontera a [un ticket por pasada](one-feature-at-a-time.md),
-   limpiando el contexto entre tickets.
+1. Estudia la especificación y el código. Averigua si hace falta un cambio preparatorio antes de añadir el comportamiento.
+2. Delimita los escenarios de usuario, por ejemplo crear una programación que aparezca en la lista.
+3. Anota las dependencias de cada ticket.
+4. Acuerda con el agente el tamaño de las rebanadas y el orden de trabajo.
+5. Publica los tickets con criterios de aceptación y bloqueos. Incluye detalles de implementación solo donde conserven una decisión importante, por ejemplo el resultado de un [prototipo](prototype-to-answer.md).
+6. Para una refactorización amplia, define las etapas de ampliar la interfaz, migrar a los consumidores y eliminar la forma vieja.
+7. Ejecuta la frontera a [un ticket por pasada](one-feature-at-a-time.md), limpiando el contexto entre tickets.
 
 ## Ejemplo
 
-La especificación «exportación de informes programada» del
-[capítulo de SDD](spec-driven-development.md) está aprobada. El agente
-propone el desglose:
+Tras aprobarse la exportación del [capítulo sobre SDD](spec-driven-development.md), el agente propone tickets de extremo a extremo.
 
-1. **El horario se crea y se ve** — la migración, el modelo, una UI mínima:
-   el usuario guarda un horario y lo ve en la lista. Sin bloqueadores.
-2. **El informe sale según el horario** — el worker, el armado, el correo:
-   a la hora fijada el informe llega al buzón. Bloqueado por: 1.
-3. **El fallo se convierte en notificación** — un error de armado es un
-   correo de fallo, no silencio. Bloqueado por: 2.
-4. **Borrar un informe desactiva sus horarios.** Bloqueado por: 1.
+1. **Crear una programación.** El usuario guarda una programación y la ve en la lista. El ticket incluye los cambios necesarios de esquema, API y UI. Sin dependencias.
+2. **Enviar el informe.** A la hora fijada, el usuario recibe un correo con el informe. El ticket depende de crear una programación.
+3. **Aviso de fallo.** Si falla la generación, los destinatarios reciben un correo con la causa del fallo. El ticket depende de enviar el informe.
+4. **Eliminar un informe.** La eliminación desactiva las programaciones asociadas. El ticket depende de su creación.
 
-El desarrollador ajusta la granularidad — «el primer ticket pesa; saca la
-UI de la lista como rebanada propia» — y aprueba. Los tickets van al
-tracker con sus bloqueos. La frontera es el ticket 1; tras él se abren el 2
-y el 4, y dos sesiones paralelas los toman a la vez. Cada ticket termina en
-comportamiento demostrable: tras el segundo ya se puede enseñar al cliente
-un correo con el informe — mucho antes del final de toda la especificación.
+Confirmas que la primera rebanada es lo bastante pequeña y se puede comprobar desde la UI. Tras ella quedan disponibles el envío del informe y la desactivación de programaciones. Se pueden hacer por separado con un contrato acordado. Tras el segundo ticket, el equipo ya puede enseñar el correo con el informe, aunque el tratamiento de fallos aún está por llegar.
 
 ## Antipatrones y errores comunes
 
-- **Trocear por capas.** «Primero todo el esquema, luego toda la API» —
-  ninguna pieza es demostrable y la integración explota al final. Cortar a
-  través de las capas, no a lo largo.
-- **El ticket-épico.** Una rebanada que no cabe en la ventana reproduce el
-  problema original en miniatura: el agente vuelve a intentar el
-  [golpe único](one-shotting.md).
-- **Dependencias en la cabeza.** Los bloqueos sin escribir significan que
-  el agente tomará un ticket que depende de lo no hecho — e inventará lo
-  que falta.
-- **Rutas y fragmentos en los tickets.** La concreción de implementación
-  caduca antes de que le llegue el turno al ticket. Describe
-  comportamiento; código — solo las piezas ricas en decisiones de los
-  prototipos.
-- **Una refactorización ancha como trazador.** Un renombrado por toda la
-  base no se enhebra en vertical — la rebanada forzada no aterrizará en
-  verde. Expand–contract.
+- **División por capas.** Un esquema completo sin un escenario que funcione aplaza la comprobación de integración.
+- **Ticket épico.** Un punto demasiado grande vuelve a crear varias partes sin terminar.
+- **Dependencias sin anotar.** El ejecutor puede empezar a trabajar antes de que esté listo el contrato necesario.
+- **Detalle excesivo.** Las rutas obsoletas y los fragmentos de código estorban al elegir la implementación actual. Conserva ante todo el comportamiento y las restricciones.
+- **Refactorización masiva como funcionalidad.** Usa expand–contract para cambiar por etapas una interfaz compartida.
 
 ## Usos conocidos
 
-- **Skills de Matt Pocock** — `/to-tickets`: la fuente primaria de la
-  mecánica — las reglas de la rebanada vertical, las dependencias
-  bloqueantes, el cuestionario con el desarrollador, la publicación al
-  tracker y el expand–contract para refactorizaciones anchas; la ejecución
-  con `/implement`, un ticket a la vez.
-- **The Pragmatic Programmer** — las balas trazadoras como metáfora: un
-  canal fino de extremo a extremo por el sistema que muestra hacia dónde va
-  la ráfaga — y, a diferencia del prototipo, se queda en el código.
-- **Toolkits de SDD** — los planes y listas de tareas de
-  [Superpowers](superpowers.md): el mismo troceado en pasos ejecutables;
-  los trazadores añaden la verticalidad y el bloqueo explícito.
+- **Los skills de Matt Pocock** usan `/to-tickets` para la división de extremo a extremo e `/implement` para ejecutar los tickets.
+- **The Pragmatic Programmer** describe una implementación trazadora que comprueba un camino a través del sistema y sigue evolucionando.
+- **Los toolkits de SDD**, incluido [Superpowers](superpowers.md), dividen los planes en pasos ejecutables. Los tickets trazadores fijan además un resultado de extremo a extremo y las dependencias.
 
 ## Patrones relacionados
 
-- [Desarrollo orientado a especificaciones](spec-driven-development.md) —
-  los tickets trazadores son la mecánica concreta del paso «tareas»: la
-  especificación se convierte en una cola ejecutable.
-- [Una funcionalidad a la vez](one-feature-at-a-time.md) — la regla de
-  ejecución de la cola: un ticket por pasada, en ventana fresca.
-- [Mapa de investigación](wayfinder.md) — el predecesor por etapa: el mapa
-  despeja la niebla hasta las decisiones; los tickets cortan lo claro en lo
-  ejecutable.
-- [Prototipo desechable](prototype-to-answer.md) — el proveedor de
-  fragmentos ricos en decisiones para los tickets — y un contraste útil: el
-  prototipo se tira, el trazador se queda y crece.
-- [One-shotting](one-shotting.md) — el antipatrón que un ticket demasiado grande reproduce en miniatura.
+- [Desarrollo orientado a especificaciones](spec-driven-development.md) aporta la especificación que se divide.
+- [Una funcionalidad a la vez](one-feature-at-a-time.md) limita la ejecución a un ticket por pasada.
+- [Mapa de investigación](wayfinder.md) aclara las decisiones antes de preparar la cola de implementación.
+- [Prototipo desechable](prototype-to-answer.md) da decisiones comprobadas para los requisitos del ticket.
+- [One-shotting](one-shotting.md) vuelve cuando un ticket no cabe en la ventana y el agente intenta de nuevo hacerlo todo de una pasada.

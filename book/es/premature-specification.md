@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [explore-plan-code-commit]
-source_rev: 7f11d956633c1981bc349bb2fac1261b4125afe2
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Especificación prematura
@@ -13,63 +13,45 @@ Premature Specification, «la solución en lugar del problema».
 
 ## Contexto
 
-El desarrollador plantea una tarea al agente y, en lugar del objetivo, describe
-de inmediato una implementación concreta: qué funciones llamar, qué biblioteca
-usar, en qué orden ejecutar los pasos.
+Indicas de entrada las funciones, la biblioteca y el orden de las llamadas, aunque todavía no has explicado el objetivo de la tarea.
 
 ## Problema
 
-Al agente se le entregan los detalles técnicos del «cómo hacerlo», saltándose
-el «qué hace falta y para qué». La tarea se formula como un plan de
-implementación ya hecho, no como un problema por resolver.
+El agente recibe un plan ya hecho y empieza a ejecutarlo. Sin una descripción del problema, le cuesta valorar si el mecanismo elegido resuelve la tarea original.
 
 ## Por qué se hace
 
-- Ilusión de control: parece que una instrucción detallada reduce el riesgo.
-- Sensación de velocidad: dictar tu propio plan es más fácil que explicar el
-  objetivo.
-- Trasladar tu propio borrador de solución — posiblemente no el mejor.
+- Una instrucción detallada da la sensación de controlar el resultado.
+- Dictar un plan que ya tienes pensado parece más rápido que explicar el objetivo.
+- Trasladas a la petición tu primera idea de solución sin compararla con alternativas.
 
 ## Consecuencias
 
-- ➖ El agente no aporta su conocimiento a la elección del enfoque — pierdes
-  las opciones más simples o más fiables que podría haber propuesto.
-- ➖ Se fija una solución prematura, a menudo subóptima; luego acabas depurando
-  tus propias suposiciones tempranas.
-- ➖ Se estrecha el espacio de soluciones: el agente optimiza el mecanismo
-  indicado, no el objetivo original.
-- ➖ Es más difícil notar que la tarea en sí está mal planteada.
+- ➖ Al agente le cuesta más proponer un enfoque más sencillo si la implementación ya está prescrita.
+- ➖ Se fija una solución prematura, a menudo subóptima; luego acabas depurando tus propias suposiciones tempranas.
+- ➖ El agente perfecciona el mecanismo indicado aunque la tarea original requiera otra solución.
+- ➖ Cuesta más darse cuenta de que la tarea en sí está mal planteada.
 
 ## Señales
 
 - En el prompt hay más «cómo» que «qué» y «para qué».
 - Se enumeran funciones/bibliotecas/pasos concretos sin justificación.
-- Se nombran técnicas de implementación antes de describir el resultado
-  deseado.
+- Se nombran técnicas de implementación antes de describir el resultado deseado.
 
 ## Cómo hacerlo mejor
 
-Describe primero el objetivo, el contexto, las restricciones y los criterios de
-completitud — y deja el «cómo» al agente. Fija la implementación solo donde sea
-una restricción real (un contrato de API, un invariante, la compatibilidad), y
-marca esos lugares explícitamente.
+Describe primero el objetivo, las restricciones y los criterios de finalización. Pide al agente que proponga un enfoque. Fija una implementación concreta solo donde se derive de un contrato obligatorio o de un requisito de compatibilidad, y explica esa restricción.
 
 ## Ejemplo
 
 **Antes:**
 
-> Añade un debounce de 300 ms con `lodash.debounce` en el manejador `onChange`
-> del campo de búsqueda.
+> Añade un debounce de 300 ms con `lodash.debounce` en el manejador `onChange` del campo de búsqueda.
 
 **Después:**
 
-> El campo de búsqueda envía una petición con cada tecla y sobrecarga el
-> backend. Quiero que la petición salga solo cuando el usuario haya terminado
-> de escribir. Propón un enfoque; el contrato externo del componente no se
-> puede cambiar.
+> El campo de búsqueda envía una petición con cada carácter que se teclea y sobrecarga el backend. Quiero que la petición salga solo cuando el usuario haya terminado de escribir. Propón un enfoque; el contrato externo del componente no se puede cambiar.
 
 ## Patrones y antipatrones relacionados
 
-- [Cuatro fases](explore-plan-code-commit.md) — el
-  patrón cuya fase de plan degenera en especificación prematura si se exige
-  detalle antes de entender el problema.
+- [Cuatro fases](explore-plan-code-commit.md) permite explorar la tarea antes de elegir la implementación.

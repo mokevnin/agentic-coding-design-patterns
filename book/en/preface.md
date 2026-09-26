@@ -1,23 +1,13 @@
 ---
-source_rev: cd183077a183e2eb5932824fcf7573f7adbe8e10
+source_rev: 2fb6dfbf49ff27fa705c37ac5f146580b339bed3
 ---
 
 # Preface
 
-The "Gang of Four" once gave object-oriented programming a shared vocabulary:
-instead of reinventing a solution each time, engineers began to name it —
-"Observer", "Strategy", "Factory".
+The "Gang of Four" gave object-oriented programming a shared vocabulary: "Observer", "Strategy", "Factory". For example, you tell a colleague: "A Strategy fits here." You don't need to explain how it works: your colleague already knows that solution.
 
-Agentic programming today is where OOP was before the patterns catalog existed:
-the techniques are known, but they lack shared names, and the knowledge is
-scattered across articles, talks, and framework code. This book is an attempt to
-assemble such a catalog for agents and LLMs: to name recurring solutions and
-describe their forces and trade-offs.
+Techniques for working with coding agents also recur from project to project. This book is a catalog of them. With it, you can name a solution, understand how it works, and compare its pros and cons with the alternatives.
 
-Like any patterns catalog, it is first of all a compilation: most of the
-solutions were not invented by the author but gathered from existing sources —
-Anthropic's engineering guides, community practices, skill packs, articles, and
-talks; primary sources are cited in the chapters. To these are added the
-author's own findings and ideas, tested in his own practice.
+The author did not invent most of the solutions but gathered them from Anthropic's engineering guides, community practices, [skill](glossary.md) packs, articles, and talks. You will find links to the primary sources in the chapters. The author also adds findings and ideas from his own practice to the catalog.
 
-The book is living and open. Patterns are added and refined. To propose a new pattern or [extend an existing chapter](https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md#extend-an-existing-pattern) with your own experience, see [CONTRIBUTING](https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md).
+The book is living and open: new patterns are added and existing ones are refined. If you want to propose a new pattern or [extend an existing chapter](https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md#extend-an-existing-pattern) with your own experience, read [CONTRIBUTING](https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md).

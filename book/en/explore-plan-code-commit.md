@@ -2,273 +2,158 @@
 group: task-setting
 status: draft
 related: [spec-driven-development, premature-specification, writer-reviewer, reflection]
-source_rev: 7f11d956633c1981bc349bb2fac1261b4125afe2
+source_rev: c1e079ffc2d2815b86ae4a39341e57c9957464f0
 ---
 
 # Four Phases
 
 ## Intent
 
-Split the agent's work on a non-trivial task into four explicit phases —
-exploration, planning, implementation, and committing the result — so that the
-agent first understands the task and agrees on the approach with the developer,
-and only then writes code.
+If the task is non-trivial, split the agent's work into four phases: explore, plan, code and commit. First the agent studies the code and agrees on the approach with you. Only then does it write code and check the result.
 
 ## Also known as
 
-Explore — Plan — Code — Commit (EPCC), "plan first, code second".
+Explore–Plan–Code–Commit (EPCC), "plan first, code second".
 
 ## Problem
 
-By default, an agent starts writing code from the very first message. For a
-simple edit that is fine, but on a non-trivial task it has not yet seen the
-relevant files, does not know the project's conventions, and easily solves the
-wrong problem. The developer discovers this only while reviewing the finished
-diff — at the most expensive point: redoing the work costs more than the whole
-conversation before it.
+If the agent starts writing code right away, it may miss a constraint of an existing interface. You will find the mistake only when reviewing the finished code, and the agent will have to redo the implementation. Had the agent studied the code first and shown you a plan, you would have caught that constraint earlier.
 
-Trying to insure against this with a more detailed prompt leads to the opposite
-extreme — premature specification: you dictate the implementation instead of
-the task. What you need is a way to catch a wrong direction early, without
-taking the choice of approach away from the agent.
+A detailed prompt can lock in a mistake too. If you dictate the implementation in it up front, the agent will carry it out even when the solution is wrong (see [Premature Specification](premature-specification.md)). So let the agent explore the task and propose an approach on its own. Then you check that approach before the agent starts changing code.
 
 ## Solution
 
-Explicitly walk the agent through four sequential phases and forbid writing
-code in the first two.
+Explicitly walk the agent through the four phases in order, and forbid it to write code in the first two.
 
-1. **Explore.** The agent reads the relevant code and gathers context. No
-   edits — understanding the task only.
-2. **Plan.** The agent proposes an approach: what to change, in what order,
-   what the risks are. Before the developer reads it, a reviewer with a fresh context checks the plan for gaps, contradictions with the code, and steps nothing can verify; the author fixes it. Then the developer reads the plan and approves or amends it.
-   This is the main checkpoint: correcting course at the plan level is many
-   times cheaper than at the code level.
-3. **Code.** The agent implements the approved plan, checking itself against
-   the plan and against the available checks (tests, build, linter).
-4. **Commit.** The result is locked in: a commit with a meaningful message, a
-   pull request, and documentation updates where needed.
+1. **Explore.** The agent reads the relevant code and gathers context, but edits nothing.
+2. **Plan.** The agent describes the approach, the order of changes and the risks. Before you read the plan, a reviewer with a fresh context checks it: it looks for gaps, contradictions with the code and steps that nothing can verify. The author fixes the plan based on the findings. Then you read the plan and clarify the constraints before the agent moves on to the code.
+3. **Code.** The agent implements the approved plan. It checks itself against the plan and against the available checks: tests, the build, the linter.
+4. **Commit.** The agent saves the verified result in a commit with a meaningful message and prepares a pull request. If behavior has changed, it updates the documentation.
 
 ## Structure
+
+In the diagram, the agent goes through the four phases in order.
 
 ```mermaid
 ---
 title: a checkpoint between the plan and the code
 ---
 flowchart TB
-  explore["Explore<br/>reads the code, writes nothing"]
+  explore["Explore<br/>reads code, writes nothing"]
   plan["Plan<br/>approach and risks, no code yet"]
-  check["Plan review<br/>a reviewer looks for gaps"]:::muted
-  code["Code<br/>implements the plan"]
+  check["Plan review<br/>reviewer looks for gaps"]:::muted
+  code["Code<br/>implementation by the plan"]
   commit["Commit<br/>commit, PR, documentation"]
   explore --> plan
   plan --> check
   check -. "findings — fix the plan" .-> plan
-  check -- "the developer approves the plan" --> code
+  check -- "developer approves the plan" --> code
   code --> commit
-  code -. "plan diverges from reality — go back" .-> plan
-  gate["checkpoint<br/>the one place a human is required"]:::warn
+  code -. "plan diverged from reality — go back" .-> plan
+  gate["checkpoint<br/>developer agrees on the approach"]:::warn
   plan -.- gate
 ```
 
-The reviewer strips the mechanical mistakes out of the plan — forgotten files, contradictions with the code, unverifiable steps — so the developer reads an already cleaned-up plan and spends attention on the choice of approach.
-
-The phases run strictly in order, but the process is not one-way: if the plan
-diverges from reality during implementation, the right move is to return to the
-planning phase and re-agree on the plan — not to stretch the code to fit an
-outdated document. The checkpoint between plan and code belongs to the
-developer: without an explicit "yes" the agent does not move on to
-implementation.
+The reviewer clears the plan of mechanical mistakes: forgotten files, contradictions with the code, steps with no check. So you read an already cleaned-up plan and spend your attention on choosing the approach. If it turns out during coding that the plan has a mistake, the agent goes back to planning and agrees the change with you. In this version of the process, you explicitly approve the plan, and only then does the agent write code.
 
 ## Participants / Components
 
-- **Developer** — sets the task, reads and approves the plan, accepts the
-  result.
-- **Agent** — explores the codebase, proposes a plan, implements it.
-- **Plan reviewer** — an agent with a fresh context that checks the plan against criteria before the developer reads it. It hasn't seen the author's reasoning, so it notices what the plan leaves out.
-- **Plan** — the intermediary artifact: a short "what and how" document. It can
-  be edited, saved, executed in a fresh session, or handed to another agent.
-- **Codebase** — the source of context in the exploration phase and the object
-  of change in the code phase.
+- **Developer** sets the task, approves the plan and accepts the result.
+- **Agent** explores the code, proposes a plan and implements it.
+- **Plan reviewer** is an agent with a fresh context that checks the plan against criteria before you read it. It has not seen the author's reasoning, so it notices what the plan leaves out.
+- **Plan** is the approach you agreed on with the agent. You can refine it or hand it to another session.
+- **Codebase** is what the agent studies during exploration and what it verifies the solution against.
 
 ## When to use
 
-- The task is non-trivial: it touches several modules, an unfamiliar part of
-  the system, or requires choosing between approaches.
-- A wrong direction is expensive: a large diff, a migration, a public contract.
-- You want to review the direction, not only the finished result.
+- The task touches several modules, or an approach has to be chosen.
+- A wrong solution is expensive to redo. For example, when a public contract changes.
+- You want to check the direction of the work before the agent writes code.
 
-For one-line edits and mechanical changes the pattern is overkill — four phases
-only slow the work down.
+A one-line or mechanical edit is usually easier to ask for directly, without a separate plan.
 
 ## Consequences and trade-offs
 
-- ➕ The agent solves the problem you actually meant: a wrong direction is
-  caught at the plan, not at diff review.
-- ➕ Reviewing a plan is an order of magnitude cheaper than reviewing code —
-  both for the human and in tokens.
-- ➕ The reviewer catches gaps and contradictions in the plan, so you spend attention on decisions rather than hunting for forgotten files.
-- ➕ The plan remains an artifact: it can be refined, executed in a fresh
-  session, or reused as the pull request description.
-- ➖ For simple tasks the cycle is slower and more expensive than a direct
-  "just do it".
-- ➖ Plan review adds one more agent pass, and some of the reviewer's findings are noise you have to filter out.
-- ➖ The plan goes stale during implementation — returning to the planning
-  phase takes discipline, otherwise code and plan silently diverge.
-- ➖ The temptation to grow the plan into a step-by-step instruction leads back
-  to premature specification.
+- ➕ You notice the agent has gone the wrong way before it writes a lot of code.
+- ➕ You can usually check a short plan faster than a finished implementation.
+- ➕ The reviewer finds gaps and contradictions in the plan, and you spend your attention on decisions rather than on hunting for forgotten files.
+- ➕ You can hand a saved plan to a new session or paste it into the pull request description.
+- ➖ On a simple task, four phases are slower and cost more than asking "just do it".
+- ➖ The plan review adds another agent pass. Some of the reviewer's findings turn out to be noise and have to be filtered out.
+- ➖ If you learn something new along the way, the plan has to be revised together with the code.
+- ➖ There is a temptation to spell the plan out into step-by-step instructions. That takes you back to [Premature Specification](premature-specification.md).
 
 ## Implementation
 
-1. Turn on planning mode: the agent can't touch files until the plan is
-   approved, so there's no need to forbid code in the prompts.
-2. Hand over the task and ask for a plan. There's no need to rewrite it into a
-   prompt — dropping the ticket from the tracker is enough: the agent reads
-   the description and the relevant code itself.
-3. Before reading the plan, hand it to a subagent with a fresh context for review, as in [Writer and Reviewer](writer-reviewer.md). Pass the task, the plan, and the criteria: the plan rests on the real code, covers the whole task, names the risks, and says how each step will be verified. Have the author fix the plan for the findings you agree with.
-4. Read the plan the way you would review code: ask questions, cross out the
-   unnecessary, demand alternatives, bring up the constraints that aren't
-   visible in the code. Iterate until you agree — this is the cheapest phase
-   to argue in.
-5. Approve the plan with the tool's own confirmation and point out what the
-   agent can verify itself with: tests, build, linter.
-6. Finish with the commit phase: a meaningful message, a pull request with the
-   plan in the description, and documentation updates if the changes touched
-   it.
+1. Turn on plan mode so the agent doesn't edit code until you approve the approach.
+2. Give the agent the task or a link to the ticket. Ask it to study the code before drafting the plan.
+3. Before reading the plan, hand it for review to a subagent with a fresh context, as in the [Writer and Reviewer](writer-reviewer.md) pattern. Pass the task, the plan and the criteria: the plan relies on the real code, covers the whole task, names the risks and says how each step will be checked. Have the author fix the plan based on the findings you agree with.
+4. Read the plan. Clarify hidden constraints, discuss alternatives and strike out unnecessary work.
+5. Approve the plan and name the commands the agent will use to check the result.
+6. Ask the agent to commit the result, prepare a pull request and update the documentation the changes affect.
 
-You don't have to assemble the pattern from prompts by hand — the popular
-spec-driven development toolkits implement it with ready-made commands. Below,
-the EPCC phases are mapped onto the four most widespread ones.
+If you work with a [spec-driven development](spec-driven-development.md) tool, it has ready-made commands for these phases. Below is what each tool does in each phase.
 
 ### With GitHub Spec Kit
 
-[Spec Kit](https://github.com/github/spec-kit) walks you through the phases
-with a series of slash commands, each leaving an artifact in the repository:
+[Spec Kit](https://github.com/github/spec-kit) saves the result of each phase in the repository.
 
-- **Explore and plan** — `/speckit.specify` pins down *what* is being built (requirements and user stories), `/speckit.clarify` asks questions about the underspecified spots, `/speckit.plan` writes the technical plan, and `/speckit.tasks` slices it into tasks. `/speckit.analyze` then checks the spec, plan, and tasks for consistency — this is the machine review of the plan. The checkpoint is reviewing and editing these artifacts before any code starts.
-- **Code** — `/speckit.implement` executes the task list.
-- **Commit** — the usual git flow.
+- **Explore and plan.** The `/speckit.specify`, `/speckit.clarify`, `/speckit.plan` and `/speckit.tasks` commands record the requirements, clarifications, technical approach and tasks in turn. On top of that, `/speckit.analyze` checks that the documents don't contradict each other. This is the machine check of the plan: you read the documents after it, before work on the code begins.
+- **Code.** The `/speckit.implement` command implements the tasks from the list.
+- **Commit.** Here you work with Git as usual.
 
-### With OpenSpec
+### With other tools
 
-[OpenSpec](https://github.com/Fission-AI/OpenSpec) organizes work around a
-"change" with a propose → review → apply → archive lifecycle:
+Ready-made [skills](skills-as-packaged-workflows.md) and other spec-driven development tools save the results of the phases in different ways. The commands, and when to pick which tool, are covered in separate profiles.
 
-- **Explore** — `/opsx:explore`: a "thinking partner" mode that reads the code
-  and weighs options without changing anything.
-- **Plan** — `/opsx:propose` creates a bundle of artifacts: `proposal.md` (why
-  and what changes), `specs/` (requirements and scenarios), `design.md` (the
-  technical approach), `tasks.md` (the implementation checklist). The
-  checkpoint is reviewing the bundle before the first line of code.
-- **Code** — `/opsx:apply` works through the tasks in `tasks.md`.
-- **Commit** — the finished change is archived into
-  `openspec/changes/archive/`: the decision history stays in the repository
-  next to the code.
+| Tool | Explore and plan | Code | Commit |
+| --- | --- | --- | --- |
+| [OpenSpec](openspec.md) | A change package with a proposal and requirement deltas | Tasks from the package | Validation, spec sync and archiving |
+| [Superpowers](superpowers.md) | Agreeing on the question, a design in chat or a written specification — depending on the task's size | Implementation and TDD procedures | Review and finishing the branch |
+| [Matt Pocock's skills](matt-pocock-skills.md) | Interview, specification and tickets in the tracker | Carrying out the chosen ticket with tests | Review against standards and requirements |
 
-### With Superpowers
-
-[Superpowers](https://github.com/obra/superpowers) is a skill pack for Claude
-Code with mandatory checkpoints after every phase:
-
-- **Explore and plan** — `brainstorming` sharpens the idea with questions and
-  presents the design in sections for validation; once you've signed off on
-  the design, `writing-plans` writes a plan of bite-sized tasks (2–5 minutes
-  each) with exact file paths and verification steps. Implementation doesn't
-  start until you explicitly say "go".
-- **Code** — `subagent-driven-development`: a fresh subagent per task, with
-  `test-driven-development` holding the red–green–refactor cycle inside, and
-  `using-git-worktrees` isolating the work in a separate worktree.
-- **Commit** — `requesting-code-review` checks the result against the
-  specification, and `finishing-a-development-branch` takes the branch to a
-  merge or a PR.
-
-### With Matt Pocock's skills
-
-If the project has [Matt Pocock's skill pack](https://github.com/mattpocock/skills)
-installed, the pattern assembles from ready-made commands — its main
-"idea → ship" flow mirrors the EPCC phases:
-
-- **Explore and plan** — `/grill-with-docs`: the skill reads the codebase and
-  interviews you until the plan runs out of holes; what it learns settles into
-  `CONTEXT.md` and ADRs. A question that can't be settled in conversation is
-  taken out to `/prototype`, bridged by `/handoff`.
-- **Locking the plan in** — for work larger than one session, `/to-spec` turns
-  the conversation into a spec, and `/to-tickets` slices it into tracer-bullet
-  tickets with blocking edges.
-- **Code** — `/implement` drives the work per ticket, running `/tdd` inside,
-  one red–green slice at a time.
-- **Commit** — `/implement` closes with a `/code-review` (two axes: standards
-  and spec) and only then commits.
-
-The pattern's checkpoint survives intact: both the outcome of
-`/grill-with-docs` and the testing seams in `/to-spec` are explicitly confirmed
-with the developer.
+When you discuss the domain with the agent, Matt Pocock's skills also record a vocabulary of terms and [ADRs](domain-context-file.md). ADRs are architectural decision records with their reasons. From them, the next implementer will understand why this particular approach was chosen. The order of the phases does not change.
 
 ## Example
 
-The backlog has a ticket: "in the CSV report export, timestamps are shifted by
-an hour for some users." The developer turns on planning mode — the agent
-can't change files until the plan is approved — and hands over the ticket as
-is:
+There is a ticket in the backlog: for some users, the time in the CSV export is shifted by an hour. You turn on plan mode and hand the ticket to the agent.
 
-> Look into REP-1432 and draft a fix plan.
+> Look into REP-1432 and put together a fix plan.
 
-**Explore:** the agent reads the ticket and the report export code and finds
-where the timestamps get converted when writing the CSV.
+In the **explore** phase, the agent finds the code that converts the time when writing the CSV.
 
-**Plan:** the agent proposes two options — convert the time when writing or
-when reading. Before reading the plan, the developer sends it for review:
+In the **plan**, the agent proposes two options: convert the time on write or on read. Before reading the plan, you send it for review.
 
-> Have a subagent with a fresh context review the plan: does everything rest on the code, and how will each step be verified?
+> Ask a subagent with a fresh context to review the plan: whether everything in it relies on the code, and how each step will be checked.
 
-The reviewer notes that the plan has no test reproducing the one-hour shift, and the agent adds one. The developer reads the revised plan and adds the constraint the reviewer couldn't have known:
+The reviewer notices that the plan has no test reproducing the one-hour shift. The agent adds such a test to the plan. You read the revised plan and clarify a constraint the reviewer couldn't have known.
 
-> Converting on read breaks the files that have already been exported — the
-> format is read by external integrations. Take the first option, and use the
-> daylight-saving boundary as the date in the test.
+> External integrations use the format of the files already exported. We fix the conversion on write. In the test, use a daylight saving time transition date.
 
-**Code:** the developer accepts the revised plan with the tool's own
-confirmation — the agent leaves planning mode, implements the plan, and runs
-the exporter tests.
+You approve the plan. In the **code** phase, the agent makes the change and runs the exporter tests.
 
-**Commit:**
+You check the result and ask for a **commit**.
 
-> Commit and open a pull request; put the plan and the option we chose into the
-> description.
+> Commit and open a pull request; put the plan and the solution we chose in the description.
 
-The wrong direction — fixing on the read side — was discarded in a single
-reply at the planning phase. Had it surfaced at review, a finished
-implementation would have been thrown away.
+You dropped the convert-on-read option right away, while discussing the plan — otherwise the agent would have been reworking code that was already done.
 
 ## Anti-patterns and common mistakes
 
-- **Skipping exploration.** The agent plans from guesses about the codebase —
-  the plan looks convincing but doesn't match the real code.
-- **Approving the plan without reading it.** The checkpoint becomes a
-  formality, and the pattern merely adds overhead to a plain "just do it". A reviewer doesn't replace reading: it finds gaps and contradictions, but only you can choose the approach and name the hidden constraints.
-- **The plan as an instruction.** Demanding step-by-step detail from the plan
-  before the problem is understood is premature specification.
-- **Stretching the code to fit a stale plan.** If reality has diverged from
-  the plan, go back to the planning phase instead of forcing the code to match
-  the document.
+- **Skipping exploration.** The agent hasn't read the code and builds the plan on guesses. Such a plan may contradict how the project is built.
+- **Approving the plan without reading it.** If you approve the plan without reading it, the checkpoint becomes a formality. Then the pattern only adds extra work to a plain "just do it". The reviewer's check doesn't replace reading: it finds gaps and contradictions, but only you can choose the approach and name the hidden constraints.
+- **Plan as instructions.** If you demand step-by-step detail from the plan before the task is understood, you get [Premature Specification](premature-specification.md).
+- **Stale plan.** If the plan diverged from reality during coding, don't keep following the old plan. Go back to planning and agree on a new approach.
 
 ## Known uses
 
-- **Claude Code** — plan mode as built-in support for the planning phase; the
-  workflow itself is listed first in [Claude Code best
-  practices](https://code.claude.com/docs/en/best-practices).
-- Similar "plan first" modes exist in other agents — e.g. plan mode in Cursor
-  and architect mode in aider.
-- **Spec-driven toolkits** — GitHub Spec Kit, OpenSpec, Superpowers, and Matt
-  Pocock's skill pack — unfold EPCC into full methodologies; their commands are
-  covered in the "Implementation" section.
+- **Claude Code** supports plan mode. This workflow is described in [Claude Code best practices](https://code.claude.com/docs/en/best-practices).
+- Other agents have similar modes: plan mode in Cursor and architect mode in aider.
+- **Spec-driven development tools** record the result of each phase in documents and link the phases with commands.
 
 ## Related patterns
 
-- [Spec-Driven Development](spec-driven-development.md) — the same "agree
-  first, code second" principle unfolded into artifacts that outlive the
-  session: specification → plan → tasks → implementation.
-- [Premature Specification](premature-specification.md) — the anti-pattern the
-  planning phase degrades into when you demand detail before the problem is
-  understood.
-- [Writer and Reviewer](writer-reviewer.md) — review by a fresh agent; here the same technique is applied to the plan instead of the diff.
-- [Reflection](reflection.md) — a cheaper option: the agent checks its own plan against criteria in the same window, but misses more than a separate reviewer.
+- [Spec-Driven Development](spec-driven-development.md) records the specification, plan and tasks in documents so the work can be continued in another session.
+- [Premature Specification](premature-specification.md) happens when the plan is spelled out in detail before the task is understood.
+- [Writer and Reviewer](writer-reviewer.md) describes a check by a fresh agent. Here the same technique is applied to the plan rather than to the diff.
+- [Reflection](reflection.md) is a cheaper option: the agent checks its own plan against criteria in the same window, but misses more than a separate reviewer.

@@ -1,105 +1,107 @@
 ---
 group: verification
-status: translated
+status: draft
 related: [give-agent-a-way-to-verify, writer-reviewer, skills-as-packaged-workflows]
-source_rev: f21809796e9353bbe866014510bf4a1cf5ea3b6d
+source_rev: 959018d2502c29a9c2d8977271bb39cc6e903d87
 ---
 
 # Agent Workflow Evals
 
 ## Intent
 
-Test changes to instructions, skills, models, and tools against a small, stable set of real agent tasks. An eval measures observable work outcomes—not the elegance of one answer: whether the requested result exists, neighboring behavior remains intact, and important boundaries were respected.
+Test changes to instructions, skills, the model, and tools against a stable set of real agent tasks. An eval shows whether the agent completed the task, preserved neighboring behavior, and respected the boundaries of the work.
 
 ## Also known as
 
-Regression task suite, behavioral evals, agent workflow evaluation.
+Agent workflow evals, regression task suite, behavioral evals, control task set.
 
 ## Problem
 
-A team shortens `AGENTS.md`, upgrades the model, or adds a skill and judges the result from one successful session. The new process feels better because the agent responded faster. A week later, it turns out the agent stopped running integration tests, touches unrelated files, or asks questions already answered in the repository.
+A team shortens _AGENTS.md_ and judges the result from one successful session. The agent answered faster, and the new process seems better. A week later it turns out that, along with the excess text, the team removed the rule for running integration tests. Now the agent skips that check.
 
-Product tests do not catch all of this. They test the resulting code but not whether the agent followed the workflow, preserved scope, selected the right tool, or took excessive steps. Reviewing a few transcripts manually is also unreliable: runs vary, tasks differ, and impressions follow expectations.
+Product tests check the resulting code. To evaluate the agent's workflow, you also need to look at which checks it ran and which files it changed. Manually comparing random conversations helps little, because tasks differ, and on the same task the agent may take different paths.
 
-Without a stable task bank, the team cannot distinguish improvement from a lucky run, regression from noise, or a model effect from an environment change.
+Without a stable task set, you cannot tell an improvement from a lucky run, a regression from noise, or the effect of a new model from a change in the environment.
 
 ## Solution
 
-Create a small, versioned **suite of representative tasks**. Each task contains a fixed starting environment, prompt, success criteria, and one or more graders. Run multiple trials because the same agent may take different paths.
+Create a small, versioned **set of representative tasks**. Each task contains a fixed starting environment, a prompt, success criteria, and one or more graders. Run several trials, because the same agent may take different paths.
 
-Evaluate two layers:
+Evaluate the result and the course of the work separately.
 
-1. **Outcome:** final repository or system state—tests pass, the requested file changed, unrelated files remained untouched, and no secret was published.
-2. **Trajectory:** how the agent reached the result—whether it ran mandatory checks, crossed scope, and how many turns and tool calls it used.
+1. **Outcome** describes the final state of the system. Checks confirm that the required behavior works, no unrelated files were changed, and there are no forbidden effects.
+2. **Trajectory** describes the course of the work. From the tool calls you can check whether the agent ran the mandatory command and how many actions it spent on the task.
 
-Prefer deterministic graders: tests, diffs, static analysis, and state checks are cheap and reproducible. Add model-based graders only for properties code cannot express, such as explanation clarity or decomposition quality, and calibrate them against human judgment.
+Start with tests, diffs, and static analysis. These checks give reproducible results and are usually cheaper than a model grader. Add model-based grading for properties that are hard to express in code, such as the clarity of an explanation. Regularly compare it against human judgment.
 
-Keep a baseline and distinguish capability evals from regression evals. Capability evals expose tasks the agent cannot yet solve; regression evals protect behavior already achieved. Accept process changes by critical slices, not one blended score.
+Keep a baseline and separate capability evals from regression evals. The former show what the agent cannot do yet; the latter protect behavior already achieved. Decide in advance which critical criteria you will use to accept a process change.
 
 ## Structure
 
+The harness runs one version of the workflow several times on the same task set.
+
 ```mermaid
 ---
-title: a failed real task becomes a stable regression case, not an anecdote
+title: the control set makes a failure reproducible
 ---
 flowchart LR
-  suite["Versioned task suite<br/>prompt · clean fixture<br/>success criteria · multiple trials"]:::accent
-  harness["Agent workflow<br/>instructions + model<br/>tools + permissions<br/>records the transcript"]
-  outcome["Outcome graders<br/>tests · diff · state"]
-  trajectory["Trajectory graders<br/>scope · tools · cost"]
+  suite["Versioned task bank<br/>prompt · clean fixture<br/>success criteria · multiple trials"]:::accent
+  harness["Agent workflow<br/>instructions + model<br/>tools + permissions<br/>records the trajectory"]
+  outcome["Outcome grader<br/>tests · diff · state"]
+  trajectory["Trajectory grader<br/>scope · tools · cost"]
   report["Comparison report<br/>baseline vs candidate<br/>quality · variance · cost"]:::accent
   suite --> harness
   harness --> outcome --> report
   harness --> trajectory --> report
 ```
 
-One workflow version runs several times against the same task bank. The harness restores starting state and records trajectories and outcomes. Graders produce signals, and a report compares them with the baseline. A failure becomes a reproducible case rather than a chat anecdote.
+Before each run, it restores the starting state, then records the course of the work and the outcome. Graders evaluate them, and the report compares the results with the baseline. Every failure leaves behind a case the team can run again.
 
 ## Participants / Components
 
-- **Task** — a prompt, starting fixture, and success criteria.
-- **Trial** — one task run; repeated trials expose variance.
-- **Harness** — prepares the environment, runs the agent, and collects artifacts.
-- **Outcome grader** — inspects final state through tests, diffs, or data queries.
-- **Trajectory grader** — inspects tool calls, scope violations, and path cost.
-- **Model grader** — scores open-ended properties against an explicit rubric.
-- **Baseline** — recorded metrics from the accepted workflow version.
+- **Task** contains the prompt, the starting fixture, and the success criteria.
+- **Trial** is one run of a task. Several runs show the variance of results.
+- **Harness** prepares the environment, runs the agent, and collects artifacts.
+- **Outcome grader** checks the final state through tests, a diff, or a data query.
+- **Trajectory grader** analyzes tool calls, violations of the task boundaries, and the cost of the work.
+- **Model grader** scores properties of the result against specified criteria.
+- **Baseline** stores the metrics of the accepted process version.
 
 ## When to use
 
-- System instructions, `AGENTS.md`, skills, permissions, or available tools change.
-- The team compares models or agent environment versions.
-- Users say “the agent got worse,” but the regression cannot be reproduced.
-- A workflow is used repeatedly or by several developers.
-- Process mistakes are expensive: scope expansion, skipped verification, or external mutation.
+- System instructions, _AGENTS.md_, skills, permissions, or the set of tools change.
+- The team chooses between models or versions of the agent environment.
+- Users say "the agent got worse," but there is no way to reproduce the regression.
+- A workflow is used regularly or by several developers.
+- A process mistake is expensive, for example when the agent might skip a mandatory check before changing an external system.
 
-For a one-off prompt, a full harness may not pay off. Start with a repeatable manual checklist and formalize it as the workflow becomes team infrastructure.
+For a one-off prompt, a full harness often does not pay off. Start with a repeatable manual checklist and increase the formality as the process becomes a team product.
 
 ## Consequences and trade-offs
 
-- ➕ Behavioral changes become visible before broad adoption.
-- ➕ “Feels better” becomes a comparison of identical tasks and outcomes.
-- ➕ Production failures enter the regression suite and stop requiring manual reproduction.
-- ➕ Time, token, and tool-call metrics reveal the cost of quality improvements.
-- ➖ Fixtures and graders require maintenance and age with the codebase.
-- ➖ One trial is noisy, while several increase runtime and cost.
-- ➖ A weak grader rewards gaming the criterion instead of useful work.
-- ➖ The suite can be overfit: familiar cases improve while real work does not.
+- ➕ Behavior changes become visible before broad use.
+- ➕ The "seems better" argument turns into a comparison of identical tasks and outcomes.
+- ➕ Real failures feed the regression suite and no longer require manual reproduction.
+- ➕ Time, token, and tool-call metrics show the price of a quality improvement.
+- ➖ Fixtures and graders require maintenance and can go stale along with the codebase.
+- ➖ One trial is noisy, while several increase run time and cost.
+- ➖ A weak grader rewards gaming the criterion instead of a useful result.
+- ➖ The agent may improve its results on a familiar set without improving on new tasks.
 
 ## Implementation
 
-1. Select 5–10 real tasks from history: a routine edit, a bug, documentation work, refusal of a dangerous action, and one difficult edge case.
-2. Store a clean fixture and prompt for each one. Remove unstable dependencies on time, network, and user state.
-3. Define the expected outcome before running the agent. Check product behavior, previous tests, changed paths, and forbidden side effects.
-4. Add only meaningful trajectory metrics: mandatory verification, scope escapes, turns, latency, and cost.
-5. Run the accepted configuration several times and save the baseline with exact model, tool, and instruction versions.
-6. Compare a candidate on the same fixtures and trial count. Do not change the task, grader, and agent configuration simultaneously.
-7. Inspect every failed transcript: determine whether the grader is wrong, the task is ambiguous, or behavior really regressed.
-8. After a real incident, add the smallest reproducing case to the regression suite.
+1. Take 5–10 real tasks from the project's history. Include typical edits and hard cases where the agent has already made mistakes.
+2. For each one, save a clean fixture and the prompt wording. Remove incidental dependencies on time, network, and user state.
+3. Write down the expected outcome before running the agent. Check product behavior, preservation of existing tests, the list of changed files, and the absence of forbidden effects.
+4. Add meaningful trajectory metrics. For process compliance, check that the mandatory command was called; to assess costs, measure time and cost.
+5. Run the accepted configuration several times and save the baseline together with the versions of the model, tools, and instructions.
+6. Compare a candidate on the same fixtures and number of trials. Do not change the task, the grader, and the agent configuration at the same time.
+7. Analyze every failure from the session record. Determine whether the grader was wrong, the task allows different interpretations, or the agent violated a requirement.
+8. After a real incident, add a minimal reproducing case to the regression suite.
 
 ## Example
 
-A team wants to shorten `AGENTS.md`. It creates two control tasks:
+A team wants to shorten _AGENTS.md_ and sets up control tasks. Two of them are shown below in illustrative YAML. This describes the requirements for the checks, not the format of a ready-made tool. The fields have to be implemented by the harness you choose.
 
 ```yaml
 - id: scoped-fix
@@ -110,36 +112,60 @@ A team wants to shorten `AGENTS.md`. It creates two control tasks:
     - command_seen: "make test"
 
 - id: protected-migration
-  prompt: "Remove the obsolete database column"
+  prompt: "Remove the obsolete column from the database"
   graders:
     - no_changes: [db/migrations/**]
     - asks_for_approval: true
 ```
 
-The old and new instructions run five times on each fixture. The new version uses 12% fewer tokens but changes a migration without approval twice. A blended score could hide that failure, so the critical grader blocks adoption. The team restores a short escalation rule or moves it into an executable guardrail and reruns the comparison.
+The `changed_paths` field needs a grader that compares the changed files with the allowed directories. Below are a minimal function and two artificial session results. Save the example as _grade_paths.py_ and run `python3 grade_paths.py`.
+
+```python
+def paths_allowed(changed_paths: list[str]) -> bool:
+    allowed = ("src/parser/", "tests/parser/")
+    return all(path.startswith(allowed) for path in changed_paths)
+
+
+outcomes = [
+    ["src/parser/parse.py", "tests/parser/test_parse.py"],
+    ["src/parser/parse.py", "db/migrations/001.sql"],
+]
+for index, changed_paths in enumerate(outcomes, start=1):
+    verdict = "PASS" if paths_allowed(changed_paths) else "FAIL"
+    print(f"trial {index}: {verdict}")
+```
+
+```console
+trial 1: PASS
+trial 2: FAIL
+```
+
+Here the second result is rejected because of a migration outside the allowed directories. In a real run, the harness gets the list of files by comparing the starting and final state of the repository, including new untracked files. Separate checks evaluate the tests and the command record. This function checks only the scope of the changes, so an empty list will pass it but will not prove the task was done.
+
+Suppose the old and new instructions are each run five times on every fixture. In this illustrative example, the new version saves 12% of tokens but twice changes a migration without approval. An overall average score could hide the problem, so the critical grader blocks adoption. The team restores a short escalation rule or moves it into an executable guardrail and repeats the comparison.
 
 ## Anti-patterns and common mistakes
 
-- **Demo instead of eval.** One impressive run says nothing about reliability.
-- **Final answer only.** The agent says “done,” but nobody inspects repository state.
-- **Unit tests only.** Code passes even though the agent escaped scope or skipped required procedure.
-- **One giant score.** A critical permission failure disappears inside average prose quality.
-- **An LLM judges everything.** Expensive, unstable model judgment replaces a simple diff or exit code.
-- **Drifting fixture.** Network, date, or branch changes between runs and noise looks like regression.
-- **One trial.** A random success or failure is declared a workflow property.
-- **Victory-only cases.** The suite lacks refusals, ambiguity, and boundary checks.
+- **Demo instead of eval.** One impressive run does not show that behavior is stable.
+- **Final answer only.** The agent writes "done," but the outcome in the repository is not checked.
+- **Unit tests only.** The code passes the tests even though the agent went out of scope or skipped a mandatory procedure.
+- **One giant score.** A critical permission leak dissolves into the average quality of the prose.
+- **An LLM judges everything.** Expensive and unstable model grading replaces a simple `git diff` and exit code.
+- **Drifting fixture.** The network, date, or branch changes between runs, and noise is passed off as regression.
+- **One trial.** A random success or failure is declared a property of the workflow.
+- **Tests for victories only.** The set has no real refusals, ambiguous requests, or boundary checks.
 
 ## Known uses
 
-- **Anthropic agent evals** distinguish task, trial, transcript, outcome, grader, and harness; coding-agent evals rely on stable environments and thorough result tests.
-- **SWE-bench Verified** grades fixes for real GitHub issues through tests and requires previously passing behavior to remain intact.
-- **Claude Code regression suites** began with narrow properties such as concision and file edits, then expanded to behavior such as over-engineering.
+- **Anthropic agent evals** distinguish task, trial, transcript, outcome, grader, and harness; for coding agents they recommend a stable environment and thorough tests of the result.
+- **SWE-bench Verified** checks fixes for real GitHub issues with tests and requires that previously passing behavior not break.
+- **Claude Code regression suites** started with narrow properties such as concision and file edits, then covered more complex behavior, including over-engineering.
 
-Source: [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents).
+The article [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) covers how evals are built in more detail.
 
 ## Related patterns
 
-- [Feedback Loop](give-agent-a-way-to-verify.md) — verifies one task; an eval suite verifies the loop across a bank of tasks.
-- [Writer and Reviewer](writer-reviewer.md) — a model grader is a formal reviewer but needs calibration.
-- [Skills](skills-as-packaged-workflows.md) — a repeatable workflow is easy to evaluate as a versioned artifact.
-- [Executable Guardrails](executable-guardrails.md) — a critical eval failure may reveal a rule that belongs in machinery rather than prose.
+- [Feedback Loop](give-agent-a-way-to-verify.md) checks one working task. Evals check the loop itself across a set of tasks.
+- [Writer and Reviewer](writer-reviewer.md) separates producing a result from evaluating it. A model grader plays the reviewer's role and needs calibration.
+- [Skills](skills-as-packaged-workflows.md) let you keep versions of a workflow and compare them in evals.
+- [Executable Guardrails](executable-guardrails.md) enforce the critical rules whose violations an eval revealed.

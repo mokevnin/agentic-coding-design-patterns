@@ -2,72 +2,42 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, writer-reviewer, tdd-with-agent]
-source_rev: 41ffe61445820e8cf04a836addf315d74618f395
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Reflexión
 
 ## Propósito
 
-Como jugada aparte, pedir al agente que critique su propio resultado según
-ejes dados y lo mejore a partir de la crítica: generar → evaluar → mejorar.
-La jugada de verificación más barata que existe — sin oráculo externo, sin
-sesión fresca, dentro de la misma ventana.
+Pedir al agente que evalúe por separado su propio resultado según ejes dados y luego corrija los defectos confirmados. La comprobación ocurre en la misma ventana y ayuda a mejorar el borrador antes de una evaluación externa.
 
 ## También conocido como
 
-Reflection (uno de los cuatro patrones canónicos de Andrew Ng),
-self-critique, autocrítica; en términos de Anthropic — el
-evaluator-optimizer pasado a modo manual.
+Reflection, self-critique, autocrítica. Un ciclo similar de generación y evaluación se usa en evaluator-optimizer.
 
 ## Problema
 
-La primera respuesta del agente es un borrador, aunque parezca terminada. El
-código funciona en el camino feliz, pero los casos límite no están
-tratados, los errores se tragan, y un requisito de mitad de la conversación
-se perdió. Y mientras tanto:
+El primer resultado puede omitir un requisito o el manejo de un error, aunque el escenario habitual funcione. Para esas omisiones es útil una pasada de revisión aparte.
 
-- No hay oráculo mecánico: la legibilidad, la completitud del manejo de
-  errores, la adherencia a los requisitos y la calidad del diseño no las
-  comprueba un test — hasta aquí no llega el
-  [bucle de retroalimentación](give-agent-a-way-to-verify.md).
-- Montar una sesión fresca para cada borrador es caro: un
-  [escritor y revisor](writer-reviewer.md) completo se justifica para un
-  diff serio, no para cada función.
-- Un «hazlo mejor» sin estructura da cosmética: el agente renombra
-  variables y añade comentarios sin tocar los puntos débiles de verdad.
+Por ejemplo, una función de exportación genera un CSV correcto, pero aún no has comprobado que el archivo se cierre si falla la escritura. Pedir que se revise el manejo de errores dirige al agente hacia ese camino. Una revisión completa en una sesión nueva tiene el coste adicional de traspasar el contexto. Para un borrador pequeño puedes empezar con la [reflexión](reflection.md) y pasar los cambios importantes a un [revisor independiente](writer-reviewer.md). La petición «mejóralo» no fija qué comprobar, así que puede no dar más que renombrados y comentarios.
 
-Un dato curioso sobre los modelos: encuentran sus propios errores si se lo
-piden — pero no los buscan por defecto, porque terminaron el trabajo y lo
-consideran bueno.
+Una tarea aparte de buscar defectos cambia el foco del trabajo del agente. Pero las observaciones encontradas también hay que comprobarlas.
 
 ## Solución
 
-Una vez recibido el resultado, hacer dos jugadas explícitas.
+Una vez obtenido el resultado, haz dos movimientos explícitos.
 
-**Primera jugada — crítica sin corrección.** Pedir al agente examinar su
-propio trabajo y enumerar los puntos débiles según ejes que tú fijas:
-corrección, casos límite, manejo de errores, adherencia a los requisitos,
-simplicidad. Las palabras clave son «enumera los problemas», no «¿está todo
-bien?»: a la pregunta-veredicto el agente responde «todo bien»; pedido que
-nombre los tres puntos más débiles — busca y los encuentra.
+**Primero, obtén la crítica sin correcciones.** Indica los ejes de revisión y pide describir defectos concretos con las condiciones en que se manifiestan. Para una exportación, por ejemplo, conviene revisar los errores de escritura y el tamaño de los datos.
 
-**Segunda jugada — corrección según la lista.** De lo hallado se arregla lo
-que lo merece: la lista de problemas llega primero a ti, y qué arreglar y
-qué aceptar como compromiso consciente es decisión del desarrollador.
+**Luego elige las correcciones.** Evalúas las observaciones, separas los defectos de los compromisos aceptados y encargas al agente los cambios necesarios.
 
-Separar las jugadas no es un formalismo: la crítica mezclada con la
-corrección en un solo prompt degenera en «lo arreglé y de paso me elogié».
-Evaluación antes de mejora.
+La separación te ayuda a ver con qué fundamento cambia el agente el código. Si no, una corrección útil puede mezclarse con una reescritura innecesaria.
 
-El patrón tiene un techo incorporado: el crítico está en la misma ventana
-que el autor y comparte sus puntos ciegos. La reflexión atrapa lo que el
-autor es *capaz* de ver — un caso omitido, un requisito olvidado — pero no
-un fallo en el propio razonamiento que produjo la solución. Una o dos rondas
-dan la mayor parte de la ganancia; después es pulir en círculos, y si el
-resultado sigue sin inspirar confianza, hace falta contexto fresco.
+El autor y el crítico comparten un contexto, así que pueden repetir la misma suposición errónea de partida. Si una nueva pasada no añade observaciones verificables, detén el pulido y recurre a tests o a un contexto fresco.
 
 ## Estructura
+
+En el diagrama, el agente toma el borrador, elabora una lista de observaciones y corrige los puntos elegidos.
 
 ```mermaid
 ---
@@ -80,143 +50,80 @@ flowchart TB
     critique["Crítica<br/>según los ejes dados<br/>lista de puntos débiles"]:::warn
     revise["Corrección<br/>según la lista"]
     draft --> critique --> revise
-    revise -. "otra ronda — no más de una o dos" .-> critique
+    revise -. "repetir si hay nuevas observaciones importantes" .-> critique
   end
   dev["Desarrollador<br/>fija los ejes · lee la lista<br/>decide qué arreglar"]:::accent
   result["Resultado<br/>tras el filtro"]:::accent
-  caveat["el sesgo del autor permanece —<br/>un diff serio pasa por un contexto fresco"]:::warn
+  caveat["el autor puede repetir su suposición;<br/>los cambios importantes necesitan comprobación"]:::warn
   dev --> critique
   revise --> result
   result -.- caveat
 ```
 
-Todo el ciclo vive dentro de una sesión: el borrador, la crítica según los
-ejes dados, la corrección según la lista — y, si hace falta, una ronda más.
-El desarrollador, desde fuera, fija los ejes y decide qué de la lista se
-arregla. La salida a la derecha es el resultado con una advertencia: el
-sesgo del autor no está eliminado, así que los cambios serios pasan la
-comprobación final en un contexto fresco.
+El desarrollador fija los ejes y toma las decisiones. El resultado del ciclo sigue necesitando una comprobación proporcional al riesgo del cambio.
 
 ## Participantes / Componentes
 
-- **Agente-autor y agente-crítico** — el mismo modelo en la misma ventana:
-  ahí están la baratura del patrón y su techo.
-- **Ejes de crítica** — la lista del desarrollador: límites, errores,
-  requisitos, simplicidad. Sin ejes la crítica resbala a la cosmética.
-- **La lista de puntos débiles** — el artefacto de la primera jugada; pasa
-  por el desarrollador, no directo a la corrección.
-- **Desarrollador** — fija los ejes, lee la lista, decide qué arreglar y
-  cuántas rondas dar.
+- **Agente** crea y critica el resultado en un mismo contexto.
+- **Ejes de la crítica** fijan las propiedades que hay que comprobar.
+- **Lista de observaciones** conserva los defectos encontrados antes de las correcciones.
+- **Desarrollador** evalúa las observaciones y elige las correcciones.
 
 ## Cuándo aplicarlo
 
-- Donde no hay oráculo mecánico: calidad del diseño, completitud del manejo
-  de errores, legibilidad, adherencia a los requisitos de la conversación.
-- Como jugada estándar antes del commit y antes de la revisión: una
-  limpieza barata que sube el listón de lo que llega a los humanos.
-- Para artefactos no de código: una especificación, un plan, documentación —
-  «encuentra los agujeros de este plan» funciona igual que con código.
-- Cuando la sesión fresca sobra: el cambio es pequeño y el ciclo completo
-  escritor-revisor cuesta más que el propio cambio.
+- Las comprobaciones automáticas existentes no bastan para evaluar la legibilidad o la completitud de los requisitos.
+- Hay que preparar un borrador para una revisión independiente.
+- Hay que revisar un plan, una especificación o documentación.
+- El pequeño tamaño de la corrección aún no justifica una sesión de revisor aparte.
 
 ## Consecuencias y compromisos
 
-- ➕ Casi gratis: una o dos jugadas en la misma sesión, sin infraestructura.
-- ➕ Eleva notablemente el primer borrador: las omisiones típicas — límites,
-  errores, requisitos olvidados — las atrapa el propio agente.
-- ➕ Funciona con todo lo que el agente produce — no solo con código.
-- ➖ El crítico está sesgado: es el autor. Un fallo del razonamiento
-  original la reflexión no lo hallará — lo reproducirá también en la
-  crítica.
-- ➖ Rendimientos decrecientes: tras la segunda ronda el agente pule y
-  reordena en vez de encontrar algo nuevo.
-- ➖ El riesgo del ritual: una reflexión «para cumplir» con veredicto «todo
-  bien» crea confianza falsa — peor que nada.
+- ➕ Para empezar basta un prompt adicional en la sesión actual.
+- ➕ El agente puede notar un escenario o requisito omitido.
+- ➕ La técnica se aplica tanto al código como a los documentos.
+- ➖ El crítico puede repetir las suposiciones del autor.
+- ➖ Las pasadas repetidas pueden producir retoques cosméticos sin hallazgos nuevos.
+- ➖ Una aprobación formal crea una confianza infundada en el resultado.
 
 ## Implementación
 
-1. Espera el resultado y pide la crítica como jugada aparte — no en el
-   mismo prompt que la tarea.
-2. Fija los ejes explícitamente: «revisa casos límite, manejo de errores y
-   adherencia a los requisitos de la tarea». Ejes sin dirección — crítica
-   sin dirección.
-3. Fuerza la búsqueda: «enumera los tres puntos más débiles» en vez de
-   «¿está todo bien?». Veredictos prohibidos; se exige una lista.
-4. Lee la lista tú mismo: qué arreglar y qué aceptar es tu decisión — si
-   no, el agente «arreglará» también los compromisos conscientes.
-5. Pide la corrección de los puntos elegidos y párate tras una o dos
-   rondas.
-6. Empaqueta los ejes recurrentes en un comando — tu propio slash command o
-   skill, para que la reflexión sea una invocación y no un párrafo de texto
-   cada vez.
-7. Calibra la confianza: la reflexión es un filtro antes de la
-   verificación, no su sustituto. Un diff serio pasa igualmente por el
-   [escritor y revisor](writer-reviewer.md) o por un bucle con oráculo.
+1. Una vez obtenido el resultado, pide una evaluación crítica aparte.
+2. Indica ejes concretos, por ejemplo el manejo de errores y el cumplimiento de los requisitos.
+3. Pide describir los defectos con las condiciones en que se manifiestan y la evidencia.
+4. Revisa la lista y elige las correcciones teniendo en cuenta las restricciones aceptadas.
+5. Pide corregir los puntos elegidos y detente tras una o dos rondas.
+6. Guarda los criterios recurrentes en un comando o una skill.
+7. Confirma las correcciones con tests o una [revisión independiente](writer-reviewer.md) si el cambio lo requiere.
 
 ## Ejemplo
 
-El agente terminó la función de exportación de informes a CSV. Antes de
-commitear, el desarrollador hace la jugada de crítica:
+El agente terminó la exportación de un informe a CSV. Antes del commit, le pides que revise el código.
 
-> No defiendas este código — encuentra sus problemas. Enumera los tres
-> puntos más débiles según estos ejes: casos límite, manejo de errores,
-> memoria con datos grandes. No corrijas nada todavía.
+> Encuentra problemas en el manejo de errores, los casos límite y la memoria con datos grandes. Para cada uno, muestra la condición en la que se manifiesta. No corrijas nada todavía.
 
-El agente devuelve la lista: con un error de escritura el descriptor de
-archivo no se cierra; el informe se construye entero en memoria — cientos de
-megabytes en exportaciones grandes; un informe vacío se exporta sin
-cabeceras de columnas, lo que rompe el parser externo. El desarrollador
-responde:
+El agente detecta un descriptor sin cerrar ante un error de escritura y la falta de encabezados en un informe vacío. También señala que el informe se construye entero en memoria. Eliges las correcciones.
 
-> Arregla el primero y el tercero. El streaming no lo hacemos aún — las
-> exportaciones están limitadas a diez mil filas; deja un comentario con esa
-> restricción.
+> Corrige el cierre del archivo y los encabezados del informe vacío. Las exportaciones están limitadas a diez mil filas, así que el streaming aún no hace falta. Deja constancia de este límite en un comentario.
 
-Dos problemas reales atrapados antes del commit al precio de dos réplicas.
-Nota lo que *no* pasó: el agente no «reescribió mejor» todo en bloque ni
-tocó el compromiso consciente con la memoria — porque la lista pasó por el
-desarrollador.
+El agente corrige los dos defectos y mantiene la forma elegida de construir el informe. Revisar las observaciones permitió tener en cuenta el límite conocido del volumen de datos.
 
 ## Antipatrones y errores comunes
 
-- **La pregunta-veredicto.** «Comprueba que todo esté bien» recibe «todo
-  bien». Pide una lista de puntos débiles — con número.
-- **Crítica y corrección en un prompt.** La jugada mezclada degenera en
-  cosmética con autoelogio. Primero la lista, luego la decisión, luego la
-  corrección.
-- **Reflexión sin ejes.** «Mejora el código» da renombrados y comentarios.
-  Los ejes dicen dónde excavar.
-- **Pulido sin fin.** La tercera ronda y siguientes es mover los muebles.
-  Si no aparece nada nuevo — cambia de instrumento, no repitas la jugada.
-- **Reflexión en vez de verificación.** La autocrítica no sustituye ni a
-  los tests ni a la mirada fresca: es un filtro que reduce el ruido antes
-  de la comprobación real, y no debe usarse para fabricar confianza.
+- **Pregunta-veredicto.** Pedir que apruebe el código puede dar un sí formal. Pide defectos concretos y evidencia.
+- **Crítica junto con la corrección.** Primero revisa las observaciones, luego cambia el código según los puntos elegidos.
+- **Sin criterios.** Una petición general de mejorar el código no fija qué comprobar.
+- **Pulido sin fin.** Si las nuevas pasadas no dan hallazgos importantes, cambia la forma de comprobar.
+- **La autocrítica como prueba.** La reflexión ayuda a preparar el resultado, pero no confirma por sí sola su corrección.
 
 ## Usos conocidos
 
-- **Andrew Ng, los cuatro patrones agénticos** — Reflection en su
-  formulación canónica: «el LLM examina su propio trabajo para encontrar
-  formas de mejorarlo»; junto con los demás patrones, un bucle agéntico
-  subió a GPT-3.5 en HumanEval del 48,1 % (zero-shot) al 95,1 %.
-- **Reflexion (Shinn et al., NeurIPS 2023)** — el antecesor interno del
-  agente: autorreflexión verbal acumulada en memoria episódica entre
-  intentos.
-- **Anthropic, evaluator-optimizer** — el mismo ciclo generador-evaluador
-  como flujo automatizado en «Building effective agents»; la reflexión es
-  su caso manual, dirigido por el desarrollador.
-- **Constitutional AI** — la autocrítica como mecanismo de entrenamiento:
-  el modelo critica sus propias respuestas contra una lista de principios y
-  las reescribe — prueba de que la autocrítica de los modelos funciona
-  cuando se solicita.
+- **Andrew Ng** describe Reflection como un patrón propio en el que el modelo examina su trabajo para mejorarlo.
+- **Reflexion (Shinn et al., NeurIPS 2023)** conserva las conclusiones de la autorreflexión entre intentos en una memoria episódica.
+- **El evaluator-optimizer de Anthropic** automatiza el ciclo de generación, evaluación y refinamiento del resultado.
+- **Constitutional AI** usa, durante el entrenamiento, la crítica de las respuestas según una lista de principios y su posterior reescritura.
 
 ## Patrones relacionados
 
-- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) — cuando
-  existe un oráculo mecánico, siempre gana a la autocrítica; la reflexión
-  cubre lo que el oráculo no alcanza.
-- [Escritor y revisor](writer-reviewer.md) — el siguiente peldaño: un
-  crítico con contexto fresco que no comparte los puntos ciegos del autor.
-  La reflexión es un filtro previo, no un sustituto.
-- [TDD con agente](tdd-with-agent.md) — el vecino de sección: el TDD
-  asegura la corrección con un oráculo escrito antes del código; la
-  reflexión limpia lo que un oráculo no puede expresar.
+- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) añade una señal externa verificable.
+- [Escritor y revisor](writer-reviewer.md) traslada la crítica a un contexto fresco.
+- [TDD con agente](tdd-with-agent.md) fija una comprobación del comportamiento antes de la implementación.

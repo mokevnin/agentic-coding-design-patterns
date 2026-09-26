@@ -2,18 +2,14 @@
 group: project-org
 status: draft
 related: [give-agent-a-way-to-verify, progress-file, one-feature-at-a-time, spec-driven-development, premature-success]
-source_rev: 5df7b47a444c5c22419c5b424a05805eccc71275
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Lista de funcionalidades
 
 ## Propósito
 
-Mantener un registro permanente de las funcionalidades del proyecto en el
-que cada una nace con estado «no funciona» y pasa a «funciona» solo tras una
-comprobación real. La columna vertebral del trabajo largo: en cualquier
-momento se ve qué está hecho, qué no y qué tomar a continuación — y se ve
-por los estados, no por sensaciones.
+Mantener un registro de funcionalidades con estados verificables. Cada funcionalidad empieza con estado «no funciona» y pasa a «funciona» tras una comprobación de extremo a extremo. Por el registro, una sesión nueva ve el trabajo que queda.
 
 ## También conocido como
 
@@ -21,57 +17,33 @@ Feature list, feature list harness, registro de funcionalidades.
 
 ## Problema
 
-Un trabajo de decenas de funcionalidades y muchas sesiones — un greenfield,
-un módulo grande, ejecuciones autónomas. A esa escala las formas habituales
-de seguir el progreso se rompen:
+Cuando trabajas en decenas de funcionalidades, un informe de «80 % listo» no basta. El agente pudo escribir el código sin haber comprobado todavía el escenario de usuario.
 
-- El criterio de finalización es difuso: el agente da por hecho lo que
-  *escribió*, no lo que *funciona*. Un «80 % listo» no lo respalda nada.
-- Lo hecho regresa en silencio: una funcionalidad que funcionaba hace tres
-  sesiones se rompió con el cambio de ayer y nadie lo notó — ya no se
-  comprueba.
-- La sesión nueva no sabe qué tomar: sin una lista común, cada una empieza
-  reinventando el plan, y las funcionalidades se duplican o se caen.
-- El [diario de progreso](progress-file.md) sostiene la narración — «dónde
-  estamos y por qué» —, pero los estados en prosa el agente tarde o
-  temprano los reformula o los machaca: las marcas actualizadas
-  mecánicamente no viven en el texto.
+Por ejemplo, crear una nota pasó su comprobación hace una semana, pero el cambio de esquema de ayer lo rompió. Si el estado no está ligado a volver a ejecutar la comprobación, la siguiente sesión da la funcionalidad por terminada y sigue trabajando sobre una base rota.
+
+Sin un registro común, una sesión nueva además pierde tiempo reconstruyendo la cola de tareas. El [diario de progreso](progress-file.md) explica cómo avanzó el trabajo y por qué se tomaron las decisiones. Para los estados hace falta un archivo estructurado aparte, en el que el agente cambia campos concretos.
 
 ## Solución
 
-Un archivo-registro en el repositorio: la lista completa de funcionalidades
-con estado binario. El registro se crea entero al comienzo del trabajo —
-desplegando los requisitos en puntos concretos y verificables, cada uno con
-descripción, pasos de verificación y estado `passes: false`.
+Antes de empezar la implementación, despliega los requisitos en un registro. Para cada funcionalidad, anota una descripción del comportamiento de usuario, los pasos de verificación y el estado inicial `passes: false`.
 
-A partir de ahí rigen las reglas:
+Las reglas de actualización ligan el registro a los resultados de las comprobaciones.
 
-1. **El estado lo cambia una comprobación, no una sensación.** Una
-   funcionalidad gana `passes: true` solo después de que el agente la haya
-   recorrido como usuario — un escenario de extremo a extremo, en la web a
-   través del navegador y con capturas, no solo tests unitarios (ver el
-   [bucle de retroalimentación](give-agent-a-way-to-verify.md)).
-2. **El registro es intocable.** Borrar funcionalidades y reformular puntos
-   a posteriori está prohibido — con dureza y sin rodeos: «es inaceptable
-   quitar o editar puntos, porque eso lleva a funcionalidad perdida o
-   rota». El agente cambia solo el campo de estado.
-3. **Las regresiones devuelven el estado.** La prueba de humo al comienzo
-   de la sesión puede devolver un `passing` a `failing` — el registro
-   refleja la realidad, no una historia de logros.
+1. **El éxito lo confirma un escenario de extremo a extremo.** El agente pone `passes: true` tras verificar a través de la interfaz de usuario. Para una aplicación web puede ser un escenario en el navegador con capturas (ver el [bucle de retroalimentación](give-agent-a-way-to-verify.md)).
+2. **Los requisitos están protegidos contra el amaño.** Durante la implementación el agente cambia solo el estado. Borrar o reformular un punto exige una decisión aparte sobre los requisitos.
+3. **Una regresión devuelve la funcionalidad al trabajo.** Si una comprobación repetida falla, el agente cambia `passes` a `false`.
 
-El formato es JSON, no Markdown: un archivo actualizado mecánicamente en
-JSON el agente lo estropea y lo sobreescribe bastante menos que un texto
-markdown — la actualización se reduce a cambiar un solo campo.
+JSON da al registro una estructura explícita y limita la actualización habitual a un solo campo. Un esquema y una revisión del diff ayudan a detectar un cambio accidental en la descripción o en los pasos de verificación.
 
-La sesión trabaja desde el registro: leerlo, tomar la siguiente
-funcionalidad no superada, implementar, verificar, cambiar el estado — una
-por pasada (por qué una es un [capítulo aparte](one-feature-at-a-time.md)).
+La sesión lee el registro, elige una funcionalidad no superada, la implementa y actualiza el estado tras la comprobación. Limitarse a [una funcionalidad por pasada](one-feature-at-a-time.md) permite terminar un escenario antes de pasar al siguiente.
 
 ## Estructura
 
+En el diagrama, los requisitos se convierten en un registro antes de la implementación.
+
 ```mermaid
 ---
-title: el estado lo cambia una comprobación, no la sensación de «listo»
+title: la comprobación confirma el estado de la funcionalidad
 ---
 flowchart TB
   req["Requisitos<br/>la especificación"]:::accent
@@ -80,87 +52,51 @@ flowchart TB
   cycle["Ciclo de sesión<br/>1. prueba de humo<br/>2. tomar la siguiente failing<br/>3. implementar<br/>4. verificar como usuario<br/>5. cambiar el estado"]
   regression["¿regresión? passing → failing"]:::warn
   req -- "se despliega en el registro una vez, entero" --> ledger
-  ledger -- "punto" --> cycle
+  ledger -- "funcionalidad" --> cycle
   cycle -- "estado" --> ledger
   ledger -.- rules
   cycle -.- regression
 ```
 
-A la izquierda, los requisitos — de ellos el registro se despliega una vez,
-entero, antes de que empiece la implementación. En el centro, el propio
-registro: puntos con estados, y el único cambio permitido al agente es el
-campo de estado. A la derecha, el ciclo de sesión: tomar la siguiente
-funcionalidad no superada, implementar, verificar como usuario, cambiar el
-estado. La flecha discontinua hacia abajo es la regresión: la prueba de humo
-devuelve la funcionalidad rota a «no funciona», y vuelve a la cola.
+El agente elige de él un punto y recorre el ciclo de desarrollo con verificación. La flecha discontinua devuelve una funcionalidad a la cola si más tarde se descubre una regresión.
 
 ## Participantes / Componentes
 
-- **El registro** — un archivo JSON en el repositorio: la lista completa con
-  estados; la fuente de verdad sobre el progreso.
-- **La funcionalidad** — un punto concreto y verificable: descripción, pasos
-  de verificación, estado.
-- **El agente** — toma la siguiente no superada, implementa, verifica,
-  cambia el estado.
-- **La comprobación** — un recorrido de extremo a extremo como usuario; solo
-  ella cambia el estado.
-- **El desarrollador** — revisa el troceado del registro al principio y
-  coteja estados con la realidad por muestreo.
+- **El registro** guarda la lista de funcionalidades y sus estados en JSON.
+- **La funcionalidad** describe un comportamiento verificable y los pasos para comprobarlo.
+- **El agente** implementa el punto elegido y actualiza el estado según el resultado de la comprobación.
+- **La comprobación** confirma el escenario de usuario.
+- **El desarrollador** revisa la composición del registro y coteja por muestreo los estados con el comportamiento del producto.
 
 ## Cuándo aplicarlo
 
-- Trabajo largo con un estado final claro: un greenfield «monta la
-  aplicación según la especificación», un módulo grande, una migración con
-  lista de control.
-- Ejecuciones autónomas: el agente trabaja por sesiones sin vigilancia, y el
-  progreso debe verse por un artefacto, no por un recuento.
-- Varios agentes, o turnos agente/humano, sobre un mismo frente — el
-  registro alinea el panorama para todos.
+- Un trabajo grande tiene un resultado final claro que se puede descomponer en escenarios.
+- El agente trabaja en varias sesiones autónomas, y el progreso debe verse por un archivo.
+- Varios participantes necesitan una cola de trabajo común.
 
-Para una tarea de unos pocos pasos el registro sobra — bastan el `tasks.md`
-de la tubería SDD o el plan dentro de la sesión.
+Para una tarea pequeña suele bastar un plan o _tasks.md_.
 
 ## Consecuencias y compromisos
 
-- ➕ El progreso es objetivo: «34 de 200» está respaldado por
-  comprobaciones, no por sensaciones.
-- ➕ Las regresiones se ven: la funcionalidad rota vuelve a la cola en vez
-  de desaparecer de la vista.
-- ➕ Las sesiones se encadenan sin recuentos: cualquier sesión nueva sabe
-  qué tomar a continuación.
-- ➖ La calidad del registro es la calidad del troceado: puntos demasiado
-  grandes no son verificables, demasiado pequeños entierran la señal en
-  burocracia.
-- ➖ La intocabilidad se sostiene en instrucciones: sin formulaciones duras
-  en el prompt y la memoria del proyecto, el agente algún día «ordenará» un
-  punto incómodo.
-- ➖ El estado binario es tosco: «funciona a medias» hay que expresarlo
-  troceando en funcionalidades más pequeñas.
+- ➕ El número de funcionalidades terminadas se apoya en resultados de comprobaciones.
+- ➕ Tras una regresión, la funcionalidad rota vuelve a verse en la cola.
+- ➕ Una sesión nueva puede elegir el siguiente punto sin un recuento de toda la historia.
+- ➖ Los puntos demasiado grandes son difíciles de verificar, y los demasiado pequeños complican el mantenimiento del registro.
+- ➖ La prohibición escrita de cambiar requisitos hay que reforzarla con una revisión de los cambios del registro.
+- ➖ El comportamiento que funciona a medias hay que dividirlo en escenarios independientes.
 
 ## Implementación
 
-1. Despliega los requisitos en el registro antes de empezar la
-   implementación: cada punto es un comportamiento verificable con un
-   escenario de extremo a extremo («el usuario abre un chat, escribe una
-   consulta y ve la respuesta»), no una tarea («montar el enrutado»).
-2. Mantén el formato estructurado: JSON con campos de categoría,
-   descripción, pasos de verificación y `passes`. Todo empieza en `false`.
-3. Anota las reglas en la [memoria del proyecto](claude-md-memory.md): el
-   estado, solo tras una comprobación de extremo a extremo; quitar y editar
-   puntos es inaceptable; el agente cambia solo `passes`.
-4. Fija el ritual de sesión: leer el registro → prueba de humo → tomar la
-   siguiente no superada → implementar → verificar como usuario → cambiar.
-5. Empareja con el [diario de progreso](progress-file.md): el registro
-   sostiene los estados, el diario la narración; se complementan, no se
-   duplican.
-6. Revisa el registro como una especificación: el troceado y las
-   formulaciones son tu zona; coteja por muestreo las funcionalidades
-   `passing` con la realidad.
+1. Despliega los requisitos en escenarios verificables antes de la implementación. Por ejemplo, «el usuario abre un chat, hace una pregunta y ve la respuesta» describe un resultado que se puede reproducir.
+2. Guarda la categoría, la descripción, los pasos de verificación y `passes` en JSON. Fija el estado inicial en `false`.
+3. Anota en la [memoria del proyecto](claude-md-memory.md) que el agente cambia solo `passes`, y solo según el resultado de una comprobación de extremo a extremo.
+4. Empieza la sesión leyendo el registro y ejecutando una prueba de humo. Después elige un punto, impleméntalo, compruébalo y actualiza el estado.
+5. Guarda los motivos de las decisiones en el [diario de progreso](progress-file.md) y los estados en el registro.
+6. Revisa la composición del registro como requisitos y repite por muestreo los escenarios de las funcionalidades terminadas.
 
 ## Ejemplo
 
-El agente construye un servicio de notas según la especificación. La sesión
-inicializadora la desplegó en un registro de 87 puntos:
+El agente construye un servicio de notas. La sesión inicial despliega la especificación en un registro de puntos no superados. Abajo se muestra un fragmento tras verificar la creación de una nota. La búsqueda por etiqueta aún no está verificada.
 
 ```json
 [
@@ -182,63 +118,28 @@ inicializadora la desplegó en un registro de 87 puntos:
 ]
 ```
 
-La siguiente sesión empieza con la prueba de humo: crear una nota funciona,
-pero el archivado — `passing` desde la semana pasada — falla tras un cambio
-reciente del esquema. El agente lo pasa a `false`, lo informa y toma la
-siguiente no superada — la búsqueda por etiqueta. Implementa, recorre los
-pasos del registro en el navegador, adjunta una captura de los resultados —
-y solo entonces `passes: true`.
+Al empezar la sesión, la prueba de humo detecta que el archivado falla tras un cambio de esquema. El agente devuelve su estado a `false` y registra la regresión. Después de restaurar el escenario básico, toma la búsqueda por etiqueta, la implementa y recorre los pasos de verificación en el navegador. Solo entonces la búsqueda recibe `passes: true`.
 
-El desarrollador, echando un vistazo al registro por la tarde, ve un
-panorama honesto: 41 de 87, incluida una regresión — sin leer diffs ni
-preguntar.
+Por la tarde ves en el registro 41 funcionalidades verificadas de 87, y en el diario puedes leer sobre la regresión encontrada y corregida.
 
 ## Antipatrones y errores comunes
 
-- **Casilla sin comprobación.** El estado se cambió porque «el código está
-  escrito» — el registro se convierte en una lista de buenas intenciones.
-  El cambio es el final de un
-  [bucle de retroalimentación](give-agent-a-way-to-verify.md), no un gesto.
-- **El agente edita el registro.** Un punto reformulado «según lo que
-  salió» y una funcionalidad incómoda borrada en silencio son funcionalidad
-  perdida. La prohibición debe ser dura y estar escrita.
-- **Estados en prosa.** Un registro entretejido en una narración Markdown
-  el agente lo machaca al actualizar — las marcas mecánicas viven en un
-  archivo estructurado.
-- **El registro en vez de la especificación.** El registro es un derivado
-  de los requisitos, no su sustituto: el «para qué» y el contexto viven en
-  la especificación; el registro sostiene solo estados verificables.
-- **Tests unitarios como comprobación.** Unidades en verde sin recorrido de
-  extremo a extremo es [éxito prematuro](premature-success.md): la funcionalidad «funciona» hasta el
-  primer usuario.
+- **Casilla sin comprobación.** Marcar una funcionalidad porque el código está escrito oculta comportamiento no verificado. Actualiza el estado después del [bucle de retroalimentación](give-agent-a-way-to-verify.md).
+- **Amañar el registro.** Cambiar un requisito para que encaje con el código terminado oculta funcionalidad que falta. Revisa esos cambios por separado.
+- **Estados dentro de la narración.** Al reescribir Markdown, el agente puede perder una marca sin querer. Guarda los estados en campos estructurados.
+- **El registro en vez de la especificación.** El objetivo y las restricciones se quedan en la especificación. El registro guarda los escenarios verificables derivados de ella.
+- **Solo tests unitarios.** Las funciones sueltas pueden funcionar mientras el escenario de usuario está roto.
 
 ## Usos conocidos
 
-- **El harness de Anthropic para agentes de larga duración** — la fuente
-  primaria: un registro de más de 200 funcionalidades para un clon de
-  claude.ai, el agente inicializador, la regla «es inaceptable quitar o
-  editar puntos» y la verificación de extremo a extremo por el navegador
-  antes de cambiar un estado.
-- **Los harnesses de evaluación** — la misma mecánica en la evaluación de
-  agentes: una lista fija de escenarios verificables con estados que no se
-  pueden amañar al resultado.
-- **Toolkits de SDD** — `tasks.md` en [OpenSpec](openspec.md) como la forma
-  débil: la lista de control existe,
-  pero la marca no siempre es una comprobación; el registro endurece
-  justamente ese punto.
+- **El harness de Anthropic para agentes de larga duración** usa un registro de funcionalidades y verificación en el navegador antes de cambiar un estado.
+- **Los harnesses de evaluación** usan un conjunto fijo de escenarios protegido contra el amaño al resultado.
+- **Los toolkits de SDD** guardan las tareas en _tasks.md_, como en [OpenSpec](openspec.md). El registro además liga la marca a una comprobación del comportamiento.
 
 ## Patrones relacionados
 
-- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) — cambiar un
-  estado es cerrar el bucle: el registro es una lista de bucles que quedan
-  por cerrar.
-- [Una funcionalidad a la vez](one-feature-at-a-time.md) — la disciplina de
-  trabajar el registro: un punto por pasada, contra el intento de hacerlo
-  todo de golpe.
-- [Diario de progreso](progress-file.md) — el vecino en la capa de estado:
-  la narración «dónde estamos y por qué» frente a los estados mecánicos de
-  «qué funciona».
-- [Desarrollo orientado a especificaciones](spec-driven-development.md) —
-  el registro se deriva de la especificación, como el plan y las tareas; es
-  su proyección verificable.
-- [Éxito prematuro](premature-success.md) — el antipatrón en el que degenera el registro cuando los estados cambian sin comprobación de extremo a extremo.
+- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) da el fundamento para actualizar un estado.
+- [Una funcionalidad a la vez](one-feature-at-a-time.md) limita el alcance de una pasada.
+- [Diario de progreso](progress-file.md) guarda los motivos de las decisiones y el estado del trabajo sin terminar.
+- [Desarrollo orientado a especificaciones](spec-driven-development.md) aporta los requisitos para el registro.
+- [Éxito prematuro](premature-success.md) aparece cuando el estado se cambia sin una comprobación de extremo a extremo del escenario.

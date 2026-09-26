@@ -2,227 +2,129 @@
 group: project-org
 status: draft
 related: [feature-list-harness, give-agent-a-way-to-verify, progress-file, one-shotting]
-source_rev: 06d7f7e9afdb7ae107480d2107ae5cfecca7f7c5
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Una funcionalidad a la vez
 
 ## Propósito
 
-Restringir al agente a una funcionalidad por pasada: la sesión toma un
-punto, lo lleva hasta un «funciona» verificado — y solo entonces toma el
-siguiente. Una restricción contra el impulso innato del agente de hacerlo
-todo de golpe: la ventana se gasta en profundidad, no en anchura.
+Limitar una pasada a una funcionalidad y terminarla con una comprobación antes de pasar a la siguiente. Así queda sitio en la ventana para analizar errores y llevar el escenario a un estado funcional.
 
 ## También conocido como
 
-One feature at a time, one feature per session, progreso incremental;
-pariente del límite WIP del kanban.
+One feature at a time, one feature per session, progreso incremental; pariente del límite WIP del kanban.
 
 ## Problema
 
-Dejado a su aire en una tarea grande, el agente intenta hacer demasiado a la
-vez — en esencia, resolver toda la aplicación de un solo golpe. Parece
-productivo: los archivos aparecen por docenas, las funcionalidades se
-«empiezan» una tras otra. Termina siempre igual:
+En una tarea grande, el agente puede empezar varias funcionalidades seguidas. Los archivos se multiplican, pero todavía no se puede verificar entero ni un solo escenario.
 
-- La anchura del frente se come la ventana: a mitad de la décima
-  funcionalidad el contexto se agota, y ninguna de las diez está terminada.
-- El «casi listo» no se puede verificar: la verificación necesita un
-  comportamiento terminado, y no lo hay en ninguna parte.
-- Lo a medias es peor que lo no hecho: la siguiente sesión hereda no una
-  lista limpia sino una excavación — qué de lo empezado funciona, qué
-  abandonar, qué terminar.
-- El corte de la sesión sale caro: se pierde el progreso de todo el frente a
-  la vez.
+Por ejemplo, una sesión cambia a la vez la búsqueda, los filtros y la exportación de notas. Cuando la ventana se llena, cada parte necesita más trabajo. La siguiente sesión primero averigua qué partes se pueden usar y qué comprobaciones ya se ejecutaron. Esa reconstrucción le quita tiempo a la implementación, y los cambios sin terminar dificultan localizar los errores.
 
 ## Solución
 
-Una restricción explícita, anclada en la memoria del proyecto y los prompts:
-**una pasada — una funcionalidad, llevada hasta el final**. El final no es
-«código escrito» sino el ciclo completo:
+Fija la regla de **terminar una funcionalidad por pasada**. Para cada punto, recorre el ciclo completo.
 
-1. Tomar un punto — el siguiente no superado de la
-   [lista de funcionalidades](feature-list-harness.md), o un único ticket.
-2. Implementarlo y solo a él.
-3. Verificar como usuario — pasar el
-   [bucle de retroalimentación](give-agent-a-way-to-verify.md) hasta el
-   verde.
-4. Registrar: el estado en la lista, un commit, una anotación en el
-   [diario de progreso](progress-file.md).
+1. Elige un punto no superado de la [lista de funcionalidades](feature-list-harness.md) o un solo ticket.
+2. Implementa solo ese punto.
+3. Recorre el escenario de usuario con el [bucle de retroalimentación](give-agent-a-way-to-verify.md).
+4. Actualiza el estado, crea un commit y anota el resultado en el [diario de progreso](progress-file.md).
 
-Todo lo notado por el camino — una funcionalidad vecina rota, una
-refactorización que pide paso — no amplía la pasada actual sino que se
-anota: como punto nuevo de la lista o nota del diario. Si tras el final la
-ventana lo permite, el agente toma el siguiente punto — con el mismo ciclo,
-no «de paso».
+Guarda los hallazgos del camino como tareas o notas aparte. Si bloquean el escenario actual, revisa el plan de forma explícita. Empieza la siguiente funcionalidad cuando termines la actual, aunque ambas quepan en una sesión.
 
-Por qué funciona: una funcionalidad cabe entera en la ventana con margen
-para las iteraciones de verificación; la completitud se vuelve binaria — la
-funcionalidad está terminada y verificada o no está empezada; y cualquier
-corte de sesión cuesta como mucho una funcionalidad inacabada, no todo el
-frente.
+El tamaño de la funcionalidad debe dejar sitio para la verificación y las correcciones. Con esta limitación, un corte de sesión deja una sola parte sin terminar, y los resultados anteriores ya están guardados y verificados.
 
 ## Estructura
 
+La parte superior del diagrama muestra varias funcionalidades empezadas sin comprobación.
+
 ```mermaid
 ---
-title: la ventana se gasta en profundidad, no en anchura
+title: una pasada termina con una funcionalidad verificada
 ---
 flowchart TB
   subgraph oneshot["sin la restricción — intento de one-shot"]
     direction LR
     p0["Pasada 1<br/>todo el frente a la vez"]
-    wide["función A ~ · función B ~<br/>función C ~ · función D ~ · …<br/>la ventana se acabó — ninguna terminada, ninguna verificada"]:::warn
+    wide["funcionalidad A ~ · funcionalidad B ~<br/>funcionalidad C ~ · funcionalidad D ~ · …<br/>la ventana se acabó — ninguna terminada, ninguna verificada"]:::warn
     p0 --> wide
   end
   subgraph oneAtATime["una funcionalidad a la vez"]
     direction LR
-    p1["Pasada 1<br/>función A — verificada ✓"]
-    p2["Pasada 2<br/>función B — verificada ✓"]
-    p3["Pasada 3<br/>función C — verificada ✓"]
+    p1["Pasada 1<br/>funcionalidad A — verificada ✓"]
+    p2["Pasada 2<br/>funcionalidad B — verificada ✓"]
+    p3["Pasada 3<br/>funcionalidad C — verificada ✓"]
     p1 --> p2 --> p3
   end
-  note["lo notado por el camino va a la lista y al diario,<br/>no al diff actual"]:::accent
+  note["lo notado por el camino — a la lista y al diario,<br/>no al diff actual"]:::accent
   p2 -.- note
 ```
 
-El carril de arriba es lo que pasa sin la restricción: una pasada se abre en
-abanico por todo el frente, la ventana se acaba antes que el frente, y el
-poso es un puñado de «casis» que nada puede verificar. El carril de abajo es
-el patrón: una cadena de pasadas, cada una terminando en una funcionalidad
-acabada y verificada. La velocidad percibida es menor; la real, mayor — solo
-cuentan los puntos terminados.
+La parte inferior muestra pasadas consecutivas, cada una con un resultado terminado. El progreso se mide por el número de escenarios verificados.
 
 ## Participantes / Componentes
 
-- **La pasada** — la unidad de trabajo: una sesión, o parte de una, dedicada
-  a exactamente una funcionalidad.
-- **La funcionalidad** — un punto verificable; «terminada» lo define la
-  comprobación, no el volumen de código escrito.
-- **La lista de funcionalidades** — la cola de la que la pasada toma el
-  siguiente punto y adonde va todo lo notado por el camino.
-- **El agente** — implementa y verifica; la restricción la sostienen el
-  prompt y la memoria del proyecto.
-- **El desarrollador** — mantiene la disciplina: no añade «de paso» y exige
-  el final antes del siguiente punto.
+- **La pasada** se dedica a una funcionalidad y puede ocupar una sesión o parte de ella.
+- **La funcionalidad** define un resultado independiente y verificable.
+- **La lista de funcionalidades** guarda la cola de trabajo.
+- **El agente** implementa y verifica el punto elegido.
+- **El desarrollador** mantiene los límites de la tarea y acepta el resultado.
 
 ## Cuándo aplicarlo
 
-- Trabajo largo guiado por la lista de funcionalidades — ahí nació la
-  restricción: sin ella, las sesiones autónomas intentan sistemáticamente
-  hacerlo todo de golpe.
-- Ejecuciones autónomas: a menos vigilancia, más estricto debe ser el marco
-  de la pasada.
-- Como valor por defecto de cualquier trabajo no trivial: un «y de paso X»
-  en el prompt ya es una apuesta por un diff difuso e inverificable.
+- El trabajo está dividido en una lista de funcionalidades con criterios de verificación propios.
+- El agente hace pasadas autónomas largas.
+- Las tareas del camino impiden con frecuencia terminar la original.
 
-No encaja en cambios honestamente transversales — una migración de formato,
-un renombrado por toda la base: no se trocean en funcionalidades y
-necesitan una pasada aparte con su propio criterio de finalización.
+Una migración de formato o un renombrado masivo necesitan una pasada aparte con su propio criterio de finalización. Esos cambios no siempre se dejan dividir cómodamente por funcionalidades de usuario.
 
 ## Consecuencias y compromisos
 
-- ➕ Cada pasada termina con un incremento verificado: el progreso se cuenta
-  en funcionalidades terminadas, no empezadas.
-- ➕ La ventana se gasta en profundidad: la implementación, la verificación
-  y las iteraciones de una funcionalidad — en vez de dispersarse entre diez.
-- ➕ El corte es barato: murió la sesión — se pierde como mucho una
-  funcionalidad inacabada, y los artefactos dicen cuál.
-- ➖ Se siente más lento: no hay la ilusión estimulante de «todo casi
-  listo». Es el precio de que «listo» sea verdad.
-- ➖ Los cambios transversales no caben en el marco — hay que sacarlos a
-  pasadas aparte con sus propios criterios.
-- ➖ La disciplina corta por ambos lados: al agente lo sujeta el prompt, al
-  desarrollador nada; la tentación de «añade también Y» al final de una
-  buena pasada rompe el patrón desde dentro.
+- ➕ Cada pasada deja un resultado verificado.
+- ➕ El contexto queda disponible para verificar y corregir una funcionalidad.
+- ➕ Tras un corte, solo hay que reconstruir el estado del punto actual.
+- ➖ Verificar cada punto lleva tiempo antes de pasar al siguiente.
+- ➖ Los cambios preparatorios comunes hay que planificarlos por separado.
+- ➖ Tú también tienes que contenerte para no ampliar la tarea actual.
 
 ## Implementación
 
-1. Ancla la regla en la [memoria del proyecto](claude-md-memory.md): «una
-   funcionalidad por pasada, llevada a un estado verificado; los hallazgos
-   incidentales van a la lista, no al diff».
-2. Redacta el prompt de la pasada de forma estrecha: «toma la siguiente
-   funcionalidad no superada de la lista y llévala a passes», no «trabaja
-   en la aplicación».
-3. Define el final de la pasada y exígelo completo: comprobación, estado,
-   commit, anotación en el diario. Una funcionalidad sin final no está
-   hecha.
-4. Encauza lo notado por el camino hacia los artefactos: un bug — como
-   punto nuevo de la lista, una idea de refactorización — como nota del
-   diario. El diff de la pasada toca solo su funcionalidad.
-5. Si la ventana permite continuar — el siguiente punto empieza como una
-   pasada nueva, leyendo la lista, no como extensión del diff actual.
-6. Planifica el trabajo transversal — migraciones, renombrados,
-   infraestructura — como pasadas aparte con criterio de finalización
-   explícito.
+1. Anota en la [memoria del proyecto](claude-md-memory.md) la regla de terminar una funcionalidad por pasada y registrar aparte los hallazgos del camino.
+2. Nombra un punto concreto o pide que se elija la siguiente funcionalidad no superada.
+3. Define la finalización como comprobación, estado actualizado, commit y anotación en el diario.
+4. Guarda los bugs e ideas del camino en tareas aparte si no bloquean el trabajo actual.
+5. Empieza el siguiente punto en una pasada nueva después de registrar el anterior.
+6. Planifica por separado las migraciones y los cambios preparatorios comunes.
 
 ## Ejemplo
 
-El servicio de notas del
-[capítulo sobre la lista](feature-list-harness.md). En la memoria del
-proyecto — la regla de una pasada. El desarrollador lanza la sesión:
+En el servicio de notas del [capítulo sobre la lista de funcionalidades](feature-list-harness.md), lanzas una pasada sobre la cola.
 
-> Toma la siguiente funcionalidad no superada de feature-list.json y llévala
-> a passes.
+> Toma la siguiente funcionalidad no superada de feature-list.json y llévala a passes.
 
-El agente toma «búsqueda por etiqueta». Por el camino nota: la paginación de
-la lista de notas está rota, y los filtros piden una refactorización. En vez
-de arreglar y reescribir «de paso», añade la paginación como punto nuevo de
-la lista, anota la idea de refactorización en el diario — y sigue con la
-búsqueda. Al final de la pasada: búsqueda implementada, recorrida como
-usuario, `passes: true`, commit, anotación en el diario.
+El agente elige la búsqueda por etiqueta y nota un fallo de paginación que no impide verificar la búsqueda. Anota el bug como tarea aparte y sigue con el escenario elegido. Tras verificar la búsqueda en el navegador, el agente actualiza el estado, hace un commit y anota el resultado en el diario.
 
-Para contrastar — lo que pasaba antes de la regla: el prompt «trabaja en la
-aplicación» terminó en una sesión que había «implementado la búsqueda, los
-filtros, la paginación y empezado la exportación». La ventana murió en la
-exportación; no se verificó nada; la siguiente sesión gastó medio contexto
-averiguando qué de aquello funcionaba.
+La siguiente sesión recibe una búsqueda que funciona y una tarea aparte sobre la paginación. No tiene que desenredar un diff mezclado de dos cambios sin terminar.
 
 ## Antipatrones y errores comunes
 
-- **El intento de one-shot.** «Haz toda la aplicación» en una pasada — el
-  frente es más ancho que la ventana, y el poso es un puñado de «casis».
-  Esperar una funcionalidad de un solo prompt sin ciclo de verificación es
-  un antipatrón aparte, tratado en [su propio capítulo](one-shotting.md).
-- **«De paso».** Cada «y arregla también X» incidental difumina el diff y
-  aleja la verificación. Lo notado va a la lista, no a la pasada.
-- **Funcionalidad sin final.** Implementada pero no verificada ni
-  registrada — la pasada no cuenta: la siguiente sesión empieza con una
-  excavación.
-- **Anchura en vez de profundidad.** Empezar tres puntos «en paralelo» es
-  el mismo one-shot en miniatura: acaba con cero terminados.
-- **Refactorización incidental.** Reescribir código vecino dentro de la
-  pasada mezcla dos cambios en un diff — y la verificación de la
-  funcionalidad con la de la refactorización.
+- **Intento de one-shot.** Un gran volumen de trabajo puede llenar la ventana antes de verificar el primer escenario.
+- **«De paso».** Las ediciones del camino amplían el diff y retrasan la finalización. Anótalas aparte.
+- **Funcionalidad sin final.** El código sin verificar deja a la siguiente sesión el trabajo de reconstruir el estado.
+- **Varios puntos empezados.** El agente gasta contexto en saltar entre escenarios sin terminar.
+- **Refactorización de paso.** Un diff mezclado obliga a verificar a la vez el comportamiento nuevo y la conservación del antiguo.
 
 ## Usos conocidos
 
-- **El harness de Anthropic para agentes de larga duración** — la fuente
-  primaria: sin la restricción «el agente tendía a intentar demasiado a la
-  vez — en esencia, a resolver la aplicación de un golpe»; la regla «elige
-  una sola funcionalidad» junto con el ritual de sesión.
-- **Superpowers** — el mismo marco a nivel de tareas: el plan se trocea en
-  tareas de 2–5 minutos, cada una implementada por un subagente con ventana
-  fresca.
-- **Skills de Matt Pocock** — los tickets trazadores: el trabajo se trocea
-  en tickets con dependencias bloqueantes, y `/implement` conduce
-  exactamente un ticket a la vez.
-- **Los límites WIP del kanban** — el linaje pre-agente: limitar el trabajo
-  en curso como forma de obligar al sistema a *terminar* en vez de
-  *empezar*.
+- **El harness de Anthropic para agentes de larga duración** limita al agente a la funcionalidad elegida y fija el orden para cerrar la sesión.
+- **Superpowers** divide el plan en tareas pequeñas para subagentes separados.
+- **Las skills de Matt Pocock** implementan los tickets trazadores de uno en uno mediante `/implement`.
+- **Los límites WIP del kanban** acotan el volumen de trabajo sin terminar.
 
 ## Patrones relacionados
 
-- [Lista de funcionalidades](feature-list-harness.md) — aporta la cola: la
-  pasada toma el siguiente punto no superado y devuelve un estado
-  verificado.
-- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) — define
-  «terminada»: el final de la pasada es una comprobación en verde, no un
-  volumen de código.
-- [Diario de progreso](progress-file.md) — recibe los hallazgos
-  incidentales y registra el final de la pasada para la siguiente sesión.
-- [Cuatro fases](explore-plan-code-commit.md) — el mismo principio de
-  completitud a escala de una tarea: la pasada termina con un commit, no con
-  un «casi».
-- [One-shotting](one-shotting.md) — el antipatrón que contrarresta esta disciplina: toda la aplicación esperada de una sola pasada.
+- [Lista de funcionalidades](feature-list-harness.md) fija la cola y guarda los estados verificados.
+- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) determina cuándo una funcionalidad está lista.
+- [Diario de progreso](progress-file.md) guarda el estado de la pasada y los hallazgos del camino.
+- [Cuatro fases](explore-plan-code-commit.md) cierra el trabajo con una comprobación y un commit.
+- [One-shotting](one-shotting.md) describe el intento de obtener toda la aplicación en una pasada sin comprobaciones intermedias.

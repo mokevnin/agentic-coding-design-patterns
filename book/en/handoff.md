@@ -2,16 +2,14 @@
 group: context
 status: draft
 related: [context-engineering, progress-file, explore-plan-code-commit]
-source_rev: 2fc5f3f718fd2b9c7bd86ccca017570b1a8ccad0
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Session Handoff
 
 ## Intent
 
-At the session boundary, deliberately pack its contents into a handoff
-document that the next session or another agent will start from — instead of
-trusting auto-summarization to decide what survives from the context.
+Before switching sessions, save the state of the work in a handoff document. The next agent gets the goal, the decisions made, and the first step from which it can continue.
 
 ## Also known as
 
@@ -19,153 +17,94 @@ Handoff; `/handoff` in Matt Pocock's skills; handoff document.
 
 ## Problem
 
-Every session has a boundary: the window runs out, the work is handed to
-another agent, or the next stage is better done from a clean slate. Context
-does not cross the boundary on its own, and both stock ways of carrying it
-over are bad:
+A session has to end when the window runs out or the nature of the work changes. For example, after planning, a disputed decision needs to be checked with a separate prototype.
 
-- **Auto-compaction** fires on a threshold and summarizes at its own
-  discretion. What survives — the decisions made, or a retelling of
-  long-processed logs — is not your choice. And it loses things silently:
-  you find out only when the agent "forgets" an agreement.
-- **Retelling by hand** is expensive and leaky: the developer reconstructs
-  from memory what the agent knew more precisely — and inevitably loses the
-  reasons behind decisions and the discarded dead ends.
+An automatic summary may preserve the course of the discussion but miss the reason one option was rejected. The new agent will then repeat research that has already been done. Retelling it by hand also takes time and depends on your memory.
 
-There is a third trouble: summarization continues *the same* work in *the
-same* thread. But the next session is often needed for something else — a
-prototype, implementation of a finished plan, a review. It needs not a
-retelling of the whole history but an extract tailored to its specific goal.
+For the next stage, it is more useful to select information for its goal in advance. A prototype needs the open question and the experiment's criterion, while an implementation needs the agreed plan.
 
 ## Solution
 
-As the session's final act, the developer asks the agent to assemble a
-handoff document — and says what the next session will be for. The agent,
-still holding the full context in its window, packs it for that goal:
+Before finishing, ask the agent to prepare a document for a named goal. While the context is available, it can save the necessary information.
 
-- the current state and the next session's goal;
-- the key decisions — with reasons, not just outcomes;
-- what has been tried and discarded, so it isn't tried again;
-- the concrete next step;
-- links to the permanent artifacts — specifications, ADRs, commits,
-  tickets — instead of retelling them;
-- hints for the next agent: which skills and tools will be useful.
+- the current state and the goal of the next session;
+- key decisions and their reasons;
+- what was already tried and discarded, so it is not tried again;
+- a specific next step;
+- links to specifications, ADRs, commits, and tickets;
+- recommendations on skills and tools for the next session.
 
-Secrets — keys, passwords, personal data — are scrubbed: the document leaves
-the session's bounds. The document itself is disposable and is not committed
-to the repository: long-lived knowledge belongs in specifications, ADRs, and
-the [progress journal](progress-file.md), while the handoff lives from one
-session to the next.
+Remove secrets and unnecessary personal data from the document. In this variant of the pattern, the handoff is stored in a temporary directory and used for a specific transfer. Keep long-term knowledge in specifications, ADRs, and the [progress journal](progress-file.md).
 
-The new session begins by reading the document — and gets dense, curated
-context for its task, not the lottery of auto-compaction and not the tail of
-someone else's history.
+The next session starts from the document and follows the links to read additional materials that the task requires.
 
 ## Structure
 
+The upper path in the diagram shows a handoff for a given goal.
+
 ```mermaid
 ---
-title: assembled at the end of the session — tailored to the next one's goal
+title: the document preserves context for the next stage
 ---
 flowchart LR
   a["Session A — window low<br/>context still intact"]
   doc["handoff.md<br/>state and goal<br/>decisions and their 'why'<br/>discarded dead ends<br/>the next step<br/>links to artifacts"]:::accent
   b["Session B — fresh window<br/>starts from the document"]
-  artifacts["specs · ADRs · commits<br/>by link, not retold"]:::muted
+  artifacts["specs · ADRs · commits<br/>by link, not duplicated"]:::muted
   a --> doc --> b
   doc -.- artifacts
-  a -. "auto-compaction: you don't choose what survives,<br/>the thread continues instead of a clean start" .-> b
+  compact["Session A continues<br/>history replaced by a summary"]:::muted
+  a -. "auto-compaction" .-> compact
   note["what crosses the session boundary<br/>is the developer's decision"]:::muted
   b -.- note
 ```
 
-The upper path is the pattern: the departing session, while its context is
-still intact, assembles the handoff document for the named goal; the next
-session reads it as its first message. Permanent artifacts are not rewritten
-into the document — it references them, and the new session reads what it
-needs on its own. The lower dashed path is what the pattern opposes:
-auto-compaction carries across the boundary whatever it chooses, and
-continues the same thread instead of a clean start toward the new goal.
+The current agent writes the document, and the next one reads it and follows the links to the permanent artifacts. The lower path shows auto-compaction within the current conversation, where you have less control over what goes into the summary.
 
 ## Participants / Components
 
-- **The departing session** — the only moment when the context is still
-  complete; assembles the document.
-- **The handoff document** — a disposable extract tailored to the goal:
-  state, decisions, dead ends, next step, links.
-- **The next session** — a fresh window (another agent, another kind of
-  work); starts by reading the document.
-- **The developer** — names the next session's goal and decides when the
-  boundary has arrived.
-- **Permanent artifacts** — specifications, ADRs, commits, tickets; they
-  enter the document as links.
+- **The departing session** assembles the document while the necessary context is still available.
+- **The handoff document** preserves the state and the next step for a specific goal.
+- **The next session** reads the document before continuing the work.
+- **Developer** chooses the moment of the handoff and the goal of the next stage.
+- **Permanent artifacts** provide details via links from the document.
 
 ## When to use
 
-- The window is running low and the work isn't finished — a handoff instead
-  of hoping for auto-compaction.
-- The nature of the work changes: exploration → prototype, plan →
-  implementation, implementation → review. The next stage needs a clean
-  slate and an extract, not the whole history.
+- The window runs out before the task is finished.
+- The work moves from research to a prototype, implementation, or review.
 - The work is handed to another agent or a colleague.
-- A long discussion has accumulated decisions you don't want to entrust to
-  compaction.
+- A long discussion has accumulated decisions you would not want to entrust to compaction.
 
-If the work continues in the same session on the same course, the
-[progress journal](progress-file.md) is enough; the handoff is a move made
-precisely at the boundary.
+When continuing the same work, a [progress journal](progress-file.md) is often enough. A handoff is useful at the moment of transfer between sessions.
 
 ## Consequences and trade-offs
 
-- ➕ What survives the boundary is decided by the developer, not by an
-  auto-compaction threshold.
-- ➕ The next session starts with context cut to its goal — denser and
-  cheaper than the tail of someone else's history.
-- ➕ The reasons behind decisions and the discarded dead ends move across
-  explicitly — exactly what auto-summarization loses first.
-- ➖ A manual move: the boundary has to be noticed in advance — a document
-  assembled after compaction packs already-truncated context.
-- ➖ Quality depends on the packing: a poorly assembled document loses the
-  same things the automation does.
-- ➖ The temptation to duplicate artifacts: retelling the specification in
-  the handoff means wasted tokens and a second source of truth.
+- ➕ You can check what information whoever picks up the work next will get.
+- ➕ The new session gets context tailored to its task.
+- ➕ The reasons for decisions and the hypotheses already checked are preserved explicitly.
+- ➖ The document has to be prepared before the necessary information is lost from the window.
+- ➖ An incomplete summary may miss the same details as auto-compaction.
+- ➖ Retelling permanent documents creates copies that can diverge from the originals.
 
 ## Implementation
 
-1. Set up a command: a ready-made `/handoff` skill exists in
-   [Matt Pocock's pack](matt-pocock-skills.md), and in Claude Code a custom
-   slash command is easy to make. The point is one invocation, not a ritual
-   from memory.
-2. Always name the goal: "assemble a handoff for a session that will do X."
-   A document for implementation and a document for review are different
-   documents.
-3. Keep the contents: state and goal, decisions with reasons, the discarded,
-   the next step, links to artifacts, suggested skills.
-4. Don't duplicate: everything already recorded in specifications, ADRs,
-   commits, and tickets enters as a link, not a retelling.
-5. Scrub secrets: the document will be read outside this session.
-6. Keep it outside the repository — in a temporary directory: it is a
-   disposable document. Whatever must live long goes into the permanent
-   artifacts as the session wraps up.
-7. Start the next session from the document: "read such-and-such file and
-   continue."
-8. Watch the window: the handoff is assembled *before* compaction. If the
-   tool shows the window filling up, that's the signal to prepare the
-   boundary.
+1. Prepare a repeatable handoff command. For example, `/handoff` is available in [Matt Pocock's pack](matt-pocock-skills.md).
+2. Name the goal of the next session so that the agent selects information for it.
+3. Save the state, the decisions with their reasons, the hypotheses already checked, and the next step.
+4. Give links to specifications, ADRs, and tickets.
+5. Check that the document contains no secrets.
+6. Put the handoff in a temporary directory. Move knowledge needed for the long term into permanent documents.
+7. Start the next session by asking it to read the handoff.
+8. Prepare the handoff before the window is compacted, while the agent can still reconstruct the reasons for decisions.
 
 ## Example
 
-A session has planned a tariff migration and hit an open question: can the
-chosen subscription-cancellation model handle corporate contracts? It's
-easier to settle with a prototype in a clean session. The developer closes
-the current one:
+While planning a tariff migration, a question remained about corporate contracts with a deferred start. You decide to check the cancellation model with a prototype and prepare a new session.
 
-> Assemble a handoff for the next session: it will build a prototype of the
-> cancellation model; the question is whether the model survives corporate
-> contracts with deferred start.
+> Assemble a handoff for a prototype of the cancellation model. The next session should check whether the model supports corporate contracts with a deferred start.
 
-The agent writes `handoff-cancellation-prototype.md` to the temporary
-directory:
+The agent saves _handoff-cancellation-prototype.md_ to the temporary directory.
 
 ```markdown
 # Handoff: cancellation model prototype
@@ -194,56 +133,30 @@ a date, cancellation before the contract starts.
 /prototype — the session is entirely about throwaway code.
 ```
 
-The new session starts with a single line:
+In the new session, you pass the path to the document.
 
 > Read /tmp/handoff-cancellation-prototype.md and get going.
 
-The prototype session doesn't drag three hours of planning behind it — only
-the extract for its question and a link to the specification if details are
-needed.
+The agent starts the prototype from the stated question and the links to the agreed decisions. It does not need to reconstruct them from several hours of discussion.
 
 ## Anti-patterns and common mistakes
 
-- **Trusting the boundary to auto-compaction.** Decisions and reasons leave
-  silently; the pattern exists precisely so that they don't.
-- **A handoff-dump.** Unloading the entire history "just in case" — the next
-  session starts with someone else's noise instead of clean context. A
-  handoff is an extract for a goal.
-- **Retelling the artifacts.** The specification and the ADRs are already
-  written — in the handoff their place is a link. A copy will go stale and
-  start lying.
-- **A handoff in git.** A disposable document in the repository is litter
-  and a leak risk: it was written with no thought of a long life. The
-  long-lived goes into the journal, ADRs, and specifications.
-- **Assembling after compaction.** Too late: half the context is already
-  gone. The handoff is written while the window is intact.
+- **Trusting the boundary to auto-compaction.** Decisions and reasons leave silently; the pattern exists precisely so that they don't.
+- **A handoff-dump.** The full history takes up the next session's window. Select information for its goal.
+- **Retelling the artifacts.** A copy of the specification can go stale. Pass a link to the original document.
+- **A disposable handoff in git.** A temporary summary quickly goes stale. Keep in the repository the information the team intends to maintain.
+- **Handing off after the context is lost.** The agent can only write down the information that remains. Prepare the document in advance.
 
 ## Known uses
 
-- **Matt Pocock's skills** — `/handoff`: a disposable document in the
-  temporary directory, a suggested-skills section, a ban on duplicating
-  artifacts, secret scrubbing; in the pack's main flow the handoff links the
-  interview to the prototype and other stage changes.
-- **Claude Code** — `/compact` with an instruction ("compact, focus on X") —
-  the pattern's built-in younger sibling: you can set the focus, but the
-  result stays in the same thread and doesn't survive a session change.
-- **Compaction from the Anthropic context engineering article** — the
-  automated variant of the same operation in long-running agent harnesses:
-  summarize with maximum recall, then tune for precision.
-- **Subagents** — the same handoff bottom-up: a subagent returns to the
-  coordinator a condensed summary of its work, not the full trace.
+- **Matt Pocock's skills** use `/handoff` to transfer between stages, including the move from the interview to the prototype.
+- **Claude Code** lets you set a focus for `/compact`. Such a summary continues the work in the current conversation.
+- **Anthropic's article on context engineering** describes context compaction for long-running agent work.
+- **Subagents** return to the coordinator a summary of results selected for its task.
 
 ## Related patterns
 
-- [Progress Journal](progress-file.md) — the neighbor in the state layer:
-  the journal is kept as the work goes and lives in the repository, the
-  handoff is written once at the boundary and dies after being read.
-- [Context Engineering](context-engineering.md) — a handoff is deliberate
-  compaction: the "minimum tokens, maximum signal" principle applied by hand
-  to the session boundary.
-- [Four Phases](explore-plan-code-commit.md) — an approved plan is a
-  ready-made handoff document: it can be executed in a fresh session without
-  dragging the discussion history along.
-- [Spec-Driven Development](spec-driven-development.md) — SDD's permanent
-  artifacts and the disposable handoff complement each other: the former
-  store the knowledge, the latter carries the working moment.
+- [Progress Journal](progress-file.md) is updated as the work goes and is kept in the repository.
+- [Context Engineering](context-engineering.md) explains how to select information for a handoff.
+- [Four Phases](explore-plan-code-commit.md) lets you pass an approved plan to a new implementation session.
+- [Spec-Driven Development](spec-driven-development.md) keeps the permanent documents that a handoff links to.

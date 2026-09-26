@@ -2,14 +2,14 @@
 group: project-org
 status: draft
 related: [claude-md-memory, context-engineering, handoff, tdd-with-agent, bloated-claude-md]
-source_rev: 58f57eb48a3a03000812870279cef64a7847f4d8
+source_rev: ebf44d297f082115f9c01e295d86d57ffca0d467
 ---
 
 # Skills
 
 ## Intent
 
-Save a recurring procedure in a skill that the agent loads when needed. The developer gets a named workflow with a version and completion criteria that can be used across sessions.
+Save a recurring procedure in a skill that the agent loads when needed. You get a named workflow with a version and completion criteria that can be used across sessions.
 
 ## Also known as
 
@@ -17,7 +17,7 @@ Skills, slash commands, custom commands, packaged workflows.
 
 ## Problem
 
-At every release the developer explains the preparation order to the agent all over again. One day they forget to mention the migration check, and the agent ships the version without it.
+At every release you explain the preparation order to the agent all over again. One day you forget to mention the migration check, and the agent ships the version without it.
 
 If the procedure lives only in the conversation, how complete each run is depends on the new prompt. A colleague may describe the same process differently and get a different order of actions. Moving the whole procedure into [Project Memory](claude-md-memory.md) loads it into sessions that have nothing to do with releases as well.
 
@@ -77,7 +77,7 @@ The procedure is stored in git and goes through review. On invocation the agent 
 
 ## When to use
 
-- The developer explains the same procedure again and again.
+- You explain the same procedure again and again.
 - The team needs a consistent order for releases, reviews, or triage.
 - One of this book's patterns has to be applied regularly.
 
@@ -106,9 +106,9 @@ For a one-off task a dedicated skill usually creates extra work maintaining the 
 
 ## Example
 
-Every release of a service involves a changelog, a version bump, a migration check, a smoke test, and creating the release. The developer wants to save this order so they don't have to reconstruct it from memory.
+Every release of a service involves a changelog, a version bump, a migration check, a smoke test, and creating the release. You want to save this order so you don't have to reconstruct it from memory.
 
-They write the procedure into _.claude/skills/release/SKILL.md_.
+You write the procedure into _.claude/skills/release/SKILL.md_.
 
 ```markdown
 ---
@@ -126,7 +126,7 @@ disable-model-invocation: true
 5. Tag and release with the changelog in the description.
 ```
 
-Now the developer invokes `/release`. When the team adds a check for unclosed feature flags, it changes the skill through a pull request. The following runs get the new version of the instruction.
+Now you invoke `/release`. When the team adds a check for unclosed feature flags, it changes the skill through a pull request. The following runs get the new version of the instruction.
 
 On the same principle, Matt Pocock's pack saves the procedures for session handoff, TDD, triage, investigation, and prototyping.
 

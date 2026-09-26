@@ -2,114 +2,81 @@
 kind: anti-pattern
 status: draft
 related: [prototype-to-answer, spec-driven-development, premature-success]
-source_rev: 0467919769ae9e07e7dfb6a41d92d54afd014895
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Vibe Coding
 
 ## Also known as
 
-Vibe coding — Andrej Karpathy's term: "fully give in to the vibes... and
-forget that the code even exists."
+Vibe coding, Andrej Karpathy's term for developing by prompting a model without paying attention to the generated code.
 
 ## Context
 
-The developer describes the goal in one phrase, the agent generates, the
-developer accepts whatever runs and looks like it works. The diff goes
-unread; errors are cured by pasting the message back into the chat. On a
-weekend prototype this is intoxicatingly productive — and the habit moves
-into the real project.
+You describe the goal, the agent generates code, and you accept a result that runs and looks like it works. You forward errors back into the chat without reading the diff. The habit from a quick experiment moves into a production project.
 
 ## Problem
 
-The conversation's product is accepted without understanding and without
-verification: the code is unread, the requirements are recorded nowhere,
-the acceptance criterion is "seems to work". A living codebase grows a
-layer nobody can say what it is *supposed* to do.
+Behavior that nobody has checked against the requirements appears in the codebase. At the next change, the team finds it hard to tell what must be preserved and what was an accidental result of generation.
 
 ## Why people do it
 
-- The speed is intoxicating: a feature in an evening versus a week — it is
-  hard to make yourself slow down to read a diff.
-- On prototypes it honestly works: the cost of a mistake there is zero, and
-  the habit sets in as "just the way to work".
-- Reading someone else's code is boring, and the agent's is long besides.
-- "The agent knows this framework better than I do" — true, and it does not
-  follow that the result is correct.
+- A fast first result reduces the desire to spend time on review.
+- On an experiment where a mistake is cheap, this approach lets you test an idea quickly.
+- A large generated diff takes effort to read.
+- The agent's knowledge of the framework is taken as proof that the result is correct.
 
 ## Consequences
 
-- ➖ Code without an owner: nobody understands how the feature works — so
-  nobody can review, fix, or grow it.
-- ➖ The intent is lost: a month later "by design" can't be told from "by
-  accident" — the requirements existed only in a head and a chat.
-- ➖ Edge cases and security are unknown: nobody checked them, because the
-  criterion was "looks like it works".
-- ➖ Every next change costs more: the layer of un-understood code grows,
-  and the agent builds the new on top of the unverified old.
+- ➖ The team finds it hard to fix and evolve code whose design it does not understand.
+- ➖ Without requirements, the original intent cannot be recovered.
+- ➖ Unchecked edge cases may surface for users.
+- ➖ New changes build on an ever-growing amount of unverified behavior.
 
 ## Signs
 
-- The diff was merged unread.
-- The answer to "how does this work" is "no idea, the agent wrote it".
-- Requirements are reconstructed by reading the code, because they exist
-  nowhere else.
-- The quality argument is "but it works".
+- A diff is merged unread.
+- Participants cannot explain how the accepted code works.
+- Requirements are reconstructed by reading the code, because they exist nowhere else.
+- Quality is justified only by a successful run.
 
 ## A better way
 
-Split the modes by the cost of a mistake. Give the vibe its legitimate
-zone: [throwaway prototypes](prototype-to-answer.md), one-off scripts,
-experiments — everything that dies before it needs to be understood. Give
-real code the real process: the intent gets recorded (a
-[specification](spec-driven-development.md), or at least a plan from the
-[Four Phases](explore-plan-code-commit.md)), the result gets verified (the
-[Feedback Loop](give-agent-a-way-to-verify.md)), and the diff gets read —
-by you or by a [fresh-context reviewer](writer-reviewer.md). The line is
-simple: code that will live must be understood by someone.
+Choose the depth of verification based on the cost of a mistake and the lifetime of the code. For a [Throwaway Prototype](prototype-to-answer.md), checking its specific question is enough. For production code, record the requirements in a [specification](spec-driven-development.md) or a [plan](explore-plan-code-commit.md), verify the behavior with a [Feedback Loop](give-agent-a-way-to-verify.md), and do a [review](writer-reviewer.md).
 
 ```mermaid
 ---
-title: the mode follows cost of error and lifetime of the code
+title: the mode is chosen by the cost of a mistake and the lifetime of the code
 ---
 quadrantChart
-  x-axis "Dies this week" --> "Lives in production"
-  y-axis "Low cost of error" --> "High cost of error"
-  quadrant-1 Spec and review
+  x-axis "Dies this week" --> "Will live in production"
+  y-axis "Low cost of a mistake" --> "High cost of a mistake"
+  quadrant-1 Specification and review
   quadrant-2 End-to-end check
-  quadrant-3 Vibe is fine
-  quadrant-4 Read the diff
-  Landing prototype: [0.15, 0.18]
+  quadrant-3 Quick experiment
+  quadrant-4 Reading the diff
+  Landing page prototype: [0.15, 0.18]
   One-off script: [0.28, 0.3]
   Migration script: [0.3, 0.78]
   Internal dashboard: [0.72, 0.32]
   Payment page: [0.85, 0.88]
 ```
 
-Both axes are needed together. A landing prototype and a one-off script sit in the bottom-left corner, where the vibe is honest and costs nothing. A payment page needs the full process. The dangerous corner is the top left: a migration script will be dead within the hour, but a mistake in it may leave nothing left to repair — a short lifetime does not remove the end-to-end check.
+The diagram takes into account the lifetime of the code and the cost of a mistake. A landing page prototype allows a short check, while a payment page requires the full process. A migration script also needs a thorough check even though it runs once, because a mistake can affect existing data.
 
 ## Example
 
-**Before:**
+**Before**
 
-> — Build the subscription payment page. — … — It works, merge it.
+> Build the subscription payment page. It opened and looks like it works, we can merge.
 
-**After:**
+**After**
 
-> For the landing prototype — vibe away, unread: it dies this week. For the
-> payment — a spec with criteria, implementation by plan, an end-to-end run
-> of the payment scenario, and a diff review by a fresh subagent: this code
-> will be handling money longer than we'll remember this conversation.
+> For the payment page, let's first agree on the requirements, then implement them and verify the whole scenario. Before merging, we'll review the diff. This code will process real payments.
 
 ## Related patterns and anti-patterns
 
-- [Throwaway Prototype](prototype-to-answer.md) — the vibe's legal form:
-  disposable code with a question and a verdict, instead of code without an
-  owner.
-- [Spec-Driven Development](spec-driven-development.md) — the opposite
-  pole: the intent is written down and outlives the conversation.
-- [Premature Success](premature-success.md) — the faithful companion: the
-  code unread *and* the behavior unchecked.
-- [One-Shotting](one-shotting.md) — the sibling from the same demo culture:
-  there everything is expected from one prompt, here everything after it is
-  accepted.
+- [Throwaway Prototype](prototype-to-answer.md) limits an experiment to a specific question.
+- [Spec-Driven Development](spec-driven-development.md) keeps the requirements for verifying the implementation.
+- [Premature Success](premature-success.md) describes declaring the work done without an end-to-end check.
+- [One-Shotting](one-shotting.md) describes expecting a finished product after a single pass.

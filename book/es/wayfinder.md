@@ -2,97 +2,58 @@
 group: project-org
 status: draft
 related: [feature-list-harness, one-feature-at-a-time, prototype-to-answer, handoff]
-source_rev: d57c1756a713e9c5569ec5ab166806fdaae71f17
+source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
 # Mapa de investigación
 
 ## Propósito
 
-Planificar un trabajo más grande que una sesión y envuelto en niebla — la
-idea existe, el camino no se ve — como un mapa compartido de tickets de
-investigación en el tracker. El agente cierra un ticket por sesión, cada
-respuesta despeja un trozo de niebla — hasta que el camino al destino queda
-claro. El mapa produce decisiones, no código: está listo cuando no queda
-nada por decidir.
+Organizar un trabajo grande e incierto como un mapa de preguntas de investigación en el tracker. Cada ticket aporta una decisión o información nueva que acerca al equipo a un plan de implementación acordado.
 
 ## También conocido como
 
-Wayfinder, wayfinding; el skill `/wayfinder` del pack de Matt Pocock.
+Wayfinder, wayfinding; la skill `/wayfinder` del paquete de Matt Pocock.
 
 ## Problema
 
-Llegó una idea grande y difusa: «migramos a una nueva plataforma de pagos»,
-«hacemos la tarifa corporativa». Es claramente más grande que una sesión —
-y, peor, no se ve el camino: ni siquiera se sabe qué decisiones habrá que
-tomar.
+El equipo quiere pasar la facturación a una plataforma nueva, pero aún no sabe cómo migrar las suscripciones activas y los métodos de pago guardados. Primero tiene que averiguar las restricciones y tomar varias decisiones relacionadas.
 
-- Escribir la especificación de inmediato es especificación prematura a
-  tamaño completo: la mitad de los «requisitos» fijados resultarán
-  conjeturas.
-- La [lista de funcionalidades](feature-list-harness.md) no encaja: trabaja
-  desde un estado final conocido, y aquí no se sabe qué construir
-  exactamente.
-- Resolverlo en una conversación larga — el conocimiento muere con la
-  sesión, y una segunda persona o un segundo agente no puede sumarse en
-  paralelo.
-- Guardar las preguntas en la cabeza significa recordar cada vez de nuevo
-  qué está decidido, qué está bloqueado y qué queda siquiera por hacer.
+Si escribes enseguida una especificación detallada, los huecos desconocidos se rellenan con suposiciones. La [lista de funcionalidades](feature-list-harness.md) será útil cuando se haya elegido el comportamiento requerido. Ahora el equipo necesita una cola de las preguntas de las que depende ese comportamiento. Una conversación larga dificulta pasar los resultados a otro participante. Un mapa común conserva lo que ya está decidido y qué preguntas siguen disponibles para investigar.
 
 ## Solución
 
-Tres movimientos: nombrar el destino, trazar el mapa, recorrerlo ticket a
-ticket.
+Define el objetivo de la investigación, guarda un mapa de las preguntas y resuélvelas de una en una.
 
-**El destino.** El primer acto es fijar cómo se ve el final del camino: una
-especificación lista para entrar en la tubería; una decisión tomada; un
-cambio realizado. El destino fija el alcance — lo que queda más allá no
-entra en el mapa.
+**El objetivo** describe la condición de finalización, por ejemplo una especificación de migración acordada. Limita la investigación a las preguntas necesarias para ese resultado.
 
-**El mapa.** Un issue del tracker con la etiqueta del mapa — un índice, no
-un almacén:
+**El mapa** vive en un issue aparte como un índice breve.
 
-- *el destino* — una o dos líneas por las que se orienta cada sesión;
-- *decisiones* — una línea por ticket cerrado con enlace: la esencia en el
-  mapa, el detalle en el ticket;
-- *aún sin formular* — la niebla de guerra: preguntas que se intuyen pero
-  aún no se pueden formular con precisión;
-- *fuera de alcance* — lo recortado a conciencia: la frontera no pasa del
-  destino.
+- _Objetivo_ ayuda a cada sesión a mantener el rumbo.
+- _Decisiones_ contiene conclusiones cortas y enlaces a los tickets cerrados.
+- _Aún sin formular_ conserva las zonas de incertidumbre para las que todavía falta información.
+- _Fuera de alcance_ explica qué preguntas quedan excluidas de la investigación.
 
-**Los tickets.** Issues hijos del mapa, cada uno una pregunta del tamaño de
-una sesión. El ticket tiene tipo: *research* — el agente lee documentación
-y trae un resumen; *prototype* — un artefacto barato sobre el que discutir
-(ver el [prototipo desechable](prototype-to-answer.md)); *grilling* — una
-conversación con el desarrollador, pregunta a pregunta; *task* — trabajo
-manual sin el cual no se puede decidir (montar un sandbox, dar accesos).
-Los bloqueos usan las relaciones nativas del tracker: la **frontera** —
-tickets abiertos, sin bloquear y sin reclamar — se ve directamente en la
-interfaz del tracker.
+**El ticket** plantea una pregunta con un tipo de trabajo y dependencias. Research exige leer fuentes, [prototype](prototype-to-answer.md) comprueba la pregunta con un experimento, grilling afina una decisión contigo, y task prepara el acceso o el entorno necesarios. Los tickets abiertos y sin asignar cuyas dependencias están cerradas forman la **frontera** del trabajo disponible.
 
-**El trabajo.** La sesión carga el mapa en baja resolución, toma el primer
-ticket de la frontera, lo reclama (la asignación es el reclamo — las
-sesiones paralelas lo saltan), lo resuelve, anota la respuesta como
-comentario, lo cierra — y añade una línea a las decisiones. La respuesta
-suele despejar niebla: lo que ya se puede formular con precisión se gradúa
-en tickets nuevos. Un ticket por sesión — estrictamente.
+Una sesión lee el mapa, se asigna un ticket disponible y lo investiga. La respuesta se guarda en el ticket, y una conclusión corta con enlace se añade al mapa. La información nueva puede convertir una zona de incertidumbre en preguntas concretas para los siguientes tickets.
 
-La regla de disciplina: **decide, no hagas**. El ticket produce una
-decisión, no un entregable; las ganas de «hacerlo ya de una vez» son la
-señal de que el mapa terminó y toca traspasar el trabajo a la ejecución.
+**Termina la investigación con una decisión registrada.** Cuando el trabajo restante se reduce a implementar un enfoque acordado, pásalo a la cola de desarrollo.
 
 ## Estructura
 
+En el diagrama, el mapa conecta las decisiones, las preguntas abiertas y los límites de la investigación.
+
 ```mermaid
 ---
-title: el mapa está listo cuando no queda nada por decidir
+title: el mapa está terminado cuando se alcanza el objetivo de la investigación
 ---
 flowchart TB
   map["El mapa — un issue del tracker<br/>el destino — qué cuenta como final<br/>decisiones: un índice con enlaces a tickets<br/>«aún sin formular» — la niebla de guerra<br/>«fuera de alcance» — más allá del destino"]:::accent
   fog["La niebla<br/>preguntas que aún no<br/>se pueden formular con precisión"]:::muted
   closed["✓ cerrados<br/>la respuesta en un comentario"]
   frontier["La frontera<br/>abierto · sin bloquear"]:::accent
-  blocked["bloqueados<br/>esperan decisiones"]:::muted
+  blocked["bloqueados<br/>esperan decisiones ajenas"]:::muted
   session["Una sesión — un ticket a la vez<br/>reclamar → resolver → cerrar → anotar"]
   map --> closed
   map --> frontier
@@ -102,154 +63,75 @@ flowchart TB
   session -. "la decisión — una línea en el índice" .-> map
 ```
 
-Arriba, el mapa — el índice de todo el viaje: el destino, las decisiones
-acumuladas con enlaces, la niebla y lo recortado del alcance. Debajo, los
-tickets en tres estados: cerrados con respuestas, la frontera — abiertos y
-tomables, y los bloqueados, que esperan decisiones ajenas. La sesión de
-abajo toma exactamente un ticket de la frontera; su respuesta va como línea
-al índice del mapa, y la niebla despejada a la derecha gradúa tickets
-nuevos a la frontera. El ciclo se repite hasta que no quedan tickets.
+La sesión elige un ticket disponible. Su respuesta actualiza el mapa y puede abrir las siguientes preguntas. El ciclo termina cuando se alcanza el objetivo de la investigación.
 
 ## Participantes / Componentes
 
-- **El mapa** — el issue-índice: destino, decisiones, niebla, fuera de
-  alcance.
-- **El destino** — la definición del final del camino; fija el alcance.
-- **El ticket** — una pregunta del tamaño de una sesión, con tipo y
-  bloqueos; la respuesta vive en él, el mapa solo enlaza.
-- **La frontera** — tickets abiertos, sin bloquear, sin reclamar: el borde
-  de lo conocido.
-- **La niebla** — preguntas que aún no se pueden formular con precisión; la
-  incompletitud legalizada del mapa.
-- **Agente y desarrollador** — el agente conduce solo los tickets research
-  y task; grilling y prototype requieren al humano; las sesiones pueden ir
-  en paralelo.
+- **El mapa** guarda un estado breve de la investigación y los enlaces.
+- **El objetivo** fija la condición de finalización.
+- **El ticket** contiene la pregunta, las dependencias y la respuesta detallada.
+- **La frontera** muestra los tickets disponibles y sin asignar.
+- **Las zonas de incertidumbre** conservan las preguntas que aún no se pueden plantear con precisión.
+- **El agente y el desarrollador** investigan la información y toman decisiones según el tipo de ticket.
 
 ## Cuándo aplicarlo
 
-- El trabajo es más grande que una sesión *y* el camino no se ve: una idea
-  difusa con una docena de preguntas sin resolver detrás.
-- Varias personas o varias sesiones paralelas trabajan la investigación —
-  el mapa y la frontera en el tracker sincronizan a todos.
-- Las decisiones importan lo bastante como para conservarlas: cada ticket
-  cerrado es una respuesta anotada con enlace, no una réplica en una
-  conversación muerta.
+- La investigación ocupa varias sesiones, y todavía se desconoce cómo implementarlo.
+- Varios participantes necesitan una visión común de las preguntas y las dependencias.
+- Los motivos de las decisiones deben seguir accesibles después de que terminen las sesiones.
 
-No hace falta cuando el camino está claro: si de la idea sale directamente
-una especificación con tareas, eso es la
-[tubería SDD](spec-driven-development.md) sin investigación. Y sobra cuando
-toda la investigación cabe en una sesión.
+Si el camino ya está claro, pasa a [SDD](spec-driven-development.md). Para una investigación de una sesión suele bastar una lista breve de preguntas.
 
 ## Consecuencias y compromisos
 
-- ➕ El conocimiento vive en el tracker: las decisiones, sus motivos y sus
-  vínculos sobreviven a cualquier sesión y a cualquier participante.
-- ➕ Paralelismo gratis: la frontera se ve en la interfaz del tracker, y
-  cualquier sesión puede tomar un ticket libre.
-- ➕ La niebla está legalizada: no hay que fingir que se ve todo — lo
-  confuso reposa honestamente en «aún sin formular» y madura.
-- ➕ El corte es barato: la sesión es un ticket; si muere, se pierde como
-  mucho ese.
-- ➖ Sobrecarga del tracker: el mapa, los tickets hijos, los bloqueos —
-  para una idea de tres preguntas es burocracia.
-- ➖ La disciplina «decide, no hagas» es contraintuitiva: el mapa no
-  produce producto, y hay que saber parar a tiempo y traspasar a la
-  ejecución.
-- ➖ La calidad del mapa la limita la calidad de las preguntas: tickets
-  difusos dan decisiones difusas.
+- ➕ Las decisiones y sus motivos están al alcance de todos los participantes a través del tracker.
+- ➕ Las preguntas independientes se pueden investigar en paralelo.
+- ➕ La incertidumbre queda a la vista de forma explícita, sin detallar antes de tiempo.
+- ➕ Un corte de sesión afecta solo a la pregunta actual, y las respuestas anteriores quedan guardadas.
+- ➖ El mapa y las dependencias exigen tiempo de mantenimiento.
+- ➖ Hay que terminar la investigación a tiempo y pasar a la implementación.
+- ➖ Una pregunta difusa dificulta obtener una respuesta verificable.
 
 ## Implementación
 
-1. El trazado es una sesión propia. Primero una entrevista hasta el
-   destino: qué buscamos exactamente — una spec, una decisión, un cambio.
-   Luego una segunda entrevista a lo ancho, no a lo hondo: desplegar todo
-   el espacio de preguntas. Si no aflora niebla — el mapa no hace falta, el
-   camino ya está claro.
-2. Crea el mapa y los tickets que ya se formulan con precisión; los
-   bloqueos, en una segunda pasada. Lo no formulado va a la niebla, no a
-   tickets: la prueba es «¿puedo enunciar la pregunta con precisión
-   ahora?», no «¿puedo responderla?».
-3. Sesión de trabajo: cargar el mapa, tomar el primer ticket de la
-   frontera, reclamarlo, resolverlo — invocando los skills según el tipo —,
-   anotar la respuesta, cerrarlo, añadir la línea a las decisiones.
-4. Tras cada respuesta revisa la niebla: gradúa lo madurado en tickets,
-   borra lo devaluado, y lo que quedó más allá del destino — a «fuera de
-   alcance» con una línea de por qué.
-5. Un ticket por sesión — la misma regla que
-   [una funcionalidad a la vez](one-feature-at-a-time.md), en el mundo de
-   las decisiones.
-6. En lo que lea un humano, llama a los tickets por su nombre, no por
-   número: un muro de `#42, #47, #51` es ilegible.
-7. Cuando no quedan tickets — el camino está claro: traspasa a la
-   ejecución, normalmente a la [tubería SDD](spec-driven-development.md),
-   con un enlace al mapa como registro de decisiones.
+1. En una sesión aparte, acuerda el objetivo y enumera las zonas de incertidumbre.
+2. Crea tickets para las preguntas que ya se pueden plantear con precisión e indica las dependencias.
+3. Elige un ticket disponible, asigna un responsable, guarda la respuesta y actualiza el mapa.
+4. Tras cada respuesta, revisa las zonas abiertas. Crea preguntas concretas nuevas y elimina las que han perdido sentido.
+5. Termina una pregunta por pasada, como en el patrón [Una funcionalidad a la vez](one-feature-at-a-time.md).
+6. Pon enlaces con los nombres de los tickets para que el lector vea el sentido de cada dependencia.
+7. Cuando se alcance el objetivo, pasa las decisiones al [proceso SDD](spec-driven-development.md) con un enlace al mapa.
 
 ## Ejemplo
 
-La idea: «migramos la facturación a la plataforma de pagos PayFlow». La
-sesión de trazado entrevista al desarrollador y fija el destino: *una
-especificación de migración aprobada — el modelo de datos elegido y un plan
-de transición sin interrumpir los cobros*. Los primeros tickets:
+Para migrar la facturación a PayFlow, el equipo fija el objetivo de obtener una especificación de transición sin interrumpir los cobros. Las primeras preguntas tratan de la compatibilidad de la API y del estado de las suscripciones activas.
 
-- research: «comparar las API de suscripciones de PayFlow y el proveedor
-  actual — qué no se mapea» (el agente solo);
-- task: «montar la cuenta sandbox de PayFlow» — bloquea el research;
-- grilling: «qué pasa con las suscripciones activas durante la transición»;
-- niebla: «el modelo de reembolsos», «la migración de tarjetas guardadas» —
-  se intuyen, pero cuelgan de las respuestas de arriba.
+- Un ticket de tipo research compara las API de suscripciones de PayFlow y del proveedor actual en una cuenta de pruebas.
+- Un ticket de tipo task crea una cuenta sandbox y bloquea esa comparación.
+- Un ticket de tipo grilling afina el comportamiento de las suscripciones activas durante el periodo de transición.
+- El modelo de reembolsos y la migración de las tarjetas guardadas siguen siendo, por ahora, zonas de incertidumbre.
 
-Las sesiones cierran los tickets uno a uno. La respuesta sobre la
-transición («doble registro y una fachada-pasarela durante un mes») gradúa
-de la niebla dos tickets nuevos — el prototipo de la fachada y el research
-de los webhooks. El «rediseño de la página de pagos» que afloró de paso se
-va a «fuera de alcance» en una línea. Nueve tickets después la frontera
-está vacía: todas las decisiones tomadas y anotadas — la especificación se
-arma desde el índice del mapa, y el trabajo pasa a la tubería.
+Al elegir un periodo de transición con doble escritura, aparecen preguntas sobre una fachada de pasarela y los webhooks. El equipo crea un prototipo e investiga la entrega de eventos. El rediseño de la página de pagos queda fuera del alcance. Cuando las preguntas de la migración están resueltas, el equipo reúne la especificación a partir de los enlaces del mapa.
 
 ## Antipatrones y errores comunes
 
-- **Hacer en vez de decidir.** El ticket terminó en una funcionalidad
-  entregada — el mapa se convirtió en backlog de ejecución. El entregable
-  es la señal de traspasar, no de ensanchar el mapa.
-- **Ticketear la niebla.** Trocear lo no formulado en tickets «para luego»
-  da preguntas huecas que habrá que reescribir. La niebla madura en su
-  sección.
-- **Varios tickets por sesión.** La misma trampa de la anchura: tres
-  preguntas «casi decididas» en vez de una cerrada.
-- **El mapa-almacén.** Respuestas completas en el cuerpo del mapa en vez de
-  enlaces — el mapa engorda, deja de leerse en un minuto y diverge de los
-  tickets.
-- **Números en vez de nombres.** «`#42` bloquea a `#47`» es ilegible para
-  un humano; el nombre con el enlace dentro se lee de un vistazo.
-- **Frontera sin bloqueos.** Sin las relaciones puestas, todo está
-  «disponible» a la vez — y las sesiones toman preguntas cuyas respuestas
-  cuelgan de decisiones aún no tomadas.
+- **Implementar dentro de la investigación.** Si la decisión ya está tomada, crea una tarea de desarrollo y cierra el ticket de investigación.
+- **Tickets sin una pregunta precisa.** Mantén la zona de incertidumbre en el mapa hasta que haya información para plantearla.
+- **Varias preguntas sin terminar.** Lleva el ticket actual hasta una respuesta registrada antes de pasar al siguiente.
+- **Mapa-almacén.** Las respuestas completas hinchan el índice y duplican los tickets. Deja conclusiones cortas con enlaces.
+- **Solo números.** Añade los nombres para que el sentido de los vínculos se vea sin abrir cada ticket.
+- **Sin dependencias.** Un participante puede empezar una pregunta antes de que estén listas las decisiones que necesita.
 
 ## Usos conocidos
 
-- **Skills de Matt Pocock** — `/wayfinder`: la fuente primaria del patrón —
-  el mapa etiquetado en el tracker, cuatro tipos de tickets, la niebla de
-  guerra, la frontera mediante bloqueos nativos y la regla «decide, no
-  hagas».
-- **Dual-track agile** — el pariente pre-agente: una pista de discovery que
-  corre por delante de la de delivery y produce decisiones, no incrementos
-  de producto.
-- **Las jerarquías de spikes en XP** — tareas de investigación talladas de
-  un gran desconocido; el mapa les añade el índice común y la niebla.
+- **Las skills de Matt Pocock** implementan el mapa, los tipos de preguntas y el orden de trabajo mediante `/wayfinder`.
+- **Dual-track agile** separa la exploración de soluciones de la entrega del producto.
+- **Las tareas spike de XP** comprueban preguntas técnicas con experimentos cortos.
 
 ## Patrones relacionados
 
-- [Lista de funcionalidades](feature-list-harness.md) — el vecino espejo:
-  la lista conduce a un estado final conocido, el mapa busca el camino
-  hacia uno aún desconocido; el mapa suele terminar donde la lista empieza.
-- [Una funcionalidad a la vez](one-feature-at-a-time.md) — la misma
-  disciplina de pasada: un ticket por sesión, llevado a una decisión
-  anotada.
-- [Prototipo desechable](prototype-to-answer.md) — un tipo de ticket del
-  mapa: la pregunta que responde un artefacto y no una conversación.
-- [Desarrollo orientado a especificaciones](spec-driven-development.md) —
-  el receptor del resultado: cuando el camino está claro, las decisiones
-  del mapa se pliegan en una especificación y entran en la tubería.
-- [Traspaso de sesión](handoff.md) — la mecánica de pasar entre sesiones
-  del mapa y hacia la ejecución: un extracto para el objetivo en vez de la
-  cola de la conversación.
+- [Lista de funcionalidades](feature-list-harness.md) organiza la ejecución una vez elegido el comportamiento final.
+- [Una funcionalidad a la vez](one-feature-at-a-time.md) fija el límite de la pasada actual.
+- [Prototipo desechable](prototype-to-answer.md) comprueba preguntas con un experimento.
+- [Desarrollo orientado a especificaciones](spec-driven-development.md) usa las decisiones tomadas para la implementación.
+- [Traspaso de sesión](handoff.md) conserva el estado para la siguiente etapa de la investigación.
