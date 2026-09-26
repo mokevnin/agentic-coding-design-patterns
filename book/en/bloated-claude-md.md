@@ -1,8 +1,8 @@
 ---
 kind: anti-pattern
 status: draft
-related: [claude-md-memory, skills-as-packaged-workflows, context-engineering]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+related: [claude-md-memory, skills-as-packaged-workflows, context-engineering, scheduled-maintenance]
+source_rev: 97d78fd1ec963c294695bf8f2b16cd2cc739b7cf
 ---
 
 # Bloated Memory
@@ -77,3 +77,4 @@ In the diagram, you delete 265 lines that repeat information from the code and t
 - [Skills](skills-as-packaged-workflows.md) let procedures load on demand.
 - [Context Engineering](context-engineering.md) explains how extra text gets in the way of using the information you need.
 - [Premature Specification](premature-specification.md) describes a similar attempt to gain control through excessive instructions.
+- [Scheduled Maintenance](scheduled-maintenance.md) keeps memory from bloating: a monthly pass removes duplicates and rules that change nothing.

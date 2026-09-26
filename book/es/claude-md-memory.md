@@ -1,8 +1,8 @@
 ---
 group: context
 status: draft
-related: [context-engineering, domain-context-file, bloated-claude-md]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+related: [context-engineering, domain-context-file, bloated-claude-md, scheduled-maintenance]
+source_rev: 97d78fd1ec963c294695bf8f2b16cd2cc739b7cf
 ---
 
 # Memoria del proyecto
@@ -160,3 +160,4 @@ La sesión siguiente obtendrá esta regla al leer la memoria del proyecto.
 - [Vocabulario del dominio](domain-context-file.md) complementa las instrucciones de trabajo con definiciones de los términos del proyecto.
 - [Desarrollo orientado a especificaciones](spec-driven-development.md) usa las convenciones del proyecto al preparar la especificación y el plan.
 - [Memoria hinchada](bloated-claude-md.md) describe un archivo de memoria en el que, sin revisión, se han acumulado duplicados, contradicciones y un resumen del código.
+- [Mantenimiento programado](scheduled-maintenance.md) contrasta una vez al mes el archivo de memoria con la práctica y quita lo que sobra.

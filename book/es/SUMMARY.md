@@ -51,6 +51,7 @@
 * [Skills](skills-as-packaged-workflows.md)
 * [Inicio reproducible del agente](reproducible-agent-bootstrap.md)
 * [Trabajo paralelo aislado](isolated-parallel-work.md)
+* [Mantenimiento programado](scheduled-maintenance.md)
 
 ## Antipatrones
 

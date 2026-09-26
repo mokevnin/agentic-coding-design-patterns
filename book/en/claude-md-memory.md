@@ -1,8 +1,8 @@
 ---
 group: context
 status: draft
-related: [context-engineering, domain-context-file, bloated-claude-md]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+related: [context-engineering, domain-context-file, bloated-claude-md, scheduled-maintenance]
+source_rev: 97d78fd1ec963c294695bf8f2b16cd2cc739b7cf
 ---
 
 # Project Memory
@@ -160,3 +160,4 @@ The next session will get this rule when it reads the project memory.
 - [Domain Vocabulary](domain-context-file.md) supplements working instructions with definitions of the project's terms.
 - [Spec-Driven Development](spec-driven-development.md) uses the project's conventions when preparing the specification and plan.
 - [Bloated Memory](bloated-claude-md.md) describes a memory file that, without review, has accumulated duplicates, contradictions, and a retelling of the code.
+- [Scheduled Maintenance](scheduled-maintenance.md) checks the memory file against practice once a month and removes what no longer helps.

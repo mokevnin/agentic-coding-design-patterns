@@ -1,8 +1,8 @@
 ---
 kind: anti-pattern
 status: draft
-related: [claude-md-memory, skills-as-packaged-workflows, context-engineering]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+related: [claude-md-memory, skills-as-packaged-workflows, context-engineering, scheduled-maintenance]
+source_rev: 97d78fd1ec963c294695bf8f2b16cd2cc739b7cf
 ---
 
 # Memoria hinchada
@@ -77,3 +77,4 @@ En el diagrama, eliminas 265 líneas que repiten información del código y de l
 - [Skills](skills-as-packaged-workflows.md) permiten cargar procedimientos bajo demanda.
 - [Ingeniería de contexto](context-engineering.md) explica cómo el texto sobrante impide usar la información necesaria.
 - [Especificación prematura](premature-specification.md) describe un intento parecido de ganar control mediante instrucciones excesivas.
+- [Mantenimiento programado](scheduled-maintenance.md) impide que la memoria se hinche: una pasada mensual quita duplicados y reglas que no cambian nada.

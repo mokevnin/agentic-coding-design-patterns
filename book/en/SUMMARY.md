@@ -51,6 +51,7 @@
 * [Skills](skills-as-packaged-workflows.md)
 * [Reproducible Agent Bootstrap](reproducible-agent-bootstrap.md)
 * [Isolated Parallel Work](isolated-parallel-work.md)
+* [Scheduled Maintenance](scheduled-maintenance.md)
 
 ## Anti-patterns
 
