@@ -24,6 +24,14 @@ Operating guide for agents (and humans) working in this repository.
 
 - Do not hard-wrap prose to a fixed column width. Keep each paragraph, list item, and blockquote on one physical source line; use line breaks only for intentional Markdown structure such as headings, separate list items, tables, fenced code, and paragraph boundaries.
 
+## Chapter content
+
+- Write from practice: say what the reader does and why. No procedural filler such as «составьте список проходов и для каждого определите четыре вещи».
+- Example prompts are what practitioners actually type. A skill is invoked bare or with a few generic words: `/retro`, `/code-review за последние 3 дня`, `/writing-for-agents проверь доки`. Never tell a skill what to do step by step, never enumerate checks in a prompt, and never use a skill's internal jargon (e.g. "Standards axis") — the skill already knows its job.
+- Planning mode is assumed everywhere; call it «режим планирования» with no per-tool parentheticals. Prompts carry only the task (ideally just a ticket id); no «код не пиши», «план утверждаю» or front-loaded constraints — plan approval is the tool's confirmation, shown as narration.
+- Tool-specific material comes in three blocks, in this order: what doesn't depend on the agent, then Claude Code, then Codex. Nothing agent-specific goes into the first block; each agent's built-ins live in its own block. State the checked version and date at the top of each agent block.
+- In a practical how-to section, each tool or pass gets its own subheading one level below its block, and each example gets its own subheading one level lower still (`##### Пример`, or `##### Пример: …` when there are several). Write the body as prose — no tables, no bullet lists, no bold pseudo-labels like «**Что это.**». Say what it is (built-in command, bundled skill, third-party skill, app feature, or a plain prompt), how it works, when to run it, and link its source or docs.
+
 ## Commits
 
 - Follow [Conventional Commits](https://www.conventionalcommits.org/), written in **English**.
