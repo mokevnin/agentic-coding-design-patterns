@@ -14,7 +14,6 @@ Puedes escribir en español, inglés o ruso; necesitas una cuenta de GitHub para
 |---|---|---|
 | Especificación visual — definir la interfaz con una maqueta y ajustarla mediante capturas. | `visual-specification` | [Comentar / votar](https://github.com/mokevnin/agentic-coding-design-patterns/issues/6) |
 | Biblioteca de ejemplos — dar al agente código verificado para adaptar y combinar. | `working-example-library` | [Comentar / votar](https://github.com/mokevnin/agentic-coding-design-patterns/issues/7) |
-| Bifurcación del contexto — explorar alternativas desde un mismo estado preparado de la conversación. | `context-forking` | [Comentar / votar](https://github.com/mokevnin/agentic-coding-design-patterns/issues/8) |
 | Reconstrucción del comportamiento — recuperar la especificación de un sistema con pruebas para cada conclusión. | `evidence-linked-behavior-recovery` | [Comentar / votar](https://github.com/mokevnin/agentic-coding-design-patterns/issues/9) |
 | Recorrido por el código — seguir una ruta de ejecución con explicaciones y fragmentos del repositorio. | `linear-code-walkthrough` | [Comentar / votar](https://github.com/mokevnin/agentic-coding-design-patterns/issues/10) |
 | Explicación interactiva — comprender un algoritmo mediante entradas y ejecución paso a paso. | `interactive-code-explanation` | [Comentar / votar](https://github.com/mokevnin/agentic-coding-design-patterns/issues/11) |

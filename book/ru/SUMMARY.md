@@ -29,6 +29,7 @@
 * [Словарь домена](domain-context-file.md)
 * [Журнал прогресса](progress-file.md)
 * [Передача сессии](handoff.md)
+* [Ветвление контекста](context-forking.md)
 * [Исполняемые ограничения](executable-guardrails.md)
 
 ## Проверка

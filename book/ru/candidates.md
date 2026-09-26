@@ -14,7 +14,6 @@
 |---|---|---|
 | Визуальная спецификация — задать интерфейс макетом и уточнять результат по скриншотам. | `visual-specification` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/6) |
 | Библиотека примеров — давать агенту проверенный код для адаптации и сочетания решений. | `working-example-library` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/7) |
-| Ветвление контекста — исследовать разные решения из одной подготовленной точки разговора. | `context-forking` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/8) |
 | Восстановление поведения — собрать спецификацию существующей системы с подтверждением каждого вывода. | `evidence-linked-behavior-recovery` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/9) |
 | Разбор кода — пройти путь выполнения с объяснениями и фрагментами из репозитория. | `linear-code-walkthrough` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/10) |
 | Интерактивное объяснение — разобраться в алгоритме через входные данные и пошаговое выполнение. | `interactive-code-explanation` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/11) |

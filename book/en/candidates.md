@@ -14,7 +14,6 @@ Russian, English, and Spanish are welcome; participation requires a GitHub accou
 |---|---|---|
 | Visual specification — define the UI with a mockup and refine it using screenshots. | `visual-specification` | [Discuss / vote](https://github.com/mokevnin/agentic-coding-design-patterns/issues/6) |
 | Working example library — give the agent verified code to adapt and combine. | `working-example-library` | [Discuss / vote](https://github.com/mokevnin/agentic-coding-design-patterns/issues/7) |
-| Context forking — explore alternative solutions from the same prepared conversation state. | `context-forking` | [Discuss / vote](https://github.com/mokevnin/agentic-coding-design-patterns/issues/8) |
 | Behavior recovery — reconstruct an existing system’s specification with evidence for each conclusion. | `evidence-linked-behavior-recovery` | [Discuss / vote](https://github.com/mokevnin/agentic-coding-design-patterns/issues/9) |
 | Code walkthrough — follow an execution path with explanations and snippets from the repository. | `linear-code-walkthrough` | [Discuss / vote](https://github.com/mokevnin/agentic-coding-design-patterns/issues/10) |
 | Interactive explanation — understand an algorithm through inputs and step-by-step execution. | `interactive-code-explanation` | [Discuss / vote](https://github.com/mokevnin/agentic-coding-design-patterns/issues/11) |
