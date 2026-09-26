@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [prototype-to-answer, spec-driven-development, premature-success]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Vibe coding
@@ -72,7 +72,7 @@ El diagrama tiene en cuenta la vida del código y el coste del error. Un prototi
 
 **Después**
 
-> Para la página de pago, primero acordamos los requisitos, luego los implementamos y verificamos el escenario completo. Antes de fusionar, revisamos el diff. Este código procesará pagos reales.
+> Haz la página de pago de la suscripción; por ella pasarán pagos reales. Haz un pago en modo de prueba desde el navegador
 
 ## Patrones y antipatrones relacionados
 

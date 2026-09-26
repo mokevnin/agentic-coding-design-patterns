@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [give-agent-a-way-to-verify, feature-list-harness, tdd-with-agent]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Premature Success
@@ -52,7 +52,7 @@ Include the user scenario in the [feedback loop](give-agent-a-way-to-verify.md).
 
 **After:**
 
-> Create a schedule through the UI, wait for the report email in the test inbox, and attach screenshots of both steps. Finish the task once this scenario passes.
+> Run the schedule end to end: create it through the UI, wait for the report email, and attach screenshots
 
 ## Related patterns and anti-patterns
 

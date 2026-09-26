@@ -2,7 +2,7 @@
 group: task-setting
 status: draft
 related: [grilling, prototype-to-answer, explore-plan-code-commit, domain-context-file]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Design It Twice
@@ -86,7 +86,7 @@ For a local fix with an unambiguous solution, the comparison may cost more than 
 
 1. Choose one decision to compare: for example, the boundary of the import module.
 2. Have the agent read the existing code and name the constraints with references to places in the project.
-3. Record the shared scenarios and the priorities for the choice.
+3. Name the ordinary scenario and one or two hard cases on which you will compare the options.
 4. Request two different divisions of responsibility. Limit the result to interfaces, calling code and a description of errors.
 5. Check that each option meets all mandatory requirements. If one missed a requirement, send it back for rework.
 6. Compare the options by their usage code and the places that will have to change. Go through the agent's recommendation.
@@ -100,7 +100,7 @@ You need to import users from a CSV. The import is started by an HTTP handler an
 
 You give the agent a frame for the comparison:
 
-> Propose two substantially different APIs for importing users from a CSV. In the first, the calling code drives the steps; in the second, the import module drives the whole process. Both must meet the requirements described. Show the interfaces, the calling code and the behavior on a row error and on a storage failure. Compare what the HTTP handler and the CLI will have to know. Give a recommendation that takes both consumers into account. Don't write the full implementation yet.
+> Design the API for importing users from a CSV twice: in one option the calling code drives the steps, in the other the import module does. Compare them for the HTTP handler and the CLI
 
 Below are sample sketches in JavaScript. The function names stand for the proposed contract; the code shows the division of responsibility and is not a finished import implementation. In both options, a CSV syntax error stops the import with the code `invalid_csv`; an error in the content of a single row goes into the report and doesn't affect the other rows.
 

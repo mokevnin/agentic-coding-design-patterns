@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [tdd-with-agent, writer-reviewer, reflection, explore-plan-code-commit, premature-success, one-shotting]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Feedback Loop
@@ -100,7 +100,7 @@ In [OpenSpec](openspec.md), [Superpowers](superpowers.md), and [Matt Pocock's sk
 
 For a promo code validator, you set the cases to check together with the task.
 
-> Write validatePromoCode. A valid SUMMER25 must be accepted. For an expired code return false with reason expired, for a code from another region return false with reason region. Reject an empty string. Turn the cases into tests, run them, and fix the implementation until they pass. Once the tests are agreed, don't change them without a separate discussion.
+> Write validatePromoCode: SUMMER25 is accepted, an expired code is rejected with reason expired, a code from another region with reason region, an empty string is rejected
 
 The agent writes the tests and the implementation. The expired-code check fails because the date comparison ignores the time zone. After the fix, the agent runs the tests again. The session log shows the last test run after the final edit, with the result `4 passed`.
 

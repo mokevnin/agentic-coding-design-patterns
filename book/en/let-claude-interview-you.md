@@ -2,7 +2,7 @@
 group: task-setting
 status: draft
 related: [grilling, spec-driven-development, explore-plan-code-commit]
-source_rev: 854c3716f433510f26cf8af5610b6c51b28396d9
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Agent-Led Interview
@@ -25,7 +25,7 @@ Your request doesn't say what to do if the receiver responds slowly. So the agen
 
 Describe the intent in a few sentences and ask the agent to question you about what you might have overlooked. For example:
 
-> I want to build [a brief description]. Ask me about user scenarios, constraints and errors I might have missed. Check facts available in the project yourself. After the discussion, write the requirements and acceptance criteria to SPEC.md.
+> I want to build [a brief description]. Interview me and write the requirements to SPEC.md
 
 The agent looks for places where the feature's behavior is not yet defined and asks you about them. What is recorded in the project, the agent finds out without you, and you make the product decisions. With each answer, you settle something the agent would otherwise choose on its own during implementation: for example, what to do with a slow receiver.
 
@@ -86,7 +86,7 @@ A small edit is usually enough to simply hand to the agent. And a finished plan 
 
 ### When someone else knows the answer
 
-Sometimes the agent asks about a rule you don't know. Then find out who can explain it and which decision depends on the answer. Ask the agent to prepare a separate questionnaire for that person: the task context, questions in order of importance and space for the answers. Since the task context is in the questionnaire itself, it can be given to an expert who didn't take part in your conversation with the agent.
+Sometimes the agent asks about a rule you don't know. Then ask the agent to prepare a questionnaire for the person who knows the answer. The agent puts the task context into the questionnaire itself, so it can be given to an expert who didn't take part in your conversation.
 
 For example, you are preparing a billing migration, and the finance team has to clarify the refund rules. Then the agent will ask in the questionnaire what happens if the customer used only part of the period, and which exceptions the contract provides for. If a question gets an "I don't know", record it as open. When the answers arrive, check them and ask the agent to update the requirements.
 

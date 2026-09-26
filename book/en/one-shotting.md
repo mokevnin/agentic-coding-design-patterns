@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [one-feature-at-a-time, give-agent-a-way-to-verify, tracer-bullet-tickets]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # One-Shotting
@@ -52,7 +52,7 @@ Use a quick first pass to explore an idea. For a production implementation, prep
 
 **After**
 
-> First, let's prepare a specification and tickets. The first ticket should let you create a task and see it on the board. Implement the necessary schema, API, and UI changes, verify the scenario through the browser, then move on to the next one.
+> Break the task tracker into tickets. The first one: create a task and see it on the board
 
 ## Related patterns and anti-patterns
 

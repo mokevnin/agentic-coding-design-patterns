@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, tdd-with-agent, prototype-to-answer]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Diagnóstico mediante hipótesis
@@ -23,9 +23,9 @@ Un síntoma admite varias causas. El almacenamiento, la caché o la transformaci
 
 ## Solución
 
-Pide al agente que primero obtenga una comprobación capaz de detectar el síntoma descrito. Después debe formular posibles causas e indicar, para cada una, una observación que podría refutarla.
+El agente primero obtiene una comprobación capaz de detectar el síntoma descrito. Después formula varias causas posibles e indica, para cada una, una observación que podría refutarla, cambia una condición cada vez y corrige el código solo cuando la causa está establecida. El skill `diagnosing-bugs` del pack de Matt Pocock ya fija este orden, así que el arranque es breve:
 
-> Reproduce el fallo con un solo comando. Antes de corregirlo, propone hipótesis y un experimento que las distinga. Cambia una condición cada vez y registra la predicción y el resultado. Cuando hayas establecido la causa, aplica la corrección y repite el escenario original.
+> /diagnosing-bugs la organización beta ve el importe de una factura ajena
 
 Separa las observaciones de las conclusiones. «Los importes son correctos al omitir la caché» acota la investigación a la ruta con caché. Para establecer que la clave es incorrecta hacen falta otras comprobaciones, como invertir las solicitudes y cambiar el identificador de factura.
 

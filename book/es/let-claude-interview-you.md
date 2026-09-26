@@ -2,7 +2,7 @@
 group: task-setting
 status: draft
 related: [grilling, spec-driven-development, explore-plan-code-commit]
-source_rev: 854c3716f433510f26cf8af5610b6c51b28396d9
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Entrevista del agente
@@ -25,7 +25,7 @@ Tu petición no dice qué hacer si el receptor responde despacio. Así que el ag
 
 Describe la intención en unas pocas frases y pide al agente que te pregunte por lo que podrías haber pasado por alto. Por ejemplo:
 
-> Quiero construir [descripción breve]. Pregúntame por los escenarios de usuario, las restricciones y los errores que podría haber pasado por alto. Los hechos disponibles en el proyecto compruébalos tú mismo. Después de la conversación, escribe los requisitos y los criterios de aceptación en SPEC.md.
+> Quiero construir [descripción breve]. Entrevístame y escribe los requisitos en SPEC.md
 
 El agente busca los puntos donde el comportamiento de la funcionalidad aún no está definido y te pregunta por ellos. Lo que está registrado en el proyecto, el agente lo averigua sin ti, y las decisiones de producto las tomas tú. Con cada respuesta decides algo que, de otro modo, el agente elegiría por su cuenta durante la implementación: por ejemplo, qué hacer con un receptor lento.
 
@@ -86,7 +86,7 @@ Un cambio pequeño suele bastar con encargárselo al agente. Y un plan terminado
 
 ### Si la respuesta la conoce otra persona
 
-A veces el agente pregunta por una regla que no conoces. Entonces averigua quién puede explicarla y qué decisión depende de la respuesta. Pide al agente que prepare un cuestionario aparte para esa persona: el contexto de la tarea, las preguntas por orden de importancia y espacio para las respuestas. Como el contexto de la tarea está en el propio cuestionario, se le puede dar a un experto que no participó en tu conversación con el agente.
+A veces el agente pregunta por una regla que no conoces. Entonces pide al agente que prepare un cuestionario para la persona que conoce la respuesta. El agente pone el contexto de la tarea en el propio cuestionario, así que se le puede dar a un experto que no participó en tu conversación.
 
 Por ejemplo, preparas una migración de facturación y el equipo de finanzas tiene que precisar las reglas de reembolso. Entonces el agente preguntará en el cuestionario qué ocurre si el cliente usó solo una parte del periodo y qué excepciones prevé el contrato. Si a alguna pregunta responden «no lo sé», anótala como abierta. Cuando lleguen las respuestas, compruébalas y pide al agente que actualice los requisitos.
 

@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, writer-reviewer, explore-plan-code-commit, premature-success]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # TDD con agente
@@ -98,11 +98,11 @@ Para una elección visual o un prototipo exploratorio pueden encajar mejor la [c
 
 Cuando la sesión caduca, el usuario ve un spinner infinito. Empiezas por la reproducción.
 
-> Hacemos TDD. Escribe un test para una sesión caducada. La API devuelve 401, tras lo cual el usuario debe acabar en /login. Muestra que el test falla por este motivo. No escribas el arreglo todavía.
+> Escribe un test que falle: ante un 401 de la API, el usuario acaba en /login
 
 El agente comprueba cómo se comporta el cliente HTTP ante una respuesta 401. El test falla porque el cliente repite la petición sin fin. Revisas el test y lo guardas con un commit.
 
-> Ahora arréglalo. No edites el test; ejecuta e itera hasta el verde.
+> Ahora arréglalo
 
 El agente corrige el interceptor común, añadiendo el manejo del 401 con redirección a la página de inicio de sesión. Cuando el test pasa, pides una revisión.
 

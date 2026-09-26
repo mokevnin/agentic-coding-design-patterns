@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [tdd-with-agent, writer-reviewer, reflection, explore-plan-code-commit, premature-success, one-shotting]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Bucle de retroalimentación
@@ -100,7 +100,7 @@ En [OpenSpec](openspec.md), [Superpowers](superpowers.md) y las [skills de Matt 
 
 Para un validador de códigos promocionales, fijas los casos a comprobar junto con la tarea.
 
-> Escribe validatePromoCode. Un SUMMER25 vigente debe aceptarse. Para un código caducado devuelve false con motivo expired, para un código de otra región devuelve false con motivo region. Rechaza la cadena vacía. Convierte los casos en tests, ejecútalos y corrige la implementación hasta que pasen. Una vez acordados los tests, no los cambies sin una discusión aparte.
+> Escribe validatePromoCode: SUMMER25 se acepta, un código caducado se rechaza con motivo expired, uno de otra región, con motivo region, y la cadena vacía se rechaza
 
 El agente escribe los tests y la implementación. La comprobación del código caducado falla porque la comparación de fechas ignora la zona horaria. Tras la corrección, el agente vuelve a ejecutarlos. El log de la sesión muestra la última ejecución de los tests tras la edición final, con el resultado `4 passed`.
 

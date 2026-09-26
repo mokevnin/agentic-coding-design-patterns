@@ -2,7 +2,7 @@
 group: task-setting
 status: draft
 related: [spec-driven-development, premature-specification, writer-reviewer, reflection]
-source_rev: c1e079ffc2d2815b86ae4a39341e57c9957464f0
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Four Phases
@@ -23,7 +23,7 @@ A detailed prompt can lock in a mistake too. If you dictate the implementation i
 
 ## Solution
 
-Explicitly walk the agent through the four phases in order, and forbid it to write code in the first two.
+Walk the agent through the four phases in order. The first two run in plan mode, and no code changes in them.
 
 1. **Explore.** The agent reads the relevant code and gathers context, but edits nothing.
 2. **Plan.** The agent describes the approach, the order of changes and the risks. Before you read the plan, a reviewer with a fresh context checks it: it looks for gaps, contradictions with the code and steps that nothing can verify. The author fixes the plan based on the findings. Then you read the plan and clarify the constraints before the agent moves on to the code.
@@ -87,7 +87,7 @@ A one-line or mechanical edit is usually easier to ask for directly, without a s
 
 1. Turn on plan mode so the agent doesn't edit code until you approve the approach.
 2. Give the agent the task or a link to the ticket. Ask it to study the code before drafting the plan.
-3. Before reading the plan, hand it for review to a subagent with a fresh context, as in the [Writer and Reviewer](writer-reviewer.md) pattern. Pass the task, the plan and the criteria: the plan relies on the real code, covers the whole task, names the risks and says how each step will be checked. Have the author fix the plan based on the findings you agree with.
+3. Before reading the plan, hand it for review to a subagent with a fresh context, as in the [Writer and Reviewer](writer-reviewer.md) pattern. The author works the findings you agree with into the plan.
 4. Read the plan. Clarify hidden constraints, discuss alternatives and strike out unnecessary work.
 5. Approve the plan and name the commands the agent will use to check the result.
 6. Ask the agent to commit the result, prepare a pull request and update the documentation the changes affect.
@@ -124,7 +124,7 @@ In the **explore** phase, the agent finds the code that converts the time when w
 
 In the **plan**, the agent proposes two options: convert the time on write or on read. Before reading the plan, you send it for review.
 
-> Ask a subagent with a fresh context to review the plan: whether everything in it relies on the code, and how each step will be checked.
+> Hand the plan for review to a subagent with a fresh context
 
 The reviewer notices that the plan has no test reproducing the one-hour shift. The agent adds such a test to the plan. You read the revised plan and clarify a constraint the reviewer couldn't have known.
 

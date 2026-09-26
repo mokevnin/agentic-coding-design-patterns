@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [context-engineering, handoff, isolated-parallel-work, design-it-twice]
-source_rev: 5c891bed1a1649eff17aefa24ee50ae6833b4070
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Context Forking
@@ -106,9 +106,9 @@ The agent added a retry loop with `sleep` inside the mail client. The tests pass
 
 Instead of objecting in the same window, you open `/rewind`, pick your message asking to implement retries, and restore the code and the conversation. `git status` shows a clean tree: the agent changed files through its edit tools, and the checkpoint reverted them. The original request comes back into the input field, and you extend it.
 
-> Add email resending on temporary SMTP errors. Retries inside the mail client won't work: they block the worker. The queue already supports deferred tasks via `enqueue(..., delay=...)`. Use it, increase the delay exponentially, and after the fifth attempt mark the email as undelivered.
+> Add email resending on temporary SMTP errors. Retries inside the mail client block the worker, use the queue's deferred tasks
 
-The window keeps the files read and one refined request. The agent schedules the retry as a deferred task and adds a test for the fifth attempt. The argument about the blocking loop never made it into the context.
+The window keeps the files read and one refined request. The agent schedules the retry as a deferred task and adds a test. The argument about the blocking loop never made it into the context.
 
 ## Anti-patterns and common mistakes
 

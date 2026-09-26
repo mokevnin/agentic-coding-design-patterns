@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [claude-md-memory, give-agent-a-way-to-verify, isolated-parallel-work]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Límites ejecutables
@@ -90,8 +90,8 @@ El requisito «la arquitectura debe ser simple» no tiene una comprobación ráp
 
 ## Implementación
 
-1. Reúne las prohibiciones repetidas de las instrucciones y del historial de incidentes. Para cada una, determina si la violación se puede detectar sin adivinar la intención del agente.
-2. Describe en una tabla las acciones que el sistema permite, bloquea o pasa a confirmación. Empieza por las restricciones críticas de escritura y publicación.
+1. Toma una prohibición que el agente ya ha incumplido o que repites en los prompts. Si la violación se ve en el comando, la ruta o el diff, se puede fijar con un mecanismo.
+2. Empieza por la escritura y la publicación: permite las ediciones en el directorio de trabajo y los tests, y deja `git push` y la red pendientes de confirmación.
 3. Pon el límite en el nivel correcto. El sandbox del SO restringe el acceso a archivos y red; un hook previo a la herramienta comprueba un comando concreto; las pruebas y la CI comprueban la calidad del resultado.
 4. En la respuesta a una negativa, nombra la regla y el siguiente paso permitido.
 5. Comprueba que el mecanismo bloquea la acción prohibida y deja pasar la permitida más cercana. Añade comprobaciones del escapado de la entrada y del tiempo de espera.

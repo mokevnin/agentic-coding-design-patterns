@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, writer-reviewer, tdd-with-agent]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Reflection
@@ -99,7 +99,7 @@ The developer sets the axes and makes the decisions. The result of the cycle sti
 
 The agent has finished a CSV report export. Before committing, you ask it to check the code.
 
-> Find problems in error handling, edge cases, and memory use on large data. For each, show the condition under which it shows up. Don't fix anything yet.
+> Check the export for weak spots
 
 The agent finds an unclosed file descriptor on a write error and missing headers in an empty report. It also notes that the whole report is assembled in memory. You choose the fixes.
 

@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, writer-reviewer, tdd-with-agent]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Reflexión
@@ -99,7 +99,7 @@ El desarrollador fija los ejes y toma las decisiones. El resultado del ciclo sig
 
 El agente terminó la exportación de un informe a CSV. Antes del commit, le pides que revise el código.
 
-> Encuentra problemas en el manejo de errores, los casos límite y la memoria con datos grandes. Para cada uno, muestra la condición en la que se manifiesta. No corrijas nada todavía.
+> Revisa los puntos débiles de la exportación
 
 El agente detecta un descriptor sin cerrar ante un error de escritura y la falta de encabezados en un informe vacío. También señala que el informe se construye entero en memoria. Eliges las correcciones.
 

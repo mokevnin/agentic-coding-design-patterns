@@ -2,7 +2,7 @@
 group: task-setting
 status: draft
 related: [grilling, prototype-to-answer, explore-plan-code-commit, domain-context-file]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Diseña dos veces
@@ -86,7 +86,7 @@ Para una corrección local con una solución inequívoca, la comparación puede 
 
 1. Elige una decisión para comparar: por ejemplo, el límite del módulo de importación.
 2. Encarga al agente leer el código existente y nombrar las restricciones con referencias a lugares del proyecto.
-3. Deja fijados los escenarios comunes y las prioridades de la elección.
+3. Nombra el escenario habitual y uno o dos casos difíciles con los que compararás las variantes.
 4. Pide dos repartos de responsabilidades distintos. Limita el resultado a interfaces, código de llamada y descripción de errores.
 5. Comprueba que cada opción cumple todos los requisitos obligatorios. Si una omitió un requisito, devuélvela para que se complete.
 6. Contrasta las opciones por el código de uso y por los sitios que habrá que cambiar. Analiza la recomendación del agente.
@@ -100,7 +100,7 @@ Hay que importar usuarios desde un CSV. La importación la lanzan un manejador H
 
 Le das al agente el marco de la comparación:
 
-> Propón dos API sustancialmente distintas para importar usuarios desde un CSV. En la primera, el código que llama dirige los pasos; en la segunda, el módulo de importación dirige todo el proceso. Ambas deben cumplir los requisitos descritos. Muestra las interfaces, el código de llamada y el comportamiento ante un error de fila y un fallo del almacenamiento. Compara lo que tendrán que saber el manejador HTTP y la CLI. Da una recomendación teniendo en cuenta a los dos consumidores. No escribas aún la implementación completa.
+> Diseña dos veces la API de importación de usuarios desde CSV: en una variante los pasos los dirige el código que llama, en la otra, el módulo de importación. Compáralas para el manejador HTTP y la CLI
 
 A continuación, bocetos de ejemplo en JavaScript. Los nombres de las funciones representan el contrato propuesto; el código muestra el reparto de responsabilidades y no es una implementación terminada de la importación. En ambas opciones, un error de sintaxis del CSV detiene la importación con el código `invalid_csv`; un error en el contenido de una fila concreta va al informe y no impide procesar las demás filas.
 

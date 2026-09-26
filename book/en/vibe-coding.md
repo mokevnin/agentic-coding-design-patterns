@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [prototype-to-answer, spec-driven-development, premature-success]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Vibe Coding
@@ -72,7 +72,7 @@ The diagram takes into account the lifetime of the code and the cost of a mistak
 
 **After**
 
-> For the payment page, let's first agree on the requirements, then implement them and verify the whole scenario. Before merging, we'll review the diff. This code will process real payments.
+> Build the subscription payment page, real payments will go through it. Run a test-mode payment through the browser
 
 ## Related patterns and anti-patterns
 

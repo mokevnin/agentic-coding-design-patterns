@@ -2,7 +2,7 @@
 group: task-setting
 status: draft
 related: [spec-driven-development, premature-specification, writer-reviewer, reflection]
-source_rev: c1e079ffc2d2815b86ae4a39341e57c9957464f0
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Cuatro fases
@@ -23,7 +23,7 @@ Un prompt detallado también puede fijar un error. Si dictas en él la implement
 
 ## Solución
 
-Guía explícitamente al agente por las cuatro fases en orden y prohíbele escribir código en las dos primeras.
+Guía al agente por las cuatro fases en orden. Las dos primeras transcurren en modo de planificación, y en ellas el código no cambia.
 
 1. **Exploración.** El agente lee el código necesario y reúne contexto, pero no modifica nada.
 2. **Plan.** El agente describe el enfoque, el orden de los cambios y los riesgos. Antes de que leas el plan, lo revisa un revisor con contexto fresco: busca huecos, contradicciones con el código y pasos que no hay con qué comprobar. El autor corrige el plan según los hallazgos. Después lees el plan y precisas las restricciones antes de que el agente se ponga con el código.
@@ -87,7 +87,7 @@ Un cambio de una línea o mecánico suele ser más fácil de pedir directamente,
 
 1. Activa el modo de planificación para que el agente no toque el código hasta que apruebes el enfoque.
 2. Pasa al agente la tarea o un enlace al ticket. Pídele que estudie el código antes de redactar el plan.
-3. Antes de leer el plan, entrégalo para revisión a un subagente con contexto fresco, como en el patrón [Escritor y revisor](writer-reviewer.md). Pasa la tarea, el plan y los criterios: el plan se apoya en el código real, cubre toda la tarea, nombra los riesgos e indica con qué se comprueba cada paso. Que el autor corrija el plan según los hallazgos con los que estés de acuerdo.
+3. Antes de leer el plan, entrégalo para revisión a un subagente con contexto fresco, como en el patrón [Escritor y revisor](writer-reviewer.md). Los hallazgos con los que estés de acuerdo, el autor los incorpora al plan.
 4. Lee el plan. Precisa las restricciones ocultas, discute alternativas y tacha el trabajo sobrante.
 5. Aprueba el plan y nombra los comandos con los que el agente comprobará el resultado.
 6. Pide al agente que haga commit del resultado, prepare un pull request y actualice la documentación afectada por los cambios.
@@ -124,7 +124,7 @@ En la fase de **exploración**, el agente encuentra el código que convierte la 
 
 En el **plan**, el agente propone dos opciones: convertir la hora al escribir o al leer. Antes de leer el plan, lo mandas a revisión.
 
-> Pide a un subagente con contexto fresco que revise el plan: si todo en él se apoya en el código y con qué se comprueba cada paso.
+> Pasa el plan a revisión a un subagente con contexto fresco
 
 El revisor advierte que el plan no tiene un test que reproduzca el desfase de una hora. El agente añade ese test al plan. Lees el plan corregido y precisas una restricción que el revisor no podía conocer.
 
@@ -147,7 +147,7 @@ La opción de convertir al leer la descartaste enseguida, mientras discutíais e
 
 ## Usos conocidos
 
-- **Claude Code** admite el modo de planificación (plan mode). Este flujo de trabajo se describe en [Claude Code best practices](https://code.claude.com/docs/en/best-practices).
+- **Claude Code** admite el modo de planificación. Este flujo de trabajo se describe en [Claude Code best practices](https://code.claude.com/docs/en/best-practices).
 - Otros agentes tienen modos parecidos: plan mode en Cursor y architect mode en aider.
 - **Las herramientas de desarrollo orientado a especificaciones** registran el resultado de cada fase en documentos y enlazan las fases con comandos.
 

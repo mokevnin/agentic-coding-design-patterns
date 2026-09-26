@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [claude-md-memory, context-engineering, handoff, tdd-with-agent, bloated-claude-md]
-source_rev: ebf44d297f082115f9c01e295d86d57ffca0d467
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Skills
@@ -26,7 +26,7 @@ If the procedure lives only in the conversation, how complete each run is depend
 Write the procedure into a _SKILL.md_ with a name, a description of its purpose, and a sequence of actions. This packaging gives you several capabilities.
 
 1. **Loading on demand.** The full instruction enters the context when the skill is used. The description used to pick the skill can stay in the catalog of available procedures.
-2. **Choice of invocation.** The user can invoke the skill by name. If the tool supports automatic selection, the description should explain which tasks the procedure applies to.
+2. **Choice of invocation.** The user can invoke the skill by name, and the agent picks it on its own from the description, so the description should explain which tasks the procedure applies to.
 3. **Versioning.** The team keeps the skill in git and discusses process changes in review.
 4. **Portability.** A set of skills can be carried between projects and adapted to local rules.
 

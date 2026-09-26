@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [reflection, give-agent-a-way-to-verify, tdd-with-agent]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Escritor y revisor
@@ -107,7 +107,7 @@ Para un cambio pequeño puedes empezar por la [reflexión](reflection.md) y las 
 
 La sesión A implementó un limitador de peticiones. Entregas el resultado para una revisión independiente.
 
-> Revisa el diff del limitador en un contexto fresco según PLAN.md. Encuentra incumplimientos de los requisitos y errores de comportamiento. Para cada hallazgo, muestra las condiciones en que se manifiesta y el código que lo provoca.
+> Haz la revisión del diff del limitador según PLAN.md
 
 El revisor encuentra una carrera al rellenar tokens desde dos workers. Muestra la secuencia de operaciones en la que ambos leen el contador antiguo y permiten superar el límite. Además, advierte que falta la comprobación de `Retry-After` y que se renombró un middleware vecino fuera de la tarea.
 

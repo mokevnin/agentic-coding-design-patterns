@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [design-it-twice, give-agent-a-way-to-verify, handoff, explore-plan-code-commit, vibe-coding]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Prototipo desechable
@@ -110,7 +110,7 @@ Primero comprueba si la respuesta se puede obtener leyendo el código o la docum
 
 En la historia del capítulo sobre el [traspaso de sesión](handoff.md) hay que comprobar el modelo de cancelaciones para contratos corporativos con inicio diferido. Le pasas a una sesión nueva el documento y la tarea del experimento.
 
-> Lee /tmp/handoff-cancellation-prototype.md. Monta un prototipo desechable de terminal del modelo de cancelaciones con los comandos subscribe <fecha de inicio>, cancel <fecha>, reactivate y tick <fecha>. Tras cada comando imprime el estado de la suscripción y la cola de eventos. Guarda el estado en memoria y marca el prototipo en el nombre.
+> Lee /tmp/handoff-cancellation-prototype.md y monta un prototipo desechable del modelo de cancelaciones
 
 El primer escenario comprueba la pregunta original. Fijas el inicio del contrato el 1 de octubre, la cancelación el 25 de septiembre y adelantas el reloj al 2 de octubre. En este experimento ilustrativo, el manejador del inicio da acceso aunque la cancelación ya ha entrado en vigor. Esta observación muestra que una sola cola de eventos con fecha no basta. Al procesar el inicio hay que tener en cuenta la cancelación vigente.
 

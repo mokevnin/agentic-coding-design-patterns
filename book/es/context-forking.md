@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [context-engineering, handoff, isolated-parallel-work, design-it-twice]
-source_rev: 5c891bed1a1649eff17aefa24ee50ae6833b4070
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Bifurcación del contexto
@@ -106,9 +106,9 @@ El agente añadió un bucle de reintentos con `sleep` dentro del cliente de corr
 
 En lugar de objetar en la misma ventana, abres `/rewind`, eliges tu mensaje en el que pedías implementar los reintentos y restauras el código y la conversación. `git status` muestra un árbol limpio: el agente cambió los archivos con sus herramientas de edición y el checkpoint los revirtió. La petición original vuelve al campo de entrada y la amplías.
 
-> Añade el reenvío de correos ante errores temporales de SMTP. Los reintentos dentro del cliente de correo no sirven: bloquean el worker. La cola ya admite tareas aplazadas mediante `enqueue(..., delay=...)`. Úsala, aumenta el retraso de forma exponencial y, tras el quinto intento, marca el correo como no enviado.
+> Añade el reenvío de correos ante errores temporales de SMTP. Los reintentos dentro del cliente de correo bloquean el worker, usa las tareas aplazadas de la cola
 
-En la ventana quedaron los archivos leídos y una única petición precisada. El agente programa el reintento como tarea aplazada y añade un test para el quinto intento. La discusión sobre el bucle bloqueante no llegó al contexto.
+En la ventana quedaron los archivos leídos y una única petición precisada. El agente programa el reintento como tarea aplazada y añade un test. La discusión sobre el bucle bloqueante no llegó al contexto.
 
 ## Antipatrones y errores comunes
 

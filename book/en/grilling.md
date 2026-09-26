@@ -2,7 +2,7 @@
 group: task-setting
 status: draft
 related: [let-claude-interview-you, prototype-to-answer, writer-reviewer]
-source_rev: be673336c5dbfdf958aed12fc623947efdf7d457
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Grilling
@@ -23,15 +23,11 @@ If nobody asks about corporate enrollments before implementation, the agent will
 
 ## Solution
 
-Before the agent starts implementing, ask it to test the plan with questions. For example:
+Before the agent starts implementing, put the plan through a grilling. With Matt Pocock's skill it is a single command:
 
-> Check every assumption in this plan. First work out which decisions depend on others. Ask the questions whose prerequisites are already answered together, in a small round. Keep a question that depends on an answer you don't have yet for the next round. For each question, propose the answer you recommend and explain why. Look up facts in the code yourself. Put the decisions to me and wait for my answer. Start implementing only once I confirm we share an understanding of the plan.
+> /grilling
 
-In this prompt you give the agent three rules.
-
-- **Dependencies between questions.** The agent asks questions that don't depend on each other together. If the next question depends on the answer to the previous one, the agent waits for that answer. A round should be small enough for you to work through every item.
-- **Facts from the code.** Whatever can be learned by reading the project, the agent finds out itself. It asks you only about decisions.
-- **A recommendation with a reason.** For each question the agent proposes a recommended answer and explains why it advises that one. This gives you a concrete choice to discuss.
+A good grilling goes like this. The agent asks questions that don't depend on each other together, and holds a question that depends on an answer you haven't given yet until that answer arrives. A round is small, so you can work through every item. Whatever can be learned from the project, the agent finds out itself, and asks you only about decisions. For each question it proposes the answer it recommends and explains why, so you get a concrete choice to discuss.
 
 Your answer either confirms an item of the plan or shows that the item needs fixing. Sometimes a question can't be settled by talking: to answer it you need to run something and look at the result. Take such a question to a [Throwaway Prototype](prototype-to-answer.md). Once all the significant branches are covered, you confirm the plan and the agent starts implementing.
 

@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, writer-reviewer, explore-plan-code-commit, premature-success]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # TDD with an Agent
@@ -98,11 +98,11 @@ For a visual choice or an exploratory prototype, [screenshot checks](give-agent-
 
 When the session expires, the user sees an endless spinner. You start with a reproduction.
 
-> We're doing TDD. Write a test for an expired session. The API returns 401, after which the user should end up on /login. Show that the test fails for this reason. Don't write the fix yet.
+> Write a failing test: on a 401 from the API the user ends up on /login
 
 The agent checks how the HTTP client behaves on a 401 response. The test fails because the client retries the request endlessly. You review the test and save it with a commit.
 
-> Now fix it. Don't edit the test; run it and iterate until green.
+> Now fix it
 
 The agent fixes the shared interceptor, adding 401 handling that redirects to the login page. Once the test passes, you ask for a review.
 

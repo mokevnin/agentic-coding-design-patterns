@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [claude-md-memory, context-engineering, handoff, tdd-with-agent, bloated-claude-md]
-source_rev: ebf44d297f082115f9c01e295d86d57ffca0d467
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Skills
@@ -26,7 +26,7 @@ Si el procedimiento solo vive en la conversación, lo completa que sea cada ejec
 Escribe el procedimiento en un _SKILL.md_ con un nombre, una descripción de su propósito y una secuencia de acciones. Este empaque te da varias posibilidades.
 
 1. **Carga bajo demanda.** La instrucción completa entra en el contexto cuando se usa el skill. La descripción para elegir el skill puede quedarse en el catálogo de procedimientos disponibles.
-2. **Elección del modo de invocación.** El usuario puede invocar el skill por su nombre. Si la herramienta admite la selección automática, la descripción debe explicar a qué tareas se aplica el procedimiento.
+2. **Elección del modo de invocación.** El usuario puede invocar el skill por su nombre, y el agente lo elige por sí mismo según la descripción, así que la descripción debe explicar a qué tareas se aplica el procedimiento.
 3. **Versionado.** El equipo guarda el skill en git y discute los cambios del proceso en la revisión.
 4. **Portabilidad.** Un conjunto de skills se puede llevar de un proyecto a otro y adaptar a las reglas locales.
 

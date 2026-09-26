@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [one-feature-at-a-time, give-agent-a-way-to-verify, tracer-bullet-tickets]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # One-shotting
@@ -52,7 +52,7 @@ Usa una primera pasada rápida para explorar la idea. Para una implementación d
 
 **Después**
 
-> Primero preparamos una especificación y los tickets. El primer ticket debe permitir crear una tarea y verla en el tablero. Implementa los cambios necesarios en el esquema, la API y la UI, verifica el escenario en el navegador y luego pasa al siguiente.
+> Divide el gestor de tareas en tickets. El primero: crear una tarea y verla en el tablero
 
 ## Patrones y antipatrones relacionados
 

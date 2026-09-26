@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [design-it-twice, give-agent-a-way-to-verify, handoff, explore-plan-code-commit, vibe-coding]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Throwaway Prototype
@@ -110,7 +110,7 @@ First check whether the answer can be found by reading code or documentation. A 
 
 In the story from the [Session Handoff](handoff.md) chapter, you need to check the cancellation model for corporate contracts with a deferred start. You hand a new session the document and the experiment task.
 
-> Read /tmp/handoff-cancellation-prototype.md. Build a throwaway terminal prototype of the cancellation model with the commands subscribe <start date>, cancel <date>, reactivate, and tick <date>. After each command, print the subscription state and the event queue. Keep state in memory and mark the prototype in its name.
+> Read /tmp/handoff-cancellation-prototype.md and build a throwaway prototype of the cancellation model
 
 The first scenario checks the original question. You set the contract start to October 1, the cancellation to September 25, and move the clock to October 2. In this illustrative experiment, the start handler grants access even though the cancellation has already taken effect. This observation shows that a single queue of dated events is not enough. Processing the start has to take the active cancellation into account.
 

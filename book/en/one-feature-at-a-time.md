@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [feature-list-harness, give-agent-a-way-to-verify, progress-file, one-shotting]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # One Feature at a Time

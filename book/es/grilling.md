@@ -2,7 +2,7 @@
 group: task-setting
 status: draft
 related: [let-claude-interview-you, prototype-to-answer, writer-reviewer]
-source_rev: be673336c5dbfdf958aed12fc623947efdf7d457
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Grilling
@@ -23,15 +23,11 @@ Si antes de la implementación nadie pregunta por las inscripciones corporativas
 
 ## Solución
 
-Antes de que el agente empiece la implementación, pídele que pruebe el plan con preguntas. Por ejemplo:
+Antes de que el agente empiece la implementación, somete el plan a un interrogatorio. Con el skill de Matt Pocock basta un comando:
 
-> Revisa cada suposición de este plan. Primero averigua qué decisiones dependen de otras. Las preguntas cuyas respuestas necesarias ya se conocen, hazlas juntas, en una ronda breve. Una pregunta que depende de una respuesta que aún no tienes, déjala para la siguiente ronda. Para cada pregunta propone la respuesta que recomiendas y explica por qué. Los hechos búscalos tú en el código. Las decisiones consúltalas conmigo y espera mi respuesta. Empieza la implementación solo cuando yo confirme que tenemos un entendimiento común del plan.
+> /grilling
 
-En este prompt le das al agente tres reglas.
-
-- **Dependencias entre preguntas.** Las preguntas que no dependen unas de otras, el agente las hace juntas. Si la siguiente pregunta depende de la respuesta a la anterior, el agente espera esa respuesta. La ronda debe ser tal que te dé tiempo a revisar todos los puntos.
-- **Hechos del código.** Todo lo que se puede averiguar leyendo el proyecto, el agente lo encuentra solo. A ti te pregunta solo por las decisiones.
-- **Recomendación con justificación.** Para cada pregunta el agente propone una respuesta recomendada y explica por qué aconseja precisamente esa. Así tienes una opción concreta que discutir.
+Un buen interrogatorio transcurre así. Las preguntas que no dependen unas de otras, el agente las hace juntas, y una pregunta que depende de una respuesta que aún no tiene la deja para cuando la reciba. La ronda es breve, para que te dé tiempo a revisar todos los puntos. Todo lo que se puede averiguar en el proyecto, el agente lo encuentra solo, y a ti te pregunta solo por las decisiones. Para cada pregunta propone la respuesta que recomienda y explica por qué, así que tienes una opción concreta que discutir.
 
 Tu respuesta o confirma un punto del plan o muestra que hay que corregirlo. A veces una pregunta no se resuelve hablando: para responderla hay que ejecutar algo y mirar el resultado. Lleva esa pregunta a un [prototipo desechable](prototype-to-answer.md). Cuando todas las ramas importantes están revisadas, confirmas el plan y el agente empieza la implementación.
 

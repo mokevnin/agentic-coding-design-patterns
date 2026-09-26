@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [reflection, give-agent-a-way-to-verify, tdd-with-agent]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Writer and Reviewer
@@ -107,7 +107,7 @@ For a small edit, you can start with [Reflection](reflection.md) and automated c
 
 Session A has implemented a rate limiter. You hand the result over for independent review.
 
-> Review the rate limiter diff in a fresh context against PLAN.md. Find requirement violations and behavior bugs. For each finding, show the conditions under which it shows up and the code that causes it.
+> Review the rate limiter diff against PLAN.md
 
 The reviewer finds a race when two workers refill tokens. It shows the sequence of operations in which both read the stale counter and let the limit be exceeded. It also notices a missing check for `Retry-After` and a neighboring middleware renamed outside the task's scope.
 

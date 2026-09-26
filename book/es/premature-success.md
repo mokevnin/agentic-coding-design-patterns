@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [give-agent-a-way-to-verify, feature-list-harness, tdd-with-agent]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Éxito prematuro
@@ -52,7 +52,7 @@ Incluye el escenario de usuario en el [bucle de retroalimentación](give-agent-a
 
 **Después:**
 
-> Crea un horario por la UI, espera el correo con el informe en el buzón de prueba y adjunta capturas de ambos pasos. Da la tarea por terminada cuando este escenario pase con éxito.
+> Recorre el horario de principio a fin: créalo por la UI, espera el correo con el informe y adjunta capturas
 
 ## Patrones y antipatrones relacionados
 

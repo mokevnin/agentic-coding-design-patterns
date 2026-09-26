@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, tdd-with-agent, prototype-to-answer]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Hypothesis-Driven Debugging
@@ -23,9 +23,9 @@ Several causes can explain one symptom. Storage, caching, or response transforma
 
 ## Solution
 
-Ask the agent to first produce a check that detects the reported symptom. Then have it list possible causes and, for each, an observation that could disprove it.
+The agent first produces a check that detects the reported symptom. Then it lists possible causes and, for each, an observation that could disprove it, changes one condition at a time, and fixes the code only once the cause is established. The `diagnosing-bugs` skill from Matt Pocock's pack already sets this order, so the kickoff is short:
 
-> Reproduce the failure with one command. Before fixing it, propose hypotheses and an experiment that distinguishes them. Change one condition at a time; record the prediction and observation. Once the cause is established, apply the fix and rerun the original scenario.
+> /diagnosing-bugs organization beta sees the amount of someone else's invoice
 
 Separate observations from conclusions. “Amounts are correct when bypassing the cache” narrows the investigation to the caching path. Establishing a faulty key requires further checks, such as reversing request order and changing the invoice identifier.
 

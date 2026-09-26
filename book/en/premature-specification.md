@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [explore-plan-code-commit]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Premature Specification
@@ -50,7 +50,7 @@ First describe the goal, the constraints, and the completion criteria. Ask the a
 
 **After:**
 
-> The search field sends a request on every keystroke and overloads the backend. I want the request to go out only when the user has finished typing. Suggest an approach; the component's external contract must not change.
+> The search field sends a request on every keystroke and overloads the backend. The request should go out when the user has finished typing
 
 ## Related patterns and anti-patterns
 

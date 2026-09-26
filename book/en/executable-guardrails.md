@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [claude-md-memory, give-agent-a-way-to-verify, isolated-parallel-work]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Executable Guardrails
@@ -90,8 +90,8 @@ The requirement "the architecture should be simple" has no unambiguous quick che
 
 ## Implementation
 
-1. Collect the recurring prohibitions from instructions and incident history. For each one, determine whether a violation can be detected without guessing at the agent's intent.
-2. Describe in a table the actions the system allows, blocks, or sends for approval. Start with the critical restrictions on writing and publishing.
+1. Take a prohibition the agent has already broken or that you keep repeating in prompts. If a violation is visible from the command, the path or the diff, it can be enforced by a mechanism.
+2. Start with writing and publishing: allow edits in the working directory and tests, and leave `git push` and the network for approval.
 3. Put the boundary at the right layer. The OS sandbox restricts file and network access; a pre-tool hook checks a specific command; tests and CI check the quality of the result.
 4. In the denial response, name the rule and the allowed next step.
 5. Check that the mechanism blocks the forbidden action and lets the nearest allowed one through. Add checks for input escaping and timeouts.

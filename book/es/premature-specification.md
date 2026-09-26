@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [explore-plan-code-commit]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
 # Especificación prematura
@@ -50,7 +50,7 @@ Describe primero el objetivo, las restricciones y los criterios de finalización
 
 **Después:**
 
-> El campo de búsqueda envía una petición con cada carácter que se teclea y sobrecarga el backend. Quiero que la petición salga solo cuando el usuario haya terminado de escribir. Propón un enfoque; el contrato externo del componente no se puede cambiar.
+> El campo de búsqueda envía una petición con cada carácter y sobrecarga el backend. Hace falta que la petición salga cuando el usuario haya terminado de escribir
 
 ## Patrones y antipatrones relacionados
 
