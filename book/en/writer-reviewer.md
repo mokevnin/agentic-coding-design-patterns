@@ -2,225 +2,138 @@
 group: verification
 status: draft
 related: [reflection, give-agent-a-way-to-verify, tdd-with-agent]
-source_rev: ead5ac9b73469765dcf1e14e360afcd60c9b3165
+source_rev: 58f57eb48a3a03000812870279cef64a7847f4d8
 ---
 
 # Writer and Reviewer
 
 ## Intent
 
-Hand the diff for review to an agent with a fresh context — a separate
-session or a subagent — so the work is judged by someone other than whoever
-did it. The reviewer sees only the diff and the criteria, not the reasoning
-that led to the diff — and therefore evaluates the result instead of
-agreeing with the train of thought.
+Hand the diff to an agent with a fresh context, together with the review criteria. A separate reviewer judges the result against the requirements and returns findings to the writer for fixing.
 
 ## Also known as
 
-Writer/Reviewer, independent review, "fresh eyes"; the hardened variant —
-adversarial review.
+Writer/Reviewer, independent review, "fresh eyes", adversarial review.
 
 ## Problem
 
-An agent is biased toward the code it has just written — for the same reason
-a human is: its window holds the entire chain of reasoning that led to the
-solution. Ask it to check its own work, and it will check the reasoning —
-which, of course, will check out.
+When checking its own code, the agent may repeat the assumption the implementation was built on. For example, it believes the counter update is atomic and misses the race in both passes.
 
-- [Reflection](reflection.md) hits this ceiling: a critic in the same window
-  shares the author's blind spots. It will find a missed case; a flaw in the
-  approach itself — no.
-- The longer the agent worked autonomously, the higher the price: a series
-  of plausible decisions, each "verified" by their own author, arrives at
-  your desk whole.
-- The only unbiased reviewer — the human — becomes the bottleneck:
-  everything an agent produces in a day won't fit through one person's
-  review.
+[Reflection](reflection.md) helps find omissions, but it keeps the same reasoning context. After a long stretch of autonomous work, several such unchecked assumptions can pile up. A separate reviewer helps prepare the diff for human review, although its conclusions also need confirmation.
 
 ## Solution
 
-Split the roles across contexts. The writer is the session that did the
-work, with all its history. The reviewer is a fresh context: a separate
-session or a subagent that receives exactly two inputs:
+Split the roles across sessions. The writer keeps the history of the work, and the reviewer receives the materials to check.
 
-- **the diff** — what actually changed;
-- **the criteria** — what to check against: the plan, the specification, the
-  review axes ("every requirement implemented, the listed edge cases have
-  tests, nothing outside the scope touched").
+- **The diff** shows the actual change.
+- **The criteria** set the requirements, constraints and expected checks.
 
-What the reviewer does *not* receive is the history of reasoning. That is
-the whole mechanism: not knowing *why* the author decided this way, it has
-to evaluate what is there — like an external reviewer opening a pull
-request.
+Give the reviewer access to the relevant code, the specification and the ADRs, but leave the writer's reasoning history in the writer's session. The reviewer can then match the change against the requirements on its own.
 
-The findings go back to the writer, who fixes and resubmits for re-review.
-In the subagent form the cycle closes without copying text between windows:
-the findings arrive straight in the author's session.
+The writer receives the findings, fixes the confirmed defects and submits the result for another review.
 
-For critical code there is a hardened variant — the adversarial one: the
-reviewer's task is not to "assess" but to **refute** — "prove that this
-doesn't work; find an input that breaks it." An evaluator motivated to find
-a counterexample is stronger than one motivated to deliver a verdict.
+For critical logic, ask the reviewer to look for counterexamples. An input on which a requirement fails gives a verifiable basis for the fix.
 
-One calibration is mandatory: a reviewer asked to find gaps will always find
-some — that's the framing. Ask it to separate correctness gaps and
-deviations from requirements from taste preferences — and don't fix
-everything it reports: chasing every finding ends in extra abstraction
-layers and tests for impossible cases.
+Don't demand a fixed number of findings. The reviewer must justify each defect and may finish the review with no findings. Treat style preferences separately from behavior bugs.
 
 ## Structure
 
+The writer and the reviewer work in different contexts. Only the review artifacts and the findings pass between them.
+
 ```mermaid
 ---
-title: the work is judged by someone other than whoever did it
+title: independent review requires a fresh context
+config:
+  sequence:
+    mirrorActors: false
+    width: 130
+    height: 45
+    actorMargin: 35
+    messageMargin: 28
 ---
-flowchart LR
-  writer["Writer — session A<br/>the full history: the task, the reasoning, the edits<br/>fixes what was found"]
-  diff["diff + criteria<br/>plan · specification · axes"]:::accent
-  reviewer["Reviewer — fresh context<br/>a separate session or subagent<br/>sees only the diff and criteria<br/>finds — doesn't fix"]
-  findings["findings<br/>gaps, not taste"]:::warn
-  writer --> diff --> reviewer
-  reviewer --> findings --> writer
-  hard["the hardened variant — refutation:<br/>'prove that this doesn't work'"]:::warn
-  reviewer -.- hard
-  note["the author's reasoning never crosses the boundary —<br/>that is the whole mechanism"]:::muted
-  diff -.- note
+sequenceDiagram
+  participant W as Writer (A)
+  participant R as Reviewer (B)
+  Note over W: The writer's history<br/>stays here
+  W->>R: Diff + requirements + links to code
+  R->>R: Check the requirements<br/>and counterexamples
+  R-->>W: Findings with evidence<br/>or no findings
+  opt Defects confirmed
+    W->>W: Fix and verify
+    W->>R: Updated diff
+    R-->>W: Re-review result
+  end
 ```
 
-Two contexts, and between them — only artifacts. On the left, the writer
-with the session's full history; the diff and the criteria travel right, the
-findings come back. The author's reasoning never crosses the boundary — that
-is not a limitation but the pattern's very mechanism. At the bottom, the
-hardened variant: the reviewer is tasked with refutation, not assessment.
+Session B starts with a fresh context: the writer's reasoning is not carried over into it. The reviewer reads the code it needs and reports its findings. The fixes stay with the writer and go through another review.
 
 ## Participants / Components
 
-- **Writer** — the session that did the work: full history, reasoning,
-  edits. Fixes what was found.
-- **Reviewer** — a fresh context: a separate session or a subagent. Only
-  finds — doesn't fix.
-- **Diff** — the subject of the review: the actual change, without the
-  backstory.
-- **Criteria** — the plan, the specification, the review axes; they define
-  what counts as a finding.
-- **Findings** — correctness gaps and deviations from requirements; filtered
-  by the developer.
+- **Writer** implements the change and fixes the confirmed findings.
+- **Reviewer** checks the result in a fresh context.
+- **Diff** sets the scope of the review.
+- **Criteria** define the required behavior and constraints.
+- **Findings** describe the defect, the conditions under which it shows up, and the evidence.
 
 ## When to use
 
-- A serious diff before merging: several modules, a public contract,
-  critical logic.
-- After autonomous work: the longer the agent worked unattended, the more an
-  independent check matters before counting the work as done.
-- As the overfit check after [TDD](tdd-with-agent.md): is the implementation
-  fitted to the specific tests.
-- As a plan check: is everything promised implemented, and was anything
-  extra done.
+- The change touches several modules or a public contract.
+- The agent worked autonomously for a long time before the review.
+- After [TDD](tdd-with-agent.md), you need to check whether the implementation was fitted to the tests.
+- You need to check the result for completeness against the plan.
 
-For small edits [Reflection](reflection.md) is enough — a full cycle with a
-separate context costs more than the edit itself.
+For a small edit, you can start with [Reflection](reflection.md) and automated checks.
 
 ## Consequences and trade-offs
 
-- ➕ The author's bias is removed by construction: the reviewer physically
-  cannot see the reasoning it might agree with.
-- ➕ The result is checked against criteria — like an external review, at
-  the price of an agent call.
-- ➕ Human review gets a better input: the typical gaps are caught before a
-  person opens the diff.
-- ➖ More expensive than reflection: a second context, artifact handover,
-  iterations.
-- ➖ A reviewer without the history may not understand deliberate decisions —
-  conscious trade-offs must be visible from the criteria, ADRs, or comments,
-  or they'll get "fixed".
-- ➖ There will always be findings: without calibration the pattern turns
-  into an over-engineering generator.
+- ➕ The reviewer reconstructs the solution from the code and the requirements on its own.
+- ➕ The criteria make findings concrete and verifiable.
+- ➕ Some defects can be fixed before human review.
+- ➖ A second context and repeated passes increase the cost.
+- ➖ Without written-down constraints, the reviewer may mistake a deliberate trade-off for a bug.
+- ➖ Unverified findings can lead to unnecessary edits.
 
 ## Implementation
 
-1. Set up a reviewer with a fresh context: a subagent ("review this with a
-   fresh subagent...") or a separate session that receives only the diff.
-2. Assemble the input: the diff, the criteria (plan, specification, axes),
-   and whatever explains the deliberate — ADRs, the
-   [Domain Vocabulary](domain-context-file.md). Don't pass the session
-   history — it is the very source of the bias.
-3. State what counts as a finding: "correctness gaps and deviations from the
-   plan, not style preferences."
-4. For critical code — refutation: "find an input that breaks this; prove
-   that requirement X is not met."
-5. Return the findings to the writer and iterate to a clean pass; the author
-   always does the fixing — a reviewer that starts fixing has stopped being
-   a reviewer.
-6. Filter the findings yourself: correctness gaps get fixed, taste is
-   optional. Don't turn every finding into an edit.
-7. Package the recurring cycle into a command: ready-made ones are
-   `/code-review` in Claude Code and the two-axis review in
-   [Matt Pocock's skills](matt-pocock-skills.md).
+1. Create a separate session or a subagent with a fresh context. For more independence, give the review to an agent on a different model.
+2. Pass the diff, the plan and the specification. Add links to the ADRs and the [Domain Vocabulary](domain-context-file.md) that explain the constraints.
+3. Ask for verifiable defects and requirement violations.
+4. For critical behavior, ask for counterexamples.
+5. Pass the confirmed findings to the writer and review the fixes again.
+6. Reject findings that the code or the requirements don't support.
+7. Save a recurring process as a command, or use `/code-review` from [Matt Pocock's skills](matt-pocock-skills.md).
 
 ## Example
 
-Session A implemented a rate limiter for the public API according to the
-approved plan. Instead of "check your work", the developer brings up a
-reviewer:
+Session A has implemented a rate limiter. The developer hands the result over for independent review.
 
-> With a fresh subagent, review the rate limiter diff against PLAN.md: every
-> requirement implemented, the plan's edge cases have tests, nothing outside
-> the task's scope changed. Report gaps, not style.
+> Review the rate limiter diff in a fresh context against PLAN.md. Find requirement violations and behavior bugs. For each finding, show the conditions under which it shows up and the code that causes it.
 
-The reviewer, not knowing how the author arrived at the solution, returns
-three findings: a race is possible when two workers refill tokens at once —
-the limit is briefly exceeded; the plan promises a `Retry-After` header, and
-there is no test for it; a neighboring middleware got renamed along the
-way — out of scope.
+The reviewer finds a race when two workers refill tokens. It shows the sequence of operations in which both read the stale counter and let the limit be exceeded. It also notices a missing check for `Retry-After` and a neighboring middleware renamed outside the task's scope.
 
-The author fixes the race and adds the test, and reverts the rename. The
-re-review is clean. Note: reflection would not have found the race — in the
-author's reasoning the token refill is "obviously atomic", and a critic in
-the same window would have inherited that obviousness.
+The writer fixes the race, adds a test for the header and reverts the unrelated rename. The re-review checks these changes. The fresh context helped question the assumption that the counter is atomic.
 
 ## Anti-patterns and common mistakes
 
-- **"Check your code" in the same window.** That is
-  [Reflection](reflection.md) — a useful but different instrument: the
-  author's bias hasn't gone anywhere.
-- **A reviewer with the history.** Feeding the reviewer the whole session
-  "for context" hands it the author's reasoning and, with it, the bias. The
-  reviewer's context is the diff and the criteria.
-- **Review without criteria.** Without a plan and axes the reviewer produces
-  taste — many words, few findings.
-- **Blind trust in findings.** Fixing everything that was found is the
-  straight road to over-engineering: the reviewer will *always* find
-  something; the filter is the developer's job.
-- **The reviewer fixes things itself.** Mixing the roles brings back the
-  original problem: now it's *its* edits that nobody has independently
-  checked.
+- **Review in the same window.** That is [Reflection](reflection.md), which can keep the writer's original assumptions.
+- **The whole history for the reviewer.** The full discussion can steer the review along the line of thought already chosen. Pass the requirements and the evidence for decisions.
+- **No criteria.** Without requirements, findings can boil down to style preferences.
+- **Every finding becomes an edit.** First confirm the defect and judge whether it needs fixing.
+- **The reviewer changes the code.** Its edits will need an independent review too.
 
 ## Known uses
 
-- **Claude Code best practices** — the primary source: the two-session
-  Writer/Reviewer table, the adversarial review step by a subagent ("the
-  reviewer sees only the diff and the criteria, not the reasoning"), and the
-  warning about over-engineering from findings.
-- **Claude Code `/code-review`** — the bundled skill: a review of the
-  current diff by a fresh subagent with findings returned to the session.
-- **Matt Pocock's skills** — `/code-review` along two axes: adherence to the
-  codebase's standards and adherence to the specification; the mandatory
-  finale of `/implement`.
-- **Superpowers** — `requesting-code-review`: checking the result against
-  the specification as a mandatory checkpoint before finishing a branch.
-- **The "test writer — code writer" variant** — the same roles on different
-  material: one session writes the tests, another writes the code to pass
-  them.
+- **Claude Code best practices** describe the Writer/Reviewer split and the search for counterexamples in a separate session.
+- **The [codex-plugin-cc](https://github.com/openai/codex-plugin-cc) plugin** from OpenAI runs Codex inside Claude Code. The `/codex:review` command reviews uncommitted changes or a branch, and `/codex:adversarial-review` challenges implementation and design decisions. The reviewer has not only a fresh context but also a different model.
+- **Codex** reviews a branch, uncommitted changes or a single commit with the `/review` command.
+- **Review skills** automate handing over the diff and returning findings to the writer.
+- **Matt Pocock's skills** check the project's standards and the specification with `/code-review`.
+- **Superpowers** uses `requesting-code-review` before finishing a branch.
+- **Separate test and code writers** apply a similar principle to the criteria and the implementation.
 
 ## Related patterns
 
-- [Reflection](reflection.md) — the cheap rung below: self-critique in the
-  same window; a filter before the real review, not its replacement.
-- [Feedback Loop](give-agent-a-way-to-verify.md) — writer-reviewer is the
-  "second opinion", the top rung of the verification ladder — for what
-  doesn't reduce to a binary oracle.
-- [TDD with an Agent](tdd-with-agent.md) — supplies the reviewer with a
-  ready-made question: is the implementation fitted to the frozen tests.
-- [Spec-Driven Development](spec-driven-development.md) — supplies the
-  reviewer with criteria: the specification and the plan turn "look at the
-  code" into a check against a list.
+- [Reflection](reflection.md) helps prepare the result in the current session.
+- [Feedback Loop](give-agent-a-way-to-verify.md) complements review with reproducible checks.
+- [TDD with an Agent](tdd-with-agent.md) provides criteria for spotting an implementation fitted to the tests.
+- [Spec-Driven Development](spec-driven-development.md) keeps the requirements for an independent reviewer.

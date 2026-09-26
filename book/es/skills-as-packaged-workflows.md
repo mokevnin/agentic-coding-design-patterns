@@ -2,18 +2,14 @@
 group: project-org
 status: draft
 related: [claude-md-memory, context-engineering, handoff, tdd-with-agent, bloated-claude-md]
-source_rev: eee14eb8dfdd94b3ab7dae41a322467765a940a6
+source_rev: 58f57eb48a3a03000812870279cef64a7847f4d8
 ---
 
 # Skills
 
 ## Propósito
 
-Empaquetar un procedimiento recurrente en un skill — un archivo de
-instrucciones con nombre que el agente carga bajo demanda y el desarrollador
-invoca con un solo comando — en lugar de reexplicar el procedimiento en cada
-prompt. El metapatrón de este libro: casi cualquiera de sus patrones puede
-empaquetarse como skill — y la mitad ya lo está.
+Guardar un procedimiento recurrente en un skill que el agente carga cuando hace falta. El desarrollador obtiene un flujo de trabajo con nombre, versión y criterios de finalización que se puede usar en distintas sesiones.
 
 ## También conocido como
 
@@ -21,163 +17,98 @@ Skills, slash commands, comandos personalizados, packaged workflows.
 
 ## Problema
 
-Un proceso de trabajo tiene procedimientos: el ritual de release, el orden
-de revisión, los pasos del triaje, el ciclo TDD. Mientras viven en cabezas y
-conversaciones, ocurre lo previsible:
+En cada release el desarrollador vuelve a explicarle al agente el orden de preparación. Un día se olvida de mencionar la revisión de migraciones, y el agente publica la versión sin ella.
 
-- El procedimiento se reexplica en cada sesión — un párrafo de texto que
-  tecleas por vigésima vez.
-- La redacción deriva: hoy se explicó un poco distinto que ayer — y el
-  agente lo ejecutó un poco distinto. A un sistema estocástico le basta
-  incluso menos motivo.
-- Volcar los procedimientos en la
-  [memoria del proyecto](claude-md-memory.md) no es opción: se carga entera
-  en cada sesión, y las instrucciones de varios pasos no pintan nada ahí —
-  es el camino directo a la memoria hinchada que el agente ignora a medias.
-- El procedimiento no se transfiere: el colega le explica a su agente el
-  mismo ritual con sus propias palabras — con otro resultado.
+Si el procedimiento solo vive en la conversación, lo completa que sea cada ejecución depende del nuevo prompt. Un colega puede describir el mismo proceso de otra manera y obtener otro orden de acciones. Trasladar todo el procedimiento a la [memoria del proyecto](claude-md-memory.md) lo carga también en las sesiones que no tienen nada que ver con el release.
 
 ## Solución
 
-El procedimiento se convierte en un archivo del repositorio: un skill — un
-`SKILL.md` con nombre, descripción y cuerpo de instrucciones. Este empaque
-tiene cuatro propiedades que un prompt no tiene:
+Escribe el procedimiento en un _SKILL.md_ con un nombre, una descripción de su propósito y una secuencia de acciones. Este empaque te da varias posibilidades.
 
-1. **Bajo demanda.** A diferencia de la memoria del proyecto, el skill no
-   ocupa la ventana hasta ser invocado: su coste es cero en cada sesión que
-   no lo necesita — es justo el lugar adonde se sacan de la memoria los
-   procedimientos de varios pasos.
-2. **Dos modos de invocación.** *De usuario* — el skill se dispara solo por
-   nombre (`/release`), no le cuesta nada al contexto, pero recordarlo es
-   cosa tuya. *De modelo* — la descripción del skill con sus disparadores
-   está siempre en la ventana, y el agente lo alcanza por sí mismo cuando
-   la petición encaja. El modo de modelo se elige solo cuando el agente
-   debe decidir por su cuenta que el skill hace falta — cada descripción
-   así se paga con el contexto de cada sesión.
-3. **Como código.** El skill vive en git: editar el procedimiento es un
-   diff bajo revisión, no tradición oral. El equipo obtiene un
-   procedimiento para todos.
-4. **Portabilidad.** Los skills se agrupan en packs y se vendorizan de
-   proyecto en proyecto — así se difunden metodologías enteras.
+1. **Carga bajo demanda.** La instrucción completa entra en el contexto cuando se usa el skill. La descripción para elegir el skill puede quedarse en el catálogo de procedimientos disponibles.
+2. **Elección del modo de invocación.** El usuario puede invocar el skill por su nombre. Si la herramienta admite la selección automática, la descripción debe explicar a qué tareas se aplica el procedimiento.
+3. **Versionado.** El equipo guarda el skill en git y discute los cambios del proceso en la revisión.
+4. **Portabilidad.** Un conjunto de skills se puede llevar de un proyecto a otro y adaptar a las reglas locales.
 
-El objetivo del empaque es la **predecibilidad**: el agente recorre el
-mismo *proceso* en cada ejecución, aunque los resultados difieran. A ella
-sirven las técnicas de escritura: pasos con criterios de finalización
-comprobables («cada modelo modificado contabilizado», no «haz una lista»);
-la referencia sacada a archivos vecinos y cargada bajo demanda; las
-palabras guía — términos compactos que el modelo ya conoce y de los que se
-cuelga toda una región de comportamiento.
+Indica para cada paso un resultado comprobable. Por ejemplo, un paso del release debe confirmar que las migraciones pasan en una base de datos de prueba. Saca los detalles de referencia a archivos aparte para que el agente los lea a medida que los necesite.
 
-La frontera con la memoria del proyecto es simple: **la regla va a la
-memoria, el procedimiento al skill**. «Commits en inglés» es una regla —
-hace falta siempre. «Cómo hacemos el release» es un procedimiento — hace
-falta bajo demanda.
+**Guarda las reglas permanentes en la memoria del proyecto y carga los procedimientos mediante skills.** La regla sobre el idioma de los commits hace falta en tareas muy distintas. El orden detallado del release hace falta mientras se publica una versión.
 
 ## Estructura
 
+Primero el agente recibe un catálogo de nombres y descripciones. El procedimiento completo y los materiales de referencia entran en el contexto a medida que hacen falta.
+
 ```mermaid
 ---
-title: la regla va a la memoria del proyecto; el procedimiento, a un skill
+title: la instrucción completa se carga tras elegir el skill
+config:
+  sequence:
+    mirrorActors: false
+    width: 130
+    height: 45
+    actorMargin: 35
+    messageMargin: 28
 ---
-flowchart LR
-  prompts["Procedimiento en prompts<br/>se reexplica cada sesión<br/>la redacción deriva<br/>se ejecuta distinto cada vez"]:::warn
-  skill["SKILL.md<br/>nombre + descripción-disparador<br/>pasos con criterios de finalización<br/>referencia en archivos vecinos, bajo demanda<br/>en git: revisión, versiones, compartir"]:::accent
-  manual["/nombre<br/>el desarrollador, por comando;<br/>coste de contexto cero"]
-  auto["auto-invocación<br/>el agente, por disparadores;<br/>la descripción siempre cargada"]
-  packs["packs de skills<br/>metodologías completas se vendorizan al proyecto en bloque"]:::muted
-  prompts -- "se empaqueta una vez" --> skill
-  skill --> manual
-  skill --> auto
-  skill -.- packs
+sequenceDiagram
+  participant A as Agente
+  participant C as Catálogo de skills
+  participant F as Archivos del skill
+  C-->>A: Nombres + descripciones
+  Note over A,C: Elección por descripción<br/>o invocación explícita
+  A->>F: Leer SKILL.md
+  F-->>A: Pasos + criterios de finalización
+  A->>A: Ejecutar el procedimiento
+  opt Hace falta referencia
+    A->>F: Leer el archivo necesario
+    F-->>A: Referencia para este paso
+  end
+  A->>A: Comprobar el resultado
 ```
 
-A la izquierda, la vida del procedimiento antes del empaque: reexplicación
-en cada sesión y deriva. En el centro, el skill: nombre,
-descripción-disparador, pasos con criterios de finalización, referencia en
-archivos vecinos — todo en git y editado mediante revisión. A la derecha,
-las dos formas de invocarlo: el desarrollador por nombre con un comando o
-el agente por los disparadores de la descripción. Abajo, los packs: los
-skills viajan entre proyectos como conjuntos ya hechos.
+El procedimiento se guarda en git y pasa por revisión. Al invocarlo, el agente lee su versión actual y abre los archivos vecinos a través de los enlaces de la instrucción. El conjunto de descripciones ocupa el contexto antes de que se elija un skill, así que también hay que mantenerlo compacto.
 
 ## Participantes / Componentes
 
-- **El skill** — `SKILL.md` más sus archivos de referencia vecinos; un
-  procedimiento — un skill.
-- **La descripción-disparador** — determina la invocación: una línea para
-  humanos en el modo de usuario, una lista de disparadores en el de modelo.
-- **El desarrollador** — autor y editor: nota el procedimiento recurrente,
-  lo empaqueta, lo poda.
-- **El agente** — ejecuta el skill como proceso: paso a paso, hasta los
-  criterios de finalización.
-- **El pack** — un conjunto de skills vendorizado al proyecto: una
-  metodología como directorio de archivos.
+- **El skill** guarda un procedimiento en un _SKILL.md_ y sus materiales relacionados.
+- **La descripción** explica cuándo aplicar el procedimiento.
+- **El desarrollador** escribe, revisa y actualiza las instrucciones.
+- **El agente** ejecuta los pasos y comprueba los criterios de finalización.
+- **El pack** agrupa skills relacionados para instalarlos en un proyecto.
 
 ## Cuándo aplicarlo
 
-- El procedimiento se repitió dos o tres veces — el mismo disparador que
-  para la memoria del proyecto, solo que para el «cómo hacer» y no el «qué
-  es verdad».
-- El procedimiento debe ejecutarse igual para todos y siempre: releases,
-  revisiones, triaje, migraciones.
-- Quieres que los patrones de este libro sean invocables: el traspaso de
-  sesión, el TDD, el triaje y el mapa de investigación se empaquetan en
-  skills literalmente.
+- El desarrollador explica una y otra vez el mismo procedimiento.
+- El equipo necesita un orden común para el release, la revisión o el triaje.
+- Uno de los patrones del libro tiene que aplicarse con regularidad.
 
-No empaquetes lo de una sola vez: un skill invocado una vez es sobrecoste
-por un archivo que nadie encontrará al mes.
+Para una tarea puntual, un skill aparte suele crear trabajo extra de mantenimiento del archivo.
 
 ## Consecuencias y compromisos
 
-- ➕ Predecibilidad: el procedimiento corre como el mismo proceso en cada
-  sesión y para cada miembro del equipo.
-- ➕ El contexto queda libre: a diferencia de la memoria, el skill no
-  cuesta nada hasta la invocación; la ventana se gasta solo en el
-  procedimiento necesario.
-- ➕ Los procedimientos se vuelven código: revisión, versiones, historial,
-  compartir como pack.
-- ➖ Mantenimiento: los skills sedimentan — las capas caducas se acumulan
-  porque añadir parece seguro y borrar da miedo. Sin poda, el pack degrada.
-- ➖ Los skills de usuario gravan la memoria del desarrollador: el índice
-  eres tú. Cuando hay más skills de los que se recuerdan, hace falta un
-  skill-enrutador que conozca a los demás.
-- ➖ Las descripciones de modelo comen contexto siempre: repartir la
-  auto-invocación con generosidad es la misma memoria hinchada por la
-  puerta de atrás.
+- ➕ Todos los participantes reciben una versión común del procedimiento.
+- ➕ La instrucción completa se carga solo cuando hace falta.
+- ➕ Los cambios del proceso pasan por revisión y quedan en el historial.
+- ➖ El equipo tiene que borrar los pasos caducos y volver a comprobar el procedimiento tras los cambios del proyecto.
+- ➖ El usuario tiene que encontrar el skill adecuado entre los disponibles.
+- ➖ Un catálogo grande de descripciones también ocupa el contexto.
 
 ## Implementación
 
-1. Atrapa el disparador: el procedimiento se explica por segunda vez —
-   hora de empaquetar.
-2. Crea `SKILL.md` con frontmatter (nombre, descripción) y cuerpo: los
-   pasos en orden de ejecución, cada uno con criterio de finalización
-   comprobable.
-3. Elige el modo de invocación. Por defecto, el de usuario: disparo por
-   nombre, coste de contexto cero. El de modelo — solo si el agente debe
-   alcanzar el skill por sí mismo; entonces la descripción se escribe como
-   lista de disparadores.
-4. Saca la referencia a archivos vecinos y enlázala desde los pasos — se
-   cargarán solo cuando llegue su momento (ver la
-   [ingeniería de contexto](context-engineering.md): su principio de «bajo
-   demanda» en miniatura).
-5. Busca palabras guía: un término compacto («trazador», «niebla de
-   guerra», «rojo») ancla el comportamiento más barato que un párrafo.
-6. Poda con regularidad: revisa cada línea por relevancia, borra enteras
-   las frases huecas. Los skills sin poda sedimentan.
-7. Si se multiplican — monta un enrutador: un skill de usuario que
-   enumera a los demás y cuándo llamar a cada uno.
-8. No inventes el pack desde cero: [Superpowers](superpowers.md) y los
-   [skills de Matt Pocock](matt-pocock-skills.md) son metodologías listas
-   en forma de skills; vendoriza y adapta.
+1. Elige un procedimiento que tengas que explicar una y otra vez.
+2. Crea un _SKILL.md_ con nombre, propósito, pasos y sus criterios de finalización.
+3. Define el modo de invocación. En la descripción indica en qué tareas hace falta el skill, en lugar de resumir su contenido: a partir de la descripción el agente decide si cargar el procedimiento.
+4. Saca la referencia a archivos vecinos y enlázala desde los pasos que la necesitan (ver la [ingeniería de contexto](context-engineering.md)).
+5. Usa términos del proceso coherentes y explícalos donde influyen en una acción.
+6. Pon a prueba el procedimiento en tareas reales y borra las instrucciones caducas.
+7. Reúne en el skill una sección «Trampas» con los errores que el agente cometió al seguirlo. Estas entradas contienen lo que el agente no sabe sin el skill.
+8. Para un conjunto grande, añade un índice que ayude a elegir el skill adecuado.
+9. Si hace falta, adapta los procedimientos ya hechos de [Superpowers](superpowers.md) o de los [skills de Matt Pocock](matt-pocock-skills.md).
 
 ## Ejemplo
 
-En cada release del servicio el desarrollador le dicta al agente el mismo
-párrafo: armar el changelog con los commits desde el último tag, subir la
-versión, revisar las migraciones, pasar el set de humo, crear el tag y el
-release. Una vez al mes el párrafo muta — y los releases salen un poco
-distintos.
+Cada release del servicio incluye el changelog, la subida de versión, la revisión de migraciones, el test de humo y la creación del release. El desarrollador quiere guardar este orden para no tener que reconstruirlo de memoria.
 
-El procedimiento se empaqueta en `.claude/skills/release/SKILL.md`:
+Escribe el procedimiento en _.claude/skills/release/SKILL.md_.
 
 ```markdown
 ---
@@ -190,68 +121,36 @@ disable-model-invocation: true
    un Conventional Commit. Criterio: cada commit está en el changelog
    o descartado explícitamente como mantenimiento.
 2. Sube la versión por semver según el contenido del changelog.
-3. Revisa migraciones sin aplicar — no debe haber ninguna.
+3. En una base de datos de prueba aparte, restaura el esquema del release anterior y aplica las migraciones nuevas. Adjunta el resultado de la ejecución y la comprobación de los datos tras la migración.
 4. Pasa el set de humo: make smoke. Criterio: salida verde adjunta.
 5. Tag y release con el changelog en la descripción.
 ```
 
-Ahora el release es `/release`. Al mes el equipo decide añadir la revisión
-de feature flags sin cerrar — eso es un pull request de una línea a
-SKILL.md, no un comunicado de «ahora explíquenle también esto a su agente».
+Ahora el desarrollador invoca `/release`. Cuando el equipo añade la revisión de feature flags sin cerrar, cambia el skill mediante un pull request. Las siguientes ejecuciones reciben la nueva versión de la instrucción.
 
-Que el patrón es meta se ve en este mismo libro: el traspaso de sesión, el
-TDD, el triaje, el mapa de investigación y el prototipo están tratados en
-capítulos como patrones — y los cinco existen en el pack de Matt Pocock
-como skills invocables.
+Con el mismo principio, el pack de Matt Pocock guarda los procedimientos de traspaso de sesión, TDD, triaje, investigación y prototipado.
 
 ## Antipatrones y errores comunes
 
-- **El skill-vertedero.** Toda la memoria del proyecto trasladada a un
-  skill, o un skill «para todo»: el empaque funciona mientras un
-  procedimiento sea un skill.
-- **Todo en modo de modelo.** Auto-invocación en cada skill — y las
-  descripciones se comen la ventana de cada sesión: la [memoria hinchada](bloated-claude-md.md)
-  volvió por la puerta trasera.
-- **Pasos sin criterios.** «Haz la revisión y corrige» sin un «listo»
-  comprobable — el agente termina el paso cuando se cansa, no cuando
-  acaba.
-- **Sedimento.** Capas de instrucciones caducas que nadie se atreve a
-  borrar. Podar los skills es la misma disciplina que podar la memoria del
-  proyecto.
-- **Duplicación con la memoria.** La misma regla en CLAUDE.md y en un
-  skill — dos fuentes de verdad que divergirán. La regla vive en un solo
-  sitio.
+- **Un skill para todo.** Los procedimientos sin relación en un mismo archivo dificultan elegir los pasos aplicables.
+- **Condiciones de invocación demasiado amplias.** El agente carga el procedimiento incluso en tareas que no lo necesitan.
+- **Pasos sin criterios.** Sin un resultado comprobable, al agente le cuesta saber cuándo ha terminado un paso.
+- **Instrucciones caducas.** Las reglas acumuladas pueden llevar al agente hacia una acción que ya no es correcta.
+- **Un guion rígido donde importa el resultado.** Si el orden de los pasos no influye en el resultado final, una instrucción paso a paso le impide al agente adaptarse a la tarea. Fija el objetivo y las restricciones, y deja los pasos donde el orden importa.
+- **Reglas duplicadas.** Las copias en la memoria y en el skill pueden divergir. Guarda la regla en un solo sitio y enlázala.
 
 ## Usos conocidos
 
-- **Claude Code** — los skills como mecanismo: `SKILL.md` en
-  `.claude/skills/`, modos de invocación vía `disable-model-invocation`,
-  argumentos, plugins como packs; los skills incluidos como `/code-review`
-  son el mismo patrón de fábrica.
-- **Superpowers** — una metodología SDD completa distribuida como pack de
-  skills: brainstorming, planificación, implementación TDD con subagentes,
-  revisión.
-- **Skills de Matt Pocock** — un pack con enrutador y el metaskill
-  *writing great skills* — una referencia sobre cómo escribir los propios
-  skills: predecibilidad, modos de invocación, criterios de finalización,
-  palabras guía.
-- **El ecosistema AGENTS.md** — catálogos de procedimientos de equipo en
-  otras herramientas: de las reglas de Cursor a los comandos
-  personalizados de distintos agentes; el formato varía, el patrón es el
-  mismo.
+- **Claude Code** admite _SKILL.md_ en _.claude/skills/_, argumentos y la configuración de la invocación mediante `disable-model-invocation`.
+- **El equipo de Claude Code** [describe](https://x.com/trq212/status/2033949937936085378) cómo escribe sus skills. La descripción sirve como condición de invocación para el modelo. La sección de trampas se amplía a medida que aparecen fallos nuevos. En lugar de un guion paso a paso, el skill fija el objetivo y las restricciones.
+- **Codex** admite skills y el asistente integrado `$skill-creator`. La [guía de OpenAI](https://learn.chatgpt.com/guides/best-practices) aconseja extraer el skill de un proceso que ya funciona y limitarlo a una sola tarea.
+- **Superpowers** reúne la planificación, el TDD, la implementación y la revisión en un conjunto de skills.
+- **Los skills de Matt Pocock** incluyen un índice de procedimientos y la guía [writing-for-agents](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md) sobre cómo escribir instrucciones para agentes.
+- **Otros agentes de programación** también admiten procedimientos guardados, aunque el formato y las reglas de carga varían.
 
 ## Patrones relacionados
 
-- [Memoria del proyecto](claude-md-memory.md) — el patrón pareja con una
-  frontera limpia: la regla a la memoria (hace falta siempre), el
-  procedimiento al skill (hace falta bajo demanda); los skills son el
-  remedio principal contra la memoria hinchada.
-- [Ingeniería de contexto](context-engineering.md) — el skill es la carga
-  bajo demanda en estado puro: cero tokens antes de la invocación, la
-  instrucción completa después.
-- [Traspaso de sesión](handoff.md), [TDD con agente](tdd-with-agent.md),
-  [Triaje de tareas](triage-state-machine.md) y el
-  [mapa de investigación](wayfinder.md) — patrones de este libro que en
-  los packs reales existen precisamente como skills: el empaque es su
-  forma nativa.
-- [Memoria hinchada](bloated-claude-md.md) — el antipatrón que curan los skills: los procedimientos sacados de la memoria dejan de cargarse en cada sesión.
+- [Memoria del proyecto](claude-md-memory.md) guarda las reglas permanentes a las que remiten los procedimientos.
+- [Ingeniería de contexto](context-engineering.md) explica la carga de instrucciones bajo demanda.
+- [Traspaso de sesión](handoff.md), [TDD con agente](tdd-with-agent.md), [triaje](triage-state-machine.md) y el [mapa de investigación](wayfinder.md) pueden empaquetarse como skills repetibles.
+- [Memoria hinchada](bloated-claude-md.md) describe un archivo de memoria sobrecargado que se descarga sacando los procedimientos a skills.

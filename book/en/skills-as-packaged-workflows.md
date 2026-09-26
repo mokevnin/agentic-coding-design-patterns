@@ -2,18 +2,14 @@
 group: project-org
 status: draft
 related: [claude-md-memory, context-engineering, handoff, tdd-with-agent, bloated-claude-md]
-source_rev: eee14eb8dfdd94b3ab7dae41a322467765a940a6
+source_rev: 58f57eb48a3a03000812870279cef64a7847f4d8
 ---
 
 # Skills
 
 ## Intent
 
-Package a recurring procedure into a skill — a named file of instructions
-that the agent loads on demand and the developer invokes with a single
-command — instead of re-explaining the procedure in every prompt. This
-book's meta-pattern: almost any pattern in it can be packaged as a skill —
-and half of them already are.
+Save a recurring procedure in a skill that the agent loads when needed. The developer gets a named workflow with a version and completion criteria that can be used across sessions.
 
 ## Also known as
 
@@ -21,155 +17,98 @@ Skills, slash commands, custom commands, packaged workflows.
 
 ## Problem
 
-A working process has procedures: the release ritual, the review order, the
-triage steps, the TDD cycle. While they live in heads and conversations,
-the predictable happens:
+At every release the developer explains the preparation order to the agent all over again. One day they forget to mention the migration check, and the agent ships the version without it.
 
-- The procedure gets re-explained in every session — a paragraph of text
-  you are typing for the twentieth time.
-- The wording drifts: today it was explained slightly differently than
-  yesterday — and the agent executed it slightly differently. A stochastic
-  system needs even less of an excuse.
-- Dumping the procedures into [Project Memory](claude-md-memory.md) is not
-  an option: it loads whole every session, and multi-step instructions
-  don't belong there — that's the straight road to bloated memory, half of
-  which the agent ignores.
-- The procedure doesn't transfer: a colleague explains the same ritual to
-  their agent in their own words — with a different result.
+If the procedure lives only in the conversation, how complete each run is depends on the new prompt. A colleague may describe the same process differently and get a different order of actions. Moving the whole procedure into [Project Memory](claude-md-memory.md) loads it into sessions that have nothing to do with releases as well.
 
 ## Solution
 
-The procedure becomes a file in the repository: a skill — a `SKILL.md` with
-a name, a description, and an instruction body. This packaging has four
-properties a prompt doesn't:
+Write the procedure into a _SKILL.md_ with a name, a description of its purpose, and a sequence of actions. This packaging gives you several capabilities.
 
-1. **On demand.** Unlike project memory, a skill doesn't occupy the window
-   until invoked: its cost is zero in every session that doesn't need it —
-   this is exactly where multi-step procedures move out of memory.
-2. **Two invocation modes.** *User-invoked* — the skill fires only by name
-   (`/release`), costs the context nothing, but you are the one who must
-   remember it. *Model-invoked* — the skill's description with its triggers
-   is always in the window, and the agent reaches for it on its own when
-   the request fits. Choose the model mode only when the agent must decide
-   by itself that the skill is needed — every such description is paid for
-   with every session's context.
-3. **As code.** The skill lives in git: editing the procedure is a diff
-   under review, not oral tradition. The team gets one procedure for
-   everyone.
-4. **Portability.** Skills assemble into packs and get vendored from
-   project to project — this is how whole methodologies spread.
+1. **Loading on demand.** The full instruction enters the context when the skill is used. The description used to pick the skill can stay in the catalog of available procedures.
+2. **Choice of invocation.** The user can invoke the skill by name. If the tool supports automatic selection, the description should explain which tasks the procedure applies to.
+3. **Versioning.** The team keeps the skill in git and discusses process changes in review.
+4. **Portability.** A set of skills can be carried between projects and adapted to local rules.
 
-The goal of the packaging is **predictability**: the agent walks the same
-*process* every run, even if the outputs differ. The writing techniques
-serve it: steps with checkable completion criteria ("every modified model
-accounted for", not "produce a list"); reference pushed into sibling files
-and loaded on demand; leading words — compact terms the model already
-knows, on which a whole region of behavior is hung.
+Give every step a checkable result. For example, a release step should confirm that the migrations ran on a test database. Move reference details into separate files so the agent reads them as needed.
 
-The boundary with project memory is simple: **a rule goes into memory, a
-procedure into a skill**. "Commits in English" is a rule — it is needed
-always. "How we release" is a procedure — it is needed on demand.
+**Keep standing rules in project memory, and load procedures through skills.** The commit-language rule is needed across many tasks. The detailed release order is needed while a version is being shipped.
 
 ## Structure
 
+The agent first receives a catalog of names and descriptions. The full procedure and the reference material enter the context as needed.
+
 ```mermaid
 ---
-title: a rule goes into project memory, a procedure into a skill
+title: the full instruction loads after the skill is chosen
+config:
+  sequence:
+    mirrorActors: false
+    width: 130
+    height: 45
+    actorMargin: 35
+    messageMargin: 28
 ---
-flowchart LR
-  prompts["A procedure in prompts<br/>re-explained every session<br/>the wording drifts<br/>runs differently each time"]:::warn
-  skill["SKILL.md<br/>a name + a trigger description<br/>steps with completion criteria<br/>reference in sibling files, loaded on demand<br/>in git: review, versions, sharing"]:::accent
-  manual["/name<br/>the developer, by command;<br/>zero context cost"]
-  auto["auto-invocation<br/>the agent, by triggers;<br/>the description always loaded"]
-  packs["skill packs<br/>whole methodologies vendored into a project as a set"]:::muted
-  prompts -- "packaged once" --> skill
-  skill --> manual
-  skill --> auto
-  skill -.- packs
+sequenceDiagram
+  participant A as Agent
+  participant C as Skill catalog
+  participant F as Skill files
+  C-->>A: Names + descriptions
+  Note over A,C: Chosen by description<br/>or invoked explicitly
+  A->>F: Read SKILL.md
+  F-->>A: Steps + completion criteria
+  A->>A: Run the procedure
+  opt Reference needed
+    A->>F: Read the needed file
+    F-->>A: Reference for this step
+  end
+  A->>A: Check the result
 ```
 
-On the left, a procedure's life before packaging: re-explanation in every
-session and drift. In the center, the skill: a name, a trigger description,
-steps with completion criteria, reference in sibling files — all of it in
-git, edited through review. On the right, the two ways to invoke: the
-developer by name with a command, or the agent by the description's
-triggers. At the bottom, the packs: skills travel between projects as
-ready-made sets.
+The procedure is stored in git and goes through review. On invocation the agent reads its current version and opens the sibling files through links in the instruction. The set of descriptions occupies the context before any skill is chosen, so it has to be kept compact too.
 
 ## Participants / Components
 
-- **The skill** — `SKILL.md` plus its sibling reference files; one
-  procedure — one skill.
-- **The trigger description** — determines invocation: a human-facing
-  one-liner for the user mode, a trigger list for the model mode.
-- **The developer** — the author and editor: notices a recurring
-  procedure, packages it, prunes it.
-- **The agent** — executes the skill as a process: step by step, to the
-  completion criteria.
-- **The pack** — a set of skills vendored into a project: a methodology as
-  a directory of files.
+- **The skill** holds one procedure in a _SKILL.md_ and related materials.
+- **The description** explains when to apply the procedure.
+- **The developer** writes, checks, and updates the instructions.
+- **The agent** carries out the steps and checks the completion criteria.
+- **The pack** bundles related skills for installation into a project.
 
 ## When to use
 
-- A procedure has repeated two or three times — the same trigger as for
-  project memory, only for "how to do" rather than "what is true".
-- The procedure must run identically for everyone and always: releases,
-  reviews, triage, migrations.
-- You want this book's patterns to be invocable: the session handoff, TDD,
-  triage, and the investigation map package into skills literally.
+- The developer explains the same procedure again and again.
+- The team needs a consistent order for releases, reviews, or triage.
+- One of this book's patterns has to be applied regularly.
 
-Don't package the one-off: a skill invoked once is overhead on a file
-nobody will find a month later.
+For a one-off task a dedicated skill usually creates extra work maintaining the file.
 
 ## Consequences and trade-offs
 
-- ➕ Predictability: the procedure runs as the same process in every
-  session and for every team member.
-- ➕ The context stays free: unlike memory, a skill costs nothing until
-  invoked; the window is spent only on the procedure that's needed.
-- ➕ Procedures become code: review, versions, change history, sharing as a
-  pack.
-- ➖ Maintenance: skills sediment — stale layers pile up because adding
-  feels safe and removing feels risky. Without pruning, a pack degrades.
-- ➖ User-invoked skills tax the developer's memory: you are the index.
-  When there are more skills than you can remember, you need a router skill
-  that knows the others.
-- ➖ Model-invoked descriptions eat context always: handing out
-  auto-invocation generously is the same bloated context through a side
-  door.
+- ➕ Everyone gets a consistent version of the procedure.
+- ➕ The full instruction loads only when needed.
+- ➕ Process changes go through review and stay in the history.
+- ➖ The team has to delete stale steps and re-check the procedure after the project changes.
+- ➖ The user has to find the right skill among the available ones.
+- ➖ A large catalog of descriptions also occupies the context.
 
 ## Implementation
 
-1. Catch the trigger: the procedure is being explained for the second
-   time — time to package.
-2. Create `SKILL.md` with frontmatter (name, description) and a body: the
-   steps in execution order, each with a checkable completion criterion.
-3. Choose the invocation mode. The default is user-invoked: fired by name,
-   zero context cost. Model-invoked — only if the agent must reach the
-   skill itself; then the description is written as a trigger list.
-4. Push reference into sibling files and link them from the steps — they
-   load only when their moment comes (see
-   [Context Engineering](context-engineering.md): its on-demand principle
-   in miniature).
-5. Hunt for leading words: one compact term ("tracer", "fog of war",
-   "red") anchors behavior more cheaply than a paragraph.
-6. Prune regularly: check every line for relevance, delete hollow
-   sentences whole. Unpruned skills sediment.
-7. When they multiply — set up a router: one user-invoked skill that lists
-   the others and when to reach for each.
-8. Don't invent a pack from scratch: [Superpowers](superpowers.md) and
-   [Matt Pocock's skills](matt-pocock-skills.md) are ready methodologies in
-   skill form; vendor and adapt.
+1. Pick a procedure you keep having to explain again.
+2. Create a _SKILL.md_ with a name, a purpose, steps, and their completion criteria.
+3. Decide how it is invoked. In the description, state which tasks the skill is needed for rather than summarizing its contents: the agent uses the description to decide whether to load the procedure.
+4. Move reference material into sibling files and link to it from the steps that need it (see [Context Engineering](context-engineering.md)).
+5. Use consistent process terms and explain them where they affect an action.
+6. Test the procedure on real tasks and delete stale instructions.
+7. Build up a "Gotchas" section in the skill from the mistakes the agent made while following it. These entries hold what the agent does not know without the skill.
+8. For a large set, add an index that helps pick the right skill.
+9. If needed, adapt ready-made procedures from [Superpowers](superpowers.md) or [Matt Pocock's skills](matt-pocock-skills.md).
 
 ## Example
 
-Every service release, the developer dictates the same paragraph to the
-agent: build the changelog from commits since the last tag, bump the
-version, check migrations, run the smoke set, create the tag and the
-release. Once a month the paragraph mutates — and the releases come out
-slightly different.
+Every release of a service involves a changelog, a version bump, a migration check, a smoke test, and creating the release. The developer wants to save this order so they don't have to reconstruct it from memory.
 
-The procedure is packaged into `.claude/skills/release/SKILL.md`:
+They write the procedure into _.claude/skills/release/SKILL.md_.
 
 ```markdown
 ---
@@ -182,61 +121,36 @@ disable-model-invocation: true
    a Conventional Commit. Criterion: every commit is either in the
    changelog or explicitly discarded as housekeeping.
 2. Bump the version by semver based on the changelog's contents.
-3. Check for unapplied migrations — there must be none.
+3. On a separate test database, restore the previous release's schema and apply the new migrations. Attach the run output and the post-migration data check.
 4. Run the smoke set: make smoke. Criterion: green output attached.
 5. Tag and release with the changelog in the description.
 ```
 
-Now a release is `/release`. A month later the team decides to add a check
-for unclosed feature flags — that's a one-line pull request to SKILL.md,
-not a broadcast of "now also explain this to your agent".
+Now the developer invokes `/release`. When the team adds a check for unclosed feature flags, it changes the skill through a pull request. The following runs get the new version of the instruction.
 
-That the pattern is meta shows in this very book: the session handoff, TDD,
-triage, the investigation map, and the prototype are covered in chapters as
-patterns — and all five exist in Matt Pocock's pack as invocable skills.
+On the same principle, Matt Pocock's pack saves the procedures for session handoff, TDD, triage, investigation, and prototyping.
 
 ## Anti-patterns and common mistakes
 
-- **The dump skill.** The whole project memory moved into one skill, or a
-  skill "for everything": the packaging works while one procedure is one
-  skill.
-- **Everything model-invoked.** Auto-invocation on every skill — and the
-  descriptions eat every session's window: [bloated memory](bloated-claude-md.md) returned through
-  the back door.
-- **Steps without criteria.** "Do the review and fix things" with no
-  checkable "done" — the agent ends the step when it's tired, not when
-  it's finished.
-- **Sediment.** Layers of stale instructions nobody dares delete. Pruning
-  skills is the same discipline as pruning project memory.
-- **Duplication with memory.** The same rule in both CLAUDE.md and a
-  skill — two sources of truth that will diverge. A rule lives in one
-  place.
+- **The skill for everything.** Unrelated procedures in one file make it hard to pick out the steps that apply.
+- **Invocation conditions that are too broad.** The agent loads the procedure even for tasks that don't need it.
+- **Steps without criteria.** Without a checkable result the agent has a hard time telling when a step is done.
+- **Stale instructions.** Accumulated rules can steer the agent toward an action that is no longer right.
+- **A rigid script where the result is what matters.** If the order of steps does not affect the outcome, a step-by-step instruction keeps the agent from adapting to the task. Set the goal and the constraints, and keep steps where the order matters.
+- **Duplicated rules.** Copies in memory and in a skill can diverge. Keep a rule in one place and link to it.
 
 ## Known uses
 
-- **Claude Code** — skills as the mechanism: `SKILL.md` in
-  `.claude/skills/`, invocation modes via `disable-model-invocation`,
-  arguments, plugins as packs; bundled skills like `/code-review` are the
-  same pattern from the vendor.
-- **Superpowers** — a whole SDD methodology shipped as a skill pack:
-  brainstorming, planning, TDD implementation by subagents, review.
-- **Matt Pocock's skills** — a pack with a router and the *writing great
-  skills* meta-skill — a reference on writing the skills themselves:
-  predictability, invocation modes, completion criteria, leading words.
-- **The AGENTS.md ecosystem** — team procedure catalogs in other tools:
-  from Cursor rules to custom commands in various agents; the format
-  differs, the pattern is the same.
+- **Claude Code** supports _SKILL.md_ in _.claude/skills/_, arguments, and invocation control via `disable-model-invocation`.
+- **The Claude Code team** [describes](https://x.com/trq212/status/2033949937936085378) how it writes its own skills. The description serves as the invocation condition for the model. The gotchas section grows as new failures appear. Instead of a step-by-step script, the skill sets a goal and constraints.
+- **Codex** supports skills and a built-in `$skill-creator` helper. [OpenAI's guide](https://learn.chatgpt.com/guides/best-practices) advises extracting a skill from a process that already works and limiting it to a single task.
+- **Superpowers** combines planning, TDD, implementation, and review into a set of skills.
+- **Matt Pocock's skills** include an index of procedures and the [writing-for-agents](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md) guide to writing instructions for agents.
+- **Other coding agents** also support saved procedures, although the format and loading rules differ.
 
 ## Related patterns
 
-- [Project Memory](claude-md-memory.md) — the paired pattern with a clean
-  boundary: a rule goes into memory (needed always), a procedure into a
-  skill (needed on demand); skills are the main cure for bloated memory.
-- [Context Engineering](context-engineering.md) — a skill is on-demand
-  loading in its pure form: zero tokens before invocation, the full
-  instruction after.
-- [Session Handoff](handoff.md), [TDD with an Agent](tdd-with-agent.md),
-  [Issue Triage](triage-state-machine.md), and the
-  [Investigation Map](wayfinder.md) — this book's patterns that exist in
-  real packs precisely as skills: packaging is their native form.
-- [Bloated Memory](bloated-claude-md.md) — the anti-pattern skills cure: procedures moved out of memory stop loading into every session.
+- [Project Memory](claude-md-memory.md) holds the standing rules that procedures refer to.
+- [Context Engineering](context-engineering.md) explains loading instructions on demand.
+- [Session Handoff](handoff.md), [TDD with an Agent](tdd-with-agent.md), [Issue Triage](triage-state-machine.md), and the [Investigation Map](wayfinder.md) can be packaged as repeatable skills.
+- [Bloated Memory](bloated-claude-md.md) describes an overloaded memory file that is relieved by moving procedures out into skills.

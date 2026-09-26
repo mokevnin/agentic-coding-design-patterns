@@ -2,18 +2,14 @@
 group: context
 status: draft
 related: [claude-md-memory, domain-context-file, progress-file, handoff, spec-driven-development, bloated-claude-md]
-source_rev: 3120a142aaac8f8f3c416ab35fd2871419ec7f84
+source_rev: 58f57eb48a3a03000812870279cef64a7847f4d8
 ---
 
 # Context Engineering
 
 ## Intent
 
-Treat the agent's context window as a finite resource: deliberately curate the
-smallest set of high-signal tokens instead of dumping into the session
-everything that might come in handy. This is the overview chapter of the
-section: it sets the vocabulary — the window, the attention budget, the layers
-of context — that the other context patterns build on.
+Select context for the current task and account for the limited size of the agent's window. The chapter explains how to pick information, load it as needed, and preserve the state of the work between sessions.
 
 ## Also known as
 
@@ -21,227 +17,128 @@ Context engineering.
 
 ## Problem
 
-Intuition says: the more the agent knows, the better it works. Hence the habit
-of pasting whole files into the prompt, logs from start to finish, and
-instructions for every occasion. But the context window is not a hard drive —
-it is working memory, and it behaves counterintuitively:
+A developer may paste the whole CI log into the prompt, hoping to give the agent more information. But the relevant error takes up only a few lines of it. The rest of the output occupies the window and makes it harder to find the cause of the failure. Context management starts with selecting the data for a specific step of the work.
 
-- **Context rot.** As the number of tokens in the window grows, the model's
-  ability to accurately recall what is in it degrades. The effect reproduces
-  on every model — only the severity differs.
-- **Attention budget.** A transformer maintains pairwise relationships between
-  all tokens in the window, and it was trained mostly on short sequences. The
-  longer the context, the thinner attention is spread across it: every
-  unnecessary token spends budget the important ones will lack.
-- **Context accumulates on its own.** The agent works in a loop: every tool
-  call adds results to the window — listings, diffs, logs. By the end of a
-  long session the window is full of spent noise, and the rule stated at the
-  beginning has been pushed to the margins of attention.
+**Context rot** shows up when the model makes worse use of information in a long window. The size of the effect depends on the model and the task, so the window's capacity by itself does not guarantee an accurate answer. The window has an **attention budget**. The term describes the practical problem of selecting the information the model must take into account at the same time. For example, the rule for running tests can get lost among logs that are already spent. The agent adds to the context with every tool call. If you keep all the listings and check results, by the end of the session they will take up the space needed for the next decision.
 
-Prompt engineering does not help here: it optimizes the wording of a single
-instruction, while the problem is *what set of information* lands in the
-window on each next step of the loop — and what stays there.
+The wording of the prompt solves only part of the problem. The developer also needs to decide what information the agent will see at each step and what it will keep after the step is done.
 
 ## Solution
 
-Change the question from "how do I word the prompt" to "what will the model
-see at this moment, and why exactly that". The discipline's guiding principle,
-from the Anthropic article: *the smallest set of high-signal tokens that
-maximizes the likelihood of the desired outcome.*
+Before the next action, find out what the agent needs to know to carry it out. The Anthropic article describes this approach as finding the smallest set of high-signal information that is enough for the desired outcome.
 
-Context is built out of layers, and each has its own management technique:
+How you manage context depends on how long the information lives.
 
-1. **The persistent layer** — what the agent must know in every session: the
-   project's rules and the domain's language. It lives in repository files and
-   loads automatically instead of being retold in the conversation.
-2. **The task layer** — the code and data of the specific task. Don't preload
-   everything: give the agent paths and links and let it pull in what it needs
-   itself (just-in-time). File names, directory structure, and timestamps are
-   signals in their own right.
-3. **The state layer** — what accumulates as the work goes on: decisions,
-   progress, discarded hypotheses. It gets moved out of the window — into
-   notes, a progress journal, a handoff document — and brought back as needed.
-4. **Instructions and examples** — rules at the right "altitude": not rigid
-   case-by-case logic and not a vague "write good code", but strong
-   heuristics; instead of enumerating every edge case, a few canonical
-   examples.
+1. **The persistent layer** holds the project's rules and the domain's language. Keep them in repository files and load them into new sessions.
+2. **The task layer** holds the relevant code and data. Give the agent paths and links so it reads them as needed (just-in-time).
+3. **The state layer** preserves decisions made, progress, and hypotheses already checked. Record them in a journal and a handoff document so the next session can continue the work.
+4. **Instructions and examples** help choose actions. Write verifiable rules and show examples of applying them to typical cases.
 
-Minimal does not mean short: if stable behavior takes a page of rules, then a
-page it is. Excess is whatever doesn't change the agent's behavior yet spends
-its attention.
+Cutting helps as long as the agent keeps the information the decision depends on. If stable behavior takes a page of rules, keep it. Remove text that occupies the context without helping to complete the task.
 
 ## Structure
 
+The context window receives information from several sources. To continue the work, decisions are saved separately from the conversation history.
+
 ```mermaid
 ---
-title: the smallest set of high-signal tokens
+title: files preserve state between context windows
+config:
+  flowchart:
+    rankSpacing: 30
 ---
-flowchart LR
-  persistent["persistent layer<br/>CLAUDE.md · CONTEXT.md<br/>loaded every session"]:::accent
-  task["task layer (just-in-time)<br/>paths and links instead of whole files"]
-  subgraph window["Context window — the attention budget is limited"]
-    direction TB
-    sys["system prompt"]
-    mem["project memory · domain vocabulary"]
-    hist["conversation history"]
-    tools["tool results"]
-  end
-  external["external state<br/>progress journal · handoff<br/>outlives window and session"]:::accent
-  persistent --> window
-  task --> window
-  window -- "moved out" --> external
-  external -. "back condensed, next session" .-> window
-  window -. "compaction: deliberately summarize and continue" .-> window
+flowchart TB
+  rules@{ shape: doc, label: "Rules and vocabulary" }
+  files@{ shape: docs, label: "Task code and data" }
+  current["Current window<br/>instructions · conversation · results"]:::accent
+  saved@{ shape: doc, label: "Progress and decisions" }
+  next["Next session's window"]:::accent
+  rules -- "at startup" --> current
+  files -- "as needed" --> current
+  current -- "write" --> saved
+  saved -- "read at startup" --> next
+  current -. "compress history into a summary" .-> current
 ```
 
-At the center is the context window with its attention budget. On the left,
-what *enters* the window: the persistent layer (project memory and the domain
-vocabulary) loads every session, while the task layer is pulled in on demand —
-by paths and links, not by preloading. On the right, what gets *moved out*:
-the state of long-running work settles into a progress journal and a handoff
-document and returns to the new session already condensed. The dashed loop on
-top is compaction: when the window approaches its limit, its contents are
-deliberately summarized and the cycle continues.
+Persistent instructions are loaded into the next session as well; it reads the task's code as needed. The progress journal and the handoff keep decisions outside the window. The dashed loop shows history compression within the current session: spent tool results give way to a short summary.
 
 ## Participants / Components
 
-- **Developer** — the context curator: decides what lives in the persistent
-  layer, what is pulled in on demand, what is moved out of the window.
-- **Agent** — fills the window itself: reads files by path, takes notes,
-  updates external state.
-- **Context window** — the finite resource: tokens compete for the model's
-  attention budget.
-- **Persistent context files** — project memory and the domain vocabulary;
-  read every session.
-- **External state** — the progress journal and handoff documents; they
-  outlive the window and the session.
+- **Developer** decides which information is needed all the time and which can be read on demand.
+- **Agent** reads files, takes notes, and updates the state of the work.
+- **Context window** holds the limited amount of information available to the model at the current step.
+- **Persistent context files** store the project's rules and the domain vocabulary.
+- **External state** in the journal and handoff documents lets the work continue after the session ends.
 
 ## When to use
 
-- Always, as a background discipline — the only question is how much effort it
-  justifies at your scale of tasks.
-- Acutely — when sessions are long and the agent visibly "gets dumber" toward
-  the end: forgets rules, repeats covered ground, proposes what was already
-  rejected.
-- When the work is bigger than one context window and state has to be handed
-  over between sessions.
-- When the same explanations — conventions, terms, commands — get repeated
-  session after session.
+- The cost of reading context is noticeable relative to the size of the task.
+- By the end of a long session the agent forgets rules or repeats proposals that were already rejected.
+- When the work is bigger than one context window and state has to be handed over between sessions.
+- The developer repeats commands and conventions in every session.
 
 ## Consequences and trade-offs
 
-- ➕ The agent stays accurate longer: what matters doesn't drown in spent
-  noise.
-- ➕ Cheaper and faster: fewer tokens per model call.
-- ➕ Project knowledge is reused: a new session, another agent, and a new
-  colleague all start from the same persistent layer, not from a retelling.
-- ➖ Curation is ongoing work: the context layers have to be replenished and
-  cleaned; they won't maintain themselves.
-- ➖ A stale persistent layer is worse than none: the agent follows
-  yesterday's rules with today's confidence.
-- ➖ Over-economizing hurts quality: removing something behavior depends on is
-  easier than it seems — the agent will fill the gap with guesses.
+- ➕ It is easier for the agent to find the information needed for the current decision.
+- ➕ A smaller context reduces the cost of model calls.
+- ➕ A new session and a new colleague get the same version of the project's knowledge.
+- ➖ The developer has to regularly add to and review the context files.
+- ➖ Stale instructions can steer the agent toward a wrong decision.
+- ➖ If you cut too much, the agent will fill in the missing information with assumptions.
 
 ## Implementation
 
-1. Start minimal: a strong model and short instructions. Add rules in response
-   to observed failures, not in advance.
-2. Move the project's standing rules — conventions, commands, constraints —
-   into a memory file and keep it short.
-3. Put the domain's language — terms and accepted architectural decisions —
-   into a separate domain file: that's a different axis than "how we work".
-4. Don't paste whole files and logs into the prompt: give paths and links —
-   the agent will read what it needs, and the window won't fill up with
-   low-signal tokens.
-5. Move long-running work out of the window: a progress journal along the way,
-   a handoff document at the session boundary.
-6. Compact deliberately, not by auto-threshold: keep decisions, current state,
-   and open questions; drop spent tool results.
+1. Start with short instructions and add rules in response to observed failures.
+2. Move the project's standing commands and conventions into a memory file.
+3. Record domain terms and the reasons behind architectural decisions in separate documents.
+4. Give paths to files and logs. The agent can read the fragment it needs before making a decision.
+5. During long work, keep the progress journal up to date, and prepare a handoff document before switching sessions.
+6. When compacting the context, keep decisions, the current state, and open questions. Remove tool results that no longer affect the work.
 
-Each technique on this list has its own chapter in this section:
+The following chapters cover these techniques in detail.
 
-- [Project Memory](claude-md-memory.md) — the persistent "how we work" layer:
-  rules, conventions, and commands in a file the agent reads every session.
-- [Domain Vocabulary](domain-context-file.md) — the persistent "what words
-  mean" layer: a glossary and architectural decisions as the project's
-  canonical language.
-- [Progress Journal](progress-file.md) — a running record of state during long
-  work, from which an agent with a fresh window reconstructs the picture.
-- [Session Handoff](handoff.md) — deliberately packing the session into a
-  document at its boundary, instead of trusting auto-summarization.
+- [Project Memory](claude-md-memory.md) stores standing commands and conventions.
+- [Domain Vocabulary](domain-context-file.md) defines the project's terms and preserves the reasons behind architectural decisions.
+- [Progress Journal](progress-file.md) helps reconstruct the state of long-running work.
+- [Session Handoff](handoff.md) saves the context in a document before moving to a new window.
 
 ## Example
 
-The task: figure out why the payment gateway integration test is flaky.
+The developer needs to find out why the payment gateway integration test sometimes fails.
 
-**The naive approach.** The developer pastes the entire CI log into the
-prompt — three thousand lines — plus three test files "for context", and
-states the project rule along the way: "we don't allow sleeps in tests". The
-agent starts out confident, but the window is already half-occupied by the
-log. A dozen exchanges later the rule has been crowded out by noise — the
-agent proposes "stabilizing the test" with `sleep(5)`.
+**The naive approach.** The developer pastes three thousand lines of CI log and three test files. Along the way they add the rule "we don't allow sleeps in tests". After a few exchanges the agent proposes `sleep(5)`, even though such a delay only hides the flakiness. In a context filled with the log, the rule did not affect the choice of solution.
 
-**The engineered approach.** The sleep rule lives in the project memory
-file — no need to state it. Instead of pasted files, the prompt gives
-coordinates:
+**The engineered approach.** The sleep rule lives in the project memory. In the request, the developer points to where the test and the failed runs are.
 
-> Figure out why `tests/integration/payment_gateway_test.py` is flaky.
-> Failing runs are in the integration-tests job — look at the last three.
+> Figure out why _tests/integration/payment_gateway_test.py_ is flaky. Look at the last three failed runs in the integration-tests job.
 
-The agent pulls only the failing chunks out of the logs, reads the test and
-the adjacent code by path, and finds a race between the webhook and status
-polling. There was no time to fix it in this session — the developer closes
-it with a handoff document:
+The agent reads the failing log fragments, the test, and the related code. It finds a race between the webhook and status polling, but the session has to end before the fix. The developer asks it to save the results of the investigation.
 
-> Wrapping up. Put together a handoff: what we learned about the cause, which
-> hypotheses were ruled out, where the next session should start.
+> Put together a handoff with the cause of the failure, the hypotheses checked, and the first action for the next session.
 
-The next session starts from two screens of condensed text — not from three
-thousand lines of log and reconstruction from memory.
+The next session gets a short summary and paths to the evidence. The agent can start by fixing the race it found.
 
 ## Anti-patterns and common mistakes
 
-- **A bloated memory file.** The persistent layer turns into a dump of
-  hundreds of rules — and the agent ignores half of them, because the
-  important is indistinguishable from the noise. A mistake so common it gets
-  [its own chapter](bloated-claude-md.md) in the anti-patterns section.
-- **"I'll paste it whole, just to be safe."** Whole files and logs instead of
-  paths and links: the window is occupied by low-signal tokens before the work
-  even starts.
-- **Silent auto-compaction.** Trusting the summarization of important
-  decisions to an auto-threshold — the decisions get thrown out along with
-  the noise. Compaction is a deliberate move by the developer, and at the
-  session boundary — a full handoff.
-- **Economizing on the necessary.** Minimal does not mean short: remove from
-  the context what behavior depends on, and the agent will fill the gap with
-  guesses — confident and wrong.
+- **A bloated memory file.** Among hundreds of rules it is harder for the agent to pick out the applicable instructions. This mistake is covered in the [Bloated Memory](bloated-claude-md.md) chapter.
+- **"I'll paste it whole, just to be safe."** Full logs occupy the window before the investigation begins. Pass paths and specify which fragment is needed.
+- **Silent auto-compaction.** Decisions can be lost during automatic compaction. Check the summary and prepare a handoff before switching sessions.
+- **Correcting on top of a failed attempt.** A reply like "that didn't work, try something else" leaves the failed approach and the argument about it in the window. Rewind the conversation to the point before the attempt and repeat the request, taking into account what you learned.
+- **Economizing on the necessary.** If you remove information the decision depends on, the agent will start making assumptions.
 
 ## Known uses
 
-- **Claude Code** — the persistent layer in `CLAUDE.md`, deliberate compaction
-  with the `/compact` command, subagents with clean windows for isolated
-  subtasks.
-- **Anthropic's memory tool** — structured agent notes in external memory: a
-  knowledge base accumulates across sessions without occupying the window.
-- **Anthropic's multi-agent research system** — subagents dig deep but return
-  a condensed summary of 1–2 thousand tokens: division of labor as a way to
-  protect the coordinator's window.
-- **AGENTS.md and editor rules** — the same persistent layer in other tools:
-  `.cursor/rules` in Cursor, custom instructions in GitHub Copilot.
-- The term was cemented by the Anthropic article [Effective context
-  engineering for AI
-  agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) —
-  the primary source for this chapter's principles.
+- **Claude Code** supports persistent instructions in _CLAUDE.md_, compaction via `/compact`, and separate subagent contexts.
+- **The Claude Code team** [recommends](https://claude.com/blog/using-claude-code-session-management-and-1m-context) rewinding the conversation with `/rewind` instead of correcting a failed attempt. The window keeps the files already read and one refined request. Before rewinding, you can ask the agent to briefly write down what it learned.
+- **Codex** compacts a long conversation with the `/compact` command and branches it with the `/fork` command when the work really does split into alternatives.
+- **Anthropic's memory tool** lets the agent keep structured notes outside the current window.
+- **Anthropic's multi-agent research system** uses subagents for separate lines of research. The coordinator receives short summaries of their results.
+- **AGENTS.md and editor rules** store persistent instructions in the formats of different tools.
+- The Anthropic article [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) is the source of this chapter's principles.
 
 ## Related patterns
 
-- [Project Memory](claude-md-memory.md), [Domain Vocabulary](domain-context-file.md),
-  [Progress Journal](progress-file.md), and [Session Handoff](handoff.md) —
-  the discipline's concrete techniques, one chapter each.
-- [Spec-Driven Development](spec-driven-development.md) — SDD artifacts are
-  context engineering too: a specification is curated, high-signal task
-  context that outlives the session.
-- [Four Phases](explore-plan-code-commit.md) — the exploration phase of that
-  cycle is just-in-time window filling: the agent gathers the task's context
-  itself before the plan.
-- [Bloated Memory](bloated-claude-md.md) — the anti-pattern of the persistent layer: hundreds of rules where the important is lost in the noise.
+- [Project Memory](claude-md-memory.md), [Domain Vocabulary](domain-context-file.md), [Progress Journal](progress-file.md), and [Session Handoff](handoff.md) implement individual ways of managing context.
+- [Spec-Driven Development](spec-driven-development.md) preserves the selected task context in the specification and the plan.
+- [Four Phases](explore-plan-code-commit.md) sets aside a separate exploration stage in which the agent gathers context before planning.
+- [Bloated Memory](bloated-claude-md.md) describes a persistent context layer overloaded with duplicates and outdated rules.
