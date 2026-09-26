@@ -123,7 +123,7 @@ El revisor comprueba el interceptor común. El test conserva el escenario origin
 
 - **Claude Code best practices** describen confirmar el fallo, hacer commit de los tests, implementar y comprobar el amaño.
 - **Superpowers** hace del TDD una parte obligatoria de la ejecución del plan.
-- **Las skills de Matt Pocock** usan `/tdd` con costuras de testing acordadas.
+- **Los skills de Matt Pocock** usan `/tdd` con costuras de testing acordadas.
 - **Kent Beck** describió la práctica en el libro _Test-Driven Development: By Example_.
 
 ## Patrones relacionados

@@ -13,7 +13,7 @@ Antes de cambiar de sesión, guardar el estado del trabajo en un documento de tr
 
 ## También conocido como
 
-Handoff; `/handoff` en las skills de Matt Pocock; documento de traspaso.
+Handoff; `/handoff` en los skills de Matt Pocock; documento de traspaso.
 
 ## Problema
 

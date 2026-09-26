@@ -92,7 +92,7 @@ El desarrollador fija los ejes y toma las decisiones. El resultado del ciclo sig
 3. Pide describir los defectos con las condiciones en que se manifiestan y la evidencia.
 4. Revisa la lista y elige las correcciones teniendo en cuenta las restricciones aceptadas.
 5. Pide corregir los puntos elegidos y detente tras una o dos rondas.
-6. Guarda los criterios recurrentes en un comando o una skill.
+6. Guarda los criterios recurrentes en un comando o un skill.
 7. Confirma las correcciones con tests o una [revisión independiente](writer-reviewer.md) si el cambio lo requiere.
 
 ## Ejemplo

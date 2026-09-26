@@ -118,7 +118,7 @@ La siguiente sesión recibe una búsqueda que funciona y una tarea aparte sobre 
 
 - **El harness de Anthropic para agentes de larga duración** limita al agente a la funcionalidad elegida y fija el orden para cerrar la sesión.
 - **Superpowers** divide el plan en tareas pequeñas para subagentes separados.
-- **Las skills de Matt Pocock** implementan los tickets trazadores de uno en uno mediante `/implement`.
+- **Los skills de Matt Pocock** implementan los tickets trazadores de uno en uno mediante `/implement`.
 - **Los límites WIP del kanban** acotan el volumen de trabajo sin terminar.
 
 ## Patrones relacionados

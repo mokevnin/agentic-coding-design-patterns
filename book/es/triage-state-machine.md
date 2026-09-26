@@ -13,7 +13,7 @@ Preparar las tareas entrantes para su ejecución mediante estados de triaje expl
 
 ## También conocido como
 
-Triage state machine, máquina de estados de triaje; `/triage` en las skills de Matt Pocock.
+Triage state machine, máquina de estados de triaje; `/triage` en los skills de Matt Pocock.
 
 ## Problema
 
@@ -127,7 +127,7 @@ Ante una solicitud repetida sobre la personalización de los correos, el agente 
 
 ## Usos conocidos
 
-- **Las skills de Matt Pocock** implementan los estados, los briefs y la base de rechazos mediante `/triage`.
+- **Los skills de Matt Pocock** implementan los estados, los briefs y la base de rechazos mediante `/triage`.
 - **El bug triage clásico** usa un rol dedicado a preparar los bugs entrantes para el trabajo.
 - **Las automatizaciones de GitHub** ayudan a etiquetar el flujo, pero necesitan comprobaciones adicionales para preparar un brief completo.
 

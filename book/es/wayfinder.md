@@ -13,7 +13,7 @@ Organizar un trabajo grande e incierto como un mapa de preguntas de investigaci�
 
 ## También conocido como
 
-Wayfinder, wayfinding; la skill `/wayfinder` del paquete de Matt Pocock.
+Wayfinder, wayfinding; el skill `/wayfinder` del paquete de Matt Pocock.
 
 ## Problema
 
@@ -124,7 +124,7 @@ Al elegir un periodo de transición con doble escritura, aparecen preguntas sobr
 
 ## Usos conocidos
 
-- **Las skills de Matt Pocock** implementan el mapa, los tipos de preguntas y el orden de trabajo mediante `/wayfinder`.
+- **Los skills de Matt Pocock** implementan el mapa, los tipos de preguntas y el orden de trabajo mediante `/wayfinder`.
 - **Dual-track agile** separa la exploración de soluciones de la entrega del producto.
 - **Las tareas spike de XP** comprueban preguntas técnicas con experimentos cortos.
 
