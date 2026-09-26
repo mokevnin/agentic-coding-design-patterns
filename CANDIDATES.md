@@ -128,6 +128,7 @@ article per framework.
 | bloated-claude-md | done | An over-specified memory file — the agent ignores half of it because rules get lost in the noise. Inverse of `claude-md-memory`. | [cc-bp] |
 | vibe-coding | done | Describe a goal, paste back whatever compiles; fine for throwaways, a trap on real/existing codebases. | [speckit] |
 | one-shotting | done | Expecting a whole feature from a single prompt instead of an iterative, verified loop. Primary sources confirmed: the one-shot attempt quote in [harness] plus the trust-then-verify gap in [cc-bp]. | [harness], [cc-bp] |
+| private-agent-memory | candidate | The agent writes its own persistent notes about the project into memory outside the repository (developer machine or vendor side); conventions learned from one developer's corrections never reach teammates, other tools, or review, and age unnoticed. Remedy: project knowledge goes to reviewed repo files, agent memory keeps personal preferences only, disable or redirect it per project where the tool allows. Conditional: may fold into `claude-md-memory` as a shared-vs-personal memory section. Tool-neutral: Claude Code auto memory, Windsurf Memories, Copilot Memory are known uses, not the subject. | [cc-mem], [ws-mem], [gh-mem], [sg-memory] |
 | approval-fatigue | candidate | Requiring confirmation for every routine action trains the developer to approve mechanically; define bounded permissions and reserve human decisions for meaningful risk boundaries. Complements `executable-guardrails` by explaining how excessive interruptions undermine oversight. | [aipb-fatigue] |
 | self-confirming-tests | candidate | The agent calculates expected results through the same production logic under test, so implementation errors appear on both sides of the assertion. Require an independent oracle or reviewed expectations. Unlike `premature-success`, the failure is circular evidence even when the suite genuinely ran; may become a section of TDD or approved fixtures. | [mf-tdd-loop] |
 
@@ -219,6 +220,15 @@ The [Böckeler research notes](research/fowler-bockeler-candidates-2026-09-21.md
 - `[sdlc-failures]` — Daniel Meppiel, *Anti-Patterns and Failure Modes*, chapter 20, especially sections 20.4.4–20.4.5 — https://danielmeppiel.github.io/agentic-sdlc-handbook/handbook/ch20-anti-patterns-and-failure-modes.html
 
 The [screening notes](research/agentic-sdlc-handbook-2026-09-21.md) record two candidate adaptations, additions to existing chapters, and evidence limits. The handbook is practitioner guidance, not independent validation of universal loading behavior, retry thresholds, or productivity gains. Its package-manager and orchestration architecture is broader than this book's developer-workflow scope.
+
+### Agent memory follow-up, 2026-09-26
+
+- `[ws-mem]` — Windsurf (Devin Desktop), *Cascade Memories*; auto-generated, stored in `~/.codeium/windsurf/memories/`, not committed — https://docs.devin.ai/desktop/cascade/memories
+- `[gh-mem]` — GitHub Docs, *About GitHub Copilot Memory*; repository-scoped, shared, citation-validated, 28-day expiry, stored GitHub-side — https://docs.github.com/en/copilot/concepts/agents/copilot-memory
+- `[sg-memory]` — Softwareguru, *Coding Agents Do Not Need Personal Memory*, 2026-05-15; opinion piece arguing the repository is the agent's memory — https://softwareguru.substack.com/p/coding-agents-do-not-need-personal
+- `[acp-grooming]` — svetkis, *Memory Grooming*, Augmented Coding Patterns; supporting material for `bloated-claude-md` — https://ai-coding-patterns.dev/patterns/memory-grooming/
+
+The [screening notes](research/agent-memory-2026-09-26.md) record the candidate boundary, per-tool storage and controls, and evidence limits. No source measures the cost of private memory; the case rests on where the tools store it.
 
 ### Existing sources
 
