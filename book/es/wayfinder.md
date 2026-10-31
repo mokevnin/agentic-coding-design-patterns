@@ -65,6 +65,31 @@ flowchart TB
 
 La sesión elige un ticket disponible. Su respuesta actualiza el mapa y puede abrir las siguientes preguntas. El ciclo termina cuando se alcanza el objetivo de la investigación.
 
+El segundo diagrama sigue a un solo ticket.
+
+```mermaid
+---
+title: un ticket cerrado desbloquea los que dependen de él
+---
+stateDiagram-v2
+  direction TB
+  state "bloqueado" as blocked
+  state "frontera" as frontier
+  state "reclamado por una sesión" as claimed
+  state "cerrado" as closed
+  class blocked muted
+  class frontier accent
+  [*] --> blocked: tiene dependencias abiertas
+  [*] --> frontier: sin dependencias
+  blocked --> frontier: dependencias cerradas
+  frontier --> claimed: una sesión lo reclama
+  claimed --> frontier: la sesión se interrumpió
+  claimed --> closed: respuesta en el ticket, conclusión en el mapa
+  closed --> [*]
+```
+
+Un ticket llega a la frontera cuando se cierran sus dependencias. Una sesión interrumpida lo devuelve allí, y las respuestas ya cerradas siguen en el mapa.
+
 ## Participantes / Componentes
 
 - **El mapa** guarda un estado breve de la investigación y los enlaces.

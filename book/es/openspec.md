@@ -41,22 +41,29 @@ El perfil ampliado incluye `/opsx:new`, `/opsx:continue`, `/opsx:ff`, `/opsx:ver
 
 Al terminar un cambio, ejecuta `/opsx:archive` y confirma la sincronización de deltas propuesta. Si las especificaciones ya se actualizaron con `/opsx:sync`, no hace falta sincronizar de nuevo. El archivado conserva los artefactos del cambio; el orden respecto al merge lo decide el equipo en su propio proceso.
 
-El diagrama muestra cómo un paquete de cambio conecta la implementación con la descripción permanente del sistema.
+El diagrama sigue un cambio desde la propuesta hasta el archivo.
 
 ```mermaid
 ---
-title: el delta actualiza la especificación permanente tras revisar el cambio
+title: el delta llega a la especificación permanente al sincronizar
 ---
-flowchart TB
-  base["Especificación permanente"] --> delta["Delta propuesto"]
-  delta --> review["El desarrollador revisa la propuesta"]
-  review --> code["Implementación y verificación de escenarios"]
-  code --> sync["Sincronización acordada del delta"]:::accent
-  sync --> updated["Especificación actualizada"]
-  sync --> archive["Paquete de cambio en el archivo"]
+stateDiagram-v2
+  direction TB
+  state "propuesta" as proposed
+  state "implementación" as applying
+  state "delta en la especificación permanente" as synced
+  state "archivado" as archived
+  class synced accent
+  [*] --> proposed: /opsx:propose
+  proposed --> applying: la revisaste · /opsx:apply
+  applying --> proposed: los requisitos cambiaron · /opsx:update
+  applying --> synced: /opsx:sync
+  applying --> archived: /opsx:archive con sincronización
+  synced --> archived: /opsx:archive
+  archived --> [*]
 ```
 
-Aquí la especificación se guarda aparte de la propuesta. La sincronización traslada los requisitos aceptados desde el delta, y el archivo guarda la explicación y la historia del cambio.
+Mientras el cambio no se sincroniza, los requisitos aceptados viven en el delta dentro del paquete, y la especificación permanente describe el sistema tal como es. La sincronización se hace por separado o al archivar, y el archivo guarda la explicación y la historia del cambio.
 
 La sintaxis depende del agente. Codex puede mostrar `$openspec-propose`, mientras que Cursor y GitHub Copilot usan la forma `/opsx-propose`. `openspec init` imprime la sintaxis exacta de la herramienta elegida.
 

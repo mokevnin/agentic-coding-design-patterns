@@ -65,6 +65,31 @@ flowchart TB
 
 A session picks one available ticket. Its answer updates the map and may open the next questions. The cycle ends when the investigation's goal is reached.
 
+The second diagram follows a single ticket.
+
+```mermaid
+---
+title: a closed ticket unblocks the ones that depend on it
+---
+stateDiagram-v2
+  direction TB
+  state "blocked" as blocked
+  state "frontier" as frontier
+  state "claimed by a session" as claimed
+  state "closed" as closed
+  class blocked muted
+  class frontier accent
+  [*] --> blocked: has open dependencies
+  [*] --> frontier: no dependencies
+  blocked --> frontier: dependencies closed
+  frontier --> claimed: a session claims it
+  claimed --> frontier: the session broke off
+  claimed --> closed: answer in the ticket, conclusion in the map
+  closed --> [*]
+```
+
+A ticket reaches the frontier once its dependencies are closed. A session that breaks off returns it there, and the answers already closed stay in the map.
+
 ## Participants / Components
 
 - **The map** holds a short state of the investigation and links.

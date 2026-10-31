@@ -41,22 +41,29 @@ The expanded profile adds `/opsx:new`, `/opsx:continue`, `/opsx:ff`, `/opsx:veri
 
 When you finish a change, run `/opsx:archive` and confirm the proposed delta sync. If the specifications were already updated with `/opsx:sync`, there is no need to sync again. Archiving preserves the change's artifacts; the team decides in its own process whether this happens before or after the merge.
 
-The diagram shows how a change package connects the implementation with the standing description of the system.
+The diagram follows one change from proposal to archive.
 
 ```mermaid
 ---
-title: a delta updates the standing specification after the change is reviewed
+title: a delta reaches the standing specification on sync
 ---
-flowchart TB
-  base["Standing specification"] --> delta["Proposed delta"]
-  delta --> review["Developer reviews the proposal"]
-  review --> code["Implementation and scenario checks"]
-  code --> sync["Agreed delta sync"]:::accent
-  sync --> updated["Updated specification"]
-  sync --> archive["Change package in the archive"]
+stateDiagram-v2
+  direction TB
+  state "proposal" as proposed
+  state "implementation" as applying
+  state "delta in the standing specification" as synced
+  state "archived" as archived
+  class synced accent
+  [*] --> proposed: /opsx:propose
+  proposed --> applying: you reviewed it · /opsx:apply
+  applying --> proposed: requirements changed · /opsx:update
+  applying --> synced: /opsx:sync
+  applying --> archived: /opsx:archive with sync
+  synced --> archived: /opsx:archive
+  archived --> [*]
 ```
 
-Here the specification is kept separate from the proposal. The sync carries the accepted requirements over from the delta, and the archive keeps the explanation and history of the change.
+Until the change is synced, the accepted requirements live in the delta inside the package, and the standing specification describes the system as it is. Sync runs on its own or during archiving, and the archive keeps the explanation and history of the change.
 
 The syntax depends on the agent. Codex may show `$openspec-propose`, while Cursor and GitHub Copilot use the `/opsx-propose` form. `openspec init` prints the exact syntax for the selected tool.
 

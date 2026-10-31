@@ -56,6 +56,21 @@ flowchart TB
 
 El bucle de vuelta repite el ciclo para el siguiente escenario una vez confirmado el actual.
 
+En el historial de git el mismo ciclo se ve así.
+
+```mermaid
+---
+title: el test entra en el historial antes que la corrección
+---
+gitGraph
+  commit id: "test: redirect to /login on 401" type: HIGHLIGHT
+  commit id: "fix: handle 401 in the interceptor"
+  commit id: "refactor: extract session expiry handler"
+  commit id: "test: return to the page after login" type: HIGHLIGHT
+```
+
+El test está en su propio commit antes de la corrección, así que el diff de la corrección muestra enseguida si el criterio cambió junto con el código. La siguiente rebanada vuelve a empezar con un commit del test. Los cuadrados marcan los commits de tests.
+
 ## Participantes / Componentes
 
 - **Desarrollador** fija el comportamiento esperado y aprueba los cambios de los criterios.

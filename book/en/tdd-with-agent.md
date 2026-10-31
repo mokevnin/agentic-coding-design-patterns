@@ -56,6 +56,21 @@ flowchart TB
 
 The back loop repeats the cycle for the next scenario once the current one is confirmed.
 
+In the git history the same cycle looks like this.
+
+```mermaid
+---
+title: the test lands in history before the fix
+---
+gitGraph
+  commit id: "test: redirect to /login on 401" type: HIGHLIGHT
+  commit id: "fix: handle 401 in the interceptor"
+  commit id: "refactor: extract session expiry handler"
+  commit id: "test: return to the page after login" type: HIGHLIGHT
+```
+
+The test sits in its own commit before the fix, so the fix's diff shows at once whether the criterion changed along with the code. The next slice again starts with a test commit. Squares mark the test commits.
+
 ## Participants / Components
 
 - **Developer** sets the expected behavior and approves changes to the criteria.

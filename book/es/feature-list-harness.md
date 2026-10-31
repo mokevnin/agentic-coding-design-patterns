@@ -39,26 +39,28 @@ La sesión lee el registro, elige una funcionalidad no superada, la implementa y
 
 ## Estructura
 
-En el diagrama, los requisitos se convierten en un registro antes de la implementación.
+El diagrama muestra cómo cambia el estado de una funcionalidad en el registro.
 
 ```mermaid
 ---
 title: la comprobación confirma el estado de la funcionalidad
 ---
-flowchart TB
-  req["Requisitos<br/>la especificación"]:::accent
-  ledger["feature-list.json<br/>✓ crear una nota — passes<br/>✗ búsqueda por etiqueta — failing<br/>✗ archivado — failing<br/>… 84 puntos más"]
-  rules["el agente cambia solo el campo de estado;<br/>prohibido borrar o editar puntos"]:::warn
-  cycle["Ciclo de sesión<br/>1. prueba de humo<br/>2. tomar la siguiente failing<br/>3. implementar<br/>4. verificar como usuario<br/>5. cambiar el estado"]
-  regression["¿regresión? passing → failing"]:::warn
-  req -- "se despliega en el registro una vez, entero" --> ledger
-  ledger -- "funcionalidad" --> cycle
-  cycle -- "estado" --> ledger
-  ledger -.- rules
-  cycle -.- regression
+stateDiagram-v2
+  direction TB
+  state "passes: false" as failing
+  state "passes: true" as passing
+  class failing warn
+  class passing accent
+  [*] --> failing: requisitos desplegados en el registro
+  failing --> passing: el escenario de extremo a extremo pasó
+  passing --> failing: la comprobación repetida falló
+  note right of passing
+    el agente cambia solo el estado,
+    nunca el texto del punto
+  end note
 ```
 
-El agente elige de él un punto y recorre el ciclo de desarrollo con verificación. La flecha discontinua devuelve una funcionalidad a la cola si más tarde se descubre una regresión.
+Cada funcionalidad empieza con `passes: false`. El agente cambia el estado solo según el resultado de una comprobación, y una regresión la devuelve a la cola de pendientes.
 
 ## Participantes / Componentes
 

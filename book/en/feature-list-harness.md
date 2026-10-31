@@ -39,26 +39,28 @@ A session reads the ledger, picks a failing feature, implements it, and updates 
 
 ## Structure
 
-In the diagram, the requirements become a ledger before implementation.
+The diagram shows how one feature's status changes in the ledger.
 
 ```mermaid
 ---
 title: a check confirms the feature's status
 ---
-flowchart TB
-  req["Requirements<br/>the specification"]:::accent
-  ledger["feature-list.json<br/>✓ create a note — passes<br/>✗ search by tag — failing<br/>✗ archiving — failing<br/>… 84 more items"]
-  rules["the agent changes only the status field;<br/>removing or editing items is forbidden"]:::warn
-  cycle["Session cycle<br/>1. smoke test<br/>2. take the next failing one<br/>3. implement<br/>4. verify as a user<br/>5. flip the status"]
-  regression["regression? passing → failing"]:::warn
-  req -- "expanded into the ledger once, in full" --> ledger
-  ledger -- "feature" --> cycle
-  cycle -- "status" --> ledger
-  ledger -.- rules
-  cycle -.- regression
+stateDiagram-v2
+  direction TB
+  state "passes: false" as failing
+  state "passes: true" as passing
+  class failing warn
+  class passing accent
+  [*] --> failing: requirements unfolded into the ledger
+  failing --> passing: end-to-end scenario passed
+  passing --> failing: repeated check failed
+  note right of passing
+    the agent changes only the status,
+    never the item's text
+  end note
 ```
 
-The agent picks an item from it and goes through the development cycle with verification. The dashed arrow returns a feature to the queue if a regression is found later.
+Every feature starts at `passes: false`. The agent flips the status only on a check result, and a regression sends the feature back to the queue of unpassed ones.
 
 ## Participants / Components
 

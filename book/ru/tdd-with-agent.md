@@ -56,6 +56,21 @@ flowchart TB
 
 Обратная петля повторяет цикл для следующего сценария после подтверждения текущего.
 
+В истории git тот же цикл выглядит так.
+
+```mermaid
+---
+title: тест попадает в историю раньше исправления
+---
+gitGraph
+  commit id: "test: redirect to /login on 401" type: HIGHLIGHT
+  commit id: "fix: handle 401 in the interceptor"
+  commit id: "refactor: extract session expiry handler"
+  commit id: "test: return to the page after login" type: HIGHLIGHT
+```
+
+Тест лежит в отдельном коммите до исправления, поэтому diff исправления сразу показывает, менялся ли критерий вместе с кодом. Следующий слайс снова начинается с коммита теста. Коммиты тестов отмечены квадратами.
+
 ## Участники / Компоненты
 
 - **Разработчик** задаёт ожидаемое поведение и согласует изменение критериев.
