@@ -4,14 +4,20 @@ name: Dependabot auto-merge
 # required by the ruleset on `main` pass.
 on: pull_request
 
-permissions:
-  contents: write
-  pull-requests: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
 
 jobs:
   auto-merge:
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - run: gh pr merge --auto --squash "$PR_URL"
         env:
