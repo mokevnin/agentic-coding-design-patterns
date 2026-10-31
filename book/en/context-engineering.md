@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [claude-md-memory, domain-context-file, progress-file, handoff, spec-driven-development, bloated-claude-md]
+related: [agents-md-memory, domain-context-file, progress-file, handoff, spec-driven-development, bloated-agents-md]
 source_rev: 5c891bed1a1649eff17aefa24ee50ae6833b4070
 ---
 
@@ -97,7 +97,7 @@ Persistent instructions are loaded into the next session as well; it reads the t
 
 The following chapters cover these techniques in detail.
 
-- [Project Memory](claude-md-memory.md) stores standing commands and conventions.
+- [Project Memory](agents-md-memory.md) stores standing commands and conventions.
 - [Domain Vocabulary](domain-context-file.md) defines the project's terms and preserves the reasons behind architectural decisions.
 - [Progress Journal](progress-file.md) helps reconstruct the state of long-running work.
 - [Session Handoff](handoff.md) saves the context in a document before moving to a new window.
@@ -120,7 +120,7 @@ The next session gets a short summary and paths to the evidence. The agent can s
 
 ## Anti-patterns and common mistakes
 
-- **A bloated memory file.** Among hundreds of rules it is harder for the agent to pick out the applicable instructions. This mistake is covered in the [Bloated Memory](bloated-claude-md.md) chapter.
+- **A bloated memory file.** Among hundreds of rules it is harder for the agent to pick out the applicable instructions. This mistake is covered in the [Bloated Memory](bloated-agents-md.md) chapter.
 - **"I'll paste it whole, just to be safe."** Full logs occupy the window before the investigation begins. Pass paths and specify which fragment is needed.
 - **Silent auto-compaction.** Decisions can be lost during automatic compaction. Check the summary and prepare a handoff before switching sessions.
 - **Correcting on top of a failed attempt.** A reply like "that didn't work, try something else" leaves the failed approach and the argument about it in the window. Rewind the conversation to the point before the attempt and repeat the request, taking into account what you learned. This technique is covered in the [Context Forking](context-forking.md) chapter.
@@ -128,17 +128,17 @@ The next session gets a short summary and paths to the evidence. The agent can s
 
 ## Known uses
 
-- **Claude Code** supports persistent instructions in _CLAUDE.md_, compaction via `/compact`, and separate subagent contexts.
-- **The Claude Code team** [recommends](https://claude.com/blog/using-claude-code-session-management-and-1m-context) rewinding the conversation with `/rewind` instead of correcting a failed attempt. The window keeps the files already read and one refined request. Before rewinding, you can ask the agent to briefly write down what it learned.
+- **Claude Code** supports persistent instructions in _AGENTS.md_, compaction via `/compact`, and separate subagent contexts.
+- **The Claude Code team** [recommends](https://claude.com/resources/articles/using-claude-code-session-management-and-1m-context) rewinding the conversation with `/rewind` instead of correcting a failed attempt. The window keeps the files already read and one refined request. Before rewinding, you can ask the agent to briefly write down what it learned.
 - **Codex** compacts a long conversation with the `/compact` command and branches it with the `/fork` command when the work really does split into alternatives.
 - **Anthropic's memory tool** lets the agent keep structured notes outside the current window.
 - **Anthropic's multi-agent research system** uses subagents for separate lines of research. The coordinator receives short summaries of their results.
 - **AGENTS.md and editor rules** store persistent instructions in the formats of different tools.
-- The Anthropic article [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) is the source of this chapter's principles.
+- The Anthropic article [Effective context engineering for AI agents](https://www.anthropic.com/research/effective-context-engineering-for-ai-agents) is the source of this chapter's principles.
 
 ## Related patterns
 
-- [Project Memory](claude-md-memory.md), [Domain Vocabulary](domain-context-file.md), [Progress Journal](progress-file.md), and [Session Handoff](handoff.md) implement individual ways of managing context.
+- [Project Memory](agents-md-memory.md), [Domain Vocabulary](domain-context-file.md), [Progress Journal](progress-file.md), and [Session Handoff](handoff.md) implement individual ways of managing context.
 - [Spec-Driven Development](spec-driven-development.md) preserves the selected task context in the specification and the plan.
 - [Four Phases](explore-plan-code-commit.md) sets aside a separate exploration stage in which the agent gathers context before planning.
-- [Bloated Memory](bloated-claude-md.md) describes a persistent context layer overloaded with duplicates and outdated rules.
+- [Bloated Memory](bloated-agents-md.md) describes a persistent context layer overloaded with duplicates and outdated rules.

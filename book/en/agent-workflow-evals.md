@@ -161,7 +161,7 @@ Suppose the old and new instructions are each run five times on every fixture. I
 - **SWE-bench Verified** checks fixes for real GitHub issues with tests and requires that previously passing behavior not break.
 - **Claude Code regression suites** started with narrow properties such as concision and file edits, then covered more complex behavior, including over-engineering.
 
-The article [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) covers how evals are built in more detail.
+The article [Demystifying evals for AI agents](https://www.anthropic.com/research/demystifying-evals-for-ai-agents) covers how evals are built in more detail.
 
 ## Related patterns
 

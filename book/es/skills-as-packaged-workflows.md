@@ -1,7 +1,7 @@
 ---
 group: project-org
 status: draft
-related: [claude-md-memory, context-engineering, handoff, tdd-with-agent, bloated-claude-md]
+related: [agents-md-memory, context-engineering, handoff, tdd-with-agent, bloated-agents-md]
 source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
@@ -19,7 +19,7 @@ Skills, slash commands, comandos personalizados, packaged workflows.
 
 En cada release vuelves a explicarle al agente el orden de preparación. Un día te olvidas de mencionar la revisión de migraciones, y el agente publica la versión sin ella.
 
-Si el procedimiento solo vive en la conversación, lo completa que sea cada ejecución depende del nuevo prompt. Un colega puede describir el mismo proceso de otra manera y obtener otro orden de acciones. Trasladar todo el procedimiento a la [memoria del proyecto](claude-md-memory.md) lo carga también en las sesiones que no tienen nada que ver con el release.
+Si el procedimiento solo vive en la conversación, lo completa que sea cada ejecución depende del nuevo prompt. Un colega puede describir el mismo proceso de otra manera y obtener otro orden de acciones. Trasladar todo el procedimiento a la [memoria del proyecto](agents-md-memory.md) lo carga también en las sesiones que no tienen nada que ver con el release.
 
 ## Solución
 
@@ -142,7 +142,7 @@ Con el mismo principio, el pack de Matt Pocock guarda los procedimientos de tras
 ## Usos conocidos
 
 - **Claude Code** admite _SKILL.md_ en _.claude/skills/_, argumentos y la configuración de la invocación mediante `disable-model-invocation`.
-- **El equipo de Claude Code** [describe](https://x.com/trq212/status/2033949937936085378) cómo escribe sus skills. La descripción sirve como condición de invocación para el modelo. La sección de trampas se amplía a medida que aparecen fallos nuevos. En lugar de un guion paso a paso, el skill fija el objetivo y las restricciones.
+- **La documentación de Claude Code** [describe](https://code.claude.com/docs/en/skills) la selección de skills por su descripción y la configuración de su invocación. La instrucción completa se carga al usar el skill.
 - **Codex** admite skills y el asistente integrado `$skill-creator`. La [guía de OpenAI](https://learn.chatgpt.com/guides/best-practices) aconseja extraer el skill de un proceso que ya funciona y limitarlo a una sola tarea.
 - **Superpowers** reúne la planificación, el TDD, la implementación y la revisión en un conjunto de skills.
 - **Los skills de Matt Pocock** incluyen un índice de procedimientos y la guía [writing-for-agents](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md) sobre cómo escribir instrucciones para agentes.
@@ -150,7 +150,7 @@ Con el mismo principio, el pack de Matt Pocock guarda los procedimientos de tras
 
 ## Patrones relacionados
 
-- [Memoria del proyecto](claude-md-memory.md) guarda las reglas permanentes a las que remiten los procedimientos.
+- [Memoria del proyecto](agents-md-memory.md) guarda las reglas permanentes a las que remiten los procedimientos.
 - [Ingeniería de contexto](context-engineering.md) explica la carga de instrucciones bajo demanda.
 - [Traspaso de sesión](handoff.md), [TDD con agente](tdd-with-agent.md), [triaje](triage-state-machine.md) y el [mapa de investigación](wayfinder.md) pueden empaquetarse como skills repetibles.
-- [Memoria hinchada](bloated-claude-md.md) describe un archivo de memoria sobrecargado que se descarga sacando los procedimientos a skills.
+- [Memoria hinchada](bloated-agents-md.md) describe un archivo de memoria sobrecargado que se descarga sacando los procedimientos a skills.

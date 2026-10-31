@@ -146,7 +146,7 @@ If the smoke test fails before any changes, the agent records the pre-existing p
 - **Dev containers and Codespaces** encode the runtime, system packages, and setup commands in versioned configuration.
 - **CI from a clean checkout** verifies that installation is reproducible without the author's local state.
 
-The approach is described in [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents).
+The approach is described in [Effective harnesses for long-running agents](https://www.anthropic.com/research/effective-harnesses-for-long-running-agents).
 
 ## Related patterns
 

@@ -132,7 +132,7 @@ If two changes constantly need each other's uncommitted results, do them sequent
 
 On a conflict, ask the agent to reconstruct the purpose of both changes from the commits, PRs, and original tasks. It should explain which requirements the combined version preserves. If the requirements are incompatible, agree on the desired behavior before continuing the integration.
 
-For example, one branch adds a request timeout and another limits the number of retries. Picking only one side can lose the other constraint. After combining them, verify both behaviors and how they work together. Even Git's automatic merge needs this check. The [resolving-merge-conflicts](https://github.com/mattpocock/skills/blob/main/skills/engineering/resolving-merge-conflicts/SKILL.md) skill relies on recovering the original intent; stage only the files of the current integration and leave unrelated changes alone.
+For example, one branch adds a request timeout and another limits retries. Choosing one side can lose the other constraint. After combining them, verify both behaviors and their interaction. Even Git's automatic merge needs this check. Stage only files from the current integration, preserving unrelated changes.
 
 ## Example
 
@@ -195,7 +195,7 @@ Local servers need different ports, for example `PORT=4101` and `PORT=4102`, and
 - **Anthropic's C compiler experiment** used separate containers and agent clones, task locks, and synchronization through Git.
 - **Git worktree** supports several working trees of one repository without full clones.
 
-The examples are described in [Claude Code best practices](https://code.claude.com/docs/en/best-practices), the [C compiler experiment](https://www.anthropic.com/engineering/building-c-compiler), and the [Git worktree documentation](https://git-scm.com/docs/git-worktree).
+The examples are described in [Claude Code best practices](https://code.claude.com/docs/en/best-practices), the [C compiler experiment](https://www.anthropic.com/research/building-c-compiler), and the [Git worktree documentation](https://git-scm.com/docs/git-worktree).
 
 ## Related patterns
 

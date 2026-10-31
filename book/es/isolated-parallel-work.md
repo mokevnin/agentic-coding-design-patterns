@@ -132,7 +132,7 @@ Si dos cambios necesitan constantemente los resultados sin commit del otro, hazl
 
 Ante un conflicto, pide al agente que reconstruya el propósito de ambos cambios a partir de los commits, los PR y las tareas originales. Debe explicar qué requisitos conserva la versión combinada. Si los requisitos son incompatibles, acuerda el comportamiento deseado antes de continuar la integración.
 
-Por ejemplo, una rama añade un tiempo límite a las peticiones y otra limita el número de reintentos. Elegir solo un lado puede perder la otra restricción. Después de combinarlas, comprueba ambos comportamientos y su funcionamiento conjunto. Incluso la fusión automática de Git requiere esta comprobación. El skill [resolving-merge-conflicts](https://github.com/mattpocock/skills/blob/main/skills/engineering/resolving-merge-conflicts/SKILL.md) se basa en recuperar las intenciones originales; añade al índice solo los archivos de la integración actual y conserva los cambios ajenos.
+Por ejemplo, una rama añade un tiempo límite a las peticiones y otra limita los reintentos. Elegir un lado puede perder la otra restricción. Tras combinarlas, comprueba ambos comportamientos y su interacción. Incluso la fusión automática de Git necesita esta comprobación. Añade al índice solo los archivos de la integración actual y conserva los cambios ajenos.
 
 ## Ejemplo
 
@@ -195,7 +195,7 @@ Los servidores locales necesitan puertos distintos, por ejemplo `PORT=4101` y `P
 - **El experimento de Anthropic con un compilador de C** usó contenedores y clones separados para los agentes, bloqueos de tareas y sincronización mediante Git.
 - **Git worktree** admite varios árboles de trabajo de un mismo repositorio sin clones completos.
 
-Los ejemplos se describen en [Claude Code best practices](https://code.claude.com/docs/en/best-practices), el [experimento con el compilador de C](https://www.anthropic.com/engineering/building-c-compiler) y la [documentación de Git worktree](https://git-scm.com/docs/git-worktree).
+Los ejemplos se describen en [Claude Code best practices](https://code.claude.com/docs/en/best-practices), el [experimento con el compilador de C](https://www.anthropic.com/research/building-c-compiler) y la [documentación de Git worktree](https://git-scm.com/docs/git-worktree).
 
 ## Patrones relacionados
 

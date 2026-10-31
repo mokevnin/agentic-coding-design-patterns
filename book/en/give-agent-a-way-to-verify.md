@@ -92,7 +92,7 @@ The agent repeats the cycle of edits and checks until it succeeds, then returns 
 4. Protect the criteria from being fitted. Agree on any change to a test or weakening of a condition separately; if needed, enforce the restriction with a hook.
 5. For long autonomous work, add completion control and a review in a fresh context.
 6. Accept the work by the environment's records: the tool call log, the CI log, or the hook's result. A retelling of the result in the agent's final message does not count as evidence.
-7. Anchor the verification commands in [Project Memory](claude-md-memory.md) so the agent knows them in every session.
+7. Anchor the verification commands in [Project Memory](agents-md-memory.md) so the agent knows them in every session.
 
 In [OpenSpec](openspec.md), [Superpowers](superpowers.md), and [Matt Pocock's skills](matt-pocock-skills.md), checks are part of the implementation workflow. The specific mechanism depends on the skill set and the task's criteria.
 

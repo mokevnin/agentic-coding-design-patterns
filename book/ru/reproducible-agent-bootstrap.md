@@ -146,7 +146,7 @@ baseline: green
 - **Dev containers и Codespaces** кодируют runtime, системные пакеты и команды подготовки в версионируемой конфигурации.
 - **CI с чистого checkout** проверяет воспроизводимость установки без локального состояния автора.
 
-Подход описан в статье [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents).
+Подход описан в статье [Effective harnesses for long-running agents](https://www.anthropic.com/research/effective-harnesses-for-long-running-agents).
 
 ## Связанные паттерны
 

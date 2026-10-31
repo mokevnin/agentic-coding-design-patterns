@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [context-engineering, claude-md-memory]
+related: [context-engineering, agents-md-memory]
 source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
@@ -13,7 +13,7 @@ Record the project's terms and the reasons behind architectural decisions in the
 
 ## Also known as
 
-CONTEXT.md, domain glossary, ubiquitous language from DDD; architecture decision records (ADR).
+GLOSSARY.md, domain glossary, ubiquitous language from DDD; architecture decision records (ADR).
 
 ## Problem
 
@@ -23,13 +23,13 @@ If the agent treats them as synonyms, it will rename `Enrollment` to `Subscripti
 
 The reason for the original separation may have survived only in an old conversation. Without a record, the team has to explain it again every time someone proposes to "simplify" the model.
 
-[Project memory](claude-md-memory.md) holds working instructions. Definitions of domain concepts are better kept in a separate vocabulary and attached to the session through the memory file.
+[Project memory](agents-md-memory.md) holds working instructions. Definitions of domain concepts are better kept in a separate vocabulary and attached to the session through the memory file.
 
 ## Solution
 
 Keep a glossary and a decision log in the repository that the agent can use while working on a task.
 
-**The glossary** in _CONTEXT.md_ defines the domain's terms. A short format is enough for it.
+**The glossary** in _GLOSSARY.md_ defines the domain's terms. A short format is enough for it.
 
 - Each concept has one accepted name. Other variants are listed and marked "avoid".
 - The definition explains the meaning of the concept in one or two sentences.
@@ -49,9 +49,9 @@ In the diagram, the glossary and the decision log enter the agent's context.
 title: the vocabulary keeps the terms, ADRs explain the decisions
 ---
 flowchart LR
-  glossary["CONTEXT.md<br/>glossary: the canon + 'avoid'<br/>no implementation details"]:::accent
+  glossary["GLOSSARY.md<br/>glossary: the canon + 'avoid'<br/>no implementation details"]:::accent
   adr["docs/adr/<br/>decisions: what and why<br/>one-paragraph records"]
-  map["CONTEXT-MAP.md<br/>when there are several domains"]:::muted
+  map["GLOSSARY-MAP.md<br/>when there are several domains"]:::muted
   session["Agent session<br/>terms and code are checked against the vocabulary"]
   dev["Developer<br/>arbiter of the language"]:::accent
   glossary --> session
@@ -62,13 +62,13 @@ flowchart LR
   session -. "a settled term goes into the vocabulary immediately" .-> glossary
 ```
 
-If a term in the task diverges from the vocabulary, the agent asks the developer for clarification and saves the accepted definition. The dashed arrow shows this update. For a project with several domains, _CONTEXT-MAP.md_ indicates where the vocabularies are and how their contexts are related.
+If a term in the task diverges from the vocabulary, the agent asks the developer for clarification and saves the accepted definition. The dashed arrow shows this update. For a project with several domains, _GLOSSARY-MAP.md_ indicates where the vocabularies are and how their contexts are related.
 
 ## Participants / Components
 
-- **Glossary** (_CONTEXT.md_) keeps definitions and unwanted synonyms.
+- **Glossary** (_GLOSSARY.md_) keeps definitions and unwanted synonyms.
 - **Decision log** (_docs/adr/_) explains non-obvious architectural choices.
-- **Context map** (_CONTEXT-MAP.md_) links the vocabularies of several domains.
+- **Context map** (_GLOSSARY-MAP.md_) links the vocabularies of several domains.
 - **Developer** approves terms and resolves contradictions.
 - **Agent** checks text and code against the vocabulary and records agreed definitions.
 
@@ -93,15 +93,15 @@ For a small one-off utility, a separate vocabulary usually does not pay off.
 
 ## Implementation
 
-1. Create _CONTEXT.md_ when the first term is agreed, and _docs/adr/_ when a decision appears that needs to be explained to a future reader.
+1. Create _GLOSSARY.md_ when the first term is agreed, and _docs/adr/_ when a decision appears that needs to be explained to a future reader.
 2. For a term, write a short definition and the unwanted synonyms. Choose one name to use in the project.
 3. Add only concepts whose meaning depends on the domain.
 4. In an ADR, record the context, the decision made, and the reason for the choice. Number the files sequentially (`0001-...`, `0002-...`).
-5. Attach the vocabulary through [project memory](claude-md-memory.md). In Claude Code you can use an `@CONTEXT.md` line in CLAUDE.md for this.
+5. Attach the vocabulary through [project memory](agents-md-memory.md): put the path to _GLOSSARY.md_ in _AGENTS.md_ and state which tasks require reading it first.
 6. Ask the agent to notice contradictions in terms and record agreed definitions right after the discussion.
-7. In a project with several domains, place the vocabularies next to the modules and link them through _CONTEXT-MAP.md_.
+7. In a project with several domains, place the vocabularies next to the modules and link them through _GLOSSARY-MAP.md_.
 
-In [Matt Pocock's skills](matt-pocock-skills.md), the `domain-modeling` skill maintains CONTEXT.md and ADRs. The other skills use these documents during the interview, specification writing, and implementation.
+In [Matt Pocock's skills](matt-pocock-skills.md), the `domain-modeling` skill maintains GLOSSARY.md and ADRs. The other skills use these documents during the interview, specification writing, and implementation.
 
 ## Example
 
@@ -160,6 +160,6 @@ The clarification preserves access for corporate students whose enrollments are 
 
 ## Related patterns
 
-- [Project Memory](claude-md-memory.md) attaches the vocabulary to the agent session.
+- [Project Memory](agents-md-memory.md) attaches the vocabulary to the agent session.
 - [Context Engineering](context-engineering.md) helps select information for the vocabulary and ADRs.
 - [Spec-Driven Development](spec-driven-development.md) uses the shared vocabulary when writing specifications.

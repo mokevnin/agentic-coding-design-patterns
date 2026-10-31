@@ -161,7 +161,7 @@ trial 2: FAIL
 - **SWE-bench Verified** проверяет исправление реальных GitHub issues тестами и требует не сломать проходившее поведение.
 - **Регрессионные наборы Claude Code** начинались с узких свойств вроде краткости и файловых правок, затем охватили более сложное поведение, включая over-engineering.
 
-Подробнее об устройстве эвалов рассказывает статья [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents).
+Подробнее об устройстве эвалов рассказывает статья [Demystifying evals for AI agents](https://www.anthropic.com/research/demystifying-evals-for-ai-agents).
 
 ## Связанные паттерны
 

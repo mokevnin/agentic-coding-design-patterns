@@ -1,7 +1,7 @@
 ---
 group: project-org
 status: draft
-related: [claude-md-memory, context-engineering, handoff, tdd-with-agent, bloated-claude-md]
+related: [agents-md-memory, context-engineering, handoff, tdd-with-agent, bloated-agents-md]
 source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
@@ -19,7 +19,7 @@ Skills, slash commands, custom commands, packaged workflows.
 
 At every release you explain the preparation order to the agent all over again. One day you forget to mention the migration check, and the agent ships the version without it.
 
-If the procedure lives only in the conversation, how complete each run is depends on the new prompt. A colleague may describe the same process differently and get a different order of actions. Moving the whole procedure into [Project Memory](claude-md-memory.md) loads it into sessions that have nothing to do with releases as well.
+If the procedure lives only in the conversation, how complete each run is depends on the new prompt. A colleague may describe the same process differently and get a different order of actions. Moving the whole procedure into [Project Memory](agents-md-memory.md) loads it into sessions that have nothing to do with releases as well.
 
 ## Solution
 
@@ -142,7 +142,7 @@ On the same principle, Matt Pocock's pack saves the procedures for session hando
 ## Known uses
 
 - **Claude Code** supports _SKILL.md_ in _.claude/skills/_, arguments, and invocation control via `disable-model-invocation`.
-- **The Claude Code team** [describes](https://x.com/trq212/status/2033949937936085378) how it writes its own skills. The description serves as the invocation condition for the model. The gotchas section grows as new failures appear. Instead of a step-by-step script, the skill sets a goal and constraints.
+- **Claude Code documentation** [describes](https://code.claude.com/docs/en/skills) selecting skills by description and configuring their invocation. The full instruction loads when the skill is used.
 - **Codex** supports skills and a built-in `$skill-creator` helper. [OpenAI's guide](https://learn.chatgpt.com/guides/best-practices) advises extracting a skill from a process that already works and limiting it to a single task.
 - **Superpowers** combines planning, TDD, implementation, and review into a set of skills.
 - **Matt Pocock's skills** include an index of procedures and the [writing-for-agents](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md) guide to writing instructions for agents.
@@ -150,7 +150,7 @@ On the same principle, Matt Pocock's pack saves the procedures for session hando
 
 ## Related patterns
 
-- [Project Memory](claude-md-memory.md) holds the standing rules that procedures refer to.
+- [Project Memory](agents-md-memory.md) holds the standing rules that procedures refer to.
 - [Context Engineering](context-engineering.md) explains loading instructions on demand.
 - [Session Handoff](handoff.md), [TDD with an Agent](tdd-with-agent.md), [Issue Triage](triage-state-machine.md), and the [Investigation Map](wayfinder.md) can be packaged as repeatable skills.
-- [Bloated Memory](bloated-claude-md.md) describes an overloaded memory file that is relieved by moving procedures out into skills.
+- [Bloated Memory](bloated-agents-md.md) describes an overloaded memory file that is relieved by moving procedures out into skills.

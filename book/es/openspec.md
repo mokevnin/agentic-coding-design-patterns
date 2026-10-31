@@ -1,7 +1,7 @@
 ---
 group: sdd
 kind: tool
-checked_on: 2026-09-21
+checked_on: 2026-10-31
 status: draft
 related: [spec-driven-development]
 source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
@@ -9,7 +9,7 @@ source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 
 # OpenSpec
 
-_Comandos y capacidades comprobados el 21 de septiembre de 2026._
+_Comandos y capacidades de OpenSpec 1.16.0 comprobados el 31 de octubre de 2026._
 
 [OpenSpec](https://github.com/Fission-AI/OpenSpec), de Fission-AI, organiza el [SDD](spec-driven-development.md) alrededor de un **cambio** con las etapas propose, review, apply y archive. Las especificaciones permanentes describen el sistema, y los deltas registran los cambios propuestos a los requisitos.
 
@@ -17,7 +17,7 @@ OpenSpec soporta distintos agentes y asistentes de código, incluidos Claude Cod
 
 ## Instalación
 
-La CLI se instala con npm y requiere Node.js ≥ 20.19.
+La instalación por npm requiere Node.js >=22.12.0. El binario independiente no requiere Node.js; elige el método en la [guía oficial](https://github.com/Fission-AI/OpenSpec#installation). A continuación se muestra la opción admitida mediante npm.
 
 ```sh
 npm install -g @fission-ai/openspec@latest
@@ -34,6 +34,8 @@ El conjunto de comandos depende del perfil. Elígelo con `openspec config profil
 2. `/opsx:propose <idea>` crea un paquete de propuesta que revisas antes de implementar.
 3. `/opsx:apply` ejecuta las tareas del checklist.
 4. `/opsx:archive` propone sincronizar los deltas con las especificaciones permanentes, si aún no se ha hecho, y mueve el cambio al archivo.
+
+Si cambian los requisitos tras preparar la propuesta, `/opsx:update` actualiza los artefactos de planificación. `/opsx:sync` incorpora los deltas a las especificaciones permanentes; también se puede sincronizar al archivar.
 
 El perfil ampliado incluye `/opsx:new`, `/opsx:continue`, `/opsx:ff`, `/opsx:verify`, `/opsx:bulk-archive` y `/opsx:onboard`. Dan soporte a la preparación por etapas, la verificación y el archivado de cambios grandes.
 

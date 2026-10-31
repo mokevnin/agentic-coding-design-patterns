@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [claude-md-memory, give-agent-a-way-to-verify, isolated-parallel-work]
+related: [agents-md-memory, give-agent-a-way-to-verify, isolated-parallel-work]
 source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
 ---
 
@@ -164,11 +164,11 @@ This hook protects the moment of the commit. It does not prevent writing the fil
 - **Claude Code sandboxing** sets file system and network restrictions at the OS level, including child processes, and allows free work inside the allowed area.
 - **Git hooks and CI** apply the same principle to commit format, tests, and branch rules.
 
-The mechanisms are described in the [GitHub Copilot hooks](https://docs.github.com/en/copilot/concepts/agents/hooks) documentation and the article on [Claude Code sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing).
+The mechanisms are described in the [GitHub Copilot hooks](https://docs.github.com/en/copilot/concepts/customizations/hooks) documentation and the article on [Claude Code sandboxing](https://www.anthropic.com/research/claude-code-sandboxing).
 
 ## Related patterns
 
-- [Project Memory](claude-md-memory.md) holds guidance and explains the purpose of the restrictions.
+- [Project Memory](agents-md-memory.md) holds guidance and explains the purpose of the restrictions.
 - [Feedback Loop](give-agent-a-way-to-verify.md) checks that the result is correct.
 - [Isolated Parallel Work](isolated-parallel-work.md) uses worktrees whose boundaries can be enforced with a sandbox and permissions.
-- [Bloated Memory](bloated-claude-md.md) describes an accumulation of prohibitions that are better moved into executable mechanisms.
+- [Bloated Memory](bloated-agents-md.md) describes an accumulation of prohibitions that are better moved into executable mechanisms.

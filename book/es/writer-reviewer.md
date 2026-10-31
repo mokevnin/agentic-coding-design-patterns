@@ -95,7 +95,7 @@ Para un cambio pequeño puedes empezar por la [reflexión](reflection.md) y las 
 
 ## Implementación
 
-1. Crea una sesión aparte o un subagente con contexto fresco. Para mayor independencia, encarga la revisión a un agente con otro modelo.
+1. Crea una sesión aparte o un revisor sin el historial de la conversación del autor. Un fork que copia toda la conversación no aporta esa independencia; elige un modo sin historial heredado. Otro modelo puede aportar una perspectiva adicional.
 2. Entrega el diff, el plan y la especificación. Añade enlaces a los ADR y al [vocabulario del dominio](domain-context-file.md) que explican las restricciones.
 3. Pide que informe de defectos comprobables y de incumplimientos de los requisitos.
 4. Para el comportamiento crítico, pide contraejemplos.
@@ -123,7 +123,7 @@ El autor corrige la carrera, añade un test de la cabecera y quita el renombrado
 
 ## Usos conocidos
 
-- **Claude Code best practices** describen la separación Writer/Reviewer y la búsqueda de contraejemplos en una sesión aparte.
+- **Claude Code best practices** [recomiendan](https://code.claude.com/docs/en/best-practices) una revisión independiente en otra sesión.
 - **El plugin [codex-plugin-cc](https://github.com/openai/codex-plugin-cc)** de OpenAI ejecuta Codex dentro de Claude Code. El comando `/codex:review` revisa los cambios sin commit o una rama, y `/codex:adversarial-review` cuestiona las decisiones de implementación y de diseño. El revisor no solo tiene un contexto fresco, sino también otro modelo.
 - **Codex** revisa una rama, los cambios sin commit o un commit concreto con el comando `/review`.
 - **Los skills de revisión** automatizan la entrega del diff y la devolución de los hallazgos al autor.

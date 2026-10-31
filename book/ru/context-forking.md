@@ -121,8 +121,8 @@ flowchart TB
 ## Известные применения
 
 - **Claude Code** открывает меню отката по `/rewind` или двойному `Esc`. Можно восстановить код и разговор, только разговор или только код, а также сжать часть разговора в сводку. `/branch` и `claude --continue --fork-session` копируют разговор и оставляют оригинал. [Документация](https://code.claude.com/docs/en/checkpointing) предупреждает, что чекпойнты не отслеживают команды оболочки и внешние изменения и не заменяют git.
-- **Команда Claude Code** [советует](https://claude.com/blog/using-claude-code-session-management-and-1m-context) откатывать разговор вместо исправления неудачной попытки и предлагает перед откатом записывать урок через «Summarize from here».
-- **Codex** по двойному `Esc` позволяет [отредактировать предыдущее сообщение](https://learn.chatgpt.com/docs/developer-commands?surface=cli) и ответвить разговор от этой точки. Команда `/fork` копирует текущий разговор, `/side` открывает временное ответвление для побочного вопроса, а `/worktree` продолжает разговор в новом worktree.
+- **Команда Claude Code** [советует](https://claude.com/resources/articles/using-claude-code-session-management-and-1m-context) откатывать разговор вместо исправления неудачной попытки и предлагает перед откатом записывать урок через «Summarize from here».
+- **Codex** [поддерживает](https://learn.chatgpt.com/docs/developer-commands?surface=cli) `/fork` для копирования текущего разговора, `/side` для временного ответвления с побочным вопросом и `/worktree` для продолжения разговора в новом рабочем дереве.
 - **HumanLayer** [описывает](https://www.humanlayer.dev/blog/context-forking-to-save-time-trouble-and-tokens) три повода для ветвления: исправить курс, сравнить варианты дизайна и спасти ценный контекст после слишком большого вывода инструмента.
 
 ## Связанные паттерны

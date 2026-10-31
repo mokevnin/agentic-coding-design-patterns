@@ -124,9 +124,9 @@ flowchart TB
 
 ## Известные применения
 
-- **Claude Code best practices** советуют проводить интервью через инструмент AskUserQuestion, сохранять итог в SPEC.md и реализовывать его в свежей сессии.
+- **Claude Code best practices** [советуют](https://code.claude.com/docs/en/best-practices#brainstorm-with-claude-first) начать с интервью, сохранить итог в SPEC.md и реализовать его в свежей сессии.
 - **Kiro** составляет требования в диалоге с вами, и вы подтверждаете их поэтапно.
-- **Скиллы Мэтта Покока** сохраняют итоги `/grill-with-docs` в CONTEXT.md и ADR — записи об архитектурных решениях.
+- **Скиллы Мэтта Покока** сохраняют итоги `/grill-with-docs` в GLOSSARY.md и ADR — записи об архитектурных решениях.
 
 ## Связанные паттерны
 

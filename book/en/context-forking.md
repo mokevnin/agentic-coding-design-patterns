@@ -121,8 +121,8 @@ The window keeps the files read and one refined request. The agent schedules the
 ## Known uses
 
 - **Claude Code** opens the rewind menu with `/rewind` or a double `Esc`. You can restore the code and the conversation, only the conversation, or only the code, and also compress part of the conversation into a summary. `/branch` and `claude --continue --fork-session` copy the conversation and keep the original. The [documentation](https://code.claude.com/docs/en/checkpointing) warns that checkpoints don't track shell commands or external changes and don't replace git.
-- **The Claude Code team** [advises](https://claude.com/blog/using-claude-code-session-management-and-1m-context) rewinding the conversation instead of correcting a failed attempt, and suggests recording the lesson with "Summarize from here" before rewinding.
-- **Codex** lets you [edit a previous message](https://learn.chatgpt.com/docs/developer-commands?surface=cli) with a double `Esc` and fork the conversation from that point. The `/fork` command copies the current conversation, `/side` opens a temporary fork for a side question, and `/worktree` continues the conversation in a new worktree.
+- **The Claude Code team** [advises](https://claude.com/resources/articles/using-claude-code-session-management-and-1m-context) rewinding the conversation instead of correcting a failed attempt, and suggests recording the lesson with "Summarize from here" before rewinding.
+- **Codex** [supports](https://learn.chatgpt.com/docs/developer-commands?surface=cli) `/fork` to copy the current conversation, `/side` for a temporary side-question branch, and `/worktree` to continue the conversation in a new working tree.
 - **HumanLayer** [describes](https://www.humanlayer.dev/blog/context-forking-to-save-time-trouble-and-tokens) three reasons to fork: correcting course, comparing design options, and rescuing valuable context after a tool output that was too large.
 
 ## Related patterns

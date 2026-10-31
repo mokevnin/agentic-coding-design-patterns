@@ -95,7 +95,7 @@ For a small edit, you can start with [Reflection](reflection.md) and automated c
 
 ## Implementation
 
-1. Create a separate session or a subagent with a fresh context. For more independence, give the review to an agent on a different model.
+1. Create a separate session or reviewer without the writer's conversation history. A fork that copies the whole conversation does not provide that independence; choose a mode without inherited history. Another model can provide an additional perspective.
 2. Pass the diff, the plan and the specification. Add links to the ADRs and the [Domain Vocabulary](domain-context-file.md) that explain the constraints.
 3. Ask for verifiable defects and requirement violations.
 4. For critical behavior, ask for counterexamples.
@@ -123,7 +123,7 @@ The writer fixes the race, adds a test for the header and reverts the unrelated 
 
 ## Known uses
 
-- **Claude Code best practices** describe the Writer/Reviewer split and the search for counterexamples in a separate session.
+- **Claude Code best practices** [recommend](https://code.claude.com/docs/en/best-practices) independent review in a separate session.
 - **The [codex-plugin-cc](https://github.com/openai/codex-plugin-cc) plugin** from OpenAI runs Codex inside Claude Code. The `/codex:review` command reviews uncommitted changes or a branch, and `/codex:adversarial-review` challenges implementation and design decisions. The reviewer has not only a fresh context but also a different model.
 - **Codex** reviews a branch, uncommitted changes or a single commit with the `/review` command.
 - **Review skills** automate handing over the diff and returning findings to the writer.

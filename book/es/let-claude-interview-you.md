@@ -124,9 +124,9 @@ Son las condiciones de un producto de ejemplo. En tu producto, elige valores aco
 
 ## Usos conocidos
 
-- **Claude Code best practices** aconsejan hacer la entrevista mediante la herramienta AskUserQuestion, guardar el resultado en SPEC.md e implementarlo en una sesión fresca.
+- **Claude Code best practices** [aconsejan](https://code.claude.com/docs/en/best-practices#brainstorm-with-claude-first) empezar con una entrevista, guardar el resultado en SPEC.md e implementarlo en una sesión nueva.
 - **Kiro** redacta los requisitos en diálogo contigo, y tú los confirmas por fases.
-- **Los skills de Matt Pocock** guardan los resultados de `/grill-with-docs` en CONTEXT.md y en ADR, registros de decisiones de arquitectura.
+- **Los skills de Matt Pocock** guardan los resultados de `/grill-with-docs` en GLOSSARY.md y en ADR, registros de decisiones de arquitectura.
 
 ## Patrones relacionados
 

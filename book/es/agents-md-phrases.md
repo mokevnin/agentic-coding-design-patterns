@@ -4,7 +4,7 @@ source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 
 # Frases para AGENTS.md
 
-Aquí se reúnen reglas para la [memoria del proyecto](claude-md-memory.md) que ayudan al agente a tomar decisiones al elegir una implementación. Adáptalas a tu proyecto y añade solo las que cambien el comportamiento del agente en la dirección que buscas.
+Aquí se reúnen reglas para la [memoria del proyecto](agents-md-memory.md) que ayudan al agente a tomar decisiones al elegir una implementación. Adáptalas a tu proyecto y añade solo las que cambien el comportamiento del agente en la dirección que buscas.
 
 La base es una lista de Marcos Hernanz. Las dos últimas formulaciones las añadió [Kirill Mokevnin](https://x.com/mokevnin/status/2083152573679173830).
 
@@ -19,7 +19,7 @@ Puedes copiar este bloque en el archivo de memoria del proyecto.
 - Suggest best practices, even if they may require refactoring.
 ```
 
-Las reglas están en inglés. Si quieres, tradúcelas al idioma del equipo. Como explica el capítulo [«Memoria del proyecto»](claude-md-memory.md), el archivo _orienta_ el comportamiento del agente, pero no garantiza que se cumplan las reglas. Mantén la lista corta para que no se convierta en [memoria hinchada](bloated-claude-md.md).
+Las reglas están en inglés. Si quieres, tradúcelas al idioma del equipo. Como explica el capítulo [«Memoria del proyecto»](agents-md-memory.md), el archivo _orienta_ el comportamiento del agente, pero no garantiza que se cumplan las reglas. Mantén la lista corta para que no se convierta en [memoria hinchada](bloated-agents-md.md).
 
 ## Do not preserve backward compatibility
 
@@ -63,6 +63,6 @@ El agente puede proponer refactorizaciones con demasiada frecuencia. Combina est
 
 ## Capítulos relacionados
 
-- [Memoria del proyecto](claude-md-memory.md) explica dónde guardar estas reglas.
-- [Memoria hinchada](bloated-claude-md.md) muestra por qué la lista debe mantenerse corta.
+- [Memoria del proyecto](agents-md-memory.md) explica dónde guardar estas reglas.
+- [Memoria hinchada](bloated-agents-md.md) muestra por qué la lista debe mantenerse corta.
 - [Ingeniería de contexto](context-engineering.md) explica cómo las instrucciones permanentes consumen el contexto de cada sesión.

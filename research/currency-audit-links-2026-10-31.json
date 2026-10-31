@@ -1,0 +1,1014 @@
+{
+  "checked_on": "2026-10-31",
+  "book_commit": "8becaab8d5612db01fbe467d142cf34eaae6f274",
+  "method": "Public GET requests with redirects; content review is separate. Network/DNS errors in initial sandbox run were retried outside sandbox.",
+  "results": [
+    {
+      "url": "https://github.com/mokevnin",
+      "status": 200,
+      "final": "https://github.com/mokevnin",
+      "locations": [
+        "book/en/README.md:13",
+        "book/es/README.md:13",
+        "book/ru/README.md:9"
+      ]
+    },
+    {
+      "url": "https://hexlet.io",
+      "status": 200,
+      "final": "https://hexlet.io",
+      "locations": [
+        "book/en/README.md:13",
+        "book/en/README.md:15",
+        "book/es/README.md:13",
+        "book/es/README.md:15",
+        "book/ru/README.md:9",
+        "book/ru/README.md:11"
+      ]
+    },
+    {
+      "url": "https://praxor.ru/",
+      "status": 200,
+      "final": "https://praxor.ru/",
+      "locations": [
+        "book/en/README.md:13",
+        "book/en/README.md:17",
+        "book/es/README.md:13",
+        "book/es/README.md:17",
+        "book/ru/README.md:9",
+        "book/ru/README.md:13"
+      ]
+    },
+    {
+      "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "status": 200,
+      "final": "https://www.anthropic.com/research/demystifying-evals-for-ai-agents",
+      "locations": [
+        "book/en/agent-workflow-evals.md:164",
+        "book/es/agent-workflow-evals.md:164",
+        "book/ru/agent-workflow-evals.md:164"
+      ]
+    },
+    {
+      "url": "https://x.com/mokevnin/status/2083152573679173830",
+      "status": 200,
+      "final": "https://x.com/mokevnin/status/2083152573679173830",
+      "locations": [
+        "book/en/agents-md-phrases.md:9",
+        "book/es/agents-md-phrases.md:9",
+        "book/ru/agents-md-phrases.md:5"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CANDIDATES.md",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CANDIDATES.md",
+      "locations": [
+        "book/en/candidates.md:5",
+        "book/es/candidates.md:5",
+        "book/ru/candidates.md:5"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/6",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/6",
+      "locations": [
+        "book/en/candidates.md:15",
+        "book/es/candidates.md:15",
+        "book/ru/candidates.md:15"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/7",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/7",
+      "locations": [
+        "book/en/candidates.md:16",
+        "book/es/candidates.md:16",
+        "book/ru/candidates.md:16"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/9",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/9",
+      "locations": [
+        "book/en/candidates.md:17",
+        "book/es/candidates.md:17",
+        "book/ru/candidates.md:17"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/10",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/10",
+      "locations": [
+        "book/en/candidates.md:18",
+        "book/es/candidates.md:18",
+        "book/ru/candidates.md:18"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/11",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/11",
+      "locations": [
+        "book/en/candidates.md:19",
+        "book/es/candidates.md:19",
+        "book/ru/candidates.md:19"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/12",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/12",
+      "locations": [
+        "book/en/candidates.md:20",
+        "book/es/candidates.md:20",
+        "book/ru/candidates.md:20"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/13",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/13",
+      "locations": [
+        "book/en/candidates.md:21",
+        "book/es/candidates.md:21",
+        "book/ru/candidates.md:21"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/14",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/14",
+      "locations": [
+        "book/en/candidates.md:22",
+        "book/es/candidates.md:22",
+        "book/ru/candidates.md:22"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/15",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/15",
+      "locations": [
+        "book/en/candidates.md:23",
+        "book/es/candidates.md:23",
+        "book/ru/candidates.md:23"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/16",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/16",
+      "locations": [
+        "book/en/candidates.md:24",
+        "book/es/candidates.md:24",
+        "book/ru/candidates.md:24"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/17",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/17",
+      "locations": [
+        "book/en/candidates.md:25",
+        "book/es/candidates.md:25",
+        "book/ru/candidates.md:25"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/18",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/18",
+      "locations": [
+        "book/en/candidates.md:26",
+        "book/es/candidates.md:26",
+        "book/ru/candidates.md:26"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/19",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/19",
+      "locations": [
+        "book/en/candidates.md:27",
+        "book/es/candidates.md:27",
+        "book/ru/candidates.md:27"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/20",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/20",
+      "locations": [
+        "book/en/candidates.md:28",
+        "book/es/candidates.md:28",
+        "book/ru/candidates.md:28"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/30",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/30",
+      "locations": [
+        "book/en/candidates.md:32",
+        "book/es/candidates.md:32",
+        "book/ru/candidates.md:32"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/21",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/21",
+      "locations": [
+        "book/en/candidates.md:33",
+        "book/es/candidates.md:33",
+        "book/ru/candidates.md:33"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/22",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/22",
+      "locations": [
+        "book/en/candidates.md:34",
+        "book/es/candidates.md:34",
+        "book/ru/candidates.md:34"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/31",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/31",
+      "locations": [
+        "book/en/candidates.md:35",
+        "book/es/candidates.md:35",
+        "book/ru/candidates.md:35"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/32",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/32",
+      "locations": [
+        "book/en/candidates.md:36",
+        "book/es/candidates.md:36",
+        "book/ru/candidates.md:36"
+      ]
+    },
+    {
+      "url": "https://agents.md/",
+      "status": 200,
+      "final": "https://agents.md/",
+      "locations": [
+        "book/en/claude-md-memory.md:99",
+        "book/es/claude-md-memory.md:99",
+        "book/ru/claude-md-memory.md:99"
+      ]
+    },
+    {
+      "url": "https://claude.com/blog/using-claude-code-session-management-and-1m-context",
+      "status": 200,
+      "final": "https://claude.com/resources/articles/using-claude-code-session-management-and-1m-context",
+      "locations": [
+        "book/en/context-engineering.md:132",
+        "book/en/context-forking.md:124",
+        "book/es/context-engineering.md:132",
+        "book/es/context-forking.md:124",
+        "book/ru/context-engineering.md:132",
+        "book/ru/context-forking.md:124"
+      ]
+    },
+    {
+      "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "status": 200,
+      "final": "https://www.anthropic.com/research/effective-context-engineering-for-ai-agents",
+      "locations": [
+        "book/en/context-engineering.md:137",
+        "book/es/context-engineering.md:137",
+        "book/ru/context-engineering.md:137"
+      ]
+    },
+    {
+      "url": "https://code.claude.com/docs/en/checkpointing",
+      "status": 200,
+      "final": "https://code.claude.com/docs/en/checkpointing",
+      "locations": [
+        "book/en/context-forking.md:123",
+        "book/es/context-forking.md:123",
+        "book/ru/context-forking.md:123"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/developer-commands?surface=cli",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/docs/developer-commands?surface=cli",
+      "locations": [
+        "book/en/context-forking.md:125",
+        "book/es/context-forking.md:125",
+        "book/ru/context-forking.md:125"
+      ]
+    },
+    {
+      "url": "https://www.humanlayer.dev/blog/context-forking-to-save-time-trouble-and-tokens",
+      "status": 200,
+      "final": "https://www.humanlayer.dev/blog/context-forking-to-save-time-trouble-and-tokens",
+      "locations": [
+        "book/en/context-forking.md:126",
+        "book/es/context-forking.md:126",
+        "book/ru/context-forking.md:126"
+      ]
+    },
+    {
+      "url": "https://web.stanford.edu/~ouster/cgi-bin/aposd.php",
+      "status": 200,
+      "final": "https://web.stanford.edu/~ouster/cgi-bin/aposd.php",
+      "locations": [
+        "book/en/design-it-twice.md:180",
+        "book/es/design-it-twice.md:180",
+        "book/ru/design-it-twice.md:179"
+      ]
+    },
+    {
+      "url": "https://web.stanford.edu/~ouster/cs190-winter24/lectures/aposd/",
+      "status": 200,
+      "final": "https://web.stanford.edu/~ouster/cs190-winter24/lectures/aposd/",
+      "locations": [
+        "book/en/design-it-twice.md:180",
+        "book/es/design-it-twice.md:180",
+        "book/ru/design-it-twice.md:179"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/DESIGN-IT-TWICE.md",
+      "status": 200,
+      "final": "https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/DESIGN-IT-TWICE.md",
+      "locations": [
+        "book/en/design-it-twice.md:181",
+        "book/es/design-it-twice.md:181",
+        "book/ru/design-it-twice.md:180"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/copilot/concepts/agents/hooks",
+      "status": 200,
+      "final": "https://docs.github.com/en/copilot/concepts/customizations/hooks",
+      "locations": [
+        "book/en/executable-guardrails.md:167",
+        "book/es/executable-guardrails.md:167",
+        "book/ru/executable-guardrails.md:167"
+      ]
+    },
+    {
+      "url": "https://www.anthropic.com/engineering/claude-code-sandboxing",
+      "status": 200,
+      "final": "https://www.anthropic.com/research/claude-code-sandboxing",
+      "locations": [
+        "book/en/executable-guardrails.md:167",
+        "book/es/executable-guardrails.md:167",
+        "book/ru/executable-guardrails.md:167"
+      ]
+    },
+    {
+      "url": "https://github.com/github/spec-kit",
+      "status": 200,
+      "final": "https://github.com/github/spec-kit",
+      "locations": [
+        "book/en/explore-plan-code-commit.md:99",
+        "book/en/resources.md:19",
+        "book/es/explore-plan-code-commit.md:99",
+        "book/es/resources.md:19",
+        "book/ru/explore-plan-code-commit.md:99",
+        "book/ru/resources.md:15"
+      ]
+    },
+    {
+      "url": "https://code.claude.com/docs/en/best-practices",
+      "status": 200,
+      "final": "https://code.claude.com/docs/en/best-practices",
+      "locations": [
+        "book/en/explore-plan-code-commit.md:150",
+        "book/en/isolated-parallel-work.md:198",
+        "book/en/resources.md:35",
+        "book/es/explore-plan-code-commit.md:150",
+        "book/es/isolated-parallel-work.md:198",
+        "book/es/resources.md:35",
+        "book/ru/explore-plan-code-commit.md:150",
+        "book/ru/isolated-parallel-work.md:198",
+        "book/ru/resources.md:31"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills/blob/main/skills/engineering/diagnosing-bugs/SKILL.md",
+      "status": 200,
+      "final": "https://github.com/mattpocock/skills/blob/main/skills/engineering/diagnosing-bugs/SKILL.md",
+      "locations": [
+        "book/en/hypothesis-driven-debugging.md:140",
+        "book/es/hypothesis-driven-debugging.md:140",
+        "book/ru/hypothesis-driven-debugging.md:140"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills/blob/main/skills/engineering/resolving-merge-conflicts/SKILL.md",
+      "error": "HTTP Error 404: Not Found",
+      "locations": [
+        "book/en/isolated-parallel-work.md:135",
+        "book/es/isolated-parallel-work.md:135",
+        "book/ru/isolated-parallel-work.md:135"
+      ]
+    },
+    {
+      "url": "https://www.anthropic.com/engineering/building-c-compiler",
+      "status": 200,
+      "final": "https://www.anthropic.com/research/building-c-compiler",
+      "locations": [
+        "book/en/isolated-parallel-work.md:198",
+        "book/es/isolated-parallel-work.md:198",
+        "book/ru/isolated-parallel-work.md:198"
+      ]
+    },
+    {
+      "url": "https://git-scm.com/docs/git-worktree",
+      "status": 200,
+      "final": "https://git-scm.com/docs/git-worktree",
+      "locations": [
+        "book/en/isolated-parallel-work.md:198",
+        "book/es/isolated-parallel-work.md:198",
+        "book/ru/isolated-parallel-work.md:198"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills/blob/main/skills/productivity/to-questionnaire/SKILL.md",
+      "status": 200,
+      "final": "https://github.com/mattpocock/skills/blob/main/skills/productivity/to-questionnaire/SKILL.md",
+      "locations": [
+        "book/en/let-claude-interview-you.md:93",
+        "book/es/let-claude-interview-you.md:93",
+        "book/ru/let-claude-interview-you.md:93"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills",
+      "status": 200,
+      "final": "https://github.com/mattpocock/skills",
+      "locations": [
+        "book/en/matt-pocock-skills.md:14",
+        "book/en/resources.md:13",
+        "book/es/matt-pocock-skills.md:14",
+        "book/es/resources.md:13",
+        "book/ru/matt-pocock-skills.md:14",
+        "book/ru/resources.md:9"
+      ]
+    },
+    {
+      "url": "https://github.com/Fission-AI/OpenSpec",
+      "status": 200,
+      "final": "https://github.com/Fission-AI/OpenSpec",
+      "locations": [
+        "book/en/openspec.md:14",
+        "book/en/resources.md:11",
+        "book/es/openspec.md:14",
+        "book/es/resources.md:11",
+        "book/ru/openspec.md:14",
+        "book/ru/resources.md:7"
+      ]
+    },
+    {
+      "url": "https://github.com/Fission-AI/OpenSpec/blob/main/docs/concepts.md",
+      "status": 200,
+      "final": "https://github.com/Fission-AI/OpenSpec/blob/main/docs/concepts.md",
+      "locations": [
+        "book/en/openspec.md:100",
+        "book/es/openspec.md:100",
+        "book/ru/openspec.md:100"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md#extend-an-existing-pattern",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md#extend-an-existing-pattern",
+      "locations": [
+        "book/en/preface.md:13",
+        "book/es/preface.md:13",
+        "book/ru/preface.md:9"
+      ]
+    },
+    {
+      "url": "https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md",
+      "status": 200,
+      "final": "https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md",
+      "locations": [
+        "book/en/preface.md:13",
+        "book/es/preface.md:13",
+        "book/ru/preface.md:9"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md",
+      "status": 200,
+      "final": "https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md",
+      "locations": [
+        "book/en/prototype-to-answer.md:131",
+        "book/es/prototype-to-answer.md:131",
+        "book/ru/prototype-to-answer.md:131"
+      ]
+    },
+    {
+      "url": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+      "status": 200,
+      "final": "https://www.anthropic.com/research/effective-harnesses-for-long-running-agents",
+      "locations": [
+        "book/en/reproducible-agent-bootstrap.md:149",
+        "book/es/reproducible-agent-bootstrap.md:149",
+        "book/ru/reproducible-agent-bootstrap.md:149"
+      ]
+    },
+    {
+      "url": "https://openspec.dev/",
+      "status": 200,
+      "final": "https://openspec.dev/",
+      "locations": [
+        "book/en/resources.md:11",
+        "book/es/resources.md:11",
+        "book/ru/resources.md:7"
+      ]
+    },
+    {
+      "url": "https://github.com/obra/superpowers",
+      "status": 200,
+      "final": "https://github.com/obra/superpowers",
+      "locations": [
+        "book/en/resources.md:12",
+        "book/en/superpowers.md:14",
+        "book/es/resources.md:12",
+        "book/es/superpowers.md:14",
+        "book/ru/resources.md:8",
+        "book/ru/superpowers.md:14"
+      ]
+    },
+    {
+      "url": "https://speckit.org/",
+      "status": 200,
+      "final": "https://speckit.org/",
+      "locations": [
+        "book/en/resources.md:19",
+        "book/es/resources.md:19",
+        "book/ru/resources.md:15"
+      ]
+    },
+    {
+      "url": "https://kiro.dev/",
+      "status": 200,
+      "final": "https://kiro.dev/",
+      "locations": [
+        "book/en/resources.md:20",
+        "book/es/resources.md:20",
+        "book/ru/resources.md:16"
+      ]
+    },
+    {
+      "url": "https://tessl.io/",
+      "status": 200,
+      "final": "https://tessl.io/",
+      "locations": [
+        "book/en/resources.md:21",
+        "book/es/resources.md:21",
+        "book/ru/resources.md:17"
+      ]
+    },
+    {
+      "url": "https://github.com/bmad-code-org/BMAD-METHOD",
+      "status": 200,
+      "final": "https://github.com/bmad-code-org/BMAD-METHOD",
+      "locations": [
+        "book/en/resources.md:22",
+        "book/es/resources.md:22",
+        "book/ru/resources.md:18"
+      ]
+    },
+    {
+      "url": "https://github.com/Priivacy-ai/spec-kitty",
+      "status": 200,
+      "final": "https://github.com/spec-kitty/spec-kitty",
+      "locations": [
+        "book/en/resources.md:23",
+        "book/es/resources.md:23",
+        "book/ru/resources.md:19"
+      ]
+    },
+    {
+      "url": "https://traycer.ai/",
+      "status": 200,
+      "final": "https://traycer.ai/",
+      "locations": [
+        "book/en/resources.md:24",
+        "book/es/resources.md:24",
+        "book/ru/resources.md:20"
+      ]
+    },
+    {
+      "url": "https://github.com/gsd-build/get-shit-done",
+      "status": 200,
+      "final": "https://github.com/gsd-build/get-shit-done",
+      "locations": [
+        "book/en/resources.md:25",
+        "book/es/resources.md:25",
+        "book/ru/resources.md:21"
+      ]
+    },
+    {
+      "url": "https://github.com/EveryInc/compound-engineering-plugin",
+      "status": 200,
+      "final": "https://github.com/EveryInc/compound-engineering-plugin",
+      "locations": [
+        "book/en/resources.md:26",
+        "book/es/resources.md:26",
+        "book/ru/resources.md:22"
+      ]
+    },
+    {
+      "url": "https://github.com/humanlayer/humanlayer",
+      "status": 200,
+      "final": "https://github.com/humanlayer/humanlayer",
+      "locations": [
+        "book/en/resources.md:27",
+        "book/es/resources.md:27",
+        "book/ru/resources.md:23"
+      ]
+    },
+    {
+      "url": "https://cameronsjo.github.io/spec-compare/",
+      "status": 200,
+      "final": "https://cameronsjo.github.io/spec-compare/",
+      "locations": [
+        "book/en/resources.md:31",
+        "book/en/spec-driven-development.md:101",
+        "book/en/spec-driven-development.md:129",
+        "book/es/resources.md:31",
+        "book/es/spec-driven-development.md:101",
+        "book/es/spec-driven-development.md:129",
+        "book/ru/resources.md:27",
+        "book/ru/spec-driven-development.md:101",
+        "book/ru/spec-driven-development.md:129"
+      ]
+    },
+    {
+      "url": "https://github.com/cameronsjo/spec-compare",
+      "status": 200,
+      "final": "https://github.com/cameronsjo/spec-compare",
+      "locations": [
+        "book/en/resources.md:31",
+        "book/es/resources.md:31",
+        "book/ru/resources.md:27"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/guides/best-practices",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/guides/best-practices",
+      "locations": [
+        "book/en/resources.md:36",
+        "book/en/skills-as-packaged-workflows.md:146",
+        "book/es/resources.md:36",
+        "book/es/skills-as-packaged-workflows.md:146",
+        "book/ru/resources.md:32",
+        "book/ru/skills-as-packaged-workflows.md:146"
+      ]
+    },
+    {
+      "url": "https://github.com/shanraisshan/claude-code-best-practice",
+      "status": 200,
+      "final": "https://github.com/shanraisshan/claude-code-best-practice",
+      "locations": [
+        "book/en/resources.md:37",
+        "book/es/resources.md:37",
+        "book/ru/resources.md:33"
+      ]
+    },
+    {
+      "url": "https://github.com/shanraisshan/codex-cli-best-practice",
+      "status": 200,
+      "final": "https://github.com/shanraisshan/codex-cli-best-practice",
+      "locations": [
+        "book/en/resources.md:37",
+        "book/es/resources.md:37",
+        "book/ru/resources.md:33"
+      ]
+    },
+    {
+      "url": "https://github.com/RoggeOhta/awesome-codex-cli",
+      "status": 200,
+      "final": "https://github.com/RoggeOhta/awesome-codex-cli",
+      "locations": [
+        "book/en/resources.md:38",
+        "book/es/resources.md:38",
+        "book/ru/resources.md:34"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills/tree/main/skills/in-progress/retro",
+      "error": "HTTP Error 404: Not Found",
+      "locations": [
+        "book/en/scheduled-maintenance.md:101",
+        "book/es/scheduled-maintenance.md:101",
+        "book/ru/scheduled-maintenance.md:101"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills/tree/main/skills/engineering/code-review",
+      "status": 200,
+      "final": "https://github.com/mattpocock/skills/tree/main/skills/engineering/code-review",
+      "locations": [
+        "book/en/scheduled-maintenance.md:115",
+        "book/es/scheduled-maintenance.md:115",
+        "book/ru/scheduled-maintenance.md:115"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills/tree/main/skills/engineering/domain-modeling",
+      "status": 200,
+      "final": "https://github.com/mattpocock/skills/tree/main/skills/engineering/domain-modeling",
+      "locations": [
+        "book/en/scheduled-maintenance.md:153",
+        "book/es/scheduled-maintenance.md:153",
+        "book/ru/scheduled-maintenance.md:153"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture",
+      "status": 200,
+      "final": "https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture",
+      "locations": [
+        "book/en/scheduled-maintenance.md:167",
+        "book/es/scheduled-maintenance.md:167",
+        "book/ru/scheduled-maintenance.md:167"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills/tree/main/skills/engineering/to-tickets",
+      "status": 200,
+      "final": "https://github.com/mattpocock/skills/tree/main/skills/engineering/to-tickets",
+      "locations": [
+        "book/en/scheduled-maintenance.md:167",
+        "book/es/scheduled-maintenance.md:167",
+        "book/ru/scheduled-maintenance.md:167"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills/tree/main/skills/productivity/writing-for-agents",
+      "status": 200,
+      "final": "https://github.com/mattpocock/skills/tree/main/skills/productivity/writing-for-agents",
+      "locations": [
+        "book/en/scheduled-maintenance.md:183",
+        "book/es/scheduled-maintenance.md:183",
+        "book/ru/scheduled-maintenance.md:183"
+      ]
+    },
+    {
+      "url": "https://code.claude.com/docs/en/commands",
+      "status": 200,
+      "final": "https://code.claude.com/docs/en/commands",
+      "locations": [
+        "book/en/scheduled-maintenance.md:233",
+        "book/en/scheduled-maintenance.md:259",
+        "book/es/scheduled-maintenance.md:233",
+        "book/es/scheduled-maintenance.md:259",
+        "book/ru/scheduled-maintenance.md:233",
+        "book/ru/scheduled-maintenance.md:259"
+      ]
+    },
+    {
+      "url": "https://code.claude.com/docs/en/routines",
+      "status": 200,
+      "final": "https://code.claude.com/docs/en/routines",
+      "locations": [
+        "book/en/scheduled-maintenance.md:237",
+        "book/es/scheduled-maintenance.md:237",
+        "book/ru/scheduled-maintenance.md:237"
+      ]
+    },
+    {
+      "url": "https://code.claude.com/docs/en/skills",
+      "status": 200,
+      "final": "https://code.claude.com/docs/en/skills",
+      "locations": [
+        "book/en/scheduled-maintenance.md:249",
+        "book/es/scheduled-maintenance.md:249",
+        "book/ru/scheduled-maintenance.md:249"
+      ]
+    },
+    {
+      "url": "https://code.claude.com/docs/en/security-guidance",
+      "status": 200,
+      "final": "https://code.claude.com/docs/en/security-guidance",
+      "locations": [
+        "book/en/scheduled-maintenance.md:271",
+        "book/es/scheduled-maintenance.md:271",
+        "book/ru/scheduled-maintenance.md:271"
+      ]
+    },
+    {
+      "url": "https://github.com/anthropics/claude-code-security-review",
+      "status": 200,
+      "final": "https://github.com/anthropics/claude-code-security-review",
+      "locations": [
+        "book/en/scheduled-maintenance.md:271",
+        "book/es/scheduled-maintenance.md:271",
+        "book/ru/scheduled-maintenance.md:271"
+      ]
+    },
+    {
+      "url": "https://code.claude.com/docs/en/memory",
+      "status": 200,
+      "final": "https://code.claude.com/docs/en/memory",
+      "locations": [
+        "book/en/scheduled-maintenance.md:283",
+        "book/es/scheduled-maintenance.md:283",
+        "book/ru/scheduled-maintenance.md:283"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/automations",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/docs/automations",
+      "locations": [
+        "book/en/scheduled-maintenance.md:347",
+        "book/es/scheduled-maintenance.md:347",
+        "book/ru/scheduled-maintenance.md:347"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/github-action",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/docs/github-action",
+      "locations": [
+        "book/en/scheduled-maintenance.md:347",
+        "book/es/scheduled-maintenance.md:347",
+        "book/ru/scheduled-maintenance.md:347"
+      ]
+    },
+    {
+      "url": "https://github.com/openai/codex-action",
+      "status": 200,
+      "final": "https://github.com/openai/codex-action",
+      "locations": [
+        "book/en/scheduled-maintenance.md:347",
+        "book/es/scheduled-maintenance.md:347",
+        "book/ru/scheduled-maintenance.md:347"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/code-review",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/docs/code-review",
+      "locations": [
+        "book/en/scheduled-maintenance.md:387",
+        "book/es/scheduled-maintenance.md:387",
+        "book/ru/scheduled-maintenance.md:387"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/security",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/docs/security",
+      "locations": [
+        "book/en/scheduled-maintenance.md:397",
+        "book/es/scheduled-maintenance.md:397",
+        "book/ru/scheduled-maintenance.md:397"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/customization/memories",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/docs/customization/memories",
+      "locations": [
+        "book/en/scheduled-maintenance.md:407",
+        "book/es/scheduled-maintenance.md:407",
+        "book/ru/scheduled-maintenance.md:407"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/agent-configuration/rules",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/docs/agent-configuration/rules",
+      "locations": [
+        "book/en/scheduled-maintenance.md:411",
+        "book/es/scheduled-maintenance.md:411",
+        "book/ru/scheduled-maintenance.md:411"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/cli/reference",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/docs/cli/reference",
+      "locations": [
+        "book/en/scheduled-maintenance.md:427",
+        "book/es/scheduled-maintenance.md:427",
+        "book/ru/scheduled-maintenance.md:427"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/hooks",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/docs/hooks",
+      "locations": [
+        "book/en/scheduled-maintenance.md:429",
+        "book/es/scheduled-maintenance.md:429",
+        "book/ru/scheduled-maintenance.md:429"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/agent-configuration/agents-md",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/docs/agent-configuration/agents-md",
+      "locations": [
+        "book/en/scheduled-maintenance.md:441",
+        "book/es/scheduled-maintenance.md:441",
+        "book/ru/scheduled-maintenance.md:441"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/build-skills",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/docs/build-skills",
+      "locations": [
+        "book/en/scheduled-maintenance.md:453",
+        "book/es/scheduled-maintenance.md:453",
+        "book/ru/scheduled-maintenance.md:453"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/environments/local-environment",
+      "status": 200,
+      "final": "https://learn.chatgpt.com/docs/environments/local-environment",
+      "locations": [
+        "book/en/scheduled-maintenance.md:467",
+        "book/es/scheduled-maintenance.md:467",
+        "book/ru/scheduled-maintenance.md:467"
+      ]
+    },
+    {
+      "url": "https://openai.com/index/harness-engineering/",
+      "error": "HTTP Error 403: Forbidden",
+      "locations": [
+        "book/en/scheduled-maintenance.md:491",
+        "book/es/scheduled-maintenance.md:491",
+        "book/ru/scheduled-maintenance.md:491"
+      ],
+      "web_verification": "Opened successfully via web tool; HTTP 403 from automated GET is not a broken link."
+    },
+    {
+      "url": "https://x.com/trq212/status/2033949937936085378",
+      "status": 200,
+      "final": "https://x.com/trq212/status/2033949937936085378",
+      "locations": [
+        "book/en/skills-as-packaged-workflows.md:145",
+        "book/es/skills-as-packaged-workflows.md:145",
+        "book/ru/skills-as-packaged-workflows.md:145"
+      ]
+    },
+    {
+      "url": "https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md",
+      "status": 200,
+      "final": "https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md",
+      "locations": [
+        "book/en/skills-as-packaged-workflows.md:148",
+        "book/es/skills-as-packaged-workflows.md:148",
+        "book/ru/skills-as-packaged-workflows.md:148"
+      ]
+    },
+    {
+      "url": "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/",
+      "status": 200,
+      "final": "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/",
+      "locations": [
+        "book/en/spec-driven-development.md:128",
+        "book/es/spec-driven-development.md:128",
+        "book/ru/spec-driven-development.md:128"
+      ]
+    },
+    {
+      "url": "https://github.com/obra/superpowers/blob/main/skills/brainstorming/SKILL.md",
+      "status": 200,
+      "final": "https://github.com/obra/superpowers/blob/main/skills/brainstorming/SKILL.md",
+      "locations": [
+        "book/en/superpowers.md:53",
+        "book/es/superpowers.md:53",
+        "book/ru/superpowers.md:53"
+      ]
+    },
+    {
+      "url": "https://github.com/openai/codex-plugin-cc",
+      "status": 200,
+      "final": "https://github.com/openai/codex-plugin-cc",
+      "locations": [
+        "book/en/writer-reviewer.md:127",
+        "book/es/writer-reviewer.md:127",
+        "book/ru/writer-reviewer.md:127"
+      ]
+    }
+  ]
+}

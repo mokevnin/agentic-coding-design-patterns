@@ -146,7 +146,7 @@ Si el test smoke falla antes de cualquier cambio, el agente registra el problema
 - **Dev containers y Codespaces** codifican el runtime, los paquetes del sistema y los comandos de preparación en una configuración versionada.
 - **La CI desde un checkout limpio** comprueba que la instalación es reproducible sin el estado local del autor.
 
-El enfoque se describe en el artículo [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents).
+El enfoque se describe en el artículo [Effective harnesses for long-running agents](https://www.anthropic.com/research/effective-harnesses-for-long-running-agents).
 
 ## Patrones relacionados
 

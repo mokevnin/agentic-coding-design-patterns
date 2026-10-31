@@ -16,8 +16,8 @@
 - **Kiro** поддерживает SDD в IDE. См. [официальный сайт](https://kiro.dev/).
 - **Tessl** использует спецификации при разработке. См. [официальный сайт](https://tessl.io/).
 - **BMAD-Method** организует работу ролевых агентов. См. [репозиторий](https://github.com/bmad-code-org/BMAD-METHOD).
-- **Spec Kitty** развивает Spec Kit с поддержкой git worktree. См. [репозиторий](https://github.com/Priivacy-ai/spec-kitty).
-- **Traycer** связывает планирование, выполнение и проверку в VS Code. См. [официальный сайт](https://traycer.ai/).
+- **Spec Kitty** развивает Spec Kit с поддержкой git worktree. См. [репозиторий](https://github.com/spec-kitty/spec-kitty).
+- **Traycer Desktop** объединяет агентов, планы, выполнение и ревью в отдельном рабочем пространстве. IDE-расширение прекращает работу 31 октября 2026 года; см. [переход на Desktop](https://docs.traycer.ai/extension).
 - **Get Shit Done** ведёт проект по фазам: обсуждение, спецификация, план, выполнение и проверка. См. [репозиторий](https://github.com/gsd-build/get-shit-done).
 - **Compound Engineering** от Every завершает каждый цикл шагом, который сохраняет усвоенное для следующих задач. См. [репозиторий](https://github.com/EveryInc/compound-engineering-plugin).
 - **HumanLayer** предлагает команды для цикла исследование → план → реализация. См. [репозиторий](https://github.com/humanlayer/humanlayer).

@@ -25,7 +25,7 @@
 ## Работа с контекстом
 
 * [Инженерия контекста](context-engineering.md)
-* [Память проекта](claude-md-memory.md)
+* [Память проекта](agents-md-memory.md)
 * [Словарь домена](domain-context-file.md)
 * [Журнал прогресса](progress-file.md)
 * [Передача сессии](handoff.md)
@@ -57,7 +57,7 @@
 
 * [Преждевременная спецификация](premature-specification.md)
 * [Преждевременный успех](premature-success.md)
-* [Раздутая память](bloated-claude-md.md)
+* [Раздутая память](bloated-agents-md.md)
 * [Вайб-кодинг](vibe-coding.md)
 * [Уан-шот](one-shotting.md)
 

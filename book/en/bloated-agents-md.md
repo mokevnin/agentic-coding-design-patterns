@@ -1,7 +1,7 @@
 ---
 kind: anti-pattern
 status: draft
-related: [claude-md-memory, skills-as-packaged-workflows, context-engineering, scheduled-maintenance]
+related: [agents-md-memory, skills-as-packaged-workflows, context-engineering, scheduled-maintenance]
 source_rev: 97d78fd1ec963c294695bf8f2b16cd2cc739b7cf
 ---
 
@@ -9,7 +9,7 @@ source_rev: 97d78fd1ec963c294695bf8f2b16cd2cc739b7cf
 
 ## Also known as
 
-Bloated CLAUDE.md, over-specified memory file, memory dump.
+Bloated AGENTS.md, over-specified memory file, memory dump.
 
 ## Context
 
@@ -43,13 +43,13 @@ The memory file accumulates hundreds of lines of duplicates, contradictions, and
 
 ## A better way
 
-Review the memory using the rule from [the pattern of the same name](claude-md-memory.md). For each line, find out which mistake it prevents. If the agent gets the same information from the code or follows the rule without a reminder, the line can be deleted. Move long procedures into [skills](skills-as-packaged-workflows.md) that load on demand. After trimming the file, check on real tasks whether the behavior you need is preserved.
+Review the memory using the rule from [the pattern of the same name](agents-md-memory.md). For each line, find out which mistake it prevents. If the agent gets the same information from the code or follows the rule without a reminder, the line can be deleted. Move long procedures into [skills](skills-as-packaged-workflows.md) that load on demand. After trimming the file, check on real tasks whether the behavior you need is preserved.
 
 ## Example
 
 **Before:**
 
-> CLAUDE.md has accumulated 420 lines. Most of it is an architecture overview, a list of packages, and copied linter rules. Among them, on line 287, is a ban on changing legacy code that the agent violated yesterday.
+> AGENTS.md has accumulated 420 lines. Most of it is an architecture overview, a list of packages, and copied linter rules. Among them, on line 287, is a ban on changing legacy code that the agent violated yesterday.
 
 ```mermaid
 %% TODO: node labels in English — sankey-beta (mermaid 12.0.0) does not parse non-ASCII
@@ -60,20 +60,20 @@ Architecture overview,Deleted,120
 Package list,Deleted,60
 Linter style guide,Deleted,85
 Release procedure,Skill /release,95
-Frontend rules,.claude/rules/,30
-Legacy ban,PreToolUse hook,5
-Commands and conventions,CLAUDE.md (stays),25
+Frontend rules,src/frontend/AGENTS.md,30
+Legacy ban,Required CI check,5
+Commands and conventions,AGENTS.md (stays),25
 ```
 
-In the diagram, you delete 265 lines that repeat information from the code and the linter settings. You move the 95-line release procedure into a skill, put the 30 lines of frontend rules into _.claude/rules/_, and enforce the five-line legacy ban with a hook. What stays in memory is 25 lines of commands and conventions. Each rule now lives where it applies.
+The diagram deletes 265 lines that repeat code and linter settings. Move the 95-line release procedure to a skill, the 30 frontend rules to _src/frontend/AGENTS.md_, and the five-line legacy ban to a required CI check. The root file keeps 25 lines of commands, conventions and pointers to area instructions.
 
-**After:**
+**After**
 
-> CLAUDE.md is down to 25 lines of commands and conventions. The agent gets the release procedure from the `/release` skill and loads the frontend rules from _.claude/rules/_ when working with the relevant files. A PreToolUse hook blocks writes to legacy code.
+> AGENTS.md is down to 25 lines. The agent gets the release procedure from `/release` and reads _src/frontend/AGENTS.md_ before frontend work. A required CI check rejects changes to legacy code.
 
 ## Related patterns and anti-patterns
 
-- [Project Memory](claude-md-memory.md) sets the rules for selecting and reviewing persistent instructions.
+- [Project Memory](agents-md-memory.md) sets the rules for selecting and reviewing persistent instructions.
 - [Skills](skills-as-packaged-workflows.md) let procedures load on demand.
 - [Context Engineering](context-engineering.md) explains how extra text gets in the way of using the information you need.
 - [Premature Specification](premature-specification.md) describes a similar attempt to gain control through excessive instructions.

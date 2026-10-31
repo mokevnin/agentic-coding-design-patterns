@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [context-engineering, handoff, claude-md-memory]
+related: [context-engineering, handoff, agents-md-memory]
 source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
@@ -36,7 +36,7 @@ In the journal, keep the information that the git history does not provide.
 
 Git shows the code changes, and the journal explains the state and direction of the work. For commit details, a reference is enough.
 
-Write the procedure for reading and updating the journal into [project memory](claude-md-memory.md), so that new sessions get this instruction.
+Write the procedure for reading and updating the journal into [project memory](agents-md-memory.md), so that new sessions get this instruction.
 
 ## Structure
 
@@ -97,7 +97,7 @@ For a short task, a plan within the session is usually enough.
 
 ## Implementation
 
-1. Create the journal and write the procedure for using it into [project memory](claude-md-memory.md).
+1. Create the journal and write the procedure for using it into [project memory](agents-md-memory.md).
 2. Set out the state, the next step, the problems, and the discarded approaches. Phrase the next step so that it can be carried out after the session breaks off.
 3. Explain the reasons for decisions and the unfinished work. Refer to code changes through commits.
 4. Make updating the journal part of finishing a significant step, together with verification and a commit.
@@ -154,5 +154,5 @@ The agent reads the journal and the git log, then continues with `RefundService`
 
 - [Session Handoff](handoff.md) prepares a document for a specific transition between people or agents.
 - [Context Engineering](context-engineering.md) helps select the journal's contents.
-- [Project Memory](claude-md-memory.md) sets the procedure for reading and updating the journal.
+- [Project Memory](agents-md-memory.md) sets the procedure for reading and updating the journal.
 - [Spec-Driven Development](spec-driven-development.md) ties the state of the work to the specification and the tasks.

@@ -90,7 +90,7 @@ Para una elección visual o un prototipo exploratorio pueden encajar mejor la [c
 5. Pide cambiar la implementación hasta que pase, sin tocar el test. Obtén la salida de la ejecución.
 6. Pasa el código a un revisor fresco para buscar stubs de casos particulares y casos omitidos.
 7. Pide la refactorización por separado, bajo la protección de tests en verde.
-8. Repite el ciclo para el siguiente comportamiento. Fija el orden en la [memoria del proyecto](claude-md-memory.md).
+8. Repite el ciclo para el siguiente comportamiento. Fija el orden en la [memoria del proyecto](agents-md-memory.md).
 
 [Superpowers](superpowers.md) incluye `test-driven-development` en la implementación de las tareas. En el [pack de Matt Pocock](matt-pocock-skills.md), `/tdd` también fija las costuras de testing y el trabajo de un escenario a la vez.
 
@@ -121,7 +121,6 @@ El revisor comprueba el interceptor común. El test conserva el escenario origin
 
 ## Usos conocidos
 
-- **Claude Code best practices** describen confirmar el fallo, hacer commit de los tests, implementar y comprobar el amaño.
 - **Superpowers** hace del TDD una parte obligatoria de la ejecución del plan.
 - **Los skills de Matt Pocock** usan `/tdd` con costuras de testing acordadas.
 - **Kent Beck** describió la práctica en el libro _Test-Driven Development: By Example_.

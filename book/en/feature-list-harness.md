@@ -89,7 +89,7 @@ For a small task, a plan or _tasks.md_ is usually enough.
 
 1. Expand the requirements into verifiable scenarios before implementation. For example, "the user opens a chat, asks a question, and sees an answer" describes a result that can be reproduced.
 2. Store the category, description, verification steps, and `passes` in JSON. Set the initial status to `false`.
-3. Write into [Project Memory](claude-md-memory.md) that the agent changes only `passes`, and only based on the result of an end-to-end check.
+3. Write into [Project Memory](agents-md-memory.md) that the agent changes only `passes`, and only based on the result of an end-to-end check.
 4. Start a session by reading the ledger and running a smoke test. Then pick an item, implement it, verify it, and update the status.
 5. Keep the reasons for decisions in the [Progress Journal](progress-file.md) and the statuses in the ledger.
 6. Review the ledger's contents as requirements, and spot-rerun the scenarios of finished features.

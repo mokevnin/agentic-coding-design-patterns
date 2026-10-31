@@ -90,7 +90,7 @@ For a visual choice or an exploratory prototype, [screenshot checks](give-agent-
 5. Ask for the implementation to be changed until it passes, keeping the test as is. Get the run output.
 6. Hand the code to a fresh reviewer to look for special-case stubs and missing cases.
 7. Ask for refactoring separately, under the protection of green tests.
-8. Repeat the cycle for the next behavior. Anchor the order in [Project Memory](claude-md-memory.md).
+8. Repeat the cycle for the next behavior. Anchor the order in [Project Memory](agents-md-memory.md).
 
 [Superpowers](superpowers.md) includes `test-driven-development` in task implementation. In [Matt Pocock's pack](matt-pocock-skills.md), `/tdd` also sets testing seams and works one scenario at a time.
 
@@ -121,7 +121,6 @@ The reviewer checks the shared interceptor. The test preserves the original scen
 
 ## Known uses
 
-- **Claude Code best practices** describe confirming the failure, committing the tests, implementing, and checking for overfitting.
 - **Superpowers** makes TDD a mandatory part of executing the plan.
 - **Matt Pocock's skills** use `/tdd` with agreed testing seams.
 - **Kent Beck** described the practice in _Test-Driven Development: By Example_.

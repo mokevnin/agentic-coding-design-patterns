@@ -20,8 +20,8 @@ Las siguientes herramientas se mencionan en el libro sin reseñas propias.
 - **Kiro** da soporte a SDD en un IDE. Consulta el [sitio oficial](https://kiro.dev/).
 - **Tessl** usa especificaciones durante el desarrollo. Consulta el [sitio oficial](https://tessl.io/).
 - **BMAD-Method** organiza el trabajo de agentes con roles. Consulta el [repositorio](https://github.com/bmad-code-org/BMAD-METHOD).
-- **Spec Kitty** amplía Spec Kit con soporte para git worktree. Consulta el [repositorio](https://github.com/Priivacy-ai/spec-kitty).
-- **Traycer** conecta la planificación, la ejecución y la verificación en VS Code. Consulta el [sitio oficial](https://traycer.ai/).
+- **Spec Kitty** amplía Spec Kit con soporte para git worktree. Consulta el [repositorio](https://github.com/spec-kitty/spec-kitty).
+- **Traycer Desktop** reúne agentes, planes, ejecución y revisión en un espacio de trabajo. La extensión de IDE se retira el 31 de octubre de 2026; consulta la [migración a Desktop](https://docs.traycer.ai/extension).
 - **Get Shit Done** lleva el proyecto por fases: discusión, especificación, plan, ejecución y verificación. Consulta el [repositorio](https://github.com/gsd-build/get-shit-done).
 - **Compound Engineering** de Every cierra cada ciclo con un paso que guarda lo aprendido para las tareas siguientes. Consulta el [repositorio](https://github.com/EveryInc/compound-engineering-plugin).
 - **HumanLayer** ofrece comandos para el ciclo investigación → plan → implementación. Consulta el [repositorio](https://github.com/humanlayer/humanlayer).

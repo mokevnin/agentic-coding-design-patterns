@@ -1,7 +1,7 @@
 ---
 group: sdd
 kind: tool
-checked_on: 2026-09-21
+checked_on: 2026-10-31
 status: draft
 related: [spec-driven-development]
 source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
@@ -9,7 +9,7 @@ source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 
 # OpenSpec
 
-_Commands and capabilities checked on September 21, 2026._
+_Commands and capabilities of OpenSpec 1.16.0 checked on October 31, 2026._
 
 [OpenSpec](https://github.com/Fission-AI/OpenSpec) by Fission-AI organizes [SDD](spec-driven-development.md) around a **change** with propose, review, apply and archive stages. Standing specifications describe the system, and deltas record proposed changes to the requirements.
 
@@ -17,7 +17,7 @@ OpenSpec supports various coding agents and assistants, including Claude Code, C
 
 ## Installation
 
-The CLI is installed via npm and requires Node.js ≥ 20.19.
+Installation through npm requires Node.js >=22.12.0. The standalone CLI binary does not require Node.js; choose a method in the [official installation guide](https://github.com/Fission-AI/OpenSpec#installation). The supported npm option is shown below.
 
 ```sh
 npm install -g @fission-ai/openspec@latest
@@ -34,6 +34,8 @@ The set of commands depends on the profile. Choose one with `openspec config pro
 2. `/opsx:propose <idea>` creates a proposal package that you review before implementation.
 3. `/opsx:apply` carries out the tasks from the checklist.
 4. `/opsx:archive` offers to sync the deltas into the standing specifications if that has not been done yet, and moves the change to the archive.
+
+When requirements change after a proposal is prepared, `/opsx:update` revises the planning artifacts. `/opsx:sync` merges deltas into the standing specifications; synchronization is also available during archiving.
 
 The expanded profile adds `/opsx:new`, `/opsx:continue`, `/opsx:ff`, `/opsx:verify`, `/opsx:bulk-archive` and `/opsx:onboard`. They support step-by-step preparation, verification and archiving of large changes.
 

@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [context-engineering, domain-context-file, bloated-claude-md, scheduled-maintenance]
+related: [context-engineering, domain-context-file, bloated-agents-md, scheduled-maintenance]
 source_rev: 97d78fd1ec963c294695bf8f2b16cd2cc739b7cf
 ---
 
@@ -13,7 +13,7 @@ Keep a persistent file in the repository with the project's commands, convention
 
 ## Also known as
 
-CLAUDE.md, AGENTS.md, memory file, project rules, custom instructions.
+AGENTS.md, memory file, project rules, custom instructions.
 
 ## Problem
 
@@ -40,35 +40,30 @@ The memory file guides the agent's behavior but does not guarantee the rules are
 
 ## Structure
 
-The diagram shows the memory levels of Claude Code.
+The diagram combines project-wide instructions with rules for the chosen area. State in the root file when to read nested instructions: automatic discovery depends on the agent.
 
 ```mermaid
 ---
-title: a saved rule is available to every session
+title: project and area instructions live beside the code
 ---
-flowchart LR
-  org["organization<br/>managed policy"]
-  user["user<br/>~/.claude/CLAUDE.md"]
-  project["project — shared, in git<br/>./CLAUDE.md · AGENTS.md"]:::accent
-  local["local — in .gitignore<br/>CLAUDE.local.md"]
-  nested["nested CLAUDE.md files<br/>in subdirectories — on demand"]:::muted
-  window["Session context window<br/>layers are concatenated at launch:<br/>from the broadest level to the narrowest<br/>every line costs tokens in every session"]
-  org --> window
-  user --> window
-  project --> window
-  local --> window
-  nested -.-> window
+flowchart TB
+  root["AGENTS.md<br/>project commands and conventions"]:::accent
+  area["src/billing/AGENTS.md<br/>billing rules"]:::muted
+  task["A billing task"]
+  session["Session context<br/>project rules + area rules"]
+  root --> session
+  area --> session
+  task -- "selects the area" --> area
 ```
 
-The organization sets a managed policy, the user keeps personal preferences, and the team records the project rules in git. A local file supplements them with the developer's settings for a specific repository. Nested files provide instructions for individual directories when the agent works with them. The pattern is about the team file that goes through review together with the code.
+The root file stores shared commands; the nested file refines the rules for its directory. The agent needs both sources. Check which files it actually loaded before relying on a rule.
 
 ## Participants / Components
 
-- **Project memory file** (_./CLAUDE.md_, _./AGENTS.md_) keeps the team's rules in git and goes through review.
-- **User's personal file** (_~/.claude/CLAUDE.md_) keeps the developer's preferences for their projects.
-- **Local file** (_CLAUDE.local.md_ in _.gitignore_) holds the developer's settings for this project.
+- **Root AGENTS.md** keeps team rules in git and goes through review.
+- **Nested AGENTS.md** refines instructions for one area of the project.
 - **Developer and team** add rules based on observed failures and review the file regularly.
-- **Agent** reads the instructions and, on request, appends new rules.
+- **Agent** reads applicable instructions and appends new rules on request.
 
 ## When to use
 
@@ -87,27 +82,39 @@ The organization sets a managed policy, the user keeps personal preferences, and
 
 ## Implementation
 
-1. Generate a starter file with the `/init` command in Claude Code. Check the commands and conventions it found, then delete the retelling of the directory structure and dependencies. Keep the information that is hard for the agent to get from the code.
-2. Phrase actions so they can be checked. For example, "run `make test` before committing" sets a specific verification command.
-3. Keep the file short. A guideline of two hundred lines helps you notice growth, but each rule still has to solve an observed problem.
-4. Move rules for individual parts of the project into files bound to paths. In Claude Code this is what _.claude/rules/_ with the `paths` field is for.
-5. Keep team rules in git, personal preferences at the user level, and local repository settings in a file under _.gitignore_.
-6. If you explain the same rule a second time, ask the agent to add it to the memory file. Regularly delete outdated instructions.
+### What does not depend on the agent
 
-### Shared memory through AGENTS.md
+Create _AGENTS.md_ in the repository root. Record verified commands and conventions that are hard to infer from code. For example, "run `make test` before committing" specifies an observable action.
 
-The [AGENTS.md](https://agents.md/) convention sets a common name for the instructions file across agent tools, including Codex, Cursor, Copilot, and Gemini CLI. In a monorepo, nested files let you refine the rules for individual directories.
+Keep the file short and add rules based on observed failures. Move area-specific rules to nested _AGENTS.md_ files; state in the root file which tasks require reading them. Keep team instructions in git and personal settings in the agent's user configuration.
 
-For a team with AGENTS.md, the _CLAUDE.md_ file can point to it via `ln -s AGENTS.md CLAUDE.md`. Another option uses an `@AGENTS.md` import at the top of _CLAUDE.md_ and lets you add separate instructions for Claude.
+The [AGENTS.md](https://agents.md/) convention provides a shared filename, but discovery depends on the tool. Verify that the required file loaded before relying on a rule. Check changed instructions on real tasks.
 
-### In the spec-driven development toolkits
+### Claude Code
 
-SDD frameworks also keep project rules in persistent documents that the agent uses in different phases of the work.
+Checked against Claude Code 2.1.316 on 2026-10-31.
 
-- **GitHub Spec Kit** keeps the project's principles in a constitution, which is created through `/speckit.constitution` and checked against the specification and plan.
-- **OpenSpec** keeps the project's shared context in its configuration documents.
-- **Kiro** attaches steering files describing the product, technologies, and project structure.
-- **Matt Pocock's skills** move procedures into skills, so that AGENTS.md keeps only short project rules.
+#### Loading AGENTS.md
+
+Claude Code supports native _AGENTS.md_ loading. In a new session, `/context` lets you inspect loaded instructions; `/config` opens the Project instructions choice. Project and organization settings affect loading. Root and nested files need no symlinks. See the [AGENTS.md documentation](https://code.claude.com/docs/en/memory#agentsmd).
+
+##### Example
+
+```text
+/context
+```
+
+### Codex
+
+Checked against Codex CLI 0.166.0 on 2026-10-31.
+
+#### Loading AGENTS.md
+
+Codex collects instructions from the project root toward the working directory. Nested _AGENTS.md_ files refine area rules. Check that required instructions fit within `project_doc_max_bytes`; a file on disk does not prove it loaded. See the [AGENTS.md guide](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+
+##### Example
+
+> Which AGENTS.md files apply in the current directory?
 
 ## Example
 
@@ -135,13 +142,13 @@ The agent gets a task to add a failed-charge notification to billing. The memory
 
 A week later, review finds that the agent ran `npm install` in a pnpm project. You extend the memory.
 
-> Add a rule to CLAUDE.md that dependencies are installed only through pnpm. State that package-lock.json must not appear in the repository.
+> Add a rule to AGENTS.md that dependencies are installed only through pnpm. State that package-lock.json must not appear in the repository.
 
 The next session will get this rule when it reads the project memory.
 
 ## Anti-patterns and common mistakes
 
-- **Bloated memory.** Duplicates and contradictions make it harder to find the applicable rules. This mistake is covered in a separate chapter, [Bloated Memory](bloated-claude-md.md).
+- **Bloated memory.** Duplicates and contradictions make it harder to find the applicable rules. This mistake is covered in a separate chapter, [Bloated Memory](bloated-agents-md.md).
 - **A dump of derivables.** A retelling of the directory structure and dependencies takes up context, although the agent can get this information from the project files.
 - **Expecting enforcement.** A text prohibition on pushing to main does not block the command. Enforce the boundary with permissions.
 - **Personal content in the team file.** Keep personal sandbox URLs and the developer's preferences at the user or local level.
@@ -149,7 +156,7 @@ The next session will get this rule when it reads the project memory.
 
 ## Known uses
 
-- **Claude Code** uses _CLAUDE.md_, generation via `/init`, and modular rules in _.claude/rules/_. Auto memory supplements them with the agent's notes.
+- **Claude Code** supports native _AGENTS.md_ loading. Personal Auto memory notes are stored separately from team instructions.
 - **AGENTS.md** sets a common instructions format for several agent tools.
 - **Editor rules** implement the same idea through _.cursor/rules_ in Cursor and custom instructions in GitHub Copilot.
 - **SDD toolkits** keep shared principles in the GitHub Spec Kit constitution, Kiro's steering files, and OpenSpec's context documents.
@@ -159,5 +166,5 @@ The next session will get this rule when it reads the project memory.
 - [Context Engineering](context-engineering.md) helps select information for the persistent memory file.
 - [Domain Vocabulary](domain-context-file.md) supplements working instructions with definitions of the project's terms.
 - [Spec-Driven Development](spec-driven-development.md) uses the project's conventions when preparing the specification and plan.
-- [Bloated Memory](bloated-claude-md.md) describes a memory file that, without review, has accumulated duplicates, contradictions, and a retelling of the code.
+- [Bloated Memory](bloated-agents-md.md) describes a memory file that, without review, has accumulated duplicates, contradictions, and a retelling of the code.
 - [Scheduled Maintenance](scheduled-maintenance.md) checks the memory file against practice once a month and removes what no longer helps.

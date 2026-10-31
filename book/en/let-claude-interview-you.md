@@ -124,9 +124,9 @@ These are the conditions of a sample product. In your own product, pick values t
 
 ## Known uses
 
-- **Claude Code best practices** advise running the interview through the AskUserQuestion tool, saving the outcome to SPEC.md and implementing it in a fresh session.
+- **Claude Code best practices** [recommend](https://code.claude.com/docs/en/best-practices#brainstorm-with-claude-first) starting with an interview, saving the outcome to SPEC.md and implementing it in a fresh session.
 - **Kiro** drafts requirements in a dialogue with you, and you confirm them phase by phase.
-- **Matt Pocock's skills** save the outcomes of `/grill-with-docs` to CONTEXT.md and ADRs — architectural decision records.
+- **Matt Pocock's skills** save the outcomes of `/grill-with-docs` to GLOSSARY.md and ADRs — architectural decision records.
 
 ## Related patterns
 

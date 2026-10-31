@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [context-engineering, domain-context-file, bloated-claude-md, scheduled-maintenance]
+related: [context-engineering, domain-context-file, bloated-agents-md, scheduled-maintenance]
 source_rev: 97d78fd1ec963c294695bf8f2b16cd2cc739b7cf
 ---
 
@@ -13,7 +13,7 @@ Mantener en el repositorio un archivo permanente con los comandos, las convencio
 
 ## También conocido como
 
-CLAUDE.md, AGENTS.md, memory file, archivo de memoria, project rules, custom instructions.
+AGENTS.md, memory file, archivo de memoria, project rules, custom instructions.
 
 ## Problema
 
@@ -40,35 +40,30 @@ El archivo de memoria orienta el comportamiento del agente, pero no garantiza qu
 
 ## Estructura
 
-El diagrama muestra los niveles de memoria de Claude Code.
+El diagrama combina las instrucciones generales con las reglas del área elegida. Indica en el archivo raíz cuándo leer las instrucciones anidadas: su carga automática depende del agente.
 
 ```mermaid
 ---
-title: la regla guardada está disponible en cada sesión
+title: las instrucciones generales y del área viven junto al código
 ---
-flowchart LR
-  org["organización<br/>política gestionada"]
-  user["usuario<br/>~/.claude/CLAUDE.md"]
-  project["proyecto — compartido, en git<br/>./CLAUDE.md · AGENTS.md"]:::accent
-  local["local — en .gitignore<br/>CLAUDE.local.md"]
-  nested["CLAUDE.md anidados<br/>en subdirectorios — bajo demanda"]:::muted
-  window["Ventana de contexto de la sesión<br/>las capas se concatenan al inicio:<br/>del nivel más amplio al más estrecho<br/>cada línea cuesta tokens en cada sesión"]
-  org --> window
-  user --> window
-  project --> window
-  local --> window
-  nested -.-> window
+flowchart TB
+  root["AGENTS.md<br/>comandos y convenciones del proyecto"]:::accent
+  area["src/billing/AGENTS.md<br/>reglas de facturación"]:::muted
+  task["Una tarea de facturación"]
+  session["Contexto de la sesión<br/>reglas generales + reglas del área"]
+  root --> session
+  area --> session
+  task -- "elige el área" --> area
 ```
 
-La organización fija una política gestionada, el usuario guarda sus preferencias personales y el equipo registra las reglas del proyecto en git. Un archivo local las complementa con los ajustes del desarrollador para un repositorio concreto. Los archivos anidados aportan instrucciones para directorios concretos cuando el agente trabaja con ellos. El patrón trata del archivo del equipo, que pasa por la revisión junto con el código.
+El archivo raíz guarda los comandos comunes; el anidado precisa las reglas de su directorio. El agente necesita ambas fuentes. Comprueba qué archivos ha cargado antes de confiar en una regla.
 
 ## Participantes / Componentes
 
-- **Archivo de memoria del proyecto** (_./CLAUDE.md_, _./AGENTS.md_) guarda las reglas del equipo en git y pasa por la revisión.
-- **Archivo personal del usuario** (_~/.claude/CLAUDE.md_) guarda las preferencias del desarrollador para sus proyectos.
-- **Archivo local** (_CLAUDE.local.md_ en _.gitignore_) contiene los ajustes del desarrollador para este proyecto.
+- **AGENTS.md raíz** guarda las reglas del equipo en git y pasa por revisión.
+- **AGENTS.md anidado** precisa las instrucciones de un área del proyecto.
 - **Desarrollador y equipo** añaden reglas a partir de fallos observados y revisan el archivo con regularidad.
-- **Agente** lee las instrucciones y, si se le pide, añade reglas nuevas.
+- **Agente** lee las instrucciones aplicables y añade reglas cuando se le pide.
 
 ## Cuándo aplicarlo
 
@@ -87,27 +82,39 @@ La organización fija una política gestionada, el usuario guarda sus preferenci
 
 ## Implementación
 
-1. Genera un archivo inicial con el comando `/init` en Claude Code. Comprueba los comandos y convenciones que encontró y luego elimina el resumen de la estructura de directorios y de las dependencias. Deja la información que al agente le cuesta obtener del código.
-2. Formula las acciones de modo que se puedan comprobar. Por ejemplo, «antes del commit ejecuta `make test`» fija un comando de verificación concreto.
-3. Mantén el archivo corto. La referencia de doscientas líneas ayuda a notar el crecimiento, pero cada regla debe seguir resolviendo un problema observado.
-4. Lleva las reglas para partes concretas del proyecto a archivos ligados a rutas. En Claude Code para eso sirve _.claude/rules/_ con el campo `paths`.
-5. Guarda las reglas del equipo en git, las preferencias personales en el nivel del usuario y los ajustes locales del repositorio en un archivo bajo _.gitignore_.
-6. Si explicas una misma regla por segunda vez, pide al agente que la añada al archivo de memoria. Elimina con regularidad las instrucciones obsoletas.
+### Lo que no depende del agente
 
-### Memoria común mediante AGENTS.md
+Crea _AGENTS.md_ en la raíz del repositorio. Anota comandos comprobados y convenciones difíciles de deducir del código. Por ejemplo, «ejecuta `make test` antes del commit» especifica una acción observable.
 
-La convención [AGENTS.md](https://agents.md/) fija un nombre común para el archivo de instrucciones en las herramientas de agentes, entre ellas Codex, Cursor, Copilot y Gemini CLI. En un monorepo, los archivos anidados permiten precisar las reglas para directorios concretos.
+Mantén el archivo corto y añade reglas a partir de fallos observados. Lleva las reglas de cada área a archivos _AGENTS.md_ anidados; indica en el archivo raíz qué tareas requieren leerlos. Guarda las instrucciones del equipo en git y los ajustes personales en la configuración de usuario del agente.
 
-Para un equipo con AGENTS.md, el archivo _CLAUDE.md_ puede apuntar a él mediante `ln -s AGENTS.md CLAUDE.md`. Otra opción usa el import `@AGENTS.md` al principio de _CLAUDE.md_ y permite añadir instrucciones propias para Claude.
+La convención [AGENTS.md](https://agents.md/) da un nombre común, pero el descubrimiento depende de la herramienta. Comprueba que el archivo se cargó antes de confiar en una regla. Verifica los cambios de instrucciones con tareas reales.
 
-### En los toolkits de desarrollo orientado a especificaciones
+### Claude Code
 
-Los frameworks de SDD también guardan las reglas del proyecto en documentos permanentes que el agente usa en distintas fases del trabajo.
+Comprobado con Claude Code 2.1.316 el 2026-10-31.
 
-- **GitHub Spec Kit** guarda los principios del proyecto en una constitución, que se crea con `/speckit.constitution` y se coteja con la especificación y el plan.
-- **OpenSpec** guarda el contexto común del proyecto en sus documentos de configuración.
-- **Kiro** conecta archivos de steering con la descripción del producto, las tecnologías y la estructura del proyecto.
-- **Skills de Matt Pocock** llevan los procedimientos a skills, para que en AGENTS.md queden reglas breves del proyecto.
+#### Carga de AGENTS.md
+
+Claude Code admite la carga nativa de _AGENTS.md_. En una sesión nueva, `/context` permite inspeccionar las instrucciones cargadas; `/config` abre la selección Project instructions. Los ajustes del proyecto y de la organización influyen en la carga. Los archivos raíz y anidados no necesitan enlaces simbólicos. Consulta la [documentación de AGENTS.md](https://code.claude.com/docs/en/memory#agentsmd).
+
+##### Ejemplo
+
+```text
+/context
+```
+
+### Codex
+
+Comprobado con Codex CLI 0.166.0 el 2026-10-31.
+
+#### Carga de AGENTS.md
+
+Codex reúne instrucciones desde la raíz hasta el directorio de trabajo. Los _AGENTS.md_ anidados precisan las reglas del área. Comprueba que las instrucciones necesarias caben en `project_doc_max_bytes`; que un archivo exista no demuestra que se cargó. Consulta la [guía de AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+
+##### Ejemplo
+
+> ¿Qué archivos AGENTS.md se aplican al directorio actual?
 
 ## Ejemplo
 
@@ -135,13 +142,13 @@ El agente recibe la tarea de añadir a facturación una notificación de cobro f
 
 Una semana después, la revisión descubre que el agente ejecutó `npm install` en un proyecto con pnpm. Amplías la memoria.
 
-> Añade a CLAUDE.md la regla de instalar las dependencias solo con pnpm. Indica que package-lock.json no debe aparecer en el repositorio.
+> Añade a AGENTS.md la regla de instalar las dependencias solo con pnpm. Indica que package-lock.json no debe aparecer en el repositorio.
 
 La sesión siguiente obtendrá esta regla al leer la memoria del proyecto.
 
 ## Antipatrones y errores comunes
 
-- **Memoria hinchada.** Los duplicados y las contradicciones dificultan encontrar las reglas aplicables. Este error se analiza en un capítulo aparte, [«Memoria hinchada»](bloated-claude-md.md).
+- **Memoria hinchada.** Los duplicados y las contradicciones dificultan encontrar las reglas aplicables. Este error se analiza en un capítulo aparte, [«Memoria hinchada»](bloated-agents-md.md).
 - **Vertedero de lo deducible.** El resumen de la estructura de directorios y de las dependencias ocupa contexto, aunque el agente puede obtener esa información de los archivos del proyecto.
 - **Esperar imposición.** Una prohibición de texto de hacer push a main no bloquea el comando. Refuerza el límite con permisos.
 - **Lo personal en el archivo del equipo.** Guarda las URLs de entornos personales y las preferencias del desarrollador en el nivel del usuario o en el local.
@@ -149,7 +156,7 @@ La sesión siguiente obtendrá esta regla al leer la memoria del proyecto.
 
 ## Usos conocidos
 
-- **Claude Code** usa _CLAUDE.md_, la generación con `/init` y reglas modulares en _.claude/rules/_. La auto memory las complementa con notas del agente.
+- **Claude Code** admite la carga nativa de _AGENTS.md_. Las notas personales de Auto memory se guardan aparte de las instrucciones del equipo.
 - **AGENTS.md** fija un formato común de instrucciones para varias herramientas de agentes.
 - **Reglas de los editores** aplican la misma idea mediante _.cursor/rules_ en Cursor y custom instructions en GitHub Copilot.
 - **Toolkits de SDD** guardan los principios comunes en la constitución de GitHub Spec Kit, los archivos de steering de Kiro y los documentos de contexto de OpenSpec.
@@ -159,5 +166,5 @@ La sesión siguiente obtendrá esta regla al leer la memoria del proyecto.
 - [Ingeniería de contexto](context-engineering.md) ayuda a seleccionar la información para el archivo de memoria permanente.
 - [Vocabulario del dominio](domain-context-file.md) complementa las instrucciones de trabajo con definiciones de los términos del proyecto.
 - [Desarrollo orientado a especificaciones](spec-driven-development.md) usa las convenciones del proyecto al preparar la especificación y el plan.
-- [Memoria hinchada](bloated-claude-md.md) describe un archivo de memoria en el que, sin revisión, se han acumulado duplicados, contradicciones y un resumen del código.
+- [Memoria hinchada](bloated-agents-md.md) describe un archivo de memoria en el que, sin revisión, se han acumulado duplicados, contradicciones y un resumen del código.
 - [Mantenimiento programado](scheduled-maintenance.md) contrasta una vez al mes el archivo de memoria con la práctica y quita lo que sobra.

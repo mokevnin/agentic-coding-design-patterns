@@ -25,7 +25,7 @@
 ## Working with Context
 
 * [Context Engineering](context-engineering.md)
-* [Project Memory](claude-md-memory.md)
+* [Project Memory](agents-md-memory.md)
 * [Domain Vocabulary](domain-context-file.md)
 * [Progress Journal](progress-file.md)
 * [Session Handoff](handoff.md)
@@ -57,7 +57,7 @@
 
 * [Premature Specification](premature-specification.md)
 * [Premature Success](premature-success.md)
-* [Bloated Memory](bloated-claude-md.md)
+* [Bloated Memory](bloated-agents-md.md)
 * [Vibe Coding](vibe-coding.md)
 * [One-Shotting](one-shotting.md)
 

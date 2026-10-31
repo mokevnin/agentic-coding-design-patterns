@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [claude-md-memory, give-agent-a-way-to-verify, isolated-parallel-work]
+related: [agents-md-memory, give-agent-a-way-to-verify, isolated-parallel-work]
 source_rev:
 ---
 
@@ -164,11 +164,11 @@ $ echo $?
 - **Claude Code sandboxing** задаёт ограничения файловой системы и сети на уровне ОС, включая дочерние процессы, и позволяет свободно работать внутри разрешённой области.
 - **Git hooks и CI** применяют тот же принцип к формату коммита, тестам и правилам ветки.
 
-Механизмы описаны в документации [GitHub Copilot hooks](https://docs.github.com/en/copilot/concepts/agents/hooks) и статье о [Claude Code sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing).
+Механизмы описаны в документации [GitHub Copilot hooks](https://docs.github.com/en/copilot/concepts/customizations/hooks) и статье о [Claude Code sandboxing](https://www.anthropic.com/research/claude-code-sandboxing).
 
 ## Связанные паттерны
 
-- [Память проекта](claude-md-memory.md) хранит рекомендации и объясняет назначение ограничений.
+- [Память проекта](agents-md-memory.md) хранит рекомендации и объясняет назначение ограничений.
 - [Петля обратной связи](give-agent-a-way-to-verify.md) проверяет корректность полученного результата.
 - [Изолированная параллельная работа](isolated-parallel-work.md) использует worktree, границы которых можно закрепить песочницей и правами.
-- [Раздутая память](bloated-claude-md.md) описывает накопление запретов, которые полезнее перенести в исполняемые механизмы.
+- [Раздутая память](bloated-agents-md.md) описывает накопление запретов, которые полезнее перенести в исполняемые механизмы.

@@ -25,7 +25,7 @@
 ## Trabajo con el contexto
 
 * [Ingeniería de contexto](context-engineering.md)
-* [Memoria del proyecto](claude-md-memory.md)
+* [Memoria del proyecto](agents-md-memory.md)
 * [Vocabulario del dominio](domain-context-file.md)
 * [Diario de progreso](progress-file.md)
 * [Traspaso de sesión](handoff.md)
@@ -57,7 +57,7 @@
 
 * [Especificación prematura](premature-specification.md)
 * [Éxito prematuro](premature-success.md)
-* [Memoria hinchada](bloated-claude-md.md)
+* [Memoria hinchada](bloated-agents-md.md)
 * [Vibe coding](vibe-coding.md)
 * [One-shotting](one-shotting.md)
 

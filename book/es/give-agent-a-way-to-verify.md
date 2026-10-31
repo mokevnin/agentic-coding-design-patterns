@@ -92,7 +92,7 @@ El agente repite el ciclo de ediciones y comprobaciones hasta tener éxito, y lu
 4. Protege los criterios del amaño. Acuerda por separado cualquier cambio en un test o debilitamiento de una condición; si hace falta, fija la restricción con un hook.
 5. Para trabajo autónomo largo, añade control de finalización y una revisión en un contexto fresco.
 6. Acepta el trabajo por los registros del entorno: el log de llamadas a herramientas, el log de CI o el resultado del hook. El relato del resultado en el mensaje final del agente no cuenta como evidencia.
-7. Fija los comandos de verificación en la [memoria del proyecto](claude-md-memory.md) para que el agente los conozca en cada sesión.
+7. Fija los comandos de verificación en la [memoria del proyecto](agents-md-memory.md) para que el agente los conozca en cada sesión.
 
 En [OpenSpec](openspec.md), [Superpowers](superpowers.md) y las [skills de Matt Pocock](matt-pocock-skills.md), las comprobaciones forman parte del flujo de implementación. El mecanismo concreto depende del conjunto de skills y de los criterios de la tarea.
 

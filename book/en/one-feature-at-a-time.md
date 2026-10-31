@@ -89,7 +89,7 @@ A format migration or a mass rename needs a separate pass with its own completio
 
 ## Implementation
 
-1. Write into [Project Memory](claude-md-memory.md) the rule of finishing one feature per pass and recording incidental findings separately.
+1. Write into [Project Memory](agents-md-memory.md) the rule of finishing one feature per pass and recording incidental findings separately.
 2. Name a specific item, or ask the agent to pick the next failing feature.
 3. Define completion as a check, an updated status, a commit, and a journal entry.
 4. Save incidental bugs and ideas as separate tasks if they do not block the current work.

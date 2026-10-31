@@ -121,8 +121,8 @@ En la ventana quedaron los archivos leídos y una única petición precisada. El
 ## Usos conocidos
 
 - **Claude Code** abre el menú de rebobinado con `/rewind` o con un doble `Esc`. Puedes restaurar el código y la conversación, solo la conversación o solo el código, y también comprimir parte de la conversación en un resumen. `/branch` y `claude --continue --fork-session` copian la conversación y conservan el original. La [documentación](https://code.claude.com/docs/en/checkpointing) advierte de que los checkpoints no registran los comandos de shell ni los cambios externos y no sustituyen a git.
-- **El equipo de Claude Code** [aconseja](https://claude.com/blog/using-claude-code-session-management-and-1m-context) rebobinar la conversación en lugar de corregir un intento fallido y propone anotar la lección con «Summarize from here» antes de rebobinar.
-- **Codex** permite, con un doble `Esc`, [editar un mensaje anterior](https://learn.chatgpt.com/docs/developer-commands?surface=cli) y bifurcar la conversación desde ese punto. El comando `/fork` copia la conversación actual, `/side` abre una bifurcación temporal para una pregunta lateral y `/worktree` continúa la conversación en un worktree nuevo.
+- **El equipo de Claude Code** [aconseja](https://claude.com/resources/articles/using-claude-code-session-management-and-1m-context) rebobinar la conversación en lugar de corregir un intento fallido y propone anotar la lección con «Summarize from here» antes de rebobinar.
+- **Codex** [admite](https://learn.chatgpt.com/docs/developer-commands?surface=cli) `/fork` para copiar la conversación, `/side` para una rama temporal con una pregunta lateral y `/worktree` para continuar la conversación en un árbol de trabajo nuevo.
 - **HumanLayer** [describe](https://www.humanlayer.dev/blog/context-forking-to-save-time-trouble-and-tokens) tres motivos para bifurcar: corregir el rumbo, comparar variantes de diseño y rescatar contexto valioso tras una salida de herramienta demasiado grande.
 
 ## Patrones relacionados

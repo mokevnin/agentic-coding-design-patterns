@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [claude-md-memory, domain-context-file, progress-file, handoff, spec-driven-development, bloated-claude-md]
+related: [agents-md-memory, domain-context-file, progress-file, handoff, spec-driven-development, bloated-agents-md]
 source_rev: 5c891bed1a1649eff17aefa24ee50ae6833b4070
 ---
 
@@ -97,7 +97,7 @@ Las instrucciones permanentes se cargan también en la siguiente sesión; el có
 
 Los siguientes capítulos analizan estas técnicas en detalle.
 
-- [Memoria del proyecto](claude-md-memory.md) guarda los comandos y las convenciones permanentes.
+- [Memoria del proyecto](agents-md-memory.md) guarda los comandos y las convenciones permanentes.
 - [Vocabulario del dominio](domain-context-file.md) fija los términos del proyecto y conserva las razones de las decisiones arquitectónicas.
 - [Diario de progreso](progress-file.md) ayuda a reconstruir el estado de un trabajo largo.
 - [Traspaso de sesión](handoff.md) guarda el contexto en un documento antes de pasar a una ventana nueva.
@@ -120,7 +120,7 @@ La siguiente sesión recibe un resumen breve y las rutas a las pruebas. El agent
 
 ## Antipatrones y errores comunes
 
-- **Archivo de memoria hinchado.** Entre cientos de reglas al agente le cuesta más distinguir las instrucciones aplicables. Este error se analiza en el capítulo [«Memoria hinchada»](bloated-claude-md.md).
+- **Archivo de memoria hinchado.** Entre cientos de reglas al agente le cuesta más distinguir las instrucciones aplicables. Este error se analiza en el capítulo [«Memoria hinchada»](bloated-agents-md.md).
 - **«Lo pego entero, por si acaso».** Los logs completos ocupan la ventana antes de que empiece la investigación. Pasa rutas y precisa qué fragmento hace falta.
 - **Compactación automática silenciosa.** En la compactación automática pueden perderse decisiones. Revisa el resumen y prepara un handoff antes de cambiar de sesión.
 - **Corregir sobre un intento fallido.** Una réplica del tipo «no ha funcionado, prueba de otra forma» deja en la ventana el enfoque fallido y la discusión sobre él. Rebobina la conversación hasta el punto anterior al intento y repite la petición teniendo en cuenta lo que se ha averiguado. Esta técnica se analiza en el capítulo [«Bifurcación del contexto»](context-forking.md).
@@ -128,17 +128,17 @@ La siguiente sesión recibe un resumen breve y las rutas a las pruebas. El agent
 
 ## Usos conocidos
 
-- **Claude Code** admite instrucciones permanentes en _CLAUDE.md_, compactación con `/compact` y contextos separados para los subagentes.
-- **El equipo de Claude Code** [aconseja](https://claude.com/blog/using-claude-code-session-management-and-1m-context) rebobinar la conversación con `/rewind` en lugar de corregir un intento fallido. En la ventana quedan los archivos ya leídos y una única petición precisada. Antes de rebobinar puedes pedirle al agente que anote brevemente lo que ha averiguado.
+- **Claude Code** admite instrucciones permanentes en _AGENTS.md_, compactación con `/compact` y contextos separados para los subagentes.
+- **El equipo de Claude Code** [aconseja](https://claude.com/resources/articles/using-claude-code-session-management-and-1m-context) rebobinar la conversación con `/rewind` en lugar de corregir un intento fallido. En la ventana quedan los archivos ya leídos y una única petición precisada. Antes de rebobinar puedes pedirle al agente que anote brevemente lo que ha averiguado.
 - **Codex** compacta una conversación larga con el comando `/compact` y la bifurca con el comando `/fork` cuando el trabajo realmente se divide en variantes.
 - **La memory tool de Anthropic** permite al agente guardar notas estructuradas fuera de la ventana actual.
 - **El sistema de investigación multiagente de Anthropic** usa subagentes para líneas de investigación separadas. El coordinador recibe resúmenes breves de sus resultados.
 - **AGENTS.md y las reglas de los editores** guardan instrucciones permanentes en los formatos de distintas herramientas.
-- El artículo de Anthropic [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) es la fuente de los principios de este capítulo.
+- El artículo de Anthropic [Effective context engineering for AI agents](https://www.anthropic.com/research/effective-context-engineering-for-ai-agents) es la fuente de los principios de este capítulo.
 
 ## Patrones relacionados
 
-- [Memoria del proyecto](claude-md-memory.md), [vocabulario del dominio](domain-context-file.md), [diario de progreso](progress-file.md) y [traspaso de sesión](handoff.md) implementan formas concretas de gestionar el contexto.
+- [Memoria del proyecto](agents-md-memory.md), [vocabulario del dominio](domain-context-file.md), [diario de progreso](progress-file.md) y [traspaso de sesión](handoff.md) implementan formas concretas de gestionar el contexto.
 - [Desarrollo orientado a especificaciones](spec-driven-development.md) conserva el contexto seleccionado de la tarea en la especificación y el plan.
 - [Cuatro fases](explore-plan-code-commit.md) dedica a la exploración una etapa aparte, en la que el agente reúne el contexto antes de planificar.
-- [Memoria hinchada](bloated-claude-md.md) describe una capa permanente de contexto sobrecargada de duplicados y reglas desactualizadas.
+- [Memoria hinchada](bloated-agents-md.md) describe una capa permanente de contexto sobrecargada de duplicados y reglas desactualizadas.

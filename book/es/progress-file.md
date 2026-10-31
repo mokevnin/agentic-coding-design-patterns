@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [context-engineering, handoff, claude-md-memory]
+related: [context-engineering, handoff, agents-md-memory]
 source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
@@ -36,7 +36,7 @@ En el diario, guarda la información que falta en la historia de git.
 
 Git muestra los cambios del código, y el diario explica el estado y la dirección del trabajo. Para los detalles de los commits basta con una referencia.
 
-Anota el procedimiento de lectura y actualización del diario en la [memoria del proyecto](claude-md-memory.md), para que las sesiones nuevas reciban esta instrucción.
+Anota el procedimiento de lectura y actualización del diario en la [memoria del proyecto](agents-md-memory.md), para que las sesiones nuevas reciban esta instrucción.
 
 ## Estructura
 
@@ -97,7 +97,7 @@ Para una tarea corta suele bastar un plan dentro de la sesión.
 
 ## Implementación
 
-1. Crea el diario y anota el procedimiento para usarlo en la [memoria del proyecto](claude-md-memory.md).
+1. Crea el diario y anota el procedimiento para usarlo en la [memoria del proyecto](agents-md-memory.md).
 2. Separa el estado, el siguiente paso, los problemas y los enfoques descartados. Formula el siguiente paso de modo que se pueda ejecutar tras un corte de la sesión.
 3. Explica las razones de las decisiones y el trabajo pendiente. Remite a los cambios del código mediante los commits.
 4. Incluye la actualización del diario en el cierre de cada paso significativo, junto con la verificación y el commit.
@@ -154,5 +154,5 @@ El agente lee el diario y el git log, y luego continúa con `RefundService`. Ve 
 
 - [Traspaso de sesión](handoff.md) prepara un documento para una transición concreta entre personas o agentes.
 - [Ingeniería de contexto](context-engineering.md) ayuda a seleccionar el contenido del diario.
-- [Memoria del proyecto](claude-md-memory.md) fija el procedimiento de lectura y actualización del diario.
+- [Memoria del proyecto](agents-md-memory.md) fija el procedimiento de lectura y actualización del diario.
 - [Desarrollo orientado a especificaciones](spec-driven-development.md) vincula el estado del trabajo con la especificación y las tareas.

@@ -89,7 +89,7 @@ Una migración de formato o un renombrado masivo necesitan una pasada aparte con
 
 ## Implementación
 
-1. Anota en la [memoria del proyecto](claude-md-memory.md) la regla de terminar una funcionalidad por pasada y registrar aparte los hallazgos del camino.
+1. Anota en la [memoria del proyecto](agents-md-memory.md) la regla de terminar una funcionalidad por pasada y registrar aparte los hallazgos del camino.
 2. Nombra un punto concreto o pide que se elija la siguiente funcionalidad no superada.
 3. Define la finalización como comprobación, estado actualizado, commit y anotación en el diario.
 4. Guarda los bugs e ideas del camino en tareas aparte si no bloquean el trabajo actual.

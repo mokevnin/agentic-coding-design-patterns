@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [context-engineering, claude-md-memory]
+related: [context-engineering, agents-md-memory]
 source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
@@ -13,7 +13,7 @@ Registrar en el repositorio los términos del proyecto y las razones de las deci
 
 ## También conocido como
 
-CONTEXT.md, glosario del dominio, lenguaje ubicuo (ubiquitous language) de DDD; architecture decision records (ADR).
+GLOSSARY.md, glosario del dominio, lenguaje ubicuo (ubiquitous language) de DDD; architecture decision records (ADR).
 
 ## Problema
 
@@ -23,13 +23,13 @@ Si el agente los considera sinónimos, renombrará `Enrollment` a `Subscription`
 
 La razón de la separación original puede haber quedado solo en una conversación antigua. Sin un registro, el equipo tiene que explicarla de nuevo cada vez que alguien propone «simplificar» el modelo.
 
-La [memoria del proyecto](claude-md-memory.md) guarda las instrucciones de trabajo. Las definiciones de los conceptos del dominio conviene llevarlas a un vocabulario aparte y conectarlo a la sesión a través del archivo de memoria.
+La [memoria del proyecto](agents-md-memory.md) guarda las instrucciones de trabajo. Las definiciones de los conceptos del dominio conviene llevarlas a un vocabulario aparte y conectarlo a la sesión a través del archivo de memoria.
 
 ## Solución
 
 Guarda en el repositorio un glosario y un registro de decisiones que el agente pueda usar al trabajar en una tarea.
 
-**El glosario** en _CONTEXT.md_ define los términos del dominio. Le basta un formato breve.
+**El glosario** en _GLOSSARY.md_ define los términos del dominio. Le basta un formato breve.
 
 - Cada concepto tiene un único nombre aceptado. Las demás variantes se enumeran con la marca «evitar».
 - La definición explica el sentido del concepto en una o dos frases.
@@ -49,9 +49,9 @@ En el diagrama, el glosario y el registro de decisiones entran en el contexto de
 title: el vocabulario guarda los términos, los ADR explican las decisiones
 ---
 flowchart LR
-  glossary["CONTEXT.md<br/>glosario: canon + «evitar»<br/>sin detalles de implementación"]:::accent
+  glossary["GLOSSARY.md<br/>glosario: canon + «evitar»<br/>sin detalles de implementación"]:::accent
   adr["docs/adr/<br/>decisiones: qué y por qué<br/>registros de un párrafo"]
-  map["CONTEXT-MAP.md<br/>si hay varios dominios"]:::muted
+  map["GLOSSARY-MAP.md<br/>si hay varios dominios"]:::muted
   session["Sesión del agente<br/>términos y código se cotejan con el vocabulario"]
   dev["Desarrollador<br/>árbitro del lenguaje"]:::accent
   glossary --> session
@@ -62,13 +62,13 @@ flowchart LR
   session -. "el término asentado se fija en el vocabulario al momento" .-> glossary
 ```
 
-Si un término de la tarea difiere del vocabulario, el agente pide una aclaración al desarrollador y guarda la definición aceptada. La flecha discontinua muestra esa actualización. En un proyecto con varios dominios, _CONTEXT-MAP.md_ indica dónde están los vocabularios y cómo se relacionan sus contextos.
+Si un término de la tarea difiere del vocabulario, el agente pide una aclaración al desarrollador y guarda la definición aceptada. La flecha discontinua muestra esa actualización. En un proyecto con varios dominios, _GLOSSARY-MAP.md_ indica dónde están los vocabularios y cómo se relacionan sus contextos.
 
 ## Participantes / Componentes
 
-- **Glosario** (_CONTEXT.md_) guarda las definiciones y los sinónimos no deseados.
+- **Glosario** (_GLOSSARY.md_) guarda las definiciones y los sinónimos no deseados.
 - **Registro de decisiones** (_docs/adr/_) explica las elecciones de arquitectura no evidentes.
-- **Mapa de contextos** (_CONTEXT-MAP.md_) conecta los vocabularios de varios dominios.
+- **Mapa de contextos** (_GLOSSARY-MAP.md_) conecta los vocabularios de varios dominios.
 - **Desarrollador** aprueba los términos y resuelve las contradicciones.
 - **Agente** coteja el texto y el código con el vocabulario y anota las definiciones acordadas.
 
@@ -93,15 +93,15 @@ Para una utilidad pequeña y de un solo uso, un vocabulario aparte no suele comp
 
 ## Implementación
 
-1. Crea _CONTEXT.md_ cuando se haya acordado el primer término, y _docs/adr/_ cuando aparezca una decisión que haya que explicar a un lector futuro.
+1. Crea _GLOSSARY.md_ cuando se haya acordado el primer término, y _docs/adr/_ cuando aparezca una decisión que haya que explicar a un lector futuro.
 2. Para cada término, escribe una definición breve y los sinónimos no deseados. Elige un único nombre para usar en el proyecto.
 3. Añade solo los conceptos cuyo sentido depende del dominio.
 4. En el ADR, anota el contexto, la decisión tomada y la razón de la elección. Numera los archivos de forma consecutiva (`0001-...`, `0002-...`).
-5. Conecta el vocabulario a través de la [memoria del proyecto](claude-md-memory.md). En Claude Code puedes usar para ello la línea `@CONTEXT.md` en CLAUDE.md.
+5. Conecta el vocabulario mediante la [memoria del proyecto](agents-md-memory.md): indica en _AGENTS.md_ la ruta a _GLOSSARY.md_ y qué tareas requieren leerlo antes.
 6. Pide al agente que detecte contradicciones en los términos y anote las definiciones acordadas justo después de la discusión.
-7. En un proyecto con varios dominios, coloca los vocabularios junto a los módulos y conéctalos mediante _CONTEXT-MAP.md_.
+7. En un proyecto con varios dominios, coloca los vocabularios junto a los módulos y conéctalos mediante _GLOSSARY-MAP.md_.
 
-En las [skills de Matt Pocock](matt-pocock-skills.md), el skill `domain-modeling` mantiene CONTEXT.md y los ADR. Los demás skills usan estos documentos durante la entrevista, la preparación de la especificación y la implementación.
+En las [skills de Matt Pocock](matt-pocock-skills.md), el skill `domain-modeling` mantiene GLOSSARY.md y los ADR. Los demás skills usan estos documentos durante la entrevista, la preparación de la especificación y la implementación.
 
 ## Ejemplo
 
@@ -160,6 +160,6 @@ La aclaración permite conservar el acceso de los estudiantes corporativos, cuya
 
 ## Patrones relacionados
 
-- [Memoria del proyecto](claude-md-memory.md) conecta el vocabulario a la sesión del agente.
+- [Memoria del proyecto](agents-md-memory.md) conecta el vocabulario a la sesión del agente.
 - [Ingeniería de contexto](context-engineering.md) ayuda a seleccionar la información para el vocabulario y los ADR.
 - [Desarrollo orientado a especificaciones](spec-driven-development.md) usa el vocabulario común al escribir especificaciones.

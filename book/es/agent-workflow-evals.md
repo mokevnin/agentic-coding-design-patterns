@@ -161,7 +161,7 @@ Supongamos que las instrucciones antigua y nueva se ejecutan cinco veces cada un
 - **SWE-bench Verified** comprueba con pruebas las correcciones de issues reales de GitHub y exige no romper el comportamiento que ya pasaba.
 - **Las suites de regresión de Claude Code** empezaron con propiedades estrechas como la concisión y las ediciones de archivos, y después abarcaron comportamientos más complejos, incluido el over-engineering.
 
-El artículo [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) cuenta con más detalle cómo se construyen las evaluaciones.
+El artículo [Demystifying evals for AI agents](https://www.anthropic.com/research/demystifying-evals-for-ai-agents) cuenta con más detalle cómo se construyen las evaluaciones.
 
 ## Patrones relacionados
 

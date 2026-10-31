@@ -4,7 +4,7 @@ source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 
 # Phrases for AGENTS.md
 
-This page collects rules for [project memory](claude-md-memory.md) that help the agent make decisions when choosing an implementation. Tailor them to your project and add only the ones that change the agent's behavior in the direction you want.
+This page collects rules for [project memory](agents-md-memory.md) that help the agent make decisions when choosing an implementation. Tailor them to your project and add only the ones that change the agent's behavior in the direction you want.
 
 The basis is a list by Marcos Hernanz. The last two phrasings were added by [Kirill Mokevnin](https://x.com/mokevnin/status/2083152573679173830).
 
@@ -19,7 +19,7 @@ You can copy this block into your project memory file.
 - Suggest best practices, even if they may require refactoring.
 ```
 
-The rules are given in English. If you like, translate them into your team's language. As the [Project Memory](claude-md-memory.md) chapter explains, the file _guides_ the agent's behavior but does not guarantee the rules are followed. Keep the list short so it does not turn into [bloated memory](bloated-claude-md.md).
+The rules are given in English. If you like, translate them into your team's language. As the [Project Memory](agents-md-memory.md) chapter explains, the file _guides_ the agent's behavior but does not guarantee the rules are followed. Keep the list short so it does not turn into [bloated memory](bloated-agents-md.md).
 
 ## Do not preserve backward compatibility
 
@@ -53,6 +53,6 @@ The agent may propose refactoring too often. Combine this rule with the requirem
 
 ## Related chapters
 
-- [Project Memory](claude-md-memory.md) explains where to keep these rules.
-- [Bloated Memory](bloated-claude-md.md) shows why the list should stay short.
+- [Project Memory](agents-md-memory.md) explains where to keep these rules.
+- [Bloated Memory](bloated-agents-md.md) shows why the list should stay short.
 - [Context Engineering](context-engineering.md) explains how permanent instructions consume the context of every session.

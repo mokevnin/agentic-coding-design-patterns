@@ -89,7 +89,7 @@ Para una tarea pequeña suele bastar un plan o _tasks.md_.
 
 1. Despliega los requisitos en escenarios verificables antes de la implementación. Por ejemplo, «el usuario abre un chat, hace una pregunta y ve la respuesta» describe un resultado que se puede reproducir.
 2. Guarda la categoría, la descripción, los pasos de verificación y `passes` en JSON. Fija el estado inicial en `false`.
-3. Anota en la [memoria del proyecto](claude-md-memory.md) que el agente cambia solo `passes`, y solo según el resultado de una comprobación de extremo a extremo.
+3. Anota en la [memoria del proyecto](agents-md-memory.md) que el agente cambia solo `passes`, y solo según el resultado de una comprobación de extremo a extremo.
 4. Empieza la sesión leyendo el registro y ejecutando una prueba de humo. Después elige un punto, impleméntalo, compruébalo y actualiza el estado.
 5. Guarda los motivos de las decisiones en el [diario de progreso](progress-file.md) y los estados en el registro.
 6. Revisa la composición del registro como requisitos y repite por muestreo los escenarios de las funcionalidades terminadas.
