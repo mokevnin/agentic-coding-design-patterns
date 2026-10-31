@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [agents-md-memory, bloated-agents-md, domain-context-file, scheduled-maintenance]
-source_rev:
+source_rev: bf1399e377d55027b9a42082e4f17327a1e25215
 ---
 
 # Memoria privada
