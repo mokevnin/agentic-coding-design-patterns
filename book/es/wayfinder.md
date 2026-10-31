@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [feature-list-harness, one-feature-at-a-time, prototype-to-answer, handoff]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: 37e47a76087ce3d60293c9dc12d6f2819bf9a69f
 ---
 
 # Mapa de investigación
