@@ -1,0 +1,18 @@
+[global]
+exclude = [
+  # Vendored skills, pinned by hash in skills-lock.json; never edited here.
+  ".agents/skills/**",
+  ".claude/skills/**",
+  "node_modules/**",
+  "dist/**",
+]
+disable = [
+  # AGENTS.md: prose is never hard-wrapped, one paragraph per source line.
+  "MD013",
+  # The anti-pattern template labels its examples with bold «Было» / «Стало» lines on purpose.
+  "MD036",
+]
+
+[per-file-ignores]
+# Chapter skeletons use <angle-bracket> placeholders, which read as inline HTML.
+"templates/**" = ["MD033"]

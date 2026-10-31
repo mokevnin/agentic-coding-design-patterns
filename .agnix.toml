@@ -1,0 +1,8 @@
+exclude = [
+  "node_modules/**",
+  ".git/**",
+  "dist/**",
+  # Vendored skills, pinned by hash in skills-lock.json; never edited here.
+  ".agents/skills/**",
+  ".claude/skills/**",
+]

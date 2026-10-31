@@ -1,0 +1,9 @@
+# Pinned linters for `make check`, the same versions locally, in git hooks and in CI.
+# Node and pnpm come from package.json (packageManager); JS tools are devDependencies.
+[tools]
+jactionlint = "2.4.0"
+betterleaks = "1.9.0"
+typos = "1.51.1"
+rumdl = "0.3.2"
+"github:agent-sh/agnix" = "0.60.2"
+osv-scanner = "2.7.0"

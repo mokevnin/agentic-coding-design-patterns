@@ -1,0 +1,11 @@
+[files]
+extend-exclude = [
+  # typos knows only English: Spanish words read as misspellings ("autor", "diagrama").
+  "book/es/**",
+  "templates/es/**",
+  # Vendored skills, pinned by hash in skills-lock.json; never edited here.
+  ".agents/skills/**",
+  ".claude/skills/**",
+  "skills-lock.json",
+  "pnpm-lock.yaml",
+]

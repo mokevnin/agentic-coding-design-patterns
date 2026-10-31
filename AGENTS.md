@@ -38,9 +38,15 @@ Operating guide for agents (and humans) working in this repository.
 - Enforced locally by a `commit-msg` hook: [lefthook](https://github.com/evilmartians/lefthook) (config in `lefthook.yml`) runs [commitlint](https://commitlint.js.org/). Both come from `pnpm install`, which also installs the hooks.
 - Examples: `feat: add reflection pattern`, `docs: translate preface to es`, `ci: bump actions to latest`.
 
+## Checks
+
+- `make check` runs every check (jactionlint, betterleaks, typos, rumdl, agnix, oxlint) and must pass before a change is done; CI runs the same target. `make fix` applies the safe autofixes. Linter versions are pinned in `mise.toml`.
+- `.agents/skills/` (and the `.claude/skills/` symlinks into it) are vendored and pinned by hash in `skills-lock.json`: never edit them by hand.
+- Never disable a lint rule to get a change through. An exception is narrow (one path, one rule), carries a reason in the config, and needs a human decision.
+
 ## Build / preview
 
-- `make setup` — install deps and git hooks
+- `make setup` — install deps, pinned linters and git hooks
 - `make serve` — local preview (Honkit serve)
 - `make build` — static build into `./dist`
 - `pnpm exec playwright install chromium` — one-off, needed to render diagrams

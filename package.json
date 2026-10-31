@@ -21,6 +21,7 @@
     "honkit-plugin-mermaid": "workspace:*",
     "lefthook": "^2.2.2",
     "npm-check-updates": "^23.1.1",
+    "oxlint": "^1.90.0",
     "playwright": "^1.64.1"
   }
 }

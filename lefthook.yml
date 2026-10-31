@@ -1,5 +1,27 @@
 # Git hooks managed with lefthook (https://github.com/evilmartians/lefthook).
-# Installed automatically on `pnpm install`; see Makefile.
+# Installed automatically on `pnpm install`; see Makefile. The linters come from
+# mise.toml (`make setup`). Hooks are a shortcut: CI runs `make check` in full.
+pre-commit:
+  parallel: true
+  commands:
+    secrets:
+      run: betterleaks git --pre-commit --staged --redact .
+    typos:
+      glob: "*"
+      run: typos --force-exclude {staged_files}
+    markdown:
+      glob: "*.md"
+      run: rumdl check {staged_files}
+    workflows:
+      glob: ".github/**/*.{yml,yaml}"
+      run: jactionlint
+    agents:
+      glob: "{AGENTS.md,CLAUDE.md,.claude/**,.agnix.toml}"
+      run: agnix --strict .
+    js:
+      glob: "*.{js,mjs,cjs}"
+      run: pnpm exec oxlint --deny-warnings {staged_files}
+
 commit-msg:
   commands:
     commitlint:
