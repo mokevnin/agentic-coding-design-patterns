@@ -1,0 +1,3 @@
+# Agent memory stays off in this repo: project knowledge goes to reviewed files (AGENTS.md), see book/en/private-agent-memory.md.
+[features]
+memories = false
