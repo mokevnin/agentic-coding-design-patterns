@@ -2,7 +2,7 @@
 group: sdd
 status: draft
 related: [big-spec-up-front, explore-plan-code-commit, premature-specification]
-source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
+source_rev: dfd73e6e4129de18d42b21f3cf39c686ca8b23ee
 ---
 
 # Desarrollo orientado a especificaciones

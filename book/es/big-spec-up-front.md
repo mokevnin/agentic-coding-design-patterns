@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [spec-driven-development, premature-specification, prototype-to-answer, tracer-bullet-tickets, give-agent-a-way-to-verify]
-source_rev:
+source_rev: dfd73e6e4129de18d42b21f3cf39c686ca8b23ee
 ---
 
 # Especificación por adelantado
