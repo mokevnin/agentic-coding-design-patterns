@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, executable-guardrails, agents-md-memory, writer-reviewer, bloated-agents-md]
-source_rev:
+source_rev: 41d95a5eca315b4d3770f8d362f0656cdcc67dac
 ---
 
 # Quality Gates

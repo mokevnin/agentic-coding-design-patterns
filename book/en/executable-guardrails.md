@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [agents-md-memory, give-agent-a-way-to-verify, quality-gates, isolated-parallel-work]
-source_rev: bf1399e377d55027b9a42082e4f17327a1e25215
+source_rev: 41d95a5eca315b4d3770f8d362f0656cdcc67dac
 ---
 
 # Executable Guardrails

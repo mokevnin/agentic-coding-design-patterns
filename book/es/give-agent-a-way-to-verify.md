@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [tdd-with-agent, quality-gates, writer-reviewer, reflection, explore-plan-code-commit, premature-success, one-shotting]
-source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
+source_rev: 41d95a5eca315b4d3770f8d362f0656cdcc67dac
 ---
 
 # Bucle de retroalimentación
