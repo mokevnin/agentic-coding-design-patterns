@@ -5,13 +5,13 @@ developer works with an AI agent when writing code**. It is a book built from
 markdown with [Honkit](https://github.com/honkit/honkit) (a GitBook fork), with
 print (PDF/EPUB) in mind.
 
-📖 **Online:** https://mokevnin.github.io/agentic-coding-design-patterns/
+📖 **Online:** <https://mokevnin.github.io/agentic-coding-design-patterns/>
 
 **Languages:** [Русский](book/ru/) · [English](book/en/) · [Español](book/es/)
 
 ## Repository layout
 
-```
+```text
 book/                 — the book root (Honkit)
   book.json           — Honkit config
   LANGS.md            — list of languages (Honkit multilingual)

@@ -114,7 +114,7 @@ Lánzalo justo después de una sesión en la que el agente se atascó: muchas co
 
 Es el skill `code-review` del paquete ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/engineering/code-review)).
 
-El skill toma el diff desde un punto de referencia (`git diff <punto>...HEAD`) y encuentra los documentos con estándares, como _CODING_STANDARDS.md_ y _CONTRIBUTING.md_. Luego lanza dos subagentes en paralelo: uno contrasta el diff con los estándares del proyecto y con una lista base de code smells de *Refactoring* de Fowler, el otro lo contrasta con la tarea de origen. Para una pasada programada basta con la primera parte. Las infracciones se dividen en graves y discutibles, cada una con un enlace a la regla.
+El skill toma el diff desde un punto de referencia (`git diff <punto>...HEAD`) y encuentra los documentos con estándares, como _CODING_STANDARDS.md_ y _CONTRIBUTING.md_. Luego lanza dos subagentes en paralelo: uno contrasta el diff con los estándares del proyecto y con una lista base de code smells de _Refactoring_ de Fowler, el otro lo contrasta con la tarea de origen. Para una pasada programada basta con la primera parte. Las infracciones se dividen en graves y discutibles, cada una con un enlace a la regla.
 
 Lánzalo cada semana como tarea en la nube, una tarea por cada área grande.
 
