@@ -57,6 +57,7 @@
 ## Антипаттерны
 
 * [Преждевременная спецификация](premature-specification.md)
+* [Спецификация наперёд](big-spec-up-front.md)
 * [Преждевременный успех](premature-success.md)
 * [Раздутая память](bloated-agents-md.md)
 * [Приватная память](private-agent-memory.md)

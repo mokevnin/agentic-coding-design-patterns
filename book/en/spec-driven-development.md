@@ -1,7 +1,7 @@
 ---
 group: sdd
 status: draft
-related: [explore-plan-code-commit, premature-specification]
+related: [big-spec-up-front, explore-plan-code-commit, premature-specification]
 source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
@@ -122,6 +122,7 @@ During **implementation** it turns out the mail gateway limits attachments to 10
 - **Stale specification.** When behavior changes, update the agreed requirements together with the code.
 - **Pseudocode specification.** A detailed call sequence written before the task has been explored creates a [premature specification](premature-specification.md).
 - **Excessive process.** For a small, reversible edit, a full set of documents can cost more than the work itself.
+- **A spec instead of a prototype.** Days of exhaustive documents before the first working version are covered in the [Big Spec Up Front](big-spec-up-front.md) anti-pattern.
 
 ## Known uses
 

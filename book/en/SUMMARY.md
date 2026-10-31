@@ -57,6 +57,7 @@
 ## Anti-patterns
 
 * [Premature Specification](premature-specification.md)
+* [Big Spec Up Front](big-spec-up-front.md)
 * [Premature Success](premature-success.md)
 * [Bloated Memory](bloated-agents-md.md)
 * [Private Memory](private-agent-memory.md)

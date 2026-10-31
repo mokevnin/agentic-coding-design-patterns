@@ -57,6 +57,7 @@
 ## Antipatrones
 
 * [Especificación prematura](premature-specification.md)
+* [Especificación por adelantado](big-spec-up-front.md)
 * [Éxito prematuro](premature-success.md)
 * [Memoria hinchada](bloated-agents-md.md)
 * [Memoria privada](private-agent-memory.md)

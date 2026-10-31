@@ -1,7 +1,7 @@
 ---
 group: sdd
 status: draft
-related: [explore-plan-code-commit, premature-specification]
+related: [big-spec-up-front, explore-plan-code-commit, premature-specification]
 source_rev: d253b2fa683fffdf21e8092f64de4c599f31343f
 ---
 
@@ -122,6 +122,7 @@ Durante la **implementación** se descubre que la pasarela de correo limita los 
 - **Especificación desactualizada.** Cuando cambie el comportamiento, actualiza los requisitos acordados junto con el código.
 - **Especificación-pseudocódigo.** Un orden de llamadas detallado antes de explorar la tarea crea una [especificación prematura](premature-specification.md).
 - **Proceso excesivo.** Para un cambio pequeño y reversible, el juego completo de documentos puede costar más que el propio trabajo.
+- **Especificación en lugar de prototipo.** Los días de documentos exhaustivos antes de la primera versión funcional se analizan en el antipatrón [«Especificación por adelantado»](big-spec-up-front.md).
 
 ## Usos conocidos
 
