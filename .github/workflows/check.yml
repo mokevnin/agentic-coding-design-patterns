@@ -32,7 +32,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: pnpm install --frozen-lockfile
-      - run: make check
+      - run: mise run check
       - if: github.event_name == 'pull_request'
         run: pnpm exec commitlint --from "$BASE" --to "$HEAD" --verbose
         env:

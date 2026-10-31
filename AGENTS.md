@@ -14,7 +14,7 @@ Operating guide for agents (and humans) working in this repository.
 - `plugins/honkit-plugin-mermaid` renders the fences into inline SVG at build time (Mermaid in headless Playwright), so diagrams also survive `honkit pdf`, which never runs JS.
 - Shared palette and theme live in `mermaid.config.json`. Use the `accent`, `warn` and `muted` classes (`node:::accent`) instead of per-diagram `classDef`.
 - The website also gets every diagram in a dark palette for the Honkit night theme: `mermaid.config.dark.json` holds only the keys that differ and is merged over `mermaid.config.json`. A new color or class in the light config needs its dark counterpart there, including the `accent`/`warn`/`muted` rules in `themeCSS`. The PDF gets the light palette only.
-- Rendered SVGs are cached in `node_modules/.cache/honkit-mermaid`, keyed by diagram source plus theme config. The theme is read once at startup, so restart `make serve` after editing `mermaid.config.json` or `mermaid.config.dark.json`.
+- Rendered SVGs are cached in `node_modules/.cache/honkit-mermaid`, keyed by diagram source plus theme config. The theme is read once at startup, so restart `mise run serve` after editing `mermaid.config.json` or `mermaid.config.dark.json`.
 - Beyond `flowchart`, the types that survive this pipeline and the palette are `sequenceDiagram`, `stateDiagram-v2`, `gitGraph`, `quadrantChart`, `pie` and `sankey-beta`.
 - `sankey-beta` accepts **ASCII only in node names** (Mermaid 12.0.0) — quoting does not help, and Cyrillic or even Spanish accents raise a parse error. Its `title:` and `%%` comments do take non-ASCII. Where it is used, node labels stay English with a `%% TODO` to localize them once upstream is fixed.
 - Types that silently drop the frontmatter `title:` the book uses as a caption: `sankey-beta`, `mindmap`, `timeline`, `kanban`, `block-beta`, `architecture-beta`. Put the thesis in the paragraph under the diagram instead. `treemap-beta` scales label size with box area, so the smallest — usually most important — share is the least readable.
@@ -35,23 +35,23 @@ Operating guide for agents (and humans) working in this repository.
 ## Commits
 
 - Follow [Conventional Commits](https://www.conventionalcommits.org/), written in **English**.
-- Enforced locally by a `commit-msg` hook: [lefthook](https://github.com/evilmartians/lefthook) (config in `lefthook.yml`) runs [commitlint](https://commitlint.js.org/). Both come from `pnpm install`, which also installs the hooks.
+- Enforced by [commitlint](https://commitlint.js.org/) in a `commit-msg` git hook (the hidden `commit-msg` task in `mise.toml`, installed by `mise run setup`) and over the PR range in CI.
 - Examples: `feat: add reflection pattern`, `docs: translate preface to es`, `ci: bump actions to latest`.
 
 ## Checks
 
-- `make check` runs every check (jactionlint, betterleaks, typos, rumdl, agnix, oxlint) and must pass before a change is done; CI runs the same target. `make fix` applies the safe autofixes. Linter versions are pinned in `mise.toml`.
+- `mise run check` runs every check (jactionlint, betterleaks, typos, rumdl, agnix, oxlint) and must pass before a change is done; CI runs the same task, and the `pre-commit` git hook runs the fast part on staged files. `mise run fix` applies the safe autofixes. Linter versions are pinned in `mise.toml`.
 - `.agents/skills/` (and the `.claude/skills/` symlinks into it) are vendored and pinned by hash in `skills-lock.json`: never edit them by hand.
 - Never disable a lint rule to get a change through. An exception is narrow (one path, one rule), carries a reason in the config, and needs a human decision.
 
 ## Build / preview
 
-- `make setup` — install deps, pinned linters and git hooks
-- `make serve` — local preview (Honkit serve)
-- `make build` — static build into `./dist`
+- `mise run setup` — install deps, pinned linters and git hooks
+- `mise run serve` — local preview (Honkit serve)
+- `mise run build` — static build into `./dist`
 - `pnpm exec playwright install chromium` — one-off, needed to render diagrams
-- `make pdf` — PDFs for all locales
-- `make update` — bump all dependencies to latest (npm-check-updates)
+- `mise run pdf` — PDFs for all locales
+- `mise run update` — bump all dependencies to latest (npm-check-updates)
 
 ## Structure conventions
 

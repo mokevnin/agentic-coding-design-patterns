@@ -1,4 +1,4 @@
-# Pinned linters for `make check`, the same versions locally, in git hooks and in CI.
+# One entry point for developers, git hooks and CI: `mise run setup`, then `mise run check`.
 # Node and pnpm come from package.json (packageManager); JS tools are devDependencies.
 [tools]
 jactionlint = "2.4.0"
@@ -7,3 +7,77 @@ typos = "1.51.1"
 rumdl = "0.3.2"
 "github:agent-sh/agnix" = "0.60.2"
 osv-scanner = "2.7.0"
+
+[tasks.setup]
+description = "Install dependencies, pinned linters and git hooks"
+run = [
+  "mise install",
+  "pnpm install",
+  "mise generate git-pre-commit --write --task pre-commit",
+  "mise generate git-pre-commit --write --hook commit-msg --task commit-msg",
+]
+
+[tasks.serve]
+description = "Local preview (Honkit serve)"
+run = "pnpm start"
+
+[tasks.build]
+description = "Static build into ./dist"
+run = "pnpm build"
+
+[tasks.pdf]
+description = "PDFs for all locales"
+run = ["pnpm pdf:ru", "pnpm pdf:en", "pnpm pdf:es"]
+
+[tasks.check]
+description = "Run every check; CI runs the same task"
+run = [
+  "jactionlint",
+  "betterleaks git --redact .",
+  "typos",
+  "rumdl check .",
+  "agnix --strict .",
+  "pnpm exec oxlint --deny-warnings plugins",
+]
+
+[tasks.fix]
+description = "Apply the safe autofixes"
+run = ["typos --write-changes", "rumdl fmt ."]
+
+[tasks.audit]
+description = "Known vulnerabilities in pnpm-lock.yaml (CI runs it weekly)"
+run = "osv-scanner scan source -r ."
+
+[tasks.update]
+description = "Bump all dependencies to latest (npm-check-updates)"
+run = "pnpm deps:update"
+
+[tasks.clean]
+description = "Remove build output and installed deps"
+run = "rm -rf dist node_modules"
+
+# Git hooks, installed by `mise run setup`. They are a shortcut: CI runs `mise run check` in full.
+# The hook passes the staged files in $STAGED.
+[tasks.pre-commit]
+description = "Fast checks on staged files (git pre-commit hook)"
+hide = true
+shell = "bash -c"
+run = '''
+set -euo pipefail
+files=()
+for f in ${STAGED:-}; do [[ -f "$f" ]] && files+=("$f"); done  # deleted files are staged too
+pick() { local f; for f in "${files[@]}"; do [[ "$f" == $1 ]] && printf '%s\n' "$f"; done; return 0; }
+betterleaks git --pre-commit --staged --redact .
+[[ -z "${files[*]}" ]] && exit 0
+typos --force-exclude "${files[@]}"
+md=$(pick '*.md'); [[ -n "$md" ]] && rumdl check $md
+js=$(pick '*.js'); [[ -n "$js" ]] && pnpm exec oxlint --deny-warnings $js
+[[ -n "$(pick '.github/*')" ]] && jactionlint
+[[ -n "$(pick 'AGENTS.md')$(pick '.claude/*')$(pick '.agnix.toml')" ]] && agnix --strict .
+exit 0
+'''
+
+[tasks.commit-msg]
+description = "Conventional Commits check (git commit-msg hook)"
+hide = true
+run = "pnpm exec commitlint --edit {{arg(name='file')}}"

@@ -2,10 +2,6 @@
 packages:
   - "plugins/*"
 
-# lefthook's postinstall script installs the git hooks, so it must be allowed to build.
-allowBuilds:
-  lefthook: true
-
 # mermaid-isomorphic still declares mermaid ^11; Mermaid 12 adds the newer diagram types.
 overrides:
   mermaid: "^12.0.0"
