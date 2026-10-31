@@ -4,7 +4,7 @@ kind: tool
 checked_on: 2026-10-31
 status: draft
 related: [spec-driven-development, explore-plan-code-commit]
-source_rev: f3e4f9c57d10532c8d3b2d7e7a1c65c0f4fc5090
+source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
 ---
 
 # Skills de Matt Pocock

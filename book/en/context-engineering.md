@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [agents-md-memory, domain-context-file, progress-file, handoff, spec-driven-development, bloated-agents-md]
-source_rev: 5c891bed1a1649eff17aefa24ee50ae6833b4070
+source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
 ---
 
 # Context Engineering

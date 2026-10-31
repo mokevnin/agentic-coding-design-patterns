@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, writer-reviewer, skills-as-packaged-workflows]
-source_rev: 959018d2502c29a9c2d8977271bb39cc6e903d87
+source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
 ---
 
 # Agent Workflow Evals

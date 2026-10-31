@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [agents-md-memory, domain-context-file, bloated-agents-md, skills-as-packaged-workflows, writer-reviewer, executable-guardrails]
-source_rev: 41945e36e9d181eec0bbc58d9219f8b7c5db9d09
+source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
 ---
 
 # Scheduled Maintenance

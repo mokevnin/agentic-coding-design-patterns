@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [isolated-parallel-work, progress-file, give-agent-a-way-to-verify]
-source_rev: 959018d2502c29a9c2d8977271bb39cc6e903d87
+source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
 ---
 
 # Inicio reproducible del agente

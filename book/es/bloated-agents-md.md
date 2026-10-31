@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [agents-md-memory, skills-as-packaged-workflows, context-engineering, scheduled-maintenance]
-source_rev: 97d78fd1ec963c294695bf8f2b16cd2cc739b7cf
+source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
 ---
 
 # Memoria hinchada

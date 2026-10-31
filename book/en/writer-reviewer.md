@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [reflection, give-agent-a-way-to-verify, tdd-with-agent]
-source_rev: 41f20b64d89358e2498c46bae2c21a0f13ac74f4
+source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
 ---
 
 # Writer and Reviewer
