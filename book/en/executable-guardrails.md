@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [agents-md-memory, give-agent-a-way-to-verify, isolated-parallel-work]
+related: [agents-md-memory, give-agent-a-way-to-verify, quality-gates, isolated-parallel-work]
 source_rev: bf1399e377d55027b9a42082e4f17327a1e25215
 ---
 
@@ -164,5 +164,6 @@ The mechanisms are described in the [GitHub Copilot hooks](https://docs.github.c
 
 - [Project Memory](agents-md-memory.md) holds guidance and explains the purpose of the restrictions.
 - [Feedback Loop](give-agent-a-way-to-verify.md) checks that the result is correct.
+- [Quality Gates](quality-gates.md) check the code the agent leaves behind rather than its actions in the environment.
 - [Isolated Parallel Work](isolated-parallel-work.md) uses worktrees whose boundaries can be enforced with a sandbox and permissions.
 - [Bloated Memory](bloated-agents-md.md) describes an accumulation of prohibitions that are better moved into executable mechanisms.

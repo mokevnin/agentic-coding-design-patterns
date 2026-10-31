@@ -35,6 +35,7 @@
 ## Verification
 
 * [Feedback Loop](give-agent-a-way-to-verify.md)
+* [Quality Gates](quality-gates.md)
 * [TDD with an Agent](tdd-with-agent.md)
 * [Hypothesis-Driven Debugging](hypothesis-driven-debugging.md)
 * [Reflection](reflection.md)

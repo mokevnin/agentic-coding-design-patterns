@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [agents-md-memory, give-agent-a-way-to-verify, isolated-parallel-work]
+related: [agents-md-memory, give-agent-a-way-to-verify, quality-gates, isolated-parallel-work]
 source_rev: bf1399e377d55027b9a42082e4f17327a1e25215
 ---
 
@@ -164,5 +164,6 @@ Los mecanismos se describen en la documentación de [GitHub Copilot hooks](https
 
 - [Memoria del proyecto](agents-md-memory.md) guarda las recomendaciones y explica el propósito de las restricciones.
 - [Bucle de retroalimentación](give-agent-a-way-to-verify.md) comprueba que el resultado obtenido sea correcto.
+- [Puertas de calidad](quality-gates.md) comprueban el código que deja el agente, no sus acciones en el entorno.
 - [Trabajo paralelo aislado](isolated-parallel-work.md) usa worktrees cuyos límites se pueden fijar con el sandbox y los permisos.
 - [Memoria hinchada](bloated-agents-md.md) describe la acumulación de prohibiciones que conviene llevar a mecanismos ejecutables.

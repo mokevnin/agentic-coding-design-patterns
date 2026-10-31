@@ -35,6 +35,7 @@
 ## Verificación
 
 * [Bucle de retroalimentación](give-agent-a-way-to-verify.md)
+* [Puertas de calidad](quality-gates.md)
 * [TDD con agente](tdd-with-agent.md)
 * [Diagnóstico mediante hipótesis](hypothesis-driven-debugging.md)
 * [Reflexión](reflection.md)

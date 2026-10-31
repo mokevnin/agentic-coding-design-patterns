@@ -1,7 +1,7 @@
 ---
 group: verification
 status: draft
-related: [tdd-with-agent, writer-reviewer, reflection, explore-plan-code-commit, premature-success, one-shotting]
+related: [tdd-with-agent, quality-gates, writer-reviewer, reflection, explore-plan-code-commit, premature-success, one-shotting]
 source_rev:
 ---
 
@@ -124,6 +124,7 @@ flowchart TB
 
 ## Связанные паттерны
 
+- [Шлюзы качества](quality-gates.md) проверяют стандарты всего проекта на каждом изменении, а не критерий одной задачи.
 - [TDD с агентом](tdd-with-agent.md) начинает итерацию с теста до изменения кода.
 - [Писатель и рецензент](writer-reviewer.md) проверяет свойства, для которых нужно суждение.
 - [Рефлексия](reflection.md) помогает найти недостатки через самокритику, но требует внешнего подтверждения.

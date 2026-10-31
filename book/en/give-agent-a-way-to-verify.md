@@ -1,7 +1,7 @@
 ---
 group: verification
 status: draft
-related: [tdd-with-agent, writer-reviewer, reflection, explore-plan-code-commit, premature-success, one-shotting]
+related: [tdd-with-agent, quality-gates, writer-reviewer, reflection, explore-plan-code-commit, premature-success, one-shotting]
 source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
 ---
 
@@ -124,6 +124,7 @@ You receive an implementation in which the time zone bug has already been found 
 
 ## Related patterns
 
+- [Quality Gates](quality-gates.md) enforce the whole project's standards on every change, not one task's criterion.
 - [TDD with an Agent](tdd-with-agent.md) starts each iteration with a test before the code changes.
 - [Writer and Reviewer](writer-reviewer.md) checks properties that require judgment.
 - [Reflection](reflection.md) helps find flaws through self-critique but needs external confirmation.

@@ -86,6 +86,7 @@ article per framework.
 | Slug | Status | Pitch / Note | Src |
 |------|--------|--------------|-----|
 | give-agent-a-way-to-verify | done | Hand the agent a pass/fail check (tests, build, linter, screenshot); it runs, reads, and iterates until it passes. | [cc-bp] |
+| quality-gates | done | Enforce the project's code standards with deterministic checks that fail the build: one `check` command on three tiers (staged-file hook, pre-push, CI as the only gate), named in `AGENTS.md`, baselines for old code, narrow exceptions, every check seen failing once. "An instruction without a check is advice." Boundary: `give-agent-a-way-to-verify` checks one task, `executable-guardrails` bounds the agent's actions; this gates the code every author leaves. Author decision 2026-10-31. | [dqg], [bc-pragmatic], [mf-sensors] |
 | tdd-with-agent | done | Enforce red-green-refactor with phase-specific prompts, else the agent defaults to implementation-first and writes tests retroactively. | [cc-bp] |
 | hypothesis-driven-debugging | done | Establish a reproducer, distinguish falsifiable causes with controlled experiments, then fix and preserve a regression test. Extends the earlier reproduce-before-fix research lead; reproduction alone is already covered by TDD. | [mp-diagnosis] |
 | reflection | done | Self-critique loop: generate → evaluate → improve. The `evaluator-optimizer` workflow reframed for the human-driven case. | [ng], [bea] |
@@ -210,6 +211,7 @@ The [companion catalog survey](research/pattern-sources-2026-09-21-round-2-catal
 - `[mf-archaeologist]` — Nik Malykhin, *The Archaeologist's Copilot*; supporting experience report for bootstrap, baseline verification, and staged modernization — <https://martinfowler.com/articles/archaeologist-copilot.html>
 - `[mf-spdd]` — *Structured-Prompt-Driven Development*; supporting SDD methodology, not automatically another pattern or tool-profile chapter — <https://martinfowler.com/articles/structured-prompt-driven/>
 - `[mf-sensors]` — Birgitta Böckeler, *Maintainability sensors for coding agents* — <https://martinfowler.com/articles/sensors-for-coding-agents.html>
+- `[dqg]` — Kirill Mokevnin, *Dev Quality Gates*; curated list of enforcing tools, one per job, with setup patterns and an adoption guide for coding agents — <https://github.com/mokevnin/dev-quality-gates>
 - `[mf-tdd-loop]` — Birgitta Böckeler, *TDD inside the agent loop - theater or actual value?* — <https://martinfowler.com/articles/exploring-gen-ai/tdd-in-the-agent-loop.html>
 
 These are articles hosted by Martin Fowler, not necessarily authored by him. The black-box report describes a thin-slice experiment; it does not establish whole-system migration success. SPDD overlaps the book's existing spec lifecycle, domain modeling, and packaged workflows. Its additional structure is useful comparative material without reopening rejected tool-profile chapters.

@@ -35,6 +35,7 @@
 ## Проверка
 
 * [Петля обратной связи](give-agent-a-way-to-verify.md)
+* [Шлюзы качества](quality-gates.md)
 * [TDD с агентом](tdd-with-agent.md)
 * [Диагностика через гипотезы](hypothesis-driven-debugging.md)
 * [Рефлексия](reflection.md)

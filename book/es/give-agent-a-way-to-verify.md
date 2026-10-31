@@ -1,7 +1,7 @@
 ---
 group: verification
 status: draft
-related: [tdd-with-agent, writer-reviewer, reflection, explore-plan-code-commit, premature-success, one-shotting]
+related: [tdd-with-agent, quality-gates, writer-reviewer, reflection, explore-plan-code-commit, premature-success, one-shotting]
 source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
 ---
 
@@ -124,6 +124,7 @@ Recibes una implementación en la que el bug de la zona horaria ya se encontró 
 
 ## Patrones relacionados
 
+- [Puertas de calidad](quality-gates.md) imponen los estándares de todo el proyecto en cada cambio, no el criterio de una tarea.
 - [TDD con agente](tdd-with-agent.md) empieza cada iteración con un test antes de cambiar el código.
 - [Escritor y revisor](writer-reviewer.md) comprueba propiedades que requieren juicio.
 - [Reflexión](reflection.md) ayuda a encontrar defectos mediante autocrítica, pero necesita confirmación externa.

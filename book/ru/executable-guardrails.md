@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [agents-md-memory, give-agent-a-way-to-verify, isolated-parallel-work]
+related: [agents-md-memory, give-agent-a-way-to-verify, quality-gates, isolated-parallel-work]
 source_rev:
 ---
 
@@ -164,5 +164,6 @@ $ echo $?
 
 - [Память проекта](agents-md-memory.md) хранит рекомендации и объясняет назначение ограничений.
 - [Петля обратной связи](give-agent-a-way-to-verify.md) проверяет корректность полученного результата.
+- [Шлюзы качества](quality-gates.md) проверяют код, который агент оставил, а не его действия в окружении.
 - [Изолированная параллельная работа](isolated-parallel-work.md) использует worktree, границы которых можно закрепить песочницей и правами.
 - [Раздутая память](bloated-agents-md.md) описывает накопление запретов, которые полезнее перенести в исполняемые механизмы.
