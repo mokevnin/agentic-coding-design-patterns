@@ -1,6 +1,12 @@
 # One entry point for developers, git hooks and CI: `mise run setup`, then `mise run check`.
 # Node and pnpm come from package.json (packageManager); JS tools are devDependencies.
+# Git hooks and the check set live in hk.pkl.
+[env]
+_.path = ["node_modules/.bin"]
+
 [tools]
+hk = "2.10.0"
+pkl = "0.32.2"
 jactionlint = "2.4.0"
 betterleaks = "1.9.0"
 typos = "1.51.1"
@@ -13,8 +19,7 @@ description = "Install dependencies, pinned linters and git hooks"
 run = [
   "mise install",
   "pnpm install",
-  "mise generate git-pre-commit --write --task pre-commit",
-  "mise generate git-pre-commit --write --hook commit-msg --task commit-msg",
+  "hk install --mise",
 ]
 
 [tasks.serve]
@@ -30,19 +35,12 @@ description = "PDFs for all locales"
 run = ["pnpm pdf:ru", "pnpm pdf:en", "pnpm pdf:es"]
 
 [tasks.check]
-description = "Run every check; CI runs the same task"
-run = [
-  "jactionlint",
-  "betterleaks git --redact .",
-  "typos",
-  "rumdl check .",
-  "agnix --strict .",
-  "pnpm exec oxlint --deny-warnings plugins",
-]
+description = "Run every check (hk.pkl); CI runs the same task"
+run = "hk check --all"
 
 [tasks.fix]
 description = "Apply the safe autofixes"
-run = ["typos --write-changes", "rumdl fmt ."]
+run = "hk fix --all"
 
 [tasks.audit]
 description = "Known vulnerabilities in pnpm-lock.yaml (CI runs it weekly)"
@@ -55,29 +53,3 @@ run = "pnpm deps:update"
 [tasks.clean]
 description = "Remove build output and installed deps"
 run = "rm -rf dist node_modules"
-
-# Git hooks, installed by `mise run setup`. They are a shortcut: CI runs `mise run check` in full.
-# The hook passes the staged files in $STAGED.
-[tasks.pre-commit]
-description = "Fast checks on staged files (git pre-commit hook)"
-hide = true
-shell = "bash -c"
-run = '''
-set -euo pipefail
-files=()
-for f in ${STAGED:-}; do [[ -f "$f" ]] && files+=("$f"); done  # deleted files are staged too
-pick() { local f; for f in "${files[@]}"; do [[ "$f" == $1 ]] && printf '%s\n' "$f"; done; return 0; }
-betterleaks git --pre-commit --staged --redact .
-[[ -z "${files[*]}" ]] && exit 0
-typos --force-exclude "${files[@]}"
-md=$(pick '*.md'); [[ -n "$md" ]] && rumdl check $md
-js=$(pick '*.js'); [[ -n "$js" ]] && pnpm exec oxlint --deny-warnings $js
-[[ -n "$(pick '.github/*')" ]] && jactionlint
-[[ -n "$(pick 'AGENTS.md')$(pick '.claude/*')$(pick '.agnix.toml')" ]] && agnix --strict .
-exit 0
-'''
-
-[tasks.commit-msg]
-description = "Conventional Commits check (git commit-msg hook)"
-hide = true
-run = "pnpm exec commitlint --edit {{arg(name='file')}}"

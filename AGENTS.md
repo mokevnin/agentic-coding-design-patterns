@@ -35,12 +35,12 @@ Operating guide for agents (and humans) working in this repository.
 ## Commits
 
 - Follow [Conventional Commits](https://www.conventionalcommits.org/), written in **English**.
-- Enforced by [commitlint](https://commitlint.js.org/) in a `commit-msg` git hook (the hidden `commit-msg` task in `mise.toml`, installed by `mise run setup`) and over the PR range in CI.
+- Enforced by [commitlint](https://commitlint.js.org/) in the `commit-msg` git hook ([hk](https://hk.jdx.dev), `hk.pkl`, installed by `mise run setup`) and over the PR range in CI.
 - Examples: `feat: add reflection pattern`, `docs: translate preface to es`, `ci: bump actions to latest`.
 
 ## Checks
 
-- `mise run check` runs every check (jactionlint, betterleaks, typos, rumdl, agnix, oxlint) and must pass before a change is done; CI runs the same task, and the `pre-commit` git hook runs the fast part on staged files. `mise run fix` applies the safe autofixes. Linter versions are pinned in `mise.toml`.
+- `mise run check` runs every check (jactionlint, betterleaks, typos, rumdl, agnix, oxlint) and must pass before a change is done; CI runs the same task, and the hk `pre-commit` hook runs the same steps on staged files. Steps live in `hk.pkl`. `mise run fix` applies the safe autofixes. Linter versions are pinned in `mise.toml`.
 - `.agents/skills/` (and the `.claude/skills/` symlinks into it) are vendored and pinned by hash in `skills-lock.json`: never edit them by hand.
 - Never disable a lint rule to get a change through. An exception is narrow (one path, one rule), carries a reason in the config, and needs a human decision.
 

@@ -1,0 +1,40 @@
+amends "package://github.com/jdx/hk/releases/download/v2.10.0/hk@2.10.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.10.0/hk@2.10.0#/Builtins.pkl"
+
+// Vendored skills, pinned by hash in skills-lock.json; never edited here.
+exclude = List(".agents/skills/**", ".claude/skills/**")
+
+local checks = new Mapping<String, Step> {
+    ["betterleaks"] = Builtins.betterleaks
+    ["typos"] = Builtins.typos
+    ["rumdl"] = Builtins.rumdl
+    ["jactionlint"] = Builtins.jactionlint
+    ["oxlint"] = Builtins.ox_lint
+    ["agnix"] {
+        glob = List("AGENTS.md", "CLAUDE.md", ".claude/**", ".agnix.toml")
+        check = "agnix --strict ."
+    }
+}
+
+hooks {
+    ["pre-commit"] {
+        fix = true
+        stash = "git"
+        steps = checks
+    }
+    ["commit-msg"] {
+        steps {
+            ["commitlint"] {
+                check = "commitlint --edit {{commit_msg_file}}"
+            }
+        }
+    }
+    // `mise run check` and CI.
+    ["check"] {
+        steps = checks
+    }
+    ["fix"] {
+        fix = true
+        steps = checks
+    }
+}
