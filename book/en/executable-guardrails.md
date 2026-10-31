@@ -104,19 +104,13 @@ The agent may change the service in _./app_, run tests, and read documentation. 
 
 > Work within the task and prefer reversible changes.
 
-First, let's write down the desired policy decisions in illustrative notation. This is pseudocode for discussing the rules, which still has to be expressed in the settings of the sandbox and permissions you choose.
+Ask the agent to express these boundaries in its sandbox and permissions. Project settings are committed, so the boundaries apply to the whole team.
 
 ```text
-write path ./app/**          allow
-write path ./docs/**         allow
-write path ../**             deny: outside workspace
-command make test            allow
-command git push *           ask: external state change
-network registry.npmjs.org   allow
-network *                    deny: domain not approved
+Set up permissions: write only in ./app and ./docs, make test without asking, git push with approval, network only to registry.npmjs.org
 ```
 
-After configuring the mechanisms, we check the expected decisions. A `git push` call should ask for approval, a write to _~/.ssh/config_ should be blocked, and `make test` should run without a question. The pseudocode block itself does not set up any such restrictions.
+After the setup, check the expected decisions. A `git push` call should ask for approval, a write to _~/.ssh/config_ should be blocked, and `make test` should run without a question.
 
 A real, narrow guardrail can be shown with a ban on committing changes to migrations. Save the following script as _.git/hooks/pre-commit_ in a test repository with a regular _.git_ directory and make it executable with `chmod +x .git/hooks/pre-commit`.
 

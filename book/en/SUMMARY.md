@@ -58,6 +58,7 @@
 * [Premature Specification](premature-specification.md)
 * [Premature Success](premature-success.md)
 * [Bloated Memory](bloated-agents-md.md)
+* [Private Memory](private-agent-memory.md)
 * [Vibe Coding](vibe-coding.md)
 * [One-Shotting](one-shotting.md)
 

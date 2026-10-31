@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [context-engineering, domain-context-file, bloated-agents-md, scheduled-maintenance]
+related: [context-engineering, domain-context-file, bloated-agents-md, private-agent-memory, scheduled-maintenance]
 source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
 ---
 
@@ -110,7 +110,7 @@ Comprobado con Codex CLI 0.166.0 el 2026-10-31.
 
 #### Carga de AGENTS.md
 
-Codex reúne instrucciones desde la raíz hasta el directorio de trabajo. Los _AGENTS.md_ anidados precisan las reglas del área. Comprueba que las instrucciones necesarias caben en `project_doc_max_bytes`; que un archivo exista no demuestra que se cargó. Consulta la [guía de AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+Codex reúne instrucciones desde la raíz hasta el directorio de trabajo. Los _AGENTS.md_ anidados precisan las reglas del área. Comprueba que las instrucciones necesarias caben en el límite de tamaño, 32 KiB por defecto; que un archivo exista no demuestra que se cargó. Consulta la [guía de AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
 
 ##### Ejemplo
 
@@ -151,6 +151,7 @@ La sesión siguiente obtendrá esta regla al leer la memoria del proyecto.
 - **Memoria hinchada.** Los duplicados y las contradicciones dificultan encontrar las reglas aplicables. Este error se analiza en un capítulo aparte, [«Memoria hinchada»](bloated-agents-md.md).
 - **Vertedero de lo deducible.** El resumen de la estructura de directorios y de las dependencias ocupa contexto, aunque el agente puede obtener esa información de los archivos del proyecto.
 - **Esperar imposición.** Una prohibición de texto de hacer push a main no bloquea el comando. Refuerza el límite con permisos.
+- **Conocimiento en la memoria privada del agente.** Una regla que el agente recordó por su cuenta no llega a sus compañeros. Este antipatrón se analiza en [«Memoria privada»](private-agent-memory.md).
 - **Lo personal en el archivo del equipo.** Guarda las URLs de entornos personales y las preferencias del desarrollador en el nivel del usuario o en el local.
 - **Escribir y olvidar.** Las instrucciones obsoletas pueden llevar al agente a una decisión equivocada. Revísalas junto con los cambios del proyecto.
 

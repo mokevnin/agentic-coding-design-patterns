@@ -58,6 +58,7 @@
 * [Especificación prematura](premature-specification.md)
 * [Éxito prematuro](premature-success.md)
 * [Memoria hinchada](bloated-agents-md.md)
+* [Memoria privada](private-agent-memory.md)
 * [Vibe coding](vibe-coding.md)
 * [One-shotting](one-shotting.md)
 

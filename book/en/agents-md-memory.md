@@ -1,7 +1,7 @@
 ---
 group: context
 status: draft
-related: [context-engineering, domain-context-file, bloated-agents-md, scheduled-maintenance]
+related: [context-engineering, domain-context-file, bloated-agents-md, private-agent-memory, scheduled-maintenance]
 source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
 ---
 
@@ -110,7 +110,7 @@ Checked against Codex CLI 0.166.0 on 2026-10-31.
 
 #### Loading AGENTS.md
 
-Codex collects instructions from the project root toward the working directory. Nested _AGENTS.md_ files refine area rules. Check that required instructions fit within `project_doc_max_bytes`; a file on disk does not prove it loaded. See the [AGENTS.md guide](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+Codex collects instructions from the project root toward the working directory. Nested _AGENTS.md_ files refine area rules. Check that required instructions fit within the size limit, 32 KiB by default; a file on disk does not prove it loaded. See the [AGENTS.md guide](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
 
 ##### Example
 
@@ -151,6 +151,7 @@ The next session will get this rule when it reads the project memory.
 - **Bloated memory.** Duplicates and contradictions make it harder to find the applicable rules. This mistake is covered in a separate chapter, [Bloated Memory](bloated-agents-md.md).
 - **A dump of derivables.** A retelling of the directory structure and dependencies takes up context, although the agent can get this information from the project files.
 - **Expecting enforcement.** A text prohibition on pushing to main does not block the command. Enforce the boundary with permissions.
+- **Knowledge in the agent's private memory.** A rule the agent remembered on its own never reaches your teammates. This anti-pattern is covered in [Private Memory](private-agent-memory.md).
 - **Personal content in the team file.** Keep personal sandbox URLs and the developer's preferences at the user or local level.
 - **Write and forget.** Outdated instructions can steer the agent toward the wrong decision. Review them together with changes to the project.
 

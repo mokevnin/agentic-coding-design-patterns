@@ -6,7 +6,7 @@ Operating guide for agents (and humans) working in this repository.
 
 - Book content lives in `book/<locale>/` (ru/en/es); localized chapter skeletons in `templates/<locale>/`.
 - Everything else — READMEs, configs, CI, and the `book/` chrome outside locale folders — is written in **English**.
-- Book prose addresses the reader as «вы» in `ru` ("you" in `en`), never «ты»: the reader acts instead of an abstract third-person «разработчик» («вы утверждаете план», «включите режим планирования»). The developer may still appear as a named role in lists of participants and in diagrams.
+- Book prose addresses the reader as «вы» in `ru` ("you" in `en`), never «ты»: the reader acts instead of an abstract third-person «разработчик» («вы утверждаете план», «включите режим планирования»). The developer may still appear as a named role in lists of participants and in diagrams. The `es` edition addresses the reader as «tú».
 
 ## Diagrams
 
@@ -28,6 +28,7 @@ Operating guide for agents (and humans) working in this repository.
 
 - Write from practice: say what the reader does and why. No procedural filler such as «составьте список проходов и для каждого определите четыре вещи».
 - Example prompts are what practitioners actually type. A skill is invoked bare or with a few generic words: `/retro`, `/code-review за последние 3 дня`, `/writing-for-agents проверь доки`. Never tell a skill what to do step by step, never enumerate checks in a prompt, and never use a skill's internal jargon (e.g. "Standards axis") — the skill already knows its job.
+- Show prompts, not configs. Readers ask the agent to change its own settings («выключи автопамять в этом проекте»), so a chapter shows that request and what it achieves (scope, who it affects, what to commit) — never a settings key, a JSON/TOML/YAML snippet, or the file it goes into. This covers agent, tool and CI setup; content artifacts the chapter is about (a feature list, an eval spec, a script's output, a guardrail script being demonstrated) stay as code blocks.
 - Planning mode is assumed everywhere; call it «режим планирования» with no per-tool parentheticals. Prompts carry only the task (ideally just a ticket id); no «код не пиши», «план утверждаю» or front-loaded constraints — plan approval is the tool's confirmation, shown as narration.
 - Tool-specific material comes in three blocks, in this order: what doesn't depend on the agent, then Claude Code, then Codex. Nothing agent-specific goes into the first block; each agent's built-ins live in its own block. State the checked version and date at the top of each agent block.
 - In a practical how-to section, each tool or pass gets its own subheading one level below its block, and each example gets its own subheading one level lower still (`##### Пример`, or `##### Пример: …` when there are several). Write the body as prose — no tables, no bullet lists, no bold pseudo-labels like «**Что это.**». Say what it is (built-in command, bundled skill, third-party skill, app feature, or a plain prompt), how it works, when to run it, and link its source or docs.
@@ -42,6 +43,7 @@ Operating guide for agents (and humans) working in this repository.
 
 - `mise run check` runs every check (jactionlint, betterleaks, typos, rumdl, agnix, oxlint) and must pass before a change is done; CI runs the same task, and the hk `pre-commit` hook runs the same steps on staged files. Steps live in `hk.pkl`. `mise run fix` applies the safe autofixes. Linter versions are pinned in `mise.toml`.
 - `.agents/skills/` (and the `.claude/skills/` symlinks into it) are vendored and pinned by hash in `skills-lock.json`: never edit them by hand.
+- Prefer an existing tool over a hand-written script, and install tools through `mise`, never through shell fallback chains.
 - Never disable a lint rule to get a change through. An exception is narrow (one path, one rule), carries a reason in the config, and needs a human decision.
 
 ## Build / preview
@@ -55,6 +57,8 @@ Operating guide for agents (and humans) working in this repository.
 
 ## Structure conventions
 
+- Chapter titles are short GoF-style noun names, 1–3 words per locale («Четыре фазы», not «Исследование — план — код — коммит»); the source's long name goes under «Также известен как».
+- A new chapter ships in `ru`, `en` and `es` in the same pass, each with its `SUMMARY.md` entry.
 - Patterns are flat files `book/<locale>/<slug>.md`; grouping lives only in `book/<locale>/SUMMARY.md`.
 - Shared binary assets in `book/assets/<slug>/`, referenced via `../assets/<slug>/...`. Diagrams are not assets — see above.
 - Canonical locale is `ru`: write a pattern in Russian first, then translate.

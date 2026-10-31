@@ -1,7 +1,7 @@
 ---
 group: project-org
 status: draft
-related: [agents-md-memory, domain-context-file, bloated-agents-md, skills-as-packaged-workflows, writer-reviewer, executable-guardrails]
+related: [agents-md-memory, domain-context-file, bloated-agents-md, private-agent-memory, skills-as-packaged-workflows, writer-reviewer, executable-guardrails]
 source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
 ---
 
@@ -218,7 +218,7 @@ Lánzalo cada mes.
 
 #### Memoria del agente
 
-No hay comando propio; basta un prompt normal. El agente lee su memoria sobre el proyecto, lleva al repositorio los hechos sobre el código y los comandos y deja en la memoria solo cómo trabajar contigo. Dónde vive la memoria y cómo se limpia sola depende del agente y se describe en su bloque.
+No hay comando propio; basta un prompt normal. El agente lee su memoria sobre el proyecto, lleva al repositorio los hechos sobre el código y los comandos y deja en la memoria solo cómo trabajar contigo. Dónde vive la memoria y cómo se limpia sola depende del agente y se describe en su bloque. Si desactivaste la memoria en el proyecto, como aconseja [«Memoria privada»](private-agent-memory.md), la pasada hace falta una sola vez, antes de desactivarla.
 
 Lánzalo cada mes, en local.
 
@@ -286,7 +286,7 @@ La memoria automática vive en _~/.claude/projects/&lt;proyecto&gt;/memory_; `/m
 
 `/fewer-permission-prompts` es un skill integrado.
 
-El skill lee las transcripciones de las sesiones, reúne las llamadas frecuentes de solo lectura a Bash y MCP y propone una lista por prioridad. Cuando das tu conformidad, añade las reglas a `permissions.allow` del _.claude/settings.json_ compartido.
+El skill lee las transcripciones de las sesiones, reúne las llamadas frecuentes de solo lectura a Bash y MCP y propone una lista por prioridad. Cuando das tu conformidad, las añade a la lista compartida de permisos del proyecto, que se sube con el código.
 
 Lánzalo cada mes.
 
@@ -358,28 +358,10 @@ $code-review de la última semana
 
 ##### Ejemplo en GitHub Actions
 
-```yaml
-on:
-  schedule:
-    - cron: "0 6 * * 1"
-jobs:
-  standards:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - uses: openai/codex-action@v1
-        with:
-          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-          prompt-file: .github/prompts/weekly-standards.md
-      - uses: peter-evans/create-pull-request@v7
-        with:
-          branch: maintenance/weekly-standards
-          title: "refactor: weekly standards pass"
+Pide a Codex que cree el workflow; el archivo llega al repositorio mediante la revisión normal.
+
+```text
+Crea un GitHub Actions semanal: codex-action ejecuta $code-review y abre un PR
 ```
 
 #### Revisión: `codex review` y `@codex review`
@@ -404,22 +386,18 @@ Security Review requiere acceso a la función, un espacio de trabajo configurado
 
 #### Memoria: Memories
 
-Las Memories están desactivadas por defecto ([documentación](https://learn.chatgpt.com/docs/customization/memories)). Si las activaste, las entradas viven en _~/.codex/memories/_ y se generan a partir de sesiones anteriores. La documentación desaconseja editarlas a mano, así que en la pasada mensual los hechos del proyecto van a _AGENTS.md_ y, si hace falta, la generación se desactiva con `memories.generate_memories`.
+Las Memories están desactivadas por defecto ([documentación](https://learn.chatgpt.com/docs/customization/memories)). Si las activaste, las entradas viven en _~/.codex/memories/_ y se generan a partir de sesiones anteriores. La documentación desaconseja editarlas a mano, así que en la pasada mensual los hechos del proyecto van a _AGENTS.md_ y en un proyecto de equipo conviene pedir a Codex que desactive Memories (ver [«Memoria privada»](private-agent-memory.md)).
 
 #### Permisos: archivos `.rules`
 
-La sandbox (`sandbox_mode`) limita el sistema de archivos y la red; la política de aprobación (`approval_policy`) controla cuándo se necesita aprobación. Las reglas experimentales _.rules_ gobiernan los comandos fuera de la sandbox y complementan esas fronteras ([reglas](https://learn.chatgpt.com/docs/agent-configuration/rules), [sandbox](https://learn.chatgpt.com/docs/sandboxing)).
+La sandbox limita el sistema de archivos y la red, la política de aprobación decide cuándo hace falta tu conformidad, y las reglas experimentales _.rules_ deciden qué comandos ejecuta Codex fuera de la sandbox directamente, preguntando o nunca ([reglas](https://learn.chatgpt.com/docs/agent-configuration/rules), [sandbox](https://learn.chatgpt.com/docs/sandboxing)). Gana la regla coincidente más estricta.
 
-Las reglas usan `prefix_rule(pattern=[...], decision="allow" | "prompt" | "forbidden")` en archivos _.rules_: _~/.codex/rules/_ y _.codex/rules/_ de un proyecto de confianza. Gana la regla coincidente más estricta. Aceptar un permiso persistente para un prefijo añade una regla a _~/.codex/rules/default.rules_. Una aprobación puntual no implica guardarla.
-
-Una vez al mes, repasa el archivo a mano, lleva las reglas compartidas a _.codex/rules/_ del repositorio y borra las que sobran.
+Cuando aceptas permitir siempre un prefijo de comando, Codex guarda una regla en tus reglas personales; una aprobación puntual no crea ninguna. Una vez al mes, pide a Codex que repase esas reglas: que lleve las compartidas a las reglas del repositorio y borre las que sobran.
 
 ##### Ejemplo
 
-Comprobar cómo deciden las reglas un comando concreto:
-
 ```text
-codex execpolicy check --pretty --rules ~/.codex/rules/default.rules -- git push origin main
+Limpia mis reglas de comandos, lleva las compartidas al repo
 ```
 
 #### Estado de la instalación: `codex doctor`
@@ -438,9 +416,9 @@ codex doctor
 
 #### Tamaño de _AGENTS.md_
 
-El tamaño de las instrucciones lo limita el ajuste `project_doc_max_bytes`, 32 KiB por defecto ([documentación](https://learn.chatgpt.com/docs/agent-configuration/agents-md)).
+Codex carga las instrucciones hasta un límite, 32 KiB por defecto ([documentación](https://learn.chatgpt.com/docs/agent-configuration/agents-md)).
 
-Comprueba las instrucciones aplicables al directorio de trabajo y su tamaño frente a `project_doc_max_bytes`. Si hay muchos archivos, verifica que las reglas necesarias llegaron al contexto; que el archivo exista no demuestra que se haya cargado. Combina esta comprobación con `writing-for-agents`.
+Comprueba cuánto pesan las instrucciones aplicables al directorio de trabajo y si llegan al límite. Si hay muchos archivos, verifica que las reglas necesarias llegaron al contexto; que el archivo exista no demuestra que se haya cargado. Combina esta comprobación con `writing-for-agents`.
 
 ##### Ejemplo
 
@@ -450,9 +428,9 @@ Suma cuánto pesan todos los AGENTS.md juntos
 
 #### Skills
 
-Los skills de Codex se controlan con `[[skills.config]]` en _config.toml_ ([documentación](https://learn.chatgpt.com/docs/build-skills)). Permite desactivar skills concretos.
+Codex lee _.agents/skills/_ directamente y puede desactivar skills concretos ([documentación](https://learn.chatgpt.com/docs/build-skills)).
 
-Codex lee _.agents/skills/_ directamente. Para desactivar un skill, usa `[[skills.config]]` con `enabled = false`. Las sesiones conservadas ayudan a estimar el uso, pero la falta de registros en _~/.codex/sessions/_ no demuestra que no se usara: ten en cuenta la retención y la fuente del historial.
+Pregunta a Codex qué skills no has usado y pídele que desactive los que sobran. La estimación se basa en las sesiones conservadas, pero la falta de registros no demuestra que un skill no se usara: ten en cuenta la retención y la fuente del historial.
 
 Lánzalo cada mes.
 

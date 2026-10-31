@@ -104,19 +104,13 @@ El agente puede modificar el servicio en _./app_, ejecutar pruebas y leer la doc
 
 > Trabaja dentro de la tarea y prefiere cambios reversibles.
 
-Primero anotamos las decisiones de política deseadas en una notación ilustrativa. Es pseudocódigo para discutir las reglas, que aún hay que expresar con la configuración del sandbox y los permisos elegidos.
+Pide al agente que exprese estos límites en su sandbox y sus permisos. Los ajustes del proyecto se suben al repositorio, así que los límites se aplican a todo el equipo.
 
 ```text
-write path ./app/**          allow
-write path ./docs/**         allow
-write path ../**             deny: outside workspace
-command make test            allow
-command git push *           ask: external state change
-network registry.npmjs.org   allow
-network *                    deny: domain not approved
+Configura los permisos: escribe solo en ./app y ./docs, make test sin preguntar, git push con confirmación, red solo hacia registry.npmjs.org
 ```
 
-Después de configurar los mecanismos, comprobamos las decisiones esperadas. La llamada a `git push` debe pedir confirmación, la escritura en _~/.ssh/config_ debe bloquearse y `make test` debe ejecutarse sin preguntar. El bloque de pseudocódigo por sí mismo no establece esas restricciones.
+Después de configurarlo, comprueba las decisiones esperadas. La llamada a `git push` debe pedir confirmación, la escritura en _~/.ssh/config_ debe bloquearse y `make test` debe ejecutarse sin preguntar.
 
 Un límite real y estrecho se puede mostrar con la prohibición de hacer commit de cambios en las migraciones. Guarda el siguiente script como _.git/hooks/pre-commit_ en un repositorio de prueba con un directorio _.git_ normal y hazlo ejecutable con `chmod +x .git/hooks/pre-commit`.
 

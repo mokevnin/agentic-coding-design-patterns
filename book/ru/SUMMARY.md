@@ -58,6 +58,7 @@
 * [Преждевременная спецификация](premature-specification.md)
 * [Преждевременный успех](premature-success.md)
 * [Раздутая память](bloated-agents-md.md)
+* [Приватная память](private-agent-memory.md)
 * [Вайб-кодинг](vibe-coding.md)
 * [Уан-шот](one-shotting.md)
 
