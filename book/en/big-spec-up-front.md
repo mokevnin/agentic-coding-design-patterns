@@ -2,7 +2,7 @@
 kind: anti-pattern
 status: draft
 related: [spec-driven-development, premature-specification, prototype-to-answer, tracer-bullet-tickets, give-agent-a-way-to-verify]
-source_rev: dfd73e6e4129de18d42b21f3cf39c686ca8b23ee
+source_rev: 2120ac2dd7e347455215b88163b0a90c9c49e739
 ---
 
 # Big Spec Up Front
@@ -22,7 +22,7 @@ Most of the time goes into the spec, and there is still no working version. Mean
 ## Why people do it
 
 - A detailed spec gives a feeling of control over the agent.
-- SDD toolkits offer a full process for any task, and people go through all of it.
+- People follow the entire process available in an SDD toolkit regardless of the task's size or uncertainty.
 - The agent writes text fast, so one more section seems to cost nothing.
 - It seems that the more detailed the description, the more accurate the result.
 - There is a fear that without a complete description the agent will go astray.
@@ -46,7 +46,7 @@ Most of the time goes into the spec, and there is still no working version. Mean
 
 ## A better way
 
-Limit the spec to what the agent can't start without: the goal, constraints, acceptance criteria and what is definitely out of scope. That is usually half a page. Then get a working prototype as soon as possible: a thin end-to-end slice you can run and poke at (see [tracer-bullet tickets](tracer-bullet-tickets.md)). From there, edit it based on what you see, and add to the spec what the prototype revealed. That way the spec becomes an outcome of the work as well as an input.
+Limit the spec to what the agent can't start without: the goal, constraints, acceptance criteria and what is definitely out of scope. Half a page often suffices for a small, reversible change. If a mistake would be costly, agree on constraints and acceptance criteria in more detail. Resolve uncertainty through an early working prototype: a thin end-to-end slice you can run and poke at (see [tracer-bullet tickets](tracer-bullet-tickets.md)). From there, edit it based on what you see, and add to the spec what the prototype revealed. That way the spec becomes an outcome of the work as well as an input.
 
 A quick prototype doesn't mean [vibe coding](vibe-coding.md). You keep the goal, the criteria and a [feedback loop](give-agent-a-way-to-verify.md) that keeps iterations from breaking what is done. Unlike a [throwaway prototype](prototype-to-answer.md), which answers one question and is discarded, this prototype becomes the first version. Birgitta Böckeler, reviewing SDD toolkits, writes that small, iterative steps are the best way to stay in control, and is skeptical of lots of up-front spec design ([article](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)).
 
@@ -70,7 +70,7 @@ The spec grows together with the prototype and describes what was actually teste
 
 ## Related patterns and anti-patterns
 
-- [Spec-Driven Development](spec-driven-development.md) works better when the spec is short and refined along the way.
+- [Spec-Driven Development](spec-driven-development.md) preserves agreed requirements and refines them based on the results of the work.
 - [Premature Specification](premature-specification.md) describes a neighboring mistake: dictating the implementation to the agent instead of the goal.
 - [Tracer-Bullet Tickets](tracer-bullet-tickets.md) help get a thin end-to-end slice right away.
 - [Throwaway Prototype](prototype-to-answer.md) answers one design question and is discarded.
