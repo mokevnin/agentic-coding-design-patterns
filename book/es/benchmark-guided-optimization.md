@@ -2,7 +2,7 @@
 group: verification
 status: draft
 related: [give-agent-a-way-to-verify, agent-workflow-evals, hypothesis-driven-debugging, isolated-parallel-work]
-source_rev:
+source_rev: 69c3b83798fe8e07ccb9fdac82f17f380d4ab751
 ---
 
 # Optimización medida
