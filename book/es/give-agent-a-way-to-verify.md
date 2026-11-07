@@ -9,7 +9,7 @@ source_rev: 41d95a5eca315b4d3770f8d362f0656cdcc67dac
 
 ## Propósito
 
-Dar al agente una forma de comprobar el resultado, leer el fallo y repetir el trabajo hasta cumplir el criterio. El agente ejecuta la comprobación dentro de la sesión, y tú recibes el resultado junto con la evidencia.
+Dar al agente una forma de comprobar el resultado, leer el fallo y repetir el trabajo hasta cumplir el criterio. El agente ejecuta la comprobación en una sesión o después del despliegue, y tú recibes el resultado junto con la evidencia.
 
 ## También conocido como
 
@@ -96,6 +96,26 @@ El agente repite el ciclo de ediciones y comprobaciones hasta tener éxito, y lu
 
 En [OpenSpec](openspec.md), [Superpowers](superpowers.md) y las [skills de Matt Pocock](matt-pocock-skills.md), las comprobaciones forman parte del flujo de implementación. El mecanismo concreto depende del conjunto de skills y de los criterios de la tarea.
 
+### Lo que no depende del agente
+
+#### Verificación después del despliegue
+
+Si la tarea promete menos latencia o errores con tráfico real, incluye la verificación después del despliegue en el criterio de terminado. Es una tarea normal para un agente con acceso a métricas, logs e historial de despliegues. Antes del despliegue, acuerda el efecto esperado, las desviaciones aceptables y el periodo de observación. Guarda los valores de referencia del escenario afectado; si falta una señal necesaria, añade primero la instrumentación.
+
+Después del despliegue, el agente compara los datos de la nueva versión con la referencia para el endpoint, la región o el grupo de usuarios pertinente. El resultado incluye la versión, los intervalos de observación y enlaces a consultas y logs. Si no hay tráfico suficiente, el resultado queda sin verificar. Un pico en una métrica que coincide con un despliegue aporta una hipótesis para el [diagnóstico](hypothesis-driven-debugging.md) que aún debe comprobarse.
+
+Acuerda de antemano la respuesta a una desviación: avisar al responsable, preparar una corrección o proponer una reversión. Ejecutar la reversión requiere una autorización acordada por separado. El periodo de observación limita esta comprobación; la observación continua sigue siendo tarea de la monitorización.
+
+##### Ejemplo
+
+Estás añadiendo una caché a la búsqueda y quieres reducir la latencia sin aumentar los errores. Mientras el agente prepara el cambio, le das esta tarea:
+
+```text
+Prepara una comprobación del rendimiento de la búsqueda después del despliegue
+```
+
+Apruebas un plan con el p95 de referencia, la tasa de errores aceptable y una ventana de observación de media hora. Después del despliegue, ejecutas la comprobación. La latencia media ha bajado, pero el agente encuentra más errores en una región y adjunta la consulta y ejemplos de los logs. Investigas la desviación antes de aceptar el cambio.
+
 ## Ejemplo
 
 Para un validador de códigos promocionales, fijas los casos a comprobar junto con la tarea.
@@ -114,6 +134,7 @@ Recibes una implementación en la que el bug de la zona horaria ya se encontró 
 - **Comprobación sin ejecución.** Que haya tests en el repositorio no significa que el agente los ejecutara. Fija el comando y la condición de finalización.
 - **Amañar la comprobación.** Una condición debilitada oculta el defecto. Los cambios del criterio requieren una decisión aparte.
 - **Tests unitarios como final.** Para una funcionalidad de usuario, comprueba también el escenario de extremo a extremo; si no, te arriesgas al [éxito prematuro](premature-success.md).
+- **El despliegue como prueba del efecto.** Un despliegue correcto no confirma menos latencia o errores. Compara las señales acordadas con los valores de referencia.
 
 ## Usos conocidos
 
@@ -121,6 +142,7 @@ Recibes una implementación en la que el bug de la zona horaria ya se encontró 
 - **Las herramientas de agentes** pueden admitir objetivos de sesión, Stop hooks y subagentes de revisión.
 - **El harness de Anthropic para agentes de larga duración** vincula los estados de las funcionalidades con comprobaciones y ejecuta una prueba de humo al comienzo de cada sesión.
 - **Los toolkits de SDD** incluyen criterios de aceptación en las especificaciones y las tareas, y Superpowers usa el ciclo TDD.
+- **Cursor**, en [Bots for the last mile](https://cursor.com/blog/rollouts-and-security-reviewer), describe un plan de observación antes del merge y la comparación de señales de producción con los valores de referencia después del despliegue.
 
 ## Patrones relacionados
 

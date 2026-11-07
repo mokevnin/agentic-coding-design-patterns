@@ -38,6 +38,7 @@
 * [Puertas de calidad](quality-gates.md)
 * [TDD con agente](tdd-with-agent.md)
 * [Diagnóstico mediante hipótesis](hypothesis-driven-debugging.md)
+* [Optimización medida](benchmark-guided-optimization.md)
 * [Reflexión](reflection.md)
 * [Escritor y revisor](writer-reviewer.md)
 * [Prototipo desechable](prototype-to-answer.md)

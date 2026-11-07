@@ -38,6 +38,7 @@
 * [Quality Gates](quality-gates.md)
 * [TDD with an Agent](tdd-with-agent.md)
 * [Hypothesis-Driven Debugging](hypothesis-driven-debugging.md)
+* [Measured Optimization](benchmark-guided-optimization.md)
 * [Reflection](reflection.md)
 * [Writer and Reviewer](writer-reviewer.md)
 * [Throwaway Prototype](prototype-to-answer.md)

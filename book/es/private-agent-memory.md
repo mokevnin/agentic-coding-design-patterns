@@ -68,6 +68,18 @@ Cuando una corrección afecta al proyecto, pide al agente que añada una regla a
 Añade a AGENTS.md: las dependencias se instalan solo con pnpm
 ```
 
+#### Retrospectiva de la sesión: `retro`
+
+Después de una sesión con correcciones repetidas, ejecuta `retro`, un skill de terceros del [paquete de Matt Pocock](matt-pocock-skills.md). Lee la transcripción y propone mejoras en el entorno del agente: dónde añadir una referencia a la documentación, corregir un procedimiento o hacer cumplir una restricción con una comprobación automática. Eliges las propuestas y después pides al agente que implemente los cambios aceptados. La experiencia de la sesión se convierte en un cambio revisable disponible para todo el equipo. El comportamiento del skill se describe en su [código fuente](https://github.com/mattpocock/skills/blob/4ae2317ddb22b046e26455e4f9c9b3aaaf62212d/skills/engineering/retro/SKILL.md).
+
+##### Ejemplo
+
+```text
+/retro
+```
+
+Por ejemplo, has corregido varias veces los intentos de instalar dependencias con npm. La retrospectiva descubre que la regla de pnpm ya existe, pero la comprobación del lock-file prohibido no está conectada a la CI. Aceptas la propuesta de conectarla y revisas el diff. La puerta de calidad compartida detectará el siguiente error. Encontrarás más detalles en [Mantenimiento programado](scheduled-maintenance.md); ejecuta la retrospectiva justo después de una sesión difícil.
+
 ### Claude Code
 
 Comprobado con Claude Code 2.1.316 y la [documentación de memoria](https://code.claude.com/docs/en/memory) el 2026-10-31.

@@ -9,7 +9,7 @@ source_rev: 41d95a5eca315b4d3770f8d362f0656cdcc67dac
 
 ## Intent
 
-Give the agent a way to check the result, read the failure, and repeat the work until the criterion is met. The agent runs the check inside the session, and you receive the result together with the evidence.
+Give the agent a way to check the result, read the failure, and repeat the work until the criterion is met. The agent runs the check in a session or after deployment, and you receive the result together with the evidence.
 
 ## Also known as
 
@@ -96,6 +96,26 @@ The agent repeats the cycle of edits and checks until it succeeds, then returns 
 
 In [OpenSpec](openspec.md), [Superpowers](superpowers.md), and [Matt Pocock's skills](matt-pocock-skills.md), checks are part of the implementation workflow. The specific mechanism depends on the skill set and the task's criteria.
 
+### What doesn't depend on the agent
+
+#### Verification after deployment
+
+If the task promises lower latency or fewer errors under real traffic, include verification after deployment in the definition of done. This is a plain task for an agent with access to metrics, logs, and deployment history. Before deployment, agree on the intended effect, acceptable deviations, and observation period. Save baseline values for the affected scenario; if a required signal is missing, add instrumentation first.
+
+After deployment, the agent compares data for the new version with the baseline for the relevant endpoint, region, or user group. The result includes the version, observation intervals, and links to queries and logs. With insufficient traffic, the result remains unverified. A metric spike coinciding with a deployment provides a hypothesis for [diagnosis](hypothesis-driven-debugging.md) that still needs testing.
+
+Agree on the response to a deviation in advance: notify the owner, prepare a fix, or propose a rollback. Executing a rollback requires separately agreed authority. The observation period bounds this check; continuous observation remains the job of monitoring.
+
+##### Example
+
+You are adding a cache to search and want to reduce response latency without increasing errors. While the agent prepares the change, you give it the following task:
+
+```text
+Prepare a check of search performance after deployment
+```
+
+You approve a plan with the baseline p95, acceptable error rate, and a half-hour observation window. After deployment, you run the check. Average latency has fallen, but the agent finds more errors in one region and attaches the query and log examples. You investigate the deviation before accepting the change.
+
 ## Example
 
 For a promo code validator, you set the cases to check together with the task.
@@ -114,6 +134,7 @@ You receive an implementation in which the time zone bug has already been found 
 - **A check that is never run.** Tests in the repository do not mean the agent ran them. Specify the command and the completion condition.
 - **Fitting the check.** A weakened condition hides the defect. Changes to the criterion need a separate decision.
 - **Unit tests as the finale.** For a user-facing feature, also check the end-to-end scenario, otherwise you risk [premature success](premature-success.md).
+- **Deployment as proof of impact.** A successful deployment does not confirm lower latency or fewer errors. Compare the agreed signals with the baseline.
 
 ## Known uses
 
@@ -121,6 +142,7 @@ You receive an implementation in which the time zone bug has already been found 
 - **Agent tools** can support session goals, Stop hooks, and review subagents.
 - **Anthropic's harness for long-running agents** ties feature statuses to checks and runs a smoke test at the start of each session.
 - **SDD toolkits** include acceptance criteria in specifications and tasks, and Superpowers uses the TDD cycle.
+- **Cursor**, in [Bots for the last mile](https://cursor.com/blog/rollouts-and-security-reviewer), describes a monitoring plan before merge and a comparison of production signals with the baseline after deployment.
 
 ## Related patterns
 

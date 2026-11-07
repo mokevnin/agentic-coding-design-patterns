@@ -38,6 +38,7 @@
 * [Шлюзы качества](quality-gates.md)
 * [TDD с агентом](tdd-with-agent.md)
 * [Диагностика через гипотезы](hypothesis-driven-debugging.md)
+* [Оптимизация по измерениям](benchmark-guided-optimization.md)
 * [Рефлексия](reflection.md)
 * [Писатель и рецензент](writer-reviewer.md)
 * [Одноразовый прототип](prototype-to-answer.md)

@@ -68,6 +68,18 @@ When a correction concerns the project, ask the agent to add a rule to _AGENTS.m
 Add to AGENTS.md: install dependencies with pnpm only
 ```
 
+#### Session retrospective: `retro`
+
+After a session with repeated corrections, run `retro`, a third-party skill from [Matt Pocock's pack](matt-pocock-skills.md). It reads the transcript and suggests improvements to the agent's environment: where to add a documentation pointer, fix a procedure, or enforce a constraint with an automated check. You choose the proposals, then ask the agent to implement the accepted changes. Session experience becomes a reviewable change available to the whole team. The skill's behavior is described in its [source](https://github.com/mattpocock/skills/blob/4ae2317ddb22b046e26455e4f9c9b3aaaf62212d/skills/engineering/retro/SKILL.md).
+
+##### Example
+
+```text
+/retro
+```
+
+For example, you repeatedly corrected attempts to install dependencies with npm. The retrospective finds that the pnpm rule already exists, but the check for the forbidden lock file isn't wired into CI. You accept the proposal to connect the check and review the diff. The shared quality gate will catch the next mistake. See [Scheduled Maintenance](scheduled-maintenance.md) for more on this process; run it immediately after a difficult session.
+
 ### Claude Code
 
 Checked against Claude Code 2.1.316 and the [memory documentation](https://code.claude.com/docs/en/memory) on 2026-10-31.
