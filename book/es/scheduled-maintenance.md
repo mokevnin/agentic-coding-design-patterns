@@ -1,7 +1,7 @@
 ---
 group: project-org
 status: draft
-related: [agents-md-memory, domain-context-file, bloated-agents-md, private-agent-memory, skills-as-packaged-workflows, writer-reviewer, executable-guardrails]
+related: [refactoring, agents-md-memory, domain-context-file, bloated-agents-md, private-agent-memory, skills-as-packaged-workflows, writer-reviewer, executable-guardrails, design-it-twice, give-agent-a-way-to-verify, tracer-bullet-tickets]
 source_rev: bf1399e377d55027b9a42082e4f17327a1e25215
 ---
 
@@ -9,7 +9,7 @@ source_rev: bf1399e377d55027b9a42082e4f17327a1e25215
 
 ## Propósito
 
-Lanzar al agente con regularidad en pasadas que buscan deriva en el código, la documentación y el propio entorno del agente, y devolver el resultado en forma de PR pequeños o tickets. Cada pasada tiene su propia frecuencia, su propio alcance y su propia forma de ejecución: en la nube, en local o contigo.
+Lanzar al agente con regularidad en pasadas que buscan deriva en el código, la documentación y el propio entorno del agente, reconstruyen modelos de comportamiento ocultos y devuelven el resultado en forma de PR pequeños, descripciones de modelos o tickets. Cada pasada tiene su propia frecuencia, su propio alcance y su propia forma de ejecución: en la nube, en local o contigo.
 
 ## También conocido como
 
@@ -25,11 +25,13 @@ Una limpieza puntual «cuando la cosa se ponga fea» no funciona: para entonces 
 
 ## Solución
 
-Cuando hay mucho código de agentes, todo deriva a la vez: la arquitectura, los límites entre capas, el glosario, el cumplimiento de los estándares, las instrucciones para los propios agentes. Por eso las comprobaciones no esperan a un motivo; simplemente se ejecutan con regularidad. Todo lo que sigue al código se revisa cada semana: estándares, simplificación, seguridad, glosario, arquitectura. Las instrucciones, los skills, los ADR y los ajustes del agente cambian más despacio, y basta con revisarlos una vez al mes.
+Cuando hay mucho código de agentes, todo deriva a la vez: la arquitectura, los límites entre capas, el glosario, el cumplimiento de los estándares, las instrucciones para los propios agentes. Empieza con una frecuencia semanal para revisar estándares, simplificación, seguridad y glosario. Alterna las pasadas sobre modelos ocultos y arquitectura entre las áreas donde más cuesta hacer cambios. Las instrucciones, los skills, los ADR y los ajustes del agente cambian más despacio, así que una revisión mensual es un buen punto de partida. Ajusta la frecuencia según la utilidad de los hallazgos y la capacidad del equipo para revisar los resultados.
 
 Cada pasada mira una parte concreta: los cambios de la semana, un directorio, una capa o un concepto del dominio. Una pasada por todo el repositorio de golpe da un informe superficial.
 
-El resultado de cada pasada debe ser una acción, no un informe: un PR con correcciones para un área, o tickets. Un informe que nadie convirtió en un cambio solo añade ruido.
+Descubrir el modelo y cambiar el código son pasadas distintas. Primero recibes una descripción del comportamiento existente con referencias al código y dudas; después eliges un cambio. El resultado puede ser una corrección pequeña, un modelo aceptado o un ticket con una pregunta sobre el dominio. Si no hay nada que cambiar, esa es la conclusión. Exigir un PR tras cada ejecución fomenta modificaciones innecesarias.
+
+Aplica el flujo de [refactorización](refactoring.md) al cambio elegido: comprueba el comportamiento actual antes y después de editar. Las pasadas programadas complementan las pequeñas mejoras durante las tareas habituales.
 
 Aparte de las pasadas programadas, mantén una revisión por evento. La retrospectiva de una sesión sirve justo después de un trabajo que salió mal, mientras aún recuerdas qué falló. Una semana después ya no queda nada que revisar.
 
@@ -39,7 +41,7 @@ El diagrama muestra las tres formas de ejecución y adónde llega el resultado d
 
 ```mermaid
 ---
-title: cada pasada termina en un cambio que tú aceptas
+title: cada pasada devuelve un resultado para tu revisión
 config:
   flowchart:
     rankSpacing: 30
@@ -47,18 +49,20 @@ config:
 flowchart TB
   range["Rango desde la última ejecución"] --> cloud["Pasadas en segundo plano<br/>revisión, simplificación, seguridad, glosario"]:::accent
   cloud --> prs["PR pequeños por área"]
+  cloud --> models["Modelos de comportamiento<br/>y preguntas abiertas"]
   area["Área elegida"] --> arch["Sesión de arquitectura<br/>contigo"]
   arch --> tickets["Tickets"]
   fail["Sesión fallida"]:::warn --> retro["Retrospectiva"]
   retro --> env["Linter, estándares,<br/>AGENTS.md, skills"]
   local["Pasada local"]:::muted --> tool["Memoria, permisos,<br/>skills del agente"]
   prs --> you{"Tú: revisión"}:::accent
+  models --> you
   tickets --> you
   env --> you
   tool --> you
 ```
 
-Las pasadas en segundo plano trabajan sin ti. Configura el resultado esperado: un PR con cambios o tickets con hallazgos comprobados. Tras la ejecución, comprueba que se produjo ese resultado. Los hallazgos semanales sugieren un área para la sesión de arquitectura. Lanza la retrospectiva después de una sesión difícil; las pasadas locales mantienen la herramienta.
+Las pasadas en segundo plano trabajan sin ti. Configura el resultado esperado: un PR con cambios, una descripción del modelo o tickets con hallazgos comprobados. Revisa el resultado tras la ejecución; también es válido no encontrar nada. Los hallazgos semanales sugieren un área para la sesión de arquitectura. Lanza la retrospectiva después de una sesión difícil; las pasadas locales mantienen la herramienta.
 
 ## Participantes / Componentes
 
@@ -66,7 +70,7 @@ Las pasadas en segundo plano trabajan sin ti. Configura el resultado esperado: u
 - **El punto de referencia** fija el rango: una etiqueta de la última ejecución o una fecha.
 - **Una pasada** comprueba un área en busca de un tipo de deriva.
 - **La referencia** describe la norma: estándares de código, glosario, ADR, _AGENTS.md_.
-- **El resultado** convierte los hallazgos en PR o tickets.
+- **El resultado** convierte los hallazgos en PR, descripciones de modelos o tickets y separa el comportamiento confirmado de las suposiciones.
 - **Tú** aceptas los cambios, eliges el área para la sesión de arquitectura y respondes a las preguntas de la retrospectiva.
 
 ## Cuándo aplicarlo
@@ -90,11 +94,11 @@ En un proyecto pequeño con un solo desarrollador y cambios poco frecuentes, bas
 
 ## Implementación
 
-Las pasadas semanales por el código pueden ser tareas en la nube con la creación de PR como resultado esperado. Ejecuta manualmente la arquitectura, las retrospectivas y el mantenimiento del agente. Indica el periodo, por ejemplo «de la última semana», para que no dependa del estado conservado de otras ejecuciones. Divide los rangos grandes por directorios. Una vez al mes, comprueba la utilidad de los hallazgos y si los PR reciben revisión.
+Las pasadas semanales por el código pueden ser tareas en la nube. Pide un PR pequeño para las correcciones, o una descripción con referencias al código y preguntas abiertas para descubrir modelos ocultos. Realiza la arquitectura, la discusión de reglas dudosas, las retrospectivas y el mantenimiento en una sesión interactiva. Indica el periodo, por ejemplo «de la última semana»; para un recorrido sucesivo puedes guardar el commit revisado de la ejecución anterior. Elige el siguiente rango tras revisar el resultado y ten en cuenta los tickets abiertos para evitar propuestas repetidas. Revisa cada mes la utilidad de las pasadas.
 
 ### Pasadas que no dependen del agente
 
-La mayoría de las pasadas usa [skills de Matt Pocock](matt-pocock-skills.md). Instala el paquete por uno de los métodos de su perfil y ejecuta una vez `/setup-matt-pocock-skills`. Los ejemplos nombran las rutinas; la invocación depende del agente. Los comandos integrados están en bloques separados después del enfoque común.
+Algunas pasadas usan [skills de Matt Pocock](matt-pocock-skills.md); otras son prompts normales. Para los skills, instala el paquete por uno de los métodos de su perfil y ejecuta una vez `/setup-matt-pocock-skills`. Los ejemplos nombran las rutinas; la invocación depende del agente. Los comandos integrados están en bloques separados después del enfoque común.
 
 #### Retrospectiva
 
@@ -124,17 +128,9 @@ Lánzalo cada semana como tarea en la nube, una tarea por cada área grande.
 /code-review de la última semana
 ```
 
-#### Simplificación
+#### Refactorización
 
-El paquete no tiene un skill propio para esto; la pasada es un prompt normal. El agente busca repeticiones, capas sobrantes y código muerto en el código cambiado hace poco y los elimina enseguida.
-
-Lánzalo cada semana sobre los 3–5 directorios con más cambios. La tarea en la nube los localiza sola con `git log --since="7 days ago" --stat`.
-
-##### Ejemplo
-
-```text
-Simplifica el código que cambió en la última semana
-```
+Cada semana, elige un área activa y un tipo de dificultad: una regla repetida, estados poco claros, abstracciones innecesarias o ramas obsoletas. Alterna las áreas y ten en cuenta los tickets abiertos. [Refactorización](refactoring.md) explica las peticiones concretas, la investigación del modelo y las comprobaciones antes y después del cambio.
 
 #### Revisión de seguridad
 
@@ -164,19 +160,7 @@ Lánzalo cada semana como tarea en la nube.
 
 #### Arquitectura
 
-Es el skill `improve-codebase-architecture` del paquete ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture)). Carga por sí mismo `codebase-design` y `grilling`. El plan se convierte en tickets con el skill `to-tickets` ([código fuente](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-tickets)).
-
-El skill toma su vocabulario de `codebase-design`: módulo, interfaz, profundidad, costura, adaptador. Luego lee _GLOSSARY.md_ y los ADR del área elegida, y un subagente recorre el código buscando fricción: para entender un concepto hay que saltar entre muchos módulos pequeños; una interfaz es casi tan compleja como su implementación; los módulos se filtran unos en otros a través de las costuras. A los módulos sospechosos se les aplica la prueba de borrado: si borraras el módulo, ¿la complejidad se concentraría en un sitio o solo se movería? El skill presenta los candidatos en un informe HTML en una carpeta temporal. Para el candidato elegido hace un `grilling` y, si quieres, compara variantes de interfaz con design-it-twice. `to-tickets` corta el plan en rebanadas verticales con dependencias de bloqueo y las publica en el tracker.
-
-Lánzalo cada semana, contigo. El área alterna entre una capa y un concepto del dominio. Elígela donde la revisión y la simplificación semanales encontraron más cosas.
-
-##### Ejemplo
-
-```text
-/improve-codebase-architecture app/services
-```
-
-Después de trabajar el sitio elegido, lanza `/to-tickets`.
+Cada semana, dedica una sesión conjunta a un área elegida según los hallazgos semanales. Trabaja con el agente cuando la decisión exija aclarar el dominio o comparar interfaces. [Refactorización](refactoring.md) describe el uso de `improve-codebase-architecture` y el paso a tickets.
 
 #### Instrucciones para agentes
 
@@ -230,7 +214,7 @@ Limpia tu memoria de este proyecto
 
 ### Claude Code
 
-Comprobado con Claude Code 2.1.316 y la [referencia de comandos](https://code.claude.com/docs/en/commands) el 2026-10-31. El mantenimiento de instalación y memoria se ejecuta en local. `/schedule` inicia tareas en la nube; la revisión también tiene el modo en la nube `/code-review ultra`.
+Este bloque se comprobó con Claude Code 2.1.316 y la [referencia de comandos](https://code.claude.com/docs/en/commands) el 2026-10-31. El mantenimiento de instalación y memoria se ejecuta en local. `/schedule` inicia tareas en la nube; la revisión también tiene el modo en la nube `/code-review ultra`.
 
 #### Calendario: `/schedule`
 
@@ -254,16 +238,14 @@ Claude Code tiene un skill integrado `/code-review` que busca errores de correcc
 /review
 ```
 
-#### Simplificación: `/simplify`
+#### Simplificación
 
-`/simplify` es un skill integrado ([documentación](https://code.claude.com/docs/en/commands)).
-
-Cuatro subagentes miran en paralelo el código modificado: reutilización de helpers existentes, simplificación, eficiencia y nivel de abstracción. Lo que encuentran se corrige enseguida. `/simplify` no busca errores de corrección. Se le puede pasar una ruta o un PR como argumento, así que la tarea semanal lo lanza por directorio.
+Elige un área activa para cada tarea periódica. [Refactorización](refactoring.md#claude-code) explica el skill integrado `/simplify` y la validación del resultado; aquí configura el calendario y comprueba que se revisen los resultados antes de la siguiente ejecución.
 
 ##### Ejemplo
 
 ```text
-/simplify app/services
+/schedule cada lunes /simplify app/services
 ```
 
 #### Seguridad: `/security-review`
@@ -340,7 +322,7 @@ Lánzalo cada mes y cada vez que `/run` avise de que el skill está obsoleto.
 
 ### Codex
 
-Comprobado con Codex CLI 0.166.0 y la documentación de learn.chatgpt.com el 2026-10-31.
+Este bloque se comprobó con Codex CLI 0.166.0 y la documentación de learn.chatgpt.com el 2026-10-31.
 
 #### Calendario: Scheduled tasks y `codex-action`
 
@@ -372,6 +354,18 @@ Crea un GitHub Actions semanal: codex-action ejecuta $code-review y abre un PR
 
 ```text
 codex review --base main
+```
+
+#### Pasada por el código
+
+Repite una pasada probada según un calendario, alternando áreas y guardando el punto de partida tras la revisión. [Refactorización](refactoring.md#codex) explica la petición normal y cómo empaquetar el procedimiento como un skill propio.
+
+En la aplicación, crea una tarea semanal con esta petición y revisa el primer resultado antes de las ejecuciones periódicas.
+
+##### Ejemplo
+
+```text
+Cada lunes, simplifica el código de pagos modificado durante la última semana
 ```
 
 #### Seguridad: `@codex security review`
@@ -450,15 +444,16 @@ El proyecto recibe unas veinte mil líneas a la semana, los estándares están e
 
 > /code-review de la última semana
 
-El lunes llegan tres PR: en _app/services_ dos servicios vuelven a ir a la base de datos saltándose los repositorios, en _app/policies_ una comprobación de rol compara cadenas en lugar de usar una enumeración, y en _app/javascript/pages_ se duplica el formateo de fechas. Aceptas los dos primeros tras una revisión breve. El tercero muestra que la regla del formateo de fechas se puede comprobar con un linter, así que abres un ticket para una regla de lint en lugar de una línea en los estándares.
+En este ejemplo didáctico, la revisión encuentra dos servicios que acceden a la base de datos saltándose los repositorios. Aceptas un PR pequeño tras comprobarlo. Una regla poco clara en pagos lleva a dedicar la siguiente sesión a su [investigación y refactorización](refactoring.md).
 
-Para la sesión de arquitectura de esta semana eliges _app/services_: es donde más hallazgos hubo por segundo mes seguido. El informe muestra que los servicios son finos y casi solo repiten los repositorios; el sitio elegido se desarrolla hasta un plan y sale en forma de tickets.
+La duda sobre los estados queda en un ticket. La siguiente pasada semanal lo tiene en cuenta y busca discrepancias nuevas desde el commit guardado. Un mes después, ves que los informes de un directorio ya no ofrecen hallazgos útiles y cambias de área. Reduce la frecuencia si el equipo no da abasto para revisar los resultados.
 
 ## Antipatrones y errores comunes
 
 - **Una pasada por todo el repositorio.** El agente mira un poco de todo y solo encuentra lo evidente. Fija un alcance.
 - **Un único PR grande.** Las correcciones de todas las áreas en un solo PR no se pueden revisar, se aplaza, y la siguiente pasada encuentra lo mismo.
-- **Un informe en lugar de un cambio.** Los informes HTML se acumulan en una carpeta temporal y nada cambia.
+- **Hallazgos sin revisión.** Los informes se acumulan y las siguientes ejecuciones los repiten. Una descripción del modelo aceptada es útil; un informe sin leer no ayuda.
+- **Refactorizar por obligación.** El agente edita para producir un PR semanal. Admite la conclusión de que no hay nada que cambiar.
 - **Una retrospectiva de memoria.** Revisar sesiones de hace una semana depende de lo que ya nadie recuerda.
 - **Confiar en la revisión de cada PR.** La revisión automática de PR detecta errores en un diff, pero no una desviación que se acumula a lo largo de muchos PR.
 - **Mantenimiento de la herramienta mezclado con el proyecto.** Los cambios de permisos y memoria personales acaban en un PR del equipo o, al revés, las reglas del equipo se quedan en ajustes personales.
@@ -473,9 +468,13 @@ Para la sesión de arquitectura de esta semana eliges _app/services_: es donde m
 
 ## Patrones relacionados
 
+- [Refactorización](refactoring.md) explica la investigación del modelo, la elección del cambio y las comprobaciones de conservación del comportamiento.
 - [Memoria del proyecto](agents-md-memory.md) describe el archivo de instrucciones que la pasada mensual mantiene corto.
 - [Memoria hinchada](bloated-agents-md.md) muestra en qué se convierten las instrucciones sin una limpieza regular.
 - [Vocabulario del dominio](domain-context-file.md) fija la referencia para la comprobación semanal del glosario.
 - [Skills](skills-as-packaged-workflows.md) empaquetan las pasadas para que puedan ejecutarse según un calendario.
 - [Escritor y revisor](writer-reviewer.md) separa la escritura de la revisión; la revisión programada de estándares trabaja a escala de semana, no de un PR.
 - [Límites ejecutables](executable-guardrails.md) reciben nuevas comprobaciones de las retrospectivas y limitan las tareas en segundo plano a un sandbox.
+- [Diseña dos veces](design-it-twice.md) ayuda a comparar representaciones del modelo elegido.
+- [Bucle de retroalimentación](give-agent-a-way-to-verify.md) aporta una comprobación de que la refactorización conserva el comportamiento.
+- [Tickets trazadores](tracer-bullet-tickets.md) convierten la mejora elegida en pasos verificables; un cambio amplio de interfaz requiere expand–contract.

@@ -1,5 +1,5 @@
 ---
-source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
+source_rev: 1783b390e65340a1007dcf87e8249a49f0d07c69
 ---
 
 # Phrases for AGENTS.md
@@ -27,15 +27,11 @@ The rules are given in English. If you like, translate them into your team's lan
 
 ## Do not preserve backward compatibility
 
-By default, the agent may keep old fields "just in case" and add compatibility layers around a change. In an internal module fully controlled by one team, such layers often create extra work. The rule lets the agent remove the old interface and update its callers in the same edit.
-
-The rule fits applications and internal modules when the team controls their consumers. For a public library or an external API, compatibility is part of the contract with users, so there you need to require explicitly that it be preserved.
+The rule permits removing unnecessary compatibility layers when the team controls all consumers. For an external API, compatibility is part of the contract. [Refactoring](refactoring.md) explains how to choose between a coordinated change and a gradual migration.
 
 ## Choose the simplest implementation that fully meets the current requirements
 
-The agent may build in extension points for tasks that do not exist yet. The rule brings it back to YAGNI and the current requirements. For example, if one export format is needed, a universal plugin system adds code that nothing yet justifies. The word _fully_ requires implementing the whole agreed scenario, including error handling.
-
-The same problem arises with [premature specification](premature-specification.md), when the team chooses how a solution is built before it has understood the task.
+The rule keeps the agent within current requirements and requires completing the whole agreed scenario, including errors. [Refactoring](refactoring.md) covers its application to unnecessary abstractions; [Premature Specification](premature-specification.md) covers choosing a solution structure too early.
 
 ## Prefer established, well-maintained libraries over custom implementations
 
@@ -51,9 +47,7 @@ The rule combines well with [reflection](reflection.md). Before the edit, the ag
 
 ## Suggest best practices, even if they may require refactoring
 
-An agent aiming for the smallest diff may repeat a flaw of the surrounding code. The rule allows it to propose a refactoring and explain how it will help solve the task. A human weighs the benefit and agrees on the scope of work.
-
-The agent may propose refactoring too often. Combine this rule with the requirements to choose the simplest implementation and to establish the cause of a problem first.
+The rule permits the agent to propose a structural improvement and explain its benefit for the task. You choose the scope; a proposal alone does not authorize edits. [Refactoring](refactoring.md) explains how to assess and verify the improvement.
 
 ## Prefer retrieval over pre-training
 
@@ -65,9 +59,7 @@ For your project, specify where to find the primary source: internal documentati
 
 ## Keep changes focused on the requested task
 
-This adapts the [Cloudflare skill's working principles](https://github.com/cloudflare/skills/blob/6eb6c781aa9b6438e0c7307bd102788a75fe1a6d/skills/cloudflare/SKILL.md#L161): preserve the project's architecture and make the smallest change that satisfies the request. While fixing timeout handling, the agent may also rename nearby methods and reformat the module. Those edits enlarge the diff and make the fix harder to see.
-
-The rule keeps everything the task needs in the diff: implementation, affected callers, tests, and documentation. It works with the earlier refactoring rule: the agent explains the value of a broader rework, and you agree on its scope. If the task requires changing a neighboring module, that change is part of the work.
+This adapts the [Cloudflare skill's working principles](https://github.com/cloudflare/skills/blob/6eb6c781aa9b6438e0c7307bd102788a75fe1a6d/skills/cloudflare/SKILL.md#L161). The rule retains implementation, caller, test, and documentation changes needed for the task while limiting incidental cleanup. [Refactoring](refactoring.md) covers choosing the scope of a structural change.
 
 ## Make behavior-changing assumptions explicit
 
@@ -86,3 +78,4 @@ Verification should match the change. Linters and a build are usually enough for
 - [Project Memory](agents-md-memory.md) explains where to keep these rules.
 - [Bloated Memory](bloated-agents-md.md) shows why the list should stay short.
 - [Context Engineering](context-engineering.md) explains how permanent instructions consume the context of every session.
+- [Refactoring](refactoring.md) shows how to apply the rules on simplification, compatibility, and task scope.

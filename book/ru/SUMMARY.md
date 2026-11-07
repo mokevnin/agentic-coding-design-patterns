@@ -53,6 +53,7 @@
 * [Скиллы](skills-as-packaged-workflows.md)
 * [Воспроизводимый старт агента](reproducible-agent-bootstrap.md)
 * [Изолированная параллельная работа](isolated-parallel-work.md)
+* [Рефакторинг](refactoring.md)
 * [Плановое обслуживание](scheduled-maintenance.md)
 
 ## Антипаттерны

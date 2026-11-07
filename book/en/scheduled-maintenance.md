@@ -1,7 +1,7 @@
 ---
 group: project-org
 status: draft
-related: [agents-md-memory, domain-context-file, bloated-agents-md, private-agent-memory, skills-as-packaged-workflows, writer-reviewer, executable-guardrails]
+related: [refactoring, agents-md-memory, domain-context-file, bloated-agents-md, private-agent-memory, skills-as-packaged-workflows, writer-reviewer, executable-guardrails, design-it-twice, give-agent-a-way-to-verify, tracer-bullet-tickets]
 source_rev: bf1399e377d55027b9a42082e4f17327a1e25215
 ---
 
@@ -9,7 +9,7 @@ source_rev: bf1399e377d55027b9a42082e4f17327a1e25215
 
 ## Intent
 
-Run the agent on regular passes that look for drift in code, documentation and the agent's own setup, and bring the results back as small PRs or tickets. Each pass has its own cadence, its own scope and its own runner: in the cloud, locally or together with you.
+Run the agent on regular passes that look for drift in code, documentation and the agent's own setup, recover hidden behavior models and bring the results back as small PRs, model descriptions or tickets. Each pass has its own cadence, its own scope and its own runner: in the cloud, locally or together with you.
 
 ## Also known as
 
@@ -25,11 +25,13 @@ A one-off cleanup "when things get really bad" doesn't work: by then the drift h
 
 ## Solution
 
-When there is a lot of agent code, everything drifts at once: the architecture, layer boundaries, the glossary, adherence to standards, the instructions for the agents themselves. So the checks don't wait for a reason; they just run regularly. Everything that follows the code gets a weekly look: standards review, simplification, security, glossary, architecture. Instructions, skills, ADRs and agent settings change more slowly, and a monthly check is enough.
+When there is a lot of agent code, everything drifts at once: the architecture, layer boundaries, the glossary, adherence to standards, the instructions for the agents themselves. Start with a weekly cadence for standards review, simplification, security and the glossary. Rotate hidden-model and architecture passes through areas where changes are hardest. Instructions, skills, ADRs and agent settings change more slowly, so a monthly review is a useful starting point. Adjust the cadence to the value of findings and the team's capacity to review results.
 
 Each pass looks at a specific slice: the week's changes, a directory, a layer or a domain concept. A pass over the whole repository at once produces a shallow report.
 
-The result of every pass must be an action, not a report: a PR with fixes for one area, or tickets. A report nobody turned into a change only adds noise.
+Model discovery and code changes are separate passes. First you receive a description of existing behavior with code references and uncertainties, then you choose a change. The result can be a small fix, an accepted model or a ticket with a domain question. If nothing needs changing, the pass ends with that conclusion. Requiring a PR after every run encourages unnecessary edits.
+
+Apply the [refactoring](refactoring.md) workflow to a selected change: check current behavior before and after editing. Scheduled passes complement small improvements during ordinary tasks.
 
 Keep an event-driven review separate from the scheduled passes. A session retrospective is useful right after work went badly, while you still remember what went wrong. A week later there is nothing left to review.
 
@@ -39,7 +41,7 @@ The diagram shows the three runners and where the result of each ends up.
 
 ```mermaid
 ---
-title: every pass ends with a change you accept
+title: every pass returns a result for your review
 config:
   flowchart:
     rankSpacing: 30
@@ -47,18 +49,20 @@ config:
 flowchart TB
   range["Range since the last run"] --> cloud["Background passes<br/>review, simplify, security, glossary"]:::accent
   cloud --> prs["Small PRs per area"]
+  cloud --> models["Behavior models<br/>and open questions"]
   area["Chosen area"] --> arch["Architecture session<br/>together with you"]
   arch --> tickets["Tickets"]
   fail["Failed session"]:::warn --> retro["Retrospective"]
   retro --> env["Linter, standards,<br/>AGENTS.md, skills"]
   local["Local pass"]:::muted --> tool["Agent memory, permissions,<br/>skills"]
   prs --> you{"You: review"}:::accent
+  models --> you
   tickets --> you
   env --> you
   tool --> you
 ```
 
-Background passes run without you. Configure the expected output: a PR with changes or tickets with verified findings. After the run, check that it produced that output. Weekly review findings suggest an area for an architecture session. Run a retrospective after a difficult session; local passes maintain the tool itself.
+Background passes run without you. Configure the expected output: a PR with changes, a model description or tickets with verified findings. Inspect the result after the run; finding nothing is acceptable too. Weekly review findings suggest an area for an architecture session. Run a retrospective after a difficult session; local passes maintain the tool itself.
 
 ## Participants / Components
 
@@ -66,7 +70,7 @@ Background passes run without you. Configure the expected output: a PR with chan
 - **The checkpoint** sets the range: a tag from the last run or a date.
 - **A pass** checks one area for one kind of drift.
 - **The reference** describes the norm: coding standards, glossary, ADRs, _AGENTS.md_.
-- **The result** turns findings into PRs or tickets.
+- **The result** turns findings into PRs, model descriptions or tickets and separates confirmed behavior from assumptions.
 - **You** accept the changes, choose the area for the architecture session and answer the retrospective's questions.
 
 ## When to use
@@ -90,11 +94,11 @@ In a small project with one developer and infrequent changes, a retrospective af
 
 ## Implementation
 
-Weekly code passes can run as cloud tasks with PR creation set as the expected output. Run architecture, retrospectives and agent upkeep manually. State the period explicitly, such as "for the last week", so the range does not depend on state retained from earlier runs. Split large ranges by directory. Once a month, check whether the findings are useful and the PRs receive review.
+Weekly code passes can run as cloud tasks. Request a small PR for fixes, or a description with code references and open questions for hidden-model discovery. Run architecture, discussions of disputed rules, retrospectives and agent upkeep in an interactive session. State the period explicitly, such as "for the last week"; for sequential coverage, you can retain the reviewed commit from the previous run. Choose the next range after reviewing the result and account for open tickets to avoid repeated proposals. Revisit the usefulness of passes monthly.
 
 ### Passes that don't depend on the agent
 
-Most passes use [Matt Pocock's skills](matt-pocock-skills.md). Install the pack using one of the methods in its profile, then run `/setup-matt-pocock-skills` once. The examples below name the procedures; invocation depends on the agent. Built-in commands appear in separate blocks after the common approach.
+Some passes use [Matt Pocock's skills](matt-pocock-skills.md); others are plain prompts. For the skills, install the pack using one of the methods in its profile, then run `/setup-matt-pocock-skills` once. The examples below name the procedures; invocation depends on the agent. Built-in commands appear in separate blocks after the common approach.
 
 #### Retrospective
 
@@ -124,17 +128,9 @@ Run it weekly as a cloud task, one task per major area.
 /code-review for the last week
 ```
 
-#### Simplification
+#### Refactoring
 
-The pack has no dedicated skill for this; the pass is a plain prompt. The agent looks for repetition, extra layers and dead code in recently changed code and removes them right away.
-
-Run it weekly on the 3–5 directories with the most changes. The cloud task finds them itself with `git log --since="7 days ago" --stat`.
-
-##### Example
-
-```text
-Simplify the code that changed over the last week
-```
+Each week, choose an active area and one kind of difficulty: a repeated rule, unclear states, unnecessary abstractions, or obsolete paths. Rotate areas and account for open tickets. [Refactoring](refactoring.md) covers detailed requests, model investigation, and checks before and after a change.
 
 #### Security review
 
@@ -164,19 +160,7 @@ Run it weekly as a cloud task.
 
 #### Architecture
 
-This is the `improve-codebase-architecture` skill from the pack ([source](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture)). It loads `codebase-design` and `grilling` itself. The plan becomes tickets with the `to-tickets` skill ([source](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-tickets)).
-
-The skill takes its vocabulary from `codebase-design`: module, interface, depth, seam, adapter. Then it reads _GLOSSARY.md_ and the ADRs of the chosen area, and a sub-agent walks the code looking for friction: understanding one concept means bouncing between many small modules; an interface is nearly as complex as its implementation; modules leak into each other across seams. Suspicious modules get the deletion test: if you deleted the module, would the complexity concentrate in one place or just move? The skill presents candidates as an HTML report in a temp folder. For the chosen candidate it runs `grilling` and, if you want, compares interface options with design-it-twice. `to-tickets` cuts the plan into vertical slices with blocking edges and publishes them to the tracker.
-
-Run it weekly, together with you. The area rotates between a layer and a domain concept. Pick it where the weekly review and simplification found the most.
-
-##### Example
-
-```text
-/improve-codebase-architecture app/services
-```
-
-After working through the chosen place, run `/to-tickets`.
+Each week, hold a joint session on one area selected from the weekly findings. Work with the agent when the decision needs domain clarification or interface comparisons. [Refactoring](refactoring.md) describes using `improve-codebase-architecture` and moving to tickets.
 
 #### Agent instructions
 
@@ -230,7 +214,7 @@ Clean up your memory for this project
 
 ### Claude Code
 
-Checked against Claude Code 2.1.316 and the [command reference](https://code.claude.com/docs/en/commands) on 2026-10-31. Installation and memory upkeep run locally. `/schedule` starts cloud tasks; review also has a cloud mode, `/code-review ultra`.
+This block was checked against Claude Code 2.1.316 and the [command reference](https://code.claude.com/docs/en/commands) on 2026-10-31. Installation and memory upkeep run locally. `/schedule` starts cloud tasks; review also has a cloud mode, `/code-review ultra`.
 
 #### Schedule: `/schedule`
 
@@ -254,16 +238,14 @@ Claude Code has a built-in `/code-review` skill that looks for correctness bugs.
 /review
 ```
 
-#### Simplification: `/simplify`
+#### Simplification
 
-`/simplify` is a built-in skill ([docs](https://code.claude.com/docs/en/commands)).
-
-Four sub-agents look at the changed code in parallel: reuse of existing helpers, simplification, efficiency, and level of abstraction. What they find is fixed right away. `/simplify` doesn't look for correctness bugs. You can pass a path or a PR as an argument, so the weekly task runs it per directory.
+Choose a separate active area for each recurring task. [Refactoring](refactoring.md#claude-code) covers the bundled `/simplify` skill and result validation; here, set the schedule and make sure results can be reviewed before the next run.
 
 ##### Example
 
 ```text
-/simplify app/services
+/schedule every Monday /simplify app/services
 ```
 
 #### Security: `/security-review`
@@ -340,7 +322,7 @@ Run it monthly, and whenever `/run` reports that the skill is stale.
 
 ### Codex
 
-Checked against Codex CLI 0.166.0 and the documentation on learn.chatgpt.com on 2026-10-31.
+This block was checked against Codex CLI 0.166.0 and documentation on learn.chatgpt.com on 2026-10-31.
 
 #### Schedule: Scheduled tasks and `codex-action`
 
@@ -372,6 +354,18 @@ Set up a weekly GitHub Actions job: codex-action runs $code-review and opens a P
 
 ```text
 codex review --base main
+```
+
+#### Code pass
+
+Repeat a proven pass on a schedule, rotating areas and saving the starting point after review. [Refactoring](refactoring.md#codex) describes the plain refactoring request and packaging a procedure as a custom skill.
+
+In the app, create a weekly task with this request and review the first result before regular runs.
+
+##### Example
+
+```text
+Every Monday, simplify payment code changed over the last week
 ```
 
 #### Security: `@codex security review`
@@ -450,15 +444,16 @@ The project gets about twenty thousand lines a week, the standards live in _CODI
 
 > /code-review for the last week
 
-On Monday three PRs arrive: in _app/services_ two services again go to the database around the repositories, in _app/policies_ a role check compares strings instead of using an enum, and in _app/javascript/pages_ date formatting is duplicated. You accept the first two after a short review. The third shows that the date-formatting rule can be checked by a linter, so you open a ticket for a lint rule instead of a line in the standards.
+In this illustrative example, review finds two services bypassing the repositories to access the database. You accept a small PR after validation. An unclear payment rule makes [investigation and refactoring](refactoring.md) the subject of your next session.
 
-For this week's architecture session you take _app/services_: it has had the most findings for the second month in a row. The report shows the services are thin and almost entirely restate the repositories; the chosen place is worked out into a plan and goes out as tickets.
+The open question about statuses stays in a ticket. The next weekly pass accounts for it and looks for new discrepancies from the saved commit. A month later, you see that reports on one directory no longer produce useful findings, so you change the area. Reduce the frequency if the team cannot keep up with reviewing the results.
 
 ## Anti-patterns and common mistakes
 
 - **A pass over the whole repository.** The agent looks at a bit of everything and finds only the obvious. Set a scope.
 - **One big PR.** Fixes for every area in one PR can't be reviewed, it gets postponed, and the next pass finds the same things.
-- **A report instead of a change.** HTML reports pile up in a temp folder and nothing changes.
+- **Findings without review.** Reports pile up and later runs repeat them. An accepted model description is useful; an unread report does not help.
+- **Refactoring out of obligation.** The agent edits code to produce a weekly PR. Allow the conclusion that nothing needs changing.
 - **A retrospective from memory.** Reviewing week-old sessions relies on what nobody remembers anymore.
 - **Relying on per-PR review.** Automatic PR review catches mistakes in a diff, but not a deviation that builds up across many PRs.
 - **Tool upkeep mixed with project work.** Changes to personal permissions and memory end up in a team PR, or team rules stay in personal settings.
@@ -473,9 +468,13 @@ For this week's architecture session you take _app/services_: it has had the mos
 
 ## Related patterns
 
+- [Refactoring](refactoring.md) explains model investigation, change selection, and behavior preservation checks.
 - [Project Memory](agents-md-memory.md) describes the instructions file that the monthly pass keeps short.
 - [Bloated Memory](bloated-agents-md.md) shows what instructions turn into without regular cleanup.
 - [Domain Vocabulary](domain-context-file.md) sets the reference for the weekly glossary check.
 - [Skills](skills-as-packaged-workflows.md) package the passes so they can run on a schedule.
 - [Writer and Reviewer](writer-reviewer.md) separates writing from review; the scheduled standards review works at the level of a week, not a single PR.
 - [Executable Guardrails](executable-guardrails.md) get new checks from retrospectives and confine background tasks to a sandbox.
+- [Design It Twice](design-it-twice.md) helps compare representations of the selected model.
+- [Feedback Loop](give-agent-a-way-to-verify.md) provides a check that refactoring preserves behavior.
+- [Tracer-Bullet Tickets](tracer-bullet-tickets.md) turn the selected improvement into verifiable steps; a broad interface change needs expand–contract.

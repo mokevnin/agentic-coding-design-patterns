@@ -1,5 +1,5 @@
 ---
-source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
+source_rev: 1783b390e65340a1007dcf87e8249a49f0d07c69
 ---
 
 # Frases para AGENTS.md
@@ -29,17 +29,13 @@ Las reglas están en inglés. Si quieres, tradúcelas al idioma del equipo. Como
 
 _No arrastres la compatibilidad hacia atrás._
 
-Por defecto, el agente puede dejar campos viejos «por si acaso» y añadir capas de compatibilidad alrededor de un cambio. En un módulo interno que controla por completo un solo equipo, esas capas a menudo crean trabajo de más. La regla permite al agente eliminar la interfaz antigua y actualizar sus llamadas en la misma edición.
-
-La regla encaja en aplicaciones y módulos internos si el equipo controla a sus consumidores. En una biblioteca pública o una API externa, la compatibilidad forma parte del contrato con los usuarios, así que allí hay que exigir explícitamente que se conserve.
+La regla permite eliminar capas de compatibilidad innecesarias cuando el equipo controla a todos los consumidores. Para una API externa, la compatibilidad forma parte del contrato. [Refactorización](refactoring.md) explica cómo elegir entre un cambio coordinado y una migración gradual.
 
 ## Choose the simplest implementation that fully meets the current requirements
 
 _Elige la implementación más simple que cubra por completo los requisitos actuales._
 
-El agente puede prever puntos de extensión para tareas que aún no existen. La regla lo devuelve al principio YAGNI y a los requisitos actuales. Por ejemplo, si hace falta un solo formato de exportación, un sistema universal de plugins añade código que por ahora nada justifica. La palabra _fully_ exige implementar todo el escenario acordado, incluido el manejo de errores.
-
-El mismo problema aparece con la [especificación prematura](premature-specification.md), cuando el equipo elige cómo se construirá la solución antes de haber entendido la tarea.
+La regla mantiene al agente dentro de los requisitos actuales y exige completar todo el escenario acordado, incluidos los errores. [Refactorización](refactoring.md) explica su aplicación a las abstracciones innecesarias; [Especificación prematura](premature-specification.md) aborda la elección demasiado temprana de la estructura de una solución.
 
 ## Prefer established, well-maintained libraries over custom implementations
 
@@ -61,9 +57,7 @@ La regla se puede combinar con la [reflexión](reflection.md). Antes de la edici
 
 _Propón buenas prácticas, aunque puedan requerir refactorización._
 
-Un agente que busca el diff mínimo puede repetir un defecto del código vecino. La regla le permite proponer una refactorización y explicar cómo ayudará a resolver la tarea. Una persona valora el beneficio y acuerda el volumen de trabajo.
-
-El agente puede proponer refactorizaciones con demasiada frecuencia. Combina esta regla con la exigencia de elegir la implementación más simple y de establecer primero la causa del problema.
+La regla permite al agente proponer una mejora estructural y explicar su utilidad para la tarea. Tú eliges el alcance; una propuesta por sí sola no autoriza las ediciones. [Refactorización](refactoring.md) explica cómo evaluar y comprobar la mejora.
 
 ## Prefer retrieval over pre-training
 
@@ -79,9 +73,7 @@ Para tu proyecto, indica dónde encontrar la fuente primaria: documentación int
 
 _Mantén los cambios dentro del alcance de la tarea._
 
-Es una adaptación de los [principios de trabajo de la skill de Cloudflare](https://github.com/cloudflare/skills/blob/6eb6c781aa9b6438e0c7307bd102788a75fe1a6d/skills/cloudflare/SKILL.md#L161): conservar la arquitectura del proyecto y hacer el cambio mínimo que resuelva la tarea. Al corregir el manejo de un timeout, el agente puede renombrar métodos cercanos y reformatear el módulo. Esas ediciones agrandan el diff y dificultan ver la corrección.
-
-La regla conserva en el diff todo lo necesario para la tarea: implementación, llamadas afectadas, pruebas y documentación. Es compatible con la regla anterior sobre proponer refactorizaciones: el agente explica el valor de una revisión más amplia y tú acuerdas su alcance. Si resolver la tarea exige cambiar un módulo vecino, ese cambio forma parte del trabajo.
+Es una adaptación de los [principios de trabajo de la skill de Cloudflare](https://github.com/cloudflare/skills/blob/6eb6c781aa9b6438e0c7307bd102788a75fe1a6d/skills/cloudflare/SKILL.md#L161). La regla conserva los cambios de implementación, llamadas, tests y documentación necesarios para la tarea y limita la limpieza de paso. [Refactorización](refactoring.md) explica cómo elegir el alcance de un cambio estructural.
 
 ## Make behavior-changing assumptions explicit
 
@@ -104,3 +96,4 @@ La verificación debe corresponder al cambio. Para una edición de texto suelen 
 - [Memoria del proyecto](agents-md-memory.md) explica dónde guardar estas reglas.
 - [Memoria hinchada](bloated-agents-md.md) muestra por qué la lista debe mantenerse corta.
 - [Ingeniería de contexto](context-engineering.md) explica cómo las instrucciones permanentes consumen el contexto de cada sesión.
+- [Refactorización](refactoring.md) muestra cómo aplicar las reglas de simplificación, compatibilidad y alcance de la tarea.
