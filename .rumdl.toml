@@ -4,13 +4,13 @@ exclude = [
   ".agents/skills/**",
   ".claude/skills/**",
   "node_modules/**",
-  "dist/**",
+  "dist/**"
 ]
 disable = [
   # AGENTS.md: prose is never hard-wrapped, one paragraph per source line.
   "MD013",
   # The anti-pattern template labels its examples with bold «Было» / «Стало» lines on purpose.
-  "MD036",
+  "MD036"
 ]
 
 [per-file-ignores]

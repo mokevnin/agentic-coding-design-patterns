@@ -7,11 +7,7 @@
       "url": "https://github.com/mokevnin",
       "status": 200,
       "final": "https://github.com/mokevnin",
-      "locations": [
-        "book/en/README.md:13",
-        "book/es/README.md:13",
-        "book/ru/README.md:9"
-      ]
+      "locations": ["book/en/README.md:13", "book/es/README.md:13", "book/ru/README.md:9"]
     },
     {
       "url": "https://hexlet.io",
@@ -63,11 +59,7 @@
       "url": "https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CANDIDATES.md",
       "status": 200,
       "final": "https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CANDIDATES.md",
-      "locations": [
-        "book/en/candidates.md:5",
-        "book/es/candidates.md:5",
-        "book/ru/candidates.md:5"
-      ]
+      "locations": ["book/en/candidates.md:5", "book/es/candidates.md:5", "book/ru/candidates.md:5"]
     },
     {
       "url": "https://github.com/mokevnin/agentic-coding-design-patterns/issues/6",
@@ -480,31 +472,19 @@
       "url": "https://github.com/Fission-AI/OpenSpec/blob/main/docs/concepts.md",
       "status": 200,
       "final": "https://github.com/Fission-AI/OpenSpec/blob/main/docs/concepts.md",
-      "locations": [
-        "book/en/openspec.md:100",
-        "book/es/openspec.md:100",
-        "book/ru/openspec.md:100"
-      ]
+      "locations": ["book/en/openspec.md:100", "book/es/openspec.md:100", "book/ru/openspec.md:100"]
     },
     {
       "url": "https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md#extend-an-existing-pattern",
       "status": 200,
       "final": "https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md#extend-an-existing-pattern",
-      "locations": [
-        "book/en/preface.md:13",
-        "book/es/preface.md:13",
-        "book/ru/preface.md:9"
-      ]
+      "locations": ["book/en/preface.md:13", "book/es/preface.md:13", "book/ru/preface.md:9"]
     },
     {
       "url": "https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md",
       "status": 200,
       "final": "https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CONTRIBUTING.md",
-      "locations": [
-        "book/en/preface.md:13",
-        "book/es/preface.md:13",
-        "book/ru/preface.md:9"
-      ]
+      "locations": ["book/en/preface.md:13", "book/es/preface.md:13", "book/ru/preface.md:9"]
     },
     {
       "url": "https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md",
@@ -530,11 +510,7 @@
       "url": "https://openspec.dev/",
       "status": 200,
       "final": "https://openspec.dev/",
-      "locations": [
-        "book/en/resources.md:11",
-        "book/es/resources.md:11",
-        "book/ru/resources.md:7"
-      ]
+      "locations": ["book/en/resources.md:11", "book/es/resources.md:11", "book/ru/resources.md:7"]
     },
     {
       "url": "https://github.com/obra/superpowers",
@@ -553,91 +529,55 @@
       "url": "https://speckit.org/",
       "status": 200,
       "final": "https://speckit.org/",
-      "locations": [
-        "book/en/resources.md:19",
-        "book/es/resources.md:19",
-        "book/ru/resources.md:15"
-      ]
+      "locations": ["book/en/resources.md:19", "book/es/resources.md:19", "book/ru/resources.md:15"]
     },
     {
       "url": "https://kiro.dev/",
       "status": 200,
       "final": "https://kiro.dev/",
-      "locations": [
-        "book/en/resources.md:20",
-        "book/es/resources.md:20",
-        "book/ru/resources.md:16"
-      ]
+      "locations": ["book/en/resources.md:20", "book/es/resources.md:20", "book/ru/resources.md:16"]
     },
     {
       "url": "https://tessl.io/",
       "status": 200,
       "final": "https://tessl.io/",
-      "locations": [
-        "book/en/resources.md:21",
-        "book/es/resources.md:21",
-        "book/ru/resources.md:17"
-      ]
+      "locations": ["book/en/resources.md:21", "book/es/resources.md:21", "book/ru/resources.md:17"]
     },
     {
       "url": "https://github.com/bmad-code-org/BMAD-METHOD",
       "status": 200,
       "final": "https://github.com/bmad-code-org/BMAD-METHOD",
-      "locations": [
-        "book/en/resources.md:22",
-        "book/es/resources.md:22",
-        "book/ru/resources.md:18"
-      ]
+      "locations": ["book/en/resources.md:22", "book/es/resources.md:22", "book/ru/resources.md:18"]
     },
     {
       "url": "https://github.com/Priivacy-ai/spec-kitty",
       "status": 200,
       "final": "https://github.com/spec-kitty/spec-kitty",
-      "locations": [
-        "book/en/resources.md:23",
-        "book/es/resources.md:23",
-        "book/ru/resources.md:19"
-      ]
+      "locations": ["book/en/resources.md:23", "book/es/resources.md:23", "book/ru/resources.md:19"]
     },
     {
       "url": "https://traycer.ai/",
       "status": 200,
       "final": "https://traycer.ai/",
-      "locations": [
-        "book/en/resources.md:24",
-        "book/es/resources.md:24",
-        "book/ru/resources.md:20"
-      ]
+      "locations": ["book/en/resources.md:24", "book/es/resources.md:24", "book/ru/resources.md:20"]
     },
     {
       "url": "https://github.com/gsd-build/get-shit-done",
       "status": 200,
       "final": "https://github.com/gsd-build/get-shit-done",
-      "locations": [
-        "book/en/resources.md:25",
-        "book/es/resources.md:25",
-        "book/ru/resources.md:21"
-      ]
+      "locations": ["book/en/resources.md:25", "book/es/resources.md:25", "book/ru/resources.md:21"]
     },
     {
       "url": "https://github.com/EveryInc/compound-engineering-plugin",
       "status": 200,
       "final": "https://github.com/EveryInc/compound-engineering-plugin",
-      "locations": [
-        "book/en/resources.md:26",
-        "book/es/resources.md:26",
-        "book/ru/resources.md:22"
-      ]
+      "locations": ["book/en/resources.md:26", "book/es/resources.md:26", "book/ru/resources.md:22"]
     },
     {
       "url": "https://github.com/humanlayer/humanlayer",
       "status": 200,
       "final": "https://github.com/humanlayer/humanlayer",
-      "locations": [
-        "book/en/resources.md:27",
-        "book/es/resources.md:27",
-        "book/ru/resources.md:23"
-      ]
+      "locations": ["book/en/resources.md:27", "book/es/resources.md:27", "book/ru/resources.md:23"]
     },
     {
       "url": "https://cameronsjo.github.io/spec-compare/",
@@ -659,11 +599,7 @@
       "url": "https://github.com/cameronsjo/spec-compare",
       "status": 200,
       "final": "https://github.com/cameronsjo/spec-compare",
-      "locations": [
-        "book/en/resources.md:31",
-        "book/es/resources.md:31",
-        "book/ru/resources.md:27"
-      ]
+      "locations": ["book/en/resources.md:31", "book/es/resources.md:31", "book/ru/resources.md:27"]
     },
     {
       "url": "https://learn.chatgpt.com/guides/best-practices",
@@ -682,31 +618,19 @@
       "url": "https://github.com/shanraisshan/claude-code-best-practice",
       "status": 200,
       "final": "https://github.com/shanraisshan/claude-code-best-practice",
-      "locations": [
-        "book/en/resources.md:37",
-        "book/es/resources.md:37",
-        "book/ru/resources.md:33"
-      ]
+      "locations": ["book/en/resources.md:37", "book/es/resources.md:37", "book/ru/resources.md:33"]
     },
     {
       "url": "https://github.com/shanraisshan/codex-cli-best-practice",
       "status": 200,
       "final": "https://github.com/shanraisshan/codex-cli-best-practice",
-      "locations": [
-        "book/en/resources.md:37",
-        "book/es/resources.md:37",
-        "book/ru/resources.md:33"
-      ]
+      "locations": ["book/en/resources.md:37", "book/es/resources.md:37", "book/ru/resources.md:33"]
     },
     {
       "url": "https://github.com/RoggeOhta/awesome-codex-cli",
       "status": 200,
       "final": "https://github.com/RoggeOhta/awesome-codex-cli",
-      "locations": [
-        "book/en/resources.md:38",
-        "book/es/resources.md:38",
-        "book/ru/resources.md:34"
-      ]
+      "locations": ["book/en/resources.md:38", "book/es/resources.md:38", "book/ru/resources.md:34"]
     },
     {
       "url": "https://github.com/mattpocock/skills/tree/main/skills/in-progress/retro",

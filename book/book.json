@@ -3,10 +3,7 @@
   "description": "Design patterns for coding with AI agents, in the spirit of the Gang of Four",
   "author": "Hexlet",
   "language": "en",
-  "plugins": [
-    "toolbar",
-    "mermaid"
-  ],
+  "plugins": ["toolbar", "mermaid"],
   "pluginsConfig": {
     "toolbar": {
       "buttons": [

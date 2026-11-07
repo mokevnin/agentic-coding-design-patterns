@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "trailingComma": "none",
+  "ignorePatterns": [
+    ".agents/skills/**",
+    ".claude/skills/**",
+    "dist/**",
+    "pnpm-lock.yaml",
+    "skills-lock.json"
+  ]
+}

@@ -13,7 +13,7 @@ updates:
       include: scope
     groups:
       npm-dependencies:
-        patterns: ["*"]
+        patterns: ['*']
 
   - package-ecosystem: github-actions
     directory: /
@@ -25,4 +25,4 @@ updates:
       prefix: ci
     groups:
       github-actions:
-        patterns: ["*"]
+        patterns: ['*']

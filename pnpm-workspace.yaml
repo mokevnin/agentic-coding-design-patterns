@@ -1,7 +1,9 @@
 # pnpm settings (pnpm no longer reads the "pnpm" field in package.json).
 packages:
-  - "plugins/*"
+  - 'plugins/*'
 
 # mermaid-isomorphic still declares mermaid ^11; Mermaid 12 adds the newer diagram types.
 overrides:
-  mermaid: "^12.0.0"
+  mermaid: '^12.0.0'
+  # mermaid-isomorphic only loads KaTeX CSS; its ^0.16 pin is vulnerable (GHSA-238p-pmpm-9mq7).
+  'mermaid-isomorphic>katex': '^0.19.1'

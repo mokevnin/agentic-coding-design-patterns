@@ -4,5 +4,5 @@ exclude = [
   "dist/**",
   # Vendored skills, pinned by hash in skills-lock.json; never edited here.
   ".agents/skills/**",
-  ".claude/skills/**",
+  ".claude/skills/**"
 ]

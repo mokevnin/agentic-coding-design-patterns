@@ -41,19 +41,20 @@ Operating guide for agents (and humans) working in this repository.
 
 ## Checks
 
-- `mise run check` runs every check (jactionlint, betterleaks, typos, rumdl, agnix, oxlint) and must pass before a change is done; CI runs the same task, and the hk `pre-commit` hook runs the same steps on staged files. Steps live in `hk.pkl`. `mise run fix` applies the safe autofixes. Linter versions are pinned in `mise.toml`.
+- `mise run check` runs every check (jactionlint, betterleaks, typos, rumdl, agnix, oxlint, oxfmt, syncpack, local links, merge/case conflicts and symlinks) and must pass before a change is done; CI runs the same task, and the hk `pre-commit` hook runs the same steps on staged files. Steps live in `hk.pkl`. `mise run fix` applies the safe autofixes. Tool versions are pinned in `mise.toml` and `mise.lock`; pnpm is read from `package.json`. Oxfmt formats code and configuration; rumdl owns Markdown.
 - `.agents/skills/` (and the `.claude/skills/` symlinks into it) are vendored and pinned by hash in `skills-lock.json`: never edit them by hand.
 - Prefer an existing tool over a hand-written script, and install tools through `mise`, never through shell fallback chains.
 - Never disable a lint rule to get a change through. An exception is narrow (one path, one rule), carries a reason in the config, and needs a human decision.
 
 ## Build / preview
 
-- `mise run setup` — install deps, pinned linters and git hooks
+- Use mise 2026.11.3 or newer; CI pins 2026.11.4. Commit `mise.lock` alongside tool updates; it covers Linux x64 and macOS arm64.
+- `mise run setup` — install locked deps, pinned linters and git hooks
 - `mise run serve` — local preview (Honkit serve)
 - `mise run build` — static build into `./dist`
 - `pnpm exec playwright install chromium` — one-off, needed to render diagrams
 - `mise run pdf` — PDFs for all locales
-- `mise run update` — bump all dependencies to latest (npm-check-updates)
+- `mise run update` — bump project tools and dependencies in every workspace package; when hk changes, also update both versioned Pkl imports in `hk.pkl`
 
 ## Structure conventions
 

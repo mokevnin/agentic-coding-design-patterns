@@ -71,7 +71,9 @@ async function render(source, config) {
   }
   // Memoised as a promise: a page with several fences renders them in parallel,
   // and each of those calls must reuse the one browser the renderer manages.
-  rendererPromise ??= import('mermaid-isomorphic').then(({ createMermaidRenderer }) => createMermaidRenderer());
+  rendererPromise ??= import('mermaid-isomorphic').then(({ createMermaidRenderer }) =>
+    createMermaidRenderer()
+  );
   const renderer = await rendererPromise;
   // One diagram per call, so the SVG ids are derived from the content and stay
   // unique on a page that mixes freshly rendered and cached diagrams.
@@ -100,10 +102,15 @@ module.exports = {
     init: function () {
       const options = this.config.get('pluginsConfig.mermaid', {});
       const configFile = path.resolve(process.cwd(), options.configFile || 'mermaid.config.json');
-      mermaidConfig = fs.existsSync(configFile) ? JSON.parse(fs.readFileSync(configFile, 'utf8')) : {};
+      mermaidConfig = fs.existsSync(configFile)
+        ? JSON.parse(fs.readFileSync(configFile, 'utf8'))
+        : {};
 
       // The dark file holds only what differs; nested sections merge key by key.
-      const darkFile = path.resolve(process.cwd(), options.darkConfigFile || 'mermaid.config.dark.json');
+      const darkFile = path.resolve(
+        process.cwd(),
+        options.darkConfigFile || 'mermaid.config.dark.json'
+      );
       if (fs.existsSync(darkFile)) {
         const dark = JSON.parse(fs.readFileSync(darkFile, 'utf8'));
         darkConfig = { ...mermaidConfig, ...dark };
@@ -133,7 +140,10 @@ module.exports = {
           if (!withDark) {
             return `<figure class="mermaid">${light}</figure>`;
           }
-          const dark = await render(source, /** @type {import('mermaid').MermaidConfig} */ (darkConfig));
+          const dark = await render(
+            source,
+            /** @type {import('mermaid').MermaidConfig} */ (darkConfig)
+          );
           return `<figure class="mermaid mermaid-themed"><div class="mermaid-light">${light}</div><div class="mermaid-dark">${dark}</div></figure>`;
         })
       );

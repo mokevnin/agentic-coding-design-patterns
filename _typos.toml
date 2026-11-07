@@ -7,5 +7,5 @@ extend-exclude = [
   ".agents/skills/**",
   ".claude/skills/**",
   "skills-lock.json",
-  "pnpm-lock.yaml",
+  "pnpm-lock.yaml"
 ]

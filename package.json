@@ -1,14 +1,13 @@
 {
   "name": "agentic-coding-design-patterns",
   "version": "0.0.1",
-  "description": "Design patterns for coding with AI agents (ru/en/es), in the spirit of the Gang of Four",
   "private": true,
+  "description": "Design patterns for coding with AI agents (ru/en/es), in the spirit of the Gang of Four",
   "license": "CC-BY-SA-4.0",
-  "packageManager": "pnpm@12.5.1",
   "scripts": {
     "start": "honkit serve ./book",
     "build": "honkit build ./book ../dist",
-    "deps:update": "ncu -u && pnpm install",
+    "deps:update": "ncu --deep -u && pnpm update --recursive --latest",
     "pdf:ru": "honkit pdf ./book/ru ../../dist/agentic-coding-design-patterns-ru.pdf",
     "pdf:en": "honkit pdf ./book/en ../../dist/agentic-coding-design-patterns-en.pdf",
     "pdf:es": "honkit pdf ./book/es ../../dist/agentic-coding-design-patterns-es.pdf"
@@ -20,7 +19,10 @@
     "honkit": "^6.2.5",
     "honkit-plugin-mermaid": "workspace:*",
     "npm-check-updates": "^23.1.1",
-    "oxlint": "^1.90.0",
-    "playwright": "^1.64.1"
-  }
+    "oxfmt": "^0.77.0",
+    "oxlint": "^1.92.0",
+    "playwright": "^1.65.0",
+    "syncpack": "^15.3.3"
+  },
+  "packageManager": "pnpm@12.18.0"
 }

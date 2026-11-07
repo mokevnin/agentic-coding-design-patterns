@@ -1,25 +1,35 @@
 # One entry point for developers, git hooks and CI: `mise run setup`, then `mise run check`.
-# Node and pnpm come from package.json (packageManager); JS tools are devDependencies.
+# Node is pinned here; pnpm comes from package.json (packageManager).
 # Git hooks and the check set live in hk.pkl.
+min_version = "2026.11.3"
+
+[settings]
+idiomatic_version_file_enable_tools = ["pnpm"]
+lockfile = true
+lockfile_platforms = ["linux-x64", "macos-arm64"]
+
 [env]
 _.path = ["node_modules/.bin"]
 
 [tools]
-hk = "2.10.0"
-pkl = "0.32.2"
-jactionlint = "2.4.0"
-betterleaks = "1.9.0"
-typos = "1.51.1"
+node = "26.13.0"
+hk = { version = "2.11.1", workflow = "release.yml" }
+pkl = "0.33.0"
+jactionlint = { version = "2.5.0", workflow = "release.yaml" }
+betterleaks = "1.10.0"
+typos = "1.52.0"
 rumdl = "0.3.2"
-"github:agent-sh/agnix" = "0.60.2"
+"github:agent-sh/agnix" = "0.61.0"
 osv-scanner = "2.7.0"
+lychee = "0.24.2"
 
 [tasks.setup]
 description = "Install dependencies, pinned linters and git hooks"
+# Pass project tool names explicitly so unrelated global tools need no lockfile.
 run = [
-  "mise install",
-  "pnpm install",
-  "hk install --mise",
+  "{% set project = read_toml(path=config_root ~ '/mise.toml') %}mise install --locked {% for name, _ in project.tools %}{{ name }} {% endfor %}pnpm",
+  "pnpm install --frozen-lockfile",
+  "hk install --mise"
 ]
 
 [tasks.serve]
@@ -47,8 +57,8 @@ description = "Known vulnerabilities in pnpm-lock.yaml (CI runs it weekly)"
 run = "osv-scanner scan source -r ."
 
 [tasks.update]
-description = "Bump all dependencies to latest (npm-check-updates)"
-run = "pnpm deps:update"
+description = "Bump project tools and all workspace dependencies to latest"
+run = ["mise upgrade --bump --no-global --no-prune", "pnpm deps:update", "mise lock"]
 
 [tasks.clean]
 description = "Remove build output and installed deps"

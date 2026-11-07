@@ -36,11 +36,17 @@ same across all locales.
 ## Development
 
 ```sh
-pnpm install
-pnpm start         # local preview (honkit serve)
-pnpm build         # static build into ./dist
-pnpm pdf:ru        # PDF for a locale (requires Calibre/ebook-convert)
+mise run setup    # locked toolchain, workspace dependencies and git hooks
+mise run serve    # local preview (honkit serve)
+mise run check    # the same quality gates as CI
+mise run build    # static build into ./dist
+mise run pdf      # PDFs for all locales (requires Calibre/ebook-convert)
+mise run update   # update project tools and all workspace dependencies
 ```
+
+Use [mise](https://mise.jdx.dev/) 2026.11.3 or newer; CI pins 2026.11.4. Node is pinned in `mise.toml`; mise reads pnpm from `package.json`. `mise.lock` records tool downloads and checksums for Linux x64 and macOS arm64. Both setup and CI install from the committed lockfiles. After updating hk, update the two versioned Pkl imports in `hk.pkl` as well.
+
+The [Dev Quality Gates](https://github.com/mokevnin/dev-quality-gates) checks run through `hk.pkl`: code lint and formatting, workspace dependency consistency, Markdown, spelling, agent configuration, workflow security, secrets, local documentation links, conflict markers, filename case collisions and broken symlinks. Local links are checked offline so commits do not depend on external websites. Known dependency vulnerabilities are checked by the scheduled audit workflow.
 
 - How to add a pattern and how translations work — see [CONTRIBUTING.md](CONTRIBUTING.md).
 - The canonical locale is `ru`: a pattern is first written in Russian, then
