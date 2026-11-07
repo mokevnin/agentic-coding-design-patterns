@@ -1,5 +1,5 @@
 ---
-source_rev: 1783b390e65340a1007dcf87e8249a49f0d07c69
+source_rev: fe1545346b85ac54e99ec5bf9ffc44f2d7287100
 ---
 
 # Frases para AGENTS.md

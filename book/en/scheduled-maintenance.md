@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [refactoring, agents-md-memory, domain-context-file, bloated-agents-md, private-agent-memory, skills-as-packaged-workflows, writer-reviewer, executable-guardrails, design-it-twice, give-agent-a-way-to-verify, tracer-bullet-tickets]
-source_rev: bf1399e377d55027b9a42082e4f17327a1e25215
+source_rev: fe1545346b85ac54e99ec5bf9ffc44f2d7287100
 ---
 
 # Scheduled Maintenance

@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [scheduled-maintenance, give-agent-a-way-to-verify, design-it-twice, domain-context-file, tracer-bullet-tickets, agents-md-phrases]
-source_rev:
+source_rev: fe1545346b85ac54e99ec5bf9ffc44f2d7287100
 ---
 
 # Refactorización
