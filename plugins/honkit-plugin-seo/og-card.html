@@ -1,0 +1,61 @@
+<!doctype html>
+<!--
+  Source of the link-preview cards in book/assets/og/<locale>.png (1200×630).
+  The lead is the first sentence of book/<locale>/README.md, passed in the URL,
+  so localized copy stays in the locale folders. Rerender a card from the repo
+  root, URL-encoding the sentence (it may hold quotes):
+  lead=$(node -e 'console.log(encodeURIComponent(process.argv[1]))' "<sentence>")
+  pnpm exec playwright screenshot --viewport-size=1200,630 "file://$PWD/plugins/honkit-plugin-seo/og-card.html?lead=$lead" book/assets/og/<locale>.png
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+      }
+      body {
+        box-sizing: border-box;
+        padding: 88px 88px 72px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: #eef3f9;
+        border-left: 24px solid #4a6fa5;
+        color: #1a2b3c;
+        font-family: Arial, 'Liberation Sans', Helvetica, sans-serif;
+      }
+      h1 {
+        margin: 0;
+        font-size: 112px;
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+      }
+      p {
+        margin: 40px 0 0;
+        max-width: 960px;
+        font-size: 40px;
+        line-height: 1.3;
+        color: #3d5068;
+      }
+      .footer {
+        font-size: 28px;
+        color: #a5764a;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Agentic Design Patterns</h1>
+      <p id="lead"></p>
+    </div>
+    <div class="footer">ru · en · es</div>
+    <script>
+      document.getElementById('lead').textContent =
+        new URLSearchParams(location.search).get('lead') || '';
+    </script>
+  </body>
+</html>

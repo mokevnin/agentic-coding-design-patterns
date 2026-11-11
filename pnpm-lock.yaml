@@ -185,6 +185,9 @@ importers:
       honkit-plugin-mermaid:
         specifier: workspace:*
         version: link:plugins/honkit-plugin-mermaid
+      honkit-plugin-seo:
+        specifier: workspace:*
+        version: link:plugins/honkit-plugin-seo
       npm-check-updates:
         specifier: ^23.1.1
         version: 23.1.1
@@ -212,6 +215,12 @@ importers:
       playwright:
         specifier: ^1.65.0
         version: 1.65.0
+
+  plugins/honkit-plugin-seo:
+    dependencies:
+      cheerio:
+        specifier: ^1.2.0
+        version: 1.2.0
 
 packages:
 

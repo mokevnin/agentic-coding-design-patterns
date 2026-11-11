@@ -20,6 +20,13 @@ Operating guide for agents (and humans) working in this repository.
 - Types that silently drop the frontmatter `title:` the book uses as a caption: `sankey-beta`, `mindmap`, `timeline`, `kanban`, `block-beta`, `architecture-beta`. Put the thesis in the paragraph under the diagram instead. `treemap-beta` scales label size with box area, so the smallest — usually most important — share is the least readable.
 - A diagram is read inside a ~770px column. Keep it under ~1200px wide — prefer `flowchart TB` over a long left-to-right chain, and remember that a note hung off a node with `-.-` widens the diagram.
 
+## SEO and link previews
+
+- `plugins/honkit-plugin-seo` post-processes the website build: it fills `meta description` from the chapter text, adds canonical, `hreflang` and Open Graph/Twitter tags, and writes `sitemap.xml`. PDFs are untouched.
+- The public URL and preview image live in `pluginsConfig.seo` in `book/book.json`; change `baseUrl` there when the site moves to its own domain.
+- The description is the first paragraph of a pattern's intent section, or an anti-pattern's problem section; other pages use their first paragraph, skipping an all-italic note. The section heading ids per locale are `descriptionSections` in the same config: add the id there when a new chapter kind opens differently. That paragraph should state the chapter's point on its own.
+- Preview cards are `book/assets/og/<locale>.png`, rendered from `plugins/honkit-plugin-seo/og-card.html`; the command to rerender one is at the top of that file.
+
 ## Markdown formatting
 
 - Do not hard-wrap prose to a fixed column width. Keep each paragraph, list item, and blockquote on one physical source line; use line breaks only for intentional Markdown structure such as headings, separate list items, tables, fenced code, and paragraph boundaries.

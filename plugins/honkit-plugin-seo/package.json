@@ -1,0 +1,13 @@
+{
+  "name": "honkit-plugin-seo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Adds descriptions, canonical/hreflang links, Open Graph tags and a sitemap to the website build",
+  "main": "index.js",
+  "dependencies": {
+    "cheerio": "^1.2.0"
+  },
+  "engines": {
+    "honkit": ">=6.0.0"
+  }
+}
