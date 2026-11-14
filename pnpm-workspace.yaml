@@ -2,8 +2,17 @@
 packages:
   - 'plugins/*'
 
+# Explicitly requested latest releases; the browser and core must stay in sync.
+minimumReleaseAgeExclude:
+  - playwright-core@1.65.1
+  - playwright@1.65.1
+
 # mermaid-isomorphic still declares mermaid ^11; Mermaid 12 adds the newer diagram types.
 overrides:
-  mermaid: '^12.0.0'
+  mermaid: '^12.3.0'
   # mermaid-isomorphic only loads KaTeX CSS; its ^0.16 pin is vulnerable (GHSA-238p-pmpm-9mq7).
   'mermaid-isomorphic>katex': '^0.19.1'
+
+# The upstream Lunr plugin shares its index across concurrent language builds.
+patchedDependencies:
+  gitbook-plugin-lunr@1.2.0: patches/gitbook-plugin-lunr@1.2.0.patch

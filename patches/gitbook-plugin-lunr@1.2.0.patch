@@ -1,0 +1,106 @@
+diff --git a/index.js b/index.js
+index 37847e2cac1112b147c8706f12ed50ae65000de2..f63d94f76d4d9badeb8984ed535587584eb779fa 100644
+--- a/index.js
++++ b/index.js
+@@ -3,13 +3,20 @@ var Entities = require('html-entities').AllHtmlEntities;
+ 
+ var Html = new Entities();
+ 
+-var searchIndex;
++// Honkit builds language books concurrently in one process. Each output needs
++// its own index, document store and size budget, even when page URLs coincide.
++var states = new Map();
++function getState(context) {
++    return states.get(context.output.root());
++}
++
+ // Called with the `this` context provided by Gitbook
+ function getSearchIndex(context) {
+-    if (!searchIndex) {
++    var state = getState(context);
++    if (!state.searchIndex) {
+         // Create search index
+         var ignoreSpecialCharacters = context.config.get('pluginsConfig.lunr.ignoreSpecialCharacters') || context.config.get('lunr.ignoreSpecialCharacters');
+-        searchIndex = lunr(function () {
++        state.searchIndex = lunr(function () {
+             this.ref('url');
+ 
+             this.field('title', { boost: 10 });
+@@ -22,15 +29,9 @@ function getSearchIndex(context) {
+             }
+         });
+     }
+-    return searchIndex;
++    return state.searchIndex;
+ }
+ 
+-// Map of Lunr ref to document
+-var documentsStore = {};
+-
+-var searchIndexEnabled = true;
+-var indexSize = 0;
+-
+ module.exports = {
+     book: {
+         assets: './assets',
+@@ -40,9 +41,19 @@ module.exports = {
+     },
+ 
+     hooks: {
++        'init': function() {
++            states.set(this.output.root(), {
++                searchIndex: null,
++                documentsStore: {},
++                searchIndexEnabled: true,
++                indexSize: 0
++            });
++        },
++
+         // Index each page
+         'page': function(page) {
+-            if (this.output.name != 'website' || !searchIndexEnabled || page.search === false) {
++            var state = getState(this);
++            if (this.output.name != 'website' || !state.searchIndexEnabled || page.search === false) {
+                 return page;
+             }
+ 
+@@ -52,15 +63,18 @@ module.exports = {
+             this.log.debug.ln('index page', page.path);
+ 
+             text = page.content;
++            // Mermaid's inline SVG styles are not visible prose and can consume
++            // the entire size budget before all chapters have been indexed.
++            text = text.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/ig, '');
+             // Decode HTML
+             text = Html.decode(text);
+             // Strip HTML tags
+             text = text.replace(/(<([^>]+)>)/ig, '');
+ 
+-            indexSize = indexSize + text.length;
+-            if (indexSize > maxIndexSize) {
++            state.indexSize = state.indexSize + text.length;
++            if (state.indexSize > maxIndexSize) {
+                 this.log.warn.ln('search index is too big, indexing is now disabled');
+-                searchIndexEnabled = false;
++                state.searchIndexEnabled = false;
+                 return page;
+             }
+ 
+@@ -78,7 +92,7 @@ module.exports = {
+                 body: text
+             };
+ 
+-            documentsStore[doc.url] = doc;
++            state.documentsStore[doc.url] = doc;
+             getSearchIndex(this).add(doc);
+ 
+             return page;
+@@ -91,7 +105,7 @@ module.exports = {
+             this.log.debug.ln('write search index');
+             return this.output.writeFile('search_index.json', JSON.stringify({
+                 index: getSearchIndex(this),
+-                store: documentsStore
++                store: getState(this).documentsStore
+             }));
+         }
+     }

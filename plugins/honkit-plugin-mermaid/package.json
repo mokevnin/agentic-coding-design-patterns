@@ -7,7 +7,7 @@
   "dependencies": {
     "cheerio": "^1.2.0",
     "mermaid-isomorphic": "^3.1.0",
-    "playwright": "^1.65.0"
+    "playwright": "^1.65.1"
   },
   "engines": {
     "honkit": ">=6.0.0"

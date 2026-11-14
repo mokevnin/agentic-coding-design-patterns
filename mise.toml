@@ -12,15 +12,15 @@ lockfile_platforms = ["linux-x64", "macos-arm64"]
 _.path = ["node_modules/.bin"]
 
 [tools]
-node = "26.13.0"
-hk = { version = "2.11.1", workflow = "release.yml" }
+node = "26.13.1"
+hk = { version = "2.12.0", workflow = "release.yml" }
 pkl = "0.33.0"
-jactionlint = { version = "2.5.0", workflow = "release.yaml" }
-betterleaks = "1.10.0"
-typos = "1.52.0"
-rumdl = "0.3.2"
+jactionlint = { version = "2.6.0", workflow = "release.yaml" }
+betterleaks = "1.10.1"
+typos = "1.52.2"
+rumdl = "0.3.4"
 "github:agent-sh/agnix" = "0.61.0"
-osv-scanner = "2.7.0"
+osv-scanner = "2.7.1"
 lychee = "0.24.2"
 
 [tasks.setup]

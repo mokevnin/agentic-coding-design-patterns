@@ -55,7 +55,7 @@ Operating guide for agents (and humans) working in this repository.
 
 ## Build / preview
 
-- Use mise 2026.11.3 or newer; CI pins 2026.11.4. Commit `mise.lock` alongside tool updates; it covers Linux x64 and macOS arm64.
+- Use mise 2026.11.3 or newer; CI pins 2026.11.8. Commit `mise.lock` alongside tool updates; it covers Linux x64 and macOS arm64.
 - `mise run setup` — install locked deps, pinned linters and git hooks
 - `mise run serve` — local preview (Honkit serve)
 - `mise run build` — static build into `./dist`
