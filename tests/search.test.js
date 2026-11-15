@@ -9,7 +9,7 @@ const path = require('node:path');
 const { test } = require('node:test');
 
 const honkitRequire = createRequire(require.resolve('honkit'));
-const lunr = createRequire(honkitRequire.resolve('gitbook-plugin-lunr'))('lunr');
+const lunr = createRequire(honkitRequire.resolve('@honkit/honkit-plugin-lunr'))('lunr');
 
 test('multilingual search indexes contain only visible text from their own edition', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'honkit-search-'));

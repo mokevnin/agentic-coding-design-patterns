@@ -1,0 +1,13 @@
+diff --git a/index.js b/index.js
+index 26a818f08aa3138bbccec7dd756fa496c8a85ae6..2a24f7a17e3620b2d2cb8675aa1e3ac96efc18c3 100644
+--- a/index.js
++++ b/index.js
+@@ -55,6 +55,8 @@ function getState(context) {
+ 
+ // Return the text of a page without HTML entities and tags
+ function toPlainText(content) {
++    // Inline <style>/<script> (e.g. Mermaid's SVG CSS) is not prose and can use up maxIndexSize.
++    content = content.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/gi, "");
+     return Html.decode(content).replace(/(<([^>]+)>)/gi, "");
+ }
+ 
