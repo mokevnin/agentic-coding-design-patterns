@@ -5,9 +5,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import slugid from 'github-slugid';
+import { mermaidMarkdown } from '@mokevnin/vitepress-mermaid/markdown';
 import { defineConfig } from 'vitepress';
 
-import { createMermaid, loadThemes } from './mermaid.mjs';
 import { createSeo } from './seo.mjs';
 import { readSummary } from './summary.mjs';
 
@@ -20,14 +20,6 @@ const SITE_DESCRIPTION =
 const REPO_URL = 'https://github.com/mokevnin/agentic-coding-design-patterns';
 // The public URL. Change it (and `base`) when the site moves to its own domain.
 const BASE_URL = 'https://mokevnin.github.io/agentic-coding-design-patterns/';
-
-const mermaid = createMermaid({
-  cacheDir: path.join(repoRoot, 'node_modules', '.cache', 'mermaid'),
-  themes: loadThemes(
-    path.join(repoRoot, 'mermaid.config.json'),
-    path.join(repoRoot, 'mermaid.config.dark.json')
-  )
-});
 
 const seo = createSeo({
   baseUrl: BASE_URL,
@@ -189,7 +181,7 @@ export default defineConfig({
     // slugify strips accents and й/ё, which breaks ru and es anchors.
     anchor: { slugify: (text) => slugid(text.trim()) },
     config: (md) => {
-      mermaid.markdown(md);
+      md.use(mermaidMarkdown);
       const linkOpen = md.renderer.rules.link_open;
       md.renderer.rules.link_open = (tokens, index, options, env, self) => {
         const token = tokens[index];
@@ -210,10 +202,6 @@ export default defineConfig({
           : self.renderToken(tokens, index, options);
       };
     }
-  },
-
-  vite: {
-    plugins: [mermaid.vite()]
   },
 
   sitemap: {

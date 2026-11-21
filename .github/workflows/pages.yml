@@ -26,8 +26,6 @@ jobs:
           version: 2026.11.8
           install_args: --locked
       - run: pnpm install --frozen-lockfile
-      # Mermaid diagrams are rendered to SVG at build time in headless Chromium.
-      - run: pnpm exec playwright install --with-deps chromium
       - run: mise run build
       - if: github.event_name != 'pull_request'
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0

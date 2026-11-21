@@ -162,10 +162,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  mermaid: ^12.3.0
-  mermaid-isomorphic>katex: ^0.19.1
-
 importers:
 
   .:
@@ -176,15 +172,18 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^21.2.4
         version: 21.2.4
+      '@mokevnin/vitepress-mermaid':
+        specifier: github:mokevnin/vitepress-mermaid#semver:^v0.1.0
+        version: https://codeload.github.com/mokevnin/vitepress-mermaid/tar.gz/6f7a18f941921e32e5b796d0b9cdbb94cbc2e91d(mermaid@12.3.0)(vue@3.5.46)
       cheerio:
         specifier: ^1.2.0
         version: 1.2.0
       github-slugid:
         specifier: ^1.0.1
         version: 1.0.1
-      mermaid-isomorphic:
-        specifier: ^3.1.0
-        version: 3.1.0(playwright@1.65.1)
+      mermaid:
+        specifier: ^12.3.0
+        version: 12.3.0
       npm-check-updates:
         specifier: ^23.1.1
         version: 23.1.1
@@ -194,9 +193,6 @@ importers:
       oxlint:
         specifier: ^1.93.0
         version: 1.93.0
-      playwright:
-        specifier: ^1.65.1
-        version: 1.65.1
       syncpack:
         specifier: ^15.3.3
         version: 15.3.3
@@ -351,10 +347,6 @@ packages:
   '@emnapi/wasi-threads@2.2.0':
     resolution: {integrity: sha512-JP7OYH38Q7+pyTAe14raZHLQIK7BDKbdwji+Xi3pcd/6QkJYQH3SX4wu6EplGrGJWRepoNzedfm0G3B9Z4e9Rw==}
 
-  '@fortawesome/fontawesome-free@6.7.2':
-    resolution: {integrity: sha512-JUOtgFW6k9u4Y+xeIaEiLr3+cjoUPiAuLXoyKOJSia6Duzb7pq+A76P9ZdPDoAoxHdHzq6gE9/jKBGXlZT8FbA==}
-    engines: {node: '>=6'}
-
   '@iconify-json/simple-icons@1.2.103':
     resolution: {integrity: sha512-FMn+aVTsqQdYOwf5reCXXtfWapb+4ijI6WrU8ej1spWXWfA+d41TBXcKagHFwiHZyqt7kP7F04AiG1dYj2R06w==}
 
@@ -370,6 +362,13 @@ packages:
   '@mermaid-js/parser@2.0.1':
     resolution: {integrity: sha512-j37dj/h6p6pots1L7pLPPNuABEEu9WP4OYg9pW1g+nYG331j0+3canE9OagtYdytYvdSAMG+2fKU5cxep6LgjA==}
     engines: {node: '>=22.12.0'}
+
+  '@mokevnin/vitepress-mermaid@https://codeload.github.com/mokevnin/vitepress-mermaid/tar.gz/6f7a18f941921e32e5b796d0b9cdbb94cbc2e91d':
+    resolution: {gitHosted: true, integrity: sha512-XivQGz97/aCG07JdQXmHyrgJ6STVjwWYBBk14NrtUFhuG0kMjjcsgB156XhOgFEniUl7bqwXUduDBkWVyoNF+g==, tarball: https://codeload.github.com/mokevnin/vitepress-mermaid/tar.gz/6f7a18f941921e32e5b796d0b9cdbb94cbc2e91d}
+    version: 0.1.0
+    peerDependencies:
+      mermaid: ^11.0.0 || ^12.0.0
+      vue: ^3.4.0
 
   '@napi-rs/wasm-runtime@1.2.6':
     resolution: {integrity: sha512-mRyDmEw9/fCDXCGfL1sbgIw/GUK0PVxRW4YwgPN61F3LQ+fSyoBFarJVzgGyhF6kRzEQZ0FejDqm4WLXSeqQmw==}
@@ -1287,8 +1286,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.4.17:
-    resolution: {integrity: sha512-B/pSlYVHQ58kqISD/yDjuJ1yfzI34m1gF4lAod2bwSRhiN4K5Cl3H8Af7hqB2PmTL911tdEudnnXn5FnhRoz0w==}
+  dompurify@3.4.18:
+    resolution: {integrity: sha512-ofe3wI/uNm68HInABYFJYqQxRw1EaKAjNdrFVKqjUY+UZurvNd2L/HuQe097s/4RivWiZyP6tT7aoT8atjfhwg==}
 
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
@@ -1437,10 +1436,6 @@ packages:
     resolution: {integrity: sha512-/B6p9eY9DX7aHBfpkHdpirDTZ5QH9xTwL9y837PWuzuv41O5jFdqNQwVQEQsimY0/iVNkwBY4+4hMfhQ7d4Dbw==}
     hasBin: true
 
-  katex@0.19.1:
-    resolution: {integrity: sha512-jG8uKntjSEcm2EpQOh0XturpPuuC9r3Sq5HLHdsFdWZT27E672SF19QEi+of0/YeOy15lDgRhKvr5614uRrEfA==}
-    hasBin: true
-
   khroma@2.1.0:
     resolution: {integrity: sha512-Ls993zuzfayK269Svk9hzpeGUKob/sIgZzyHYdjQoAdQetRKpOLj+k/QQQ/6Qi0Yz65mlROrfd+Ev+1+7dz9Kw==}
 
@@ -1544,14 +1539,6 @@ packages:
   mdast-util-to-hast@13.2.2:
     resolution: {integrity: sha512-l2pnmOuqs+SGLVpTVXnRLQu5v1AzvDe181404fbXzzqObVxrAnnVxapAP27pUwzLBL/ABIkgUhGlPVU7QSvIFg==}
 
-  mermaid-isomorphic@3.1.0:
-    resolution: {integrity: sha512-mzrvfEVjnJIkJlEqxp3eMuR1wS0TeLCH1VK5E/T5yzWaBwI3JqjJuw70yUIThSCDJ5bRs6O3rgfp00oBAbvSeQ==}
-    peerDependencies:
-      playwright: '1'
-    peerDependenciesMeta:
-      playwright:
-        optional: true
-
   mermaid@12.3.0:
     resolution: {integrity: sha512-4113TdXeLAsMruJ79OpFL5O8+LTFXhQqZ260rF3tgUmiNAtRm4Uume04I+65PRN6yZ69J4f8rVYWW8zRk65UYw==}
     engines: {node: '>=22.12.0'}
@@ -1654,16 +1641,6 @@ packages:
   picomatch@4.0.7:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
-
-  playwright-core@1.65.1:
-    resolution: {integrity: sha512-hqPpz7blSMPxWVdoeE1yiBSzXsKiVOd2k+kjCvmUywD2GPO2Dd9HfcWnq9NN0GHbNZDFgZ9JfBFr+X5/BLo0qw==}
-    engines: {node: '>=20'}
-    hasBin: true
-
-  playwright@1.65.1:
-    resolution: {integrity: sha512-vJ1FuoOrNwOKHUIVEvSt3jT1L+wjjDpwhwIstKtfvTh8XIG4FG4bIFuvNdMxi81LGfAhUgUZleVFaOLY4RIUUw==}
-    engines: {node: '>=20'}
-    hasBin: true
 
   points-on-curve@0.2.0:
     resolution: {integrity: sha512-0mYKnYYe9ZcqMCWhUjItv/oHjvgEsfKvnUTg8sAtnHr3GVy7rGkXCb6d5cSyqrWqL4k81b9CPg3urd+T7aop3A==}
@@ -2122,8 +2099,6 @@ snapshots:
       tslib: 2.9.1
     optional: true
 
-  '@fortawesome/fontawesome-free@6.7.2': {}
-
   '@iconify-json/simple-icons@1.2.103':
     dependencies:
       '@iconify/types': 2.0.0
@@ -2141,6 +2116,11 @@ snapshots:
   '@mermaid-js/parser@2.0.1':
     dependencies:
       '@chevrotain/types': 13.2.0
+
+  '@mokevnin/vitepress-mermaid@https://codeload.github.com/mokevnin/vitepress-mermaid/tar.gz/6f7a18f941921e32e5b796d0b9cdbb94cbc2e91d(mermaid@12.3.0)(vue@3.5.46)':
+    dependencies:
+      mermaid: 12.3.0
+      vue: 3.5.46
 
   '@napi-rs/wasm-runtime@1.2.6(@emnapi/core@2.0.0-beta.2)(@emnapi/runtime@2.0.0-beta.2)':
     dependencies:
@@ -2940,7 +2920,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.4.17:
+  dompurify@3.4.18:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -3070,10 +3050,6 @@ snapshots:
     dependencies:
       commander: 15.1.0
 
-  katex@0.19.1:
-    dependencies:
-      commander: 15.1.0
-
   khroma@2.1.0: {}
 
   layout-base@1.0.2: {}
@@ -3153,14 +3129,6 @@ snapshots:
       unist-util-visit: 5.2.0
       vfile: 6.0.3
 
-  mermaid-isomorphic@3.1.0(playwright@1.65.1):
-    dependencies:
-      '@fortawesome/fontawesome-free': 6.7.2
-      katex: 0.19.1
-      mermaid: 12.3.0
-    optionalDependencies:
-      playwright: 1.65.1
-
   mermaid@12.3.0:
     dependencies:
       '@braintree/sanitize-url': 7.1.2
@@ -3176,7 +3144,7 @@ snapshots:
       d3-sankey: 0.12.3
       dagre-d3-es: 7.0.14
       dayjs: 1.11.23
-      dompurify: 3.4.17
+      dompurify: 3.4.18
       elkjs: 0.12.1
       es-toolkit: 1.53.2
       katex: 0.18.10
@@ -3300,12 +3268,6 @@ snapshots:
   picocolors@1.1.1: {}
 
   picomatch@4.0.7: {}
-
-  playwright-core@1.65.1: {}
-
-  playwright@1.65.1:
-    dependencies:
-      playwright-core: 1.65.1
 
   points-on-curve@0.2.0: {}
 

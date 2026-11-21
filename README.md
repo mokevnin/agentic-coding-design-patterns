@@ -10,7 +10,7 @@ A catalog of patterns in the spirit of the "Gang of Four" (GoF) about **how a de
 
 ```text
 book/                 — the book root (VitePress source directory)
-  .vitepress/         — site config: locales, sidebar, Mermaid rendering, SEO, theme
+  .vitepress/         — site config: locales, sidebar, SEO, theme and Mermaid palette
   README.md           — language picker at the site root
   <locale>/
     SUMMARY.md        — table of contents: groups = headings, patterns = links; builds the sidebar

@@ -1,12 +1,2 @@
 # pnpm settings (pnpm no longer reads the "pnpm" field in package.json).
-
-# Explicitly requested latest releases; Playwright's browser and core must stay in sync.
-minimumReleaseAgeExclude:
-  - playwright-core@1.65.1
-  - playwright@1.65.1
-
-# mermaid-isomorphic still declares mermaid ^11; Mermaid 12 adds the newer diagram types.
-overrides:
-  mermaid: '^12.3.0'
-  # mermaid-isomorphic only loads KaTeX CSS; its ^0.16 pin is vulnerable (GHSA-238p-pmpm-9mq7).
-  'mermaid-isomorphic>katex': '^0.19.1'
+# No overrides or exclusions are needed at the moment.

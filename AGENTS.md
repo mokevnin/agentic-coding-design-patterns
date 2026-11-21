@@ -11,10 +11,9 @@ Operating guide for agents (and humans) working in this repository.
 ## Diagrams
 
 - Diagrams are written as ```` ```mermaid ```` fences directly in the chapter, so the labels are translated together with the prose and GitHub renders them in the repo.
-- `book/.vitepress/mermaid.mjs` renders the fences to SVG at build time (Mermaid in headless Playwright), so readers need no JavaScript for them. Each diagram becomes an `<img>` of an SVG file, not inline markup: Vue strips the `<style>` Mermaid puts inside the SVG. The diagram's `title:` doubles as the image's alt text.
+- [vitepress-mermaid](https://github.com/mokevnin/vitepress-mermaid) turns the fences into a `<Mermaid>` component that draws the diagram in the reader's browser and redraws it when dark mode is toggled. Rendering happens in the browser, so `mise run build` does not catch a Mermaid syntax error: open the page after editing a diagram and look for red source text (a `data-mermaid-error` element).
 - Shared palette and theme live in `mermaid.config.json`. Use the `accent`, `warn` and `muted` classes (`node:::accent`) instead of per-diagram `classDef`.
-- Every diagram is also rendered in a dark palette for VitePress's dark mode: `mermaid.config.dark.json` holds only the keys that differ and is merged over `mermaid.config.json`. A new color or class in the light config needs its dark counterpart there, including the `accent`/`warn`/`muted` rules in `themeCSS`.
-- Rendered SVGs are cached in `node_modules/.cache/mermaid`, keyed by diagram source plus theme config. The theme is read once at startup, so restart `mise run serve` after editing `mermaid.config.json` or `mermaid.config.dark.json`.
+- Dark mode uses a dark palette: `mermaid.config.dark.json` holds only the keys that differ and is merged over `mermaid.config.json` in `book/.vitepress/theme/mermaid-palette.mjs`. A new color or class in the light config needs its dark counterpart there, including the `accent`/`warn`/`muted` rules in `themeCSS`. `fontFamily` is ignored: diagrams use the page font.
 - Beyond `flowchart`, the types that survive this pipeline and the palette are `sequenceDiagram`, `stateDiagram-v2`, `gitGraph`, `quadrantChart`, `pie` and `sankey-beta`.
 - `sankey-beta` accepts **ASCII only in node names** (Mermaid 12.0.0) — quoting does not help, and Cyrillic or even Spanish accents raise a parse error. Its `title:` and `%%` comments do take non-ASCII. Where it is used, node labels stay English with a `%% TODO` to localize them once upstream is fixed.
 - Types that silently drop the frontmatter `title:` the book uses as a caption: `sankey-beta`, `mindmap`, `timeline`, `kanban`, `block-beta`, `architecture-beta`. Put the thesis in the paragraph under the diagram instead. `treemap-beta` scales label size with box area, so the smallest — usually most important — share is the least readable.
@@ -60,7 +59,6 @@ Operating guide for agents (and humans) working in this repository.
 - `mise run serve` — local preview with hot reload (VitePress dev server)
 - `mise run build` — static build into `./dist`; VitePress fails it on a dead link between pages
 - `mise run preview` — serve the `./dist` build locally
-- `pnpm exec playwright install chromium` — one-off, needed to render diagrams
 - `mise run update` — bump project tools and dependencies; when hk changes, also update both versioned Pkl imports in `hk.pkl`
 
 ## Structure conventions
