@@ -1,6 +1,6 @@
 # Кандидаты и голосование
 
-Какие темы стоит разобрать следующими? Ниже — короткие описания идей для новых глав. Они ещё не приняты: часть может объединиться с существующими паттернами. Последние четыре темы — кандидаты в антипаттерны.
+Какие темы стоит разобрать следующими? Ниже — короткие описания идей для новых глав. Они ещё не приняты: часть может объединиться с существующими паттернами.
 
 Полный список, источники, пересечения с другими главами и актуальные статусы — в [CANDIDATES.md](https://github.com/mokevnin/agentic-coding-design-patterns/blob/main/CANDIDATES.md) на английском языке.
 
@@ -15,20 +15,11 @@
 | Визуальная спецификация — задать интерфейс макетом и уточнять результат по скриншотам. | `visual-specification` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/6) |
 | Библиотека примеров — давать агенту проверенный код для адаптации и сочетания решений. | `working-example-library` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/7) |
 | Восстановление поведения — собрать спецификацию существующей системы с подтверждением каждого вывода. | `evidence-linked-behavior-recovery` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/9) |
-| Разбор кода — пройти путь выполнения с объяснениями и фрагментами из репозитория. | `linear-code-walkthrough` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/10) |
-| Интерактивное объяснение — разобраться в алгоритме через входные данные и пошаговое выполнение. | `interactive-code-explanation` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/11) |
+| Разбор кода — понять существующую реализацию через путь выполнения, фрагменты исходников и интерактивное объяснение алгоритма. | `linear-code-walkthrough` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/10) |
 | Проверяемые сценарии — рецензировать понятные входы и ожидаемые результаты вместо множества тестовых функций. | `approved-scenario-fixtures` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/13) |
 | Независимая приёмка — проверять результат сценариями, которые агент реализации не может подстроить под код. | `held-out-acceptance-scenarios` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/14) |
 | Проверка тестов мутациями — находить ошибки, которые тесты пропускают, и усиливать проверки. | `mutation-guided-test-hardening` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/15) |
-| Диагностика с подсказкой — возвращать агенту способ исправления вместе с сообщением о нарушении. | `actionable-diagnostics` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/16) |
-| Результат для ревью — собрать изменение, обоснование и свидетельства проверок в удобную для обсуждения форму. | `reviewable-agent-delivery` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/17) |
-| Обучение рабочего процесса — превращать повторяющиеся исправления в общие инструкции и проверки. | `feedback-flywheel` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/18) |
+| Результат для ревью — убрать следы экспериментов и собрать изменение, обоснование и свидетельства проверок для приёмки. | `reviewable-agent-delivery` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/17) |
 | Точки восстановления — сохранять проверенные состояния, чтобы откатывать неудачные попытки по частям. | `verified-recovery-points` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/19) |
-| Уборка после агента — удалять временный код и следы экспериментов перед завершением задачи. | `agent-residue-cleanup` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/20) |
-| Проверка применения инструкций — выяснять, находит ли агент правило и использует ли его в работе. | `instruction-activation-checks` | Обсуждение ещё не открыто |
 | Мастер ручных шагов — поручить агенту подготовить интерактивную процедуру для действий человека и сбора их результатов. | `guided-manual-procedure` | Обсуждение ещё не открыто |
 | Ограниченные попытки — при отсутствии прогресса сохранять результаты и менять подход или передавать задачу. | `bounded-retry-escalation` | Обсуждение ещё не открыто |
-| Переписать с учётом опыта — после посредственного рабочего решения выбросить код и реализовать заново, сохранив то, что стало понятно. | `hindsight-rewrite` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/30) |
-| Усталость от подтверждений — частые запросы превращают осмысленное согласование в автоматическое нажатие кнопки. | `approval-fatigue` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/21) |
-| Самоподтверждающиеся тесты — проверка вычисляет ожидаемый ответ той же логикой, которую должна проверять. | `self-confirming-tests` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/22) |
-| Незавершённая миграция — в коде живут старый и новый вариант, и агент копирует тот, что попался первым. | `half-finished-migration` | [Обсудить / голосовать](https://github.com/mokevnin/agentic-coding-design-patterns/issues/32) |

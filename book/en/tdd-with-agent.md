@@ -23,6 +23,8 @@ For example, a test computes a discount with the same formula the function uses.
 
 Separating the phases explicitly lets you see the test before the implementation and control changes to the criterion.
 
+In particular, calling the function under test to calculate `expected` compares the function with itself. Derive the expected result from a worked example or requirement before running the implementation; test-first order alone does not guarantee this independence.
+
 ## Solution
 
 Put the red and green phases into separate prompts and keep the gate between them in your hands.

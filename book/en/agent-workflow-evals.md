@@ -99,6 +99,24 @@ For a one-off prompt, a full harness often does not pay off. Start with a repeat
 7. Analyze every failure from the session record. Determine whether the grader was wrong, the task allows different interpretations, or the agent violated a requirement.
 8. After a real incident, add a minimal reproducing case to the regression suite.
 
+### Claude Code
+
+Checked against Claude Code 2.1.330 and the [plugin eval documentation](https://code.claude.com/docs/en/plugin-evals) on 2026-11-21.
+
+#### A skill's contribution: `claude plugin eval`
+
+This built-in tool evaluates plugins and skill collections. It runs tasks in isolated sessions and grades the results. The same tasks run without the plugin, making the procedure's contribution visible. If both variants pass equally, success alone does not establish the skill's value. Run the comparison after changing a procedure and when changing models.
+
+Fix the versions of the task model and model-based judge, the initial state and the run budget. Check the outcome as well as whether the skill was invoked: an agent can load instructions and follow them incorrectly.
+
+##### Example
+
+```text
+Prepare an eval for our release skill
+```
+
+The agent proposes tasks and criteria; you check which failures they detect. After the runs, compare quality and cost with and without the procedure.
+
 ## Example
 
 A team wants to shorten _AGENTS.md_ and sets up control tasks. Two of them are shown below in illustrative YAML. This describes the requirements for the checks, not the format of a ready-made tool. The fields have to be implemented by the harness you choose.

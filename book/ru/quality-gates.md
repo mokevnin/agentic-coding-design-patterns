@@ -111,7 +111,7 @@ flowchart TB
 
 ### Claude Code
 
-Сверено с Claude Code 2.1.316 и [документацией хуков](https://code.claude.com/docs/en/hooks) на 2026-10-31.
+Сверено с Claude Code 2.1.330 и [документацией хуков](https://code.claude.com/docs/en/hooks) на 2026-11-21.
 
 #### Проверка перед завершением ответа
 
@@ -125,7 +125,7 @@ Stop-хук — встроенная функция Claude Code. Хук запу
 
 ### Codex
 
-Сверено с Codex CLI 0.166.0 и [документацией хуков](https://learn.chatgpt.com/docs/hooks) на 2026-10-31.
+Сверено с Codex CLI 0.171.0 и [документацией хуков](https://learn.chatgpt.com/docs/hooks) на 2026-11-21.
 
 #### Проверка перед завершением ответа
 

@@ -116,6 +116,32 @@ Prepare a check of search performance after deployment
 
 You approve a plan with the baseline p95, acceptable error rate, and a half-hour observation window. After deployment, you run the check. Average latency has fallen, but the agent finds more errors in one region and attaches the query and log examples. You investigate the deviation before accepting the change.
 
+### Claude Code
+
+Checked against Claude Code 2.1.330 and the [skills documentation](https://code.claude.com/docs/en/skills) on 2026-11-21.
+
+#### Checking the app: `/verify`
+
+`/verify` is a bundled skill that builds and runs the app to check a change in action. It can save the verification recipe as a project procedure for later sessions. Run it after changing user-visible behavior; the result should be an observed scenario, beyond passing tests ([documentation](https://code.claude.com/docs/en/skills#run-and-verify-your-app)).
+
+A project-recorded `/verify` procedure can also become part of Claude's pre-commit instructions ([conditions](https://code.claude.com/docs/en/skills#run-your-checks-before-each-commit)). This depends on which skill is available at session start and whether the agent can invoke it; a bundled or plugin skill of the same name does not add that instruction. This guides the model, so keep the mandatory gate in CI.
+
+##### Example
+
+```text
+/verify
+```
+
+#### Continuing toward a result: `/goal`
+
+`/goal` is a built-in command for substantial work with a verifiable completion condition. After each reply, a model checks whether the condition holds and continues if needed. Agree on a resource limit and signs of stalled progress beforehand. Check completion against environment artifacts: the model's judgment alone does not establish that the app works ([documentation](https://code.claude.com/docs/en/goal)).
+
+##### Example
+
+```text
+/goal fix the export until its acceptance scenarios pass
+```
+
 ## Example
 
 For a promo code validator, you set the cases to check together with the task.

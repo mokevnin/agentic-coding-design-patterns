@@ -13,15 +13,7 @@ _Comandos y capacidades de Superpowers 7.0.1 comprobados el 31 de octubre de 202
 
 [Superpowers](https://github.com/obra/superpowers), de Jesse Vincent (obra), implementa el [SDD](spec-driven-development.md) como un conjunto de [skills](skills-as-packaged-workflows.md). Entre el diseño y la implementación, las instrucciones fijan puntos de control obligatorios llamados HARD-GATE.
 
-## Instalación
-
-La vía principal de instalación usa el marketplace de Claude Code.
-
-```text
-/plugin install superpowers@claude-plugins-official
-```
-
-El pack también incluye instrucciones y manifiestos para Codex, Cursor, Antigravity, GitHub Copilot CLI y OpenCode.
+La [guía de Superpowers](https://github.com/obra/superpowers#installation) explica cómo conectarlo a tu agente. Una vez conectado, el pack ayuda a elegir el procedimiento según la tarea: discutir una función nueva, investigar un fallo o ejecutar un plan acordado.
 
 ## Flujo de trabajo
 

@@ -134,6 +134,22 @@ Ante un conflicto, pide al agente que reconstruya el propósito de ambos cambios
 
 Por ejemplo, una rama añade un tiempo límite a las peticiones y otra limita los reintentos. Elegir un lado puede perder la otra restricción. Tras combinarlas, comprueba ambos comportamientos y su interacción. Incluso la fusión automática de Git necesita esta comprobación. Añade al índice solo los archivos de la integración actual y conserva los cambios ajenos.
 
+### Claude Code
+
+Comprobado con Claude Code 2.1.330 y la [referencia de comandos](https://code.claude.com/docs/en/commands) el 2026-11-21.
+
+#### Un cambio en paralelo: `/batch`
+
+`/batch` es un skill integrado para un cambio grande que se divide en partes independientes. Investiga el proyecto y propone la división. Tras tu aprobación, un subagente implementa cada parte en su propio worktree. Los resultados siguen necesitando integración y comprobaciones del estado conjunto: el aislamiento no elimina decisiones incompatibles.
+
+Úsalo para una migración repetible entre módulos independientes. Si las partes dependen unas de otras, establece primero el orden mediante [tickets trazadores](tracer-bullet-tickets.md).
+
+##### Ejemplo
+
+```text
+/batch migra los manejadores de eventos al nuevo cliente
+```
+
 ## Ejemplo
 
 Un equipo prepara la limitación de frecuencia de peticiones y una página de operaciones para una tienda en línea. Creas dos worktrees desde el mismo `origin/main`.

@@ -94,15 +94,29 @@ Para una tarea puntual, un skill aparte suele crear trabajo extra de mantenimien
 
 ## Implementación
 
-1. Elige un procedimiento que tengas que explicar una y otra vez.
-2. Crea un _SKILL.md_ con nombre, propósito, pasos y sus criterios de finalización.
-3. Define el modo de invocación. En la descripción indica en qué tareas hace falta el skill, en lugar de resumir su contenido: a partir de la descripción el agente decide si cargar el procedimiento.
-4. Saca la referencia a archivos vecinos y enlázala desde los pasos que la necesitan (ver la [ingeniería de contexto](context-engineering.md)).
-5. Usa términos del proceso coherentes y explícalos donde influyen en una acción.
-6. Pon a prueba el procedimiento en tareas reales y borra las instrucciones caducas.
-7. Reúne en el skill una sección «Trampas» con los errores que el agente cometió al seguirlo. Estas entradas contienen lo que el agente no sabe sin el skill.
-8. Para un conjunto grande, añade un índice que ayude a elegir el skill adecuado.
-9. Si hace falta, adapta los procedimientos ya hechos de [Superpowers](superpowers.md) o de los [skills de Matt Pocock](matt-pocock-skills.md).
+### Independiente del agente
+
+#### Guardar un procedimiento
+
+Elige un procedimiento que tengas que explicar repetidamente y pide al agente que lo convierta en un skill. La descripción debe dejar claras las tareas en que se aplica: el agente la usa para elegir el procedimiento. Dentro quedan las acciones, las restricciones y un resultado verificable; los detalles de referencia se cargan mediante enlaces. Recoge las dificultades de fallos reales y comprueba el skill en tareas posteriores. Puedes adaptar procedimientos de [Superpowers](superpowers.md) o de [Matt Pocock](matt-pocock-skills.md) al proyecto.
+
+##### Ejemplo
+
+```text
+Guarda nuestro procedimiento de publicación como skill
+```
+
+#### Por qué no se usa un skill
+
+Si el agente omite un procedimiento, averigua primero dónde se interrumpe su uso. El archivo puede estar en el proyecto sin aparecer entre los skills disponibles. El agente puede ver la descripción sin elegirlo para esa tarea. Incluso cargar la instrucción completa no demuestra que se haya seguido: comprueba las acciones y los resultados en el registro de sesión.
+
+Compara una petición habitual con una invocación directa del skill para la misma tarea. Si la invocación ayuda, revisa la descripción y el ámbito de aplicación. Si ambas ejecuciones omiten la acción necesaria, busca instrucciones contradictorias o un criterio de finalización poco claro. Usa el diagnóstico de tu herramienta para comprobar la carga. Distingue una descripción disponible de una instrucción leída; la [memoria del proyecto](agents-md-memory.md) explica la carga. Conserva los fallos recurrentes en los [evals del proceso](agent-workflow-evals.md) para poder comprobar la siguiente modificación del skill.
+
+##### Ejemplo
+
+```text
+Comprueba por qué el skill de publicación no se activa en nuestras tareas
+```
 
 ## Ejemplo
 

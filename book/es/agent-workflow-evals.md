@@ -99,6 +99,24 @@ Para un prompt de un solo uso, un harness completo a menudo no compensa. Empieza
 7. Analiza cada fallo a partir del registro de la sesión. Determina si se equivocó el evaluador, si la tarea admite interpretaciones distintas o si el agente incumplió un requisito.
 8. Tras un incidente real, añade a la suite de regresión un caso mínimo que lo reproduzca.
 
+### Claude Code
+
+Comprobado con Claude Code 2.1.330 y la [documentación de evals de plugins](https://code.claude.com/docs/en/plugin-evals) el 2026-11-21.
+
+#### La aportación del skill: `claude plugin eval`
+
+Esta herramienta integrada evalúa plugins y conjuntos de skills. Ejecuta tareas en sesiones aisladas y califica los resultados. Repite las mismas tareas sin el plugin para mostrar qué aporta el procedimiento. Si ambas variantes pasan por igual, el éxito por sí solo no demuestra el valor del skill. Ejecuta la comparación tras modificar el procedimiento y al cambiar de modelo.
+
+Fija las versiones del modelo ejecutor y del evaluador, el estado inicial y el presupuesto de ejecuciones. Comprueba tanto el resultado como la invocación del skill: el agente puede cargar las instrucciones y seguirlas mal.
+
+##### Ejemplo
+
+```text
+Prepara un eval para nuestro skill de publicación
+```
+
+El agente propone tareas y criterios; compruebas qué fallos detectan. Tras las ejecuciones, comparas calidad y coste con el procedimiento y sin él.
+
 ## Ejemplo
 
 Un equipo quiere acortar _AGENTS.md_ y crea tareas de control. Abajo se muestran dos de ellas en un YAML ilustrativo. Es una descripción de los requisitos de las comprobaciones, no el formato de una herramienta concreta. Los campos debe implementarlos el harness elegido.

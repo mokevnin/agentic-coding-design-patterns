@@ -13,15 +13,7 @@ _Commands and capabilities of Superpowers 7.0.1 checked on October 31, 2026._
 
 [Superpowers](https://github.com/obra/superpowers) by Jesse Vincent (obra) implements [SDD](spec-driven-development.md) as a set of [skills](skills-as-packaged-workflows.md). Between design and implementation, the instructions set mandatory checkpoints called HARD-GATE.
 
-## Installation
-
-The main way to install it uses the Claude Code marketplace.
-
-```text
-/plugin install superpowers@claude-plugins-official
-```
-
-The pack also includes instructions and manifests for Codex, Cursor, Antigravity, GitHub Copilot CLI and OpenCode.
+The [Superpowers guide](https://github.com/obra/superpowers#installation) explains how to connect it to your agent. Once connected, the pack helps select a procedure for the task: discuss a new feature, investigate a bug or execute an agreed plan.
 
 ## Workflow
 

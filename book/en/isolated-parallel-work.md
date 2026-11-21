@@ -134,6 +134,22 @@ On a conflict, ask the agent to reconstruct the purpose of both changes from the
 
 For example, one branch adds a request timeout and another limits retries. Choosing one side can lose the other constraint. After combining them, verify both behaviors and their interaction. Even Git's automatic merge needs this check. Stage only files from the current integration, preserving unrelated changes.
 
+### Claude Code
+
+Checked against Claude Code 2.1.330 and the [command reference](https://code.claude.com/docs/en/commands) on 2026-11-21.
+
+#### A parallel change: `/batch`
+
+`/batch` is a bundled skill for a large change that splits into independent parts. It investigates the project and proposes a decomposition. After your approval, a separate subagent implements each part in its own worktree. The results still need integration and checks on the combined state: isolation does not eliminate incompatible decisions.
+
+Use it for a repeatable migration across independent modules. When parts depend on one another, establish the order in [tracer-bullet tickets](tracer-bullet-tickets.md) first.
+
+##### Example
+
+```text
+/batch migrate the event handlers to the new client
+```
+
 ## Example
 
 A team is preparing rate limiting and an operations page for an online store. You create two worktrees from the same `origin/main`.

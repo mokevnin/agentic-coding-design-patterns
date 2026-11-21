@@ -111,7 +111,7 @@ Convierte este comentario en una comprobación para que la CI lo detecte sola
 
 ### Claude Code
 
-Comprobado con Claude Code 2.1.316 y la [documentación de hooks](https://code.claude.com/docs/en/hooks) el 2026-10-31.
+Comprobado con Claude Code 2.1.330 y la [documentación de hooks](https://code.claude.com/docs/en/hooks) el 2026-11-21.
 
 #### Una comprobación antes de terminar la respuesta
 
@@ -125,7 +125,7 @@ Crea un hook para todo el equipo: antes de terminar la respuesta ejecuta las com
 
 ### Codex
 
-Comprobado con Codex CLI 0.166.0 y la [documentación de hooks](https://learn.chatgpt.com/docs/hooks) el 2026-10-31.
+Comprobado con Codex CLI 0.171.0 y la [documentación de hooks](https://learn.chatgpt.com/docs/hooks) el 2026-11-21.
 
 #### Una comprobación antes de terminar la respuesta
 

@@ -35,6 +35,8 @@ Separa las reglas en **recomendaciones** e **invariantes**. Deja las recomendaci
 
 Un límite debe comprobar una condición estrecha y explicar el motivo de la negativa. Junto con la negativa, devuelve un siguiente paso permitido. Así el agente puede seguir trabajando dentro del área permitida sin confirmaciones constantes.
 
+Si apruebas mecánicamente cada ejecución de tests, revisa primero ese límite repetitivo. Permite las comprobaciones habituales en el directorio de trabajo y conserva la publicación como decisión aparte. Comprueba la política con una acción permitida y otra prohibida: reducir las preguntas ayuda cuando se mantienen los límites necesarios. Así reduces la [fatiga de aprobación](https://aipatternbook.com/approval-fatigue).
+
 ## Estructura
 
 El mecanismo comprueba la acción antes de ejecutarla. La política determina si puede ejecutarse de inmediato, si necesita la confirmación de una persona o si está prohibida.

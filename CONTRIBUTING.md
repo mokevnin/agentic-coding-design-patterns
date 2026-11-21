@@ -23,7 +23,7 @@ The book has no margin notes or comment threads: an addition becomes part of the
 
 Anti-patterns go into the separate "Anti-patterns" chapter and use `templates/<locale>/anti-pattern.md`.
 
-Tool profiles are not patterns. Put them under the relevant methodology section, add `kind: tool` and `checked_on: YYYY-MM-DD` to their front matter, and use the practical-card structure: installation, workflow, artifacts, distinctions, and selection criteria. Show the check date to readers because commands and product capabilities change faster than pattern descriptions.
+Tool profiles are not patterns. Put them under the relevant methodology section, add `kind: tool` and `checked_on: YYYY-MM-DD` to their front matter, and explain purpose, workflow, artifacts, distinctions and selection criteria. Link to upstream setup documentation instead of reproducing installation commands, runtime prerequisites or package-manager details. Show the check date to readers because commands and product capabilities change faster than pattern descriptions.
 
 Recheck a tool profile against the tool's primary documentation before each book release and whenever its commands or capabilities are edited. Advance `checked_on` only after that verification; changing prose alone is not evidence that the product details are current.
 

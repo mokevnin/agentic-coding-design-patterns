@@ -98,7 +98,7 @@ Las pasadas semanales por el código pueden ser tareas en la nube. Pide un PR pe
 
 ### Pasadas que no dependen del agente
 
-Algunas pasadas usan [skills de Matt Pocock](matt-pocock-skills.md); otras son prompts normales. Para los skills, instala el paquete por uno de los métodos de su perfil y ejecuta una vez `/setup-matt-pocock-skills`. Los ejemplos nombran las rutinas; la invocación depende del agente. Los comandos integrados están en bloques separados después del enfoque común.
+Algunas pasadas usan [skills de Matt Pocock](matt-pocock-skills.md); otras son prompts normales. Para los skills, conecta el paquete siguiendo la guía del autor y ejecuta una vez `/setup-matt-pocock-skills`. Los ejemplos nombran las rutinas; la invocación depende del agente. Los comandos integrados están en bloques separados después del enfoque común.
 
 #### Retrospectiva
 
@@ -107,6 +107,8 @@ Es el skill `retro` de la sección de ingeniería del paquete ([código fuente](
 El skill carga `writing-for-agents` como guía de estilo y lee la transcripción de la sesión, por defecto la actual. Busca mejoras en siete categorías: navegación por el proyecto, comprobaciones automáticas, estándares de revisión, _AGENTS.md_, economía de llamadas, reglas que no cambian nada y acceso a la información. Propone detectar una infracción mecánica con un linter, un hook o CI, y anotar en los estándares solo lo que requiere criterio. Presenta los candidatos por gravedad y no cambia nada por sí mismo.
 
 Lánzalo justo después de una sesión en la que el agente se atascó: muchas correcciones, una vuelta atrás, una búsqueda larga, un error repetido. Implementa las propuestas aceptadas en esa misma sesión.
+
+Tras aceptar un cambio, comprueba si el fallo original se repite en las siguientes sesiones del equipo. Ante un cambio discutido, compara el proceso anterior y el nuevo con la misma tarea mediante un [eval](agent-workflow-evals.md). Conserva las reglas, los skills o las comprobaciones que ayudan; elimina los añadidos inútiles. Este [ciclo de retroalimentación](https://martinfowler.com/articles/reduce-friction-ai/feedback-flywheel.html) convierte una corrección individual en una mejora compartida. Guarda el resultado en el repositorio para que ayude también a tus compañeros.
 
 ##### Ejemplo
 
@@ -214,7 +216,7 @@ Limpia tu memoria de este proyecto
 
 ### Claude Code
 
-Este bloque se comprobó con Claude Code 2.1.316 y la [referencia de comandos](https://code.claude.com/docs/en/commands) el 2026-10-31. El mantenimiento de instalación y memoria se ejecuta en local. `/schedule` inicia tareas en la nube; la revisión también tiene el modo en la nube `/code-review ultra`.
+Este bloque se comprobó con Claude Code 2.1.330 y la [referencia de comandos](https://code.claude.com/docs/en/commands) el 2026-11-21. El mantenimiento de instalación y memoria se ejecuta en local. `/schedule` inicia tareas en la nube; la revisión también tiene el modo en la nube `/code-review ultra`.
 
 #### Calendario: `/schedule`
 
@@ -292,9 +294,19 @@ Lánzalo cada mes, después de `/fewer-permission-prompts`.
 /doctor
 ```
 
+#### Auditoría de instrucciones: `/doctor prompt-audit`
+
+Este pase integrado de Claude Code revisa instrucciones, incluidos _AGENTS.md_ y los skills. Busca contradicciones, comandos inexistentes y reglas heredadas de modelos anteriores, y propone cambios ([documentación](https://code.claude.com/docs/en/memory#audit-your-instruction-files)). Ejecútalo cada mes y después de cambiar de modelo. Tú eliges las propuestas; los archivos cambian tras tu decisión. Comprueba su utilidad en tareas posteriores, sin juzgarla por el número de líneas eliminadas.
+
+##### Ejemplo
+
+```text
+/doctor prompt-audit
+```
+
 #### Skills: `/skill-doctor`
 
-`/skill-doctor` es un comando integrado disponible desde la versión 2.1.252 ([documentación](https://code.claude.com/docs/en/skills#find-unused-skills)). El informe requiere acceso a la descarga de feature flags; el comando no está disponible mediante Remote Control.
+`/skill-doctor` es un comando integrado ([documentación](https://code.claude.com/docs/en/skills#find-unused-skills)).
 
 El informe muestra el coste en contexto y el uso de los skills admitidos; excluye los integrados y corporativos. Claude Code carga skills del proyecto, del usuario, de plugins y de otras fuentes admitidas. En instalaciones editables, comprueba _.claude/skills/_ o los enlaces a archivos compartidos; en instalaciones por plugin, comprueba el plugin.
 
@@ -322,7 +334,7 @@ Lánzalo cada mes y cada vez que `/run` avise de que el skill está obsoleto.
 
 ### Codex
 
-Este bloque se comprobó con Codex CLI 0.166.0 y la documentación de learn.chatgpt.com el 2026-10-31.
+Este bloque se comprobó con Codex CLI 0.171.0 y la documentación de learn.chatgpt.com el 2026-11-21.
 
 #### Calendario: Scheduled tasks y `codex-action`
 
@@ -380,7 +392,7 @@ Security Review requiere acceso a la función, un espacio de trabajo configurado
 
 #### Memoria: Memories
 
-Las Memories están desactivadas por defecto ([documentación](https://learn.chatgpt.com/docs/customization/memories)). Si las activaste, las entradas viven en _~/.codex/memories/_ y se generan a partir de sesiones anteriores. La documentación desaconseja editarlas a mano, así que en la pasada mensual los hechos del proyecto van a _AGENTS.md_ y en un proyecto de equipo conviene pedir a Codex que desactive Memories (ver [«Memoria privada»](private-agent-memory.md)).
+Las Memories están desactivadas por defecto ([documentación](https://learn.chatgpt.com/docs/customization/memories)). Si las activaste, las entradas se generan a partir de sesiones anteriores y se guardan localmente, fuera del repositorio. La documentación desaconseja editarlas a mano, así que en la pasada mensual los hechos del proyecto van a _AGENTS.md_ y en un proyecto de equipo conviene pedir a Codex que desactive Memories (ver [«Memoria privada»](private-agent-memory.md)).
 
 #### Permisos: archivos `.rules`
 

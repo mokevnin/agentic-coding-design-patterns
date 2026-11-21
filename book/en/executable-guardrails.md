@@ -35,6 +35,8 @@ Separate rules into **guidance** and **invariants**. Keep guidance in project me
 
 A guardrail should check a narrow condition and explain the reason for a denial. Along with the denial, return an allowed next step. The agent can then keep working inside the allowed area without constant approvals.
 
+If you approve every test run mechanically, revisit that recurring boundary first. Allow normal checks in the working directory while keeping publication a separate decision. Test the policy with an allowed and a prohibited action: fewer prompts help only when the necessary limits remain. This reduces [approval fatigue](https://aipatternbook.com/approval-fatigue).
+
 ## Structure
 
 The mechanism checks an action before it runs. The policy determines whether it can run right away, needs human approval, or is forbidden.

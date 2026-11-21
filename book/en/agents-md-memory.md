@@ -90,6 +90,8 @@ Keep the file short and add rules based on observed failures. Move area-specific
 
 The [AGENTS.md](https://agents.md/) convention provides a shared filename, but discovery depends on the tool. Verify that the required file loaded before relying on a rule. Check changed instructions on real tasks.
 
+If a rule is not followed, distinguish file presence, loading and the agent's actions. The [Skills chapter](skills-as-packaged-workflows.md#why-a-skill-is-not-used) explains this troubleshooting approach.
+
 ### Claude Code
 
 Checked against Claude Code 2.1.316 on 2026-10-31.

@@ -95,6 +95,22 @@ El desarrollador fija los ejes y toma las decisiones. El resultado del ciclo sig
 6. Guarda los criterios recurrentes en un comando o un skill.
 7. Confirma las correcciones con tests o una [revisión independiente](writer-reviewer.md) si el cambio lo requiere.
 
+### Independiente del agente
+
+#### Otra implementación tras la crítica
+
+A veces la crítica muestra que las correcciones locales conservan un diseño difícil de mantener. Puedes pedir al agente que lo implemente de nuevo con las restricciones descubiertas. Esta variante de la reflexión sirve ante una dificultad estructural concreta: por ejemplo, el manejo de errores está disperso por toda la exportación y cada arreglo añade otra rama.
+
+Conserva la versión que funciona y sus comprobaciones de comportamiento. Registra lo aprendido en la crítica y empieza la nueva implementación en otra rama. Para reducir la influencia de la solución anterior, transmite las conclusiones a una [sesión nueva](handoff.md). Compara ambas versiones con los mismos requisitos y comprobaciones; la primera versión sigue siendo un punto de recuperación. Reescribir por sí solo no demuestra una mejora. Para elegir el diseño antes de implementar, usa [Diseñar dos veces](design-it-twice.md).
+
+##### Ejemplo
+
+```text
+Implementa de nuevo la exportación con lo aprendido en la crítica
+```
+
+El plan explica qué dificultad eliminará el nuevo diseño y cómo comprobará el agente que conserva el comportamiento. Tras la implementación, compara el resultado con la primera versión y elige qué conservar.
+
 ## Ejemplo
 
 El agente terminó la exportación de un informe a CSV. Antes del commit, le pides que revise el código.

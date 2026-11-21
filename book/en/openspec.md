@@ -1,7 +1,7 @@
 ---
 group: sdd
 kind: tool
-checked_on: 2026-10-31
+checked_on: 2026-11-21
 status: draft
 related: [spec-driven-development]
 source_rev: 37e47a76087ce3d60293c9dc12d6f2819bf9a69f
@@ -9,63 +9,50 @@ source_rev: 37e47a76087ce3d60293c9dc12d6f2819bf9a69f
 
 # OpenSpec
 
-_Commands and capabilities of OpenSpec 1.16.0 checked on October 31, 2026._
+_Commands and capabilities of OpenSpec 2.1.1 checked on November 21, 2026._
 
 [OpenSpec](https://github.com/Fission-AI/OpenSpec) by Fission-AI organizes [SDD](spec-driven-development.md) around a **change** with propose, review, apply and archive stages. Standing specifications describe the system, and deltas record proposed changes to the requirements.
 
 OpenSpec supports various coding agents and assistants, including Claude Code, Codex, Cursor and GitHub Copilot.
 
-## Installation
-
-Installation through npm requires Node.js >=22.12.0. The standalone CLI binary does not require Node.js; choose a method in the [official installation guide](https://github.com/Fission-AI/OpenSpec#installation). The supported npm option is shown below.
-
-```sh
-npm install -g @fission-ai/openspec@latest
-openspec init
-```
-
-`openspec init` creates the _openspec/_ directory and registers slash commands with the `/opsx:` prefix; `openspec update` refreshes the agent instructions after an upgrade.
-
 ## Workflow
 
-The set of commands depends on the profile. Choose one with `openspec config profile`, then run `openspec update` in the project to apply the choice to the agent instructions. The core workflow goes through the following steps.
+OpenSpec keeps requirements across tasks. You discuss a specific change, review the proposal, then move to implementation. Setup is covered in the [official guide](https://openspec.dev/docs/installation).
 
-1. `/opsx:explore` helps you explore the code and compare options before preparing artifacts.
-2. `/opsx:propose <idea>` creates a proposal package that you review before implementation.
-3. `/opsx:apply` carries out the tasks from the checklist.
-4. `/opsx:archive` offers to sync the deltas into the standing specifications if that has not been done yet, and moves the change to the archive.
+The `/openspec-explore` skill helps investigate the code and compare approaches. Once the task is clear, `/openspec-propose` prepares a package: the reason for the change, requirement deltas, the technical approach and tasks. You check that it describes the intended behavior, including errors and boundary cases.
 
-When requirements change after a proposal is prepared, `/opsx:update` revises the planning artifacts. `/opsx:sync` merges deltas into the standing specifications; synchronization is also available during archiving.
+After approval, `/openspec-apply-change` carries out the tasks. If requirements change during the work, update the proposal and related artifacts first. At completion, `/openspec-archive-change` offers to merge the deltas into the standing specifications and preserves the package in the archive. See the [OpenSpec documentation](https://openspec.dev/docs/quickstart) for the procedures.
 
-The expanded profile adds `/opsx:new`, `/opsx:continue`, `/opsx:ff`, `/opsx:verify`, `/opsx:bulk-archive` and `/opsx:onboard`. They support step-by-step preparation, verification and archiving of large changes.
-
-When you finish a change, run `/opsx:archive` and confirm the proposed delta sync. If the specifications were already updated with `/opsx:sync`, there is no need to sync again. Archiving preserves the change's artifacts; the team decides in its own process whether this happens before or after the merge.
-
-The diagram follows one change from proposal to archive.
+The diagram shows how a proposal becomes the new state of the specification.
 
 ```mermaid
 ---
-title: a delta reaches the standing specification on sync
+title: the standing specification changes after verification
 ---
 stateDiagram-v2
   direction TB
   state "proposal" as proposed
   state "implementation" as applying
-  state "delta in the standing specification" as synced
+  state "specification updated" as synced
   state "archived" as archived
   class synced accent
-  [*] --> proposed: /opsx:propose
-  proposed --> applying: you reviewed it · /opsx:apply
-  applying --> proposed: requirements changed · /opsx:update
-  applying --> synced: /opsx:sync
-  applying --> archived: /opsx:archive with sync
-  synced --> archived: /opsx:archive
+  [*] --> proposed: describe the change
+  proposed --> applying: you reviewed the proposal
+  applying --> proposed: requirements changed
+  applying --> synced: result verified · delta accepted
+  synced --> archived: preserve the history
   archived --> [*]
 ```
 
-Until the change is synced, the accepted requirements live in the delta inside the package, and the standing specification describes the system as it is. Sync runs on its own or during archiving, and the archive keeps the explanation and history of the change.
+Until the delta is accepted, the standing specification describes the previous behavior. The archive keeps the reasons for the change; the team decides whether archiving happens before or after the merge.
 
-The syntax depends on the agent. Codex may show `$openspec-propose`, while Cursor and GitHub Copilot use the `/opsx-propose` form. `openspec init` prints the exact syntax for the selected tool.
+For example, you want to change the webhook cutoff policy:
+
+```text
+/openspec-propose disable a webhook after ten consecutive failures
+```
+
+The agent prepares the proposal, you review the new threshold and scenarios, then move to implementation. In Codex, skills use `$`, such as `$openspec-propose`; select the available skill in your agent's menu.
 
 ## Artifacts
 
@@ -106,7 +93,7 @@ The system SHALL disable a webhook after ten consecutive failed attempts.
 - **THEN** the webhook is disabled
 ```
 
-In this example `MODIFIED Requirements` marks the replacement of an existing requirement. After implementation and verification, the team confirms the sync during `/opsx:archive`. In the standing _spec.md_, the `Delivery failure cutoff` requirement now holds the threshold of ten and the matching scenario; the `MODIFIED Requirements` marker remains part of the archived delta. If the proposal is rejected, the standing rule with the threshold of five does not change. The format of sections and scenarios is described in the [OpenSpec documentation](https://github.com/Fission-AI/OpenSpec/blob/main/docs/concepts.md).
+In this example `MODIFIED Requirements` marks the replacement of an existing requirement. After implementation and verification, the team confirms the sync during `/openspec-archive-change`. In the standing _spec.md_, the `Delivery failure cutoff` requirement now holds the threshold of ten and the matching scenario; the `MODIFIED Requirements` marker remains part of the archived delta. If the proposal is rejected, the standing rule with the threshold of five does not change. The format of sections and scenarios is described in the [OpenSpec documentation](https://github.com/Fission-AI/OpenSpec/blob/main/docs/concepts.md).
 
 ## What makes it different
 

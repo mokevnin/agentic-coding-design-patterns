@@ -13,7 +13,7 @@ Private agent memory, auto memory, Memories, memoria personal del agente.
 
 ## Contexto
 
-El agente puede llevar sus propias notas sobre el proyecto y cargarlas en sesiones posteriores. Lo corriges en el chat o le dices «recuerda», y el agente escribe la conclusión en su memoria. Esa memoria vive fuera del repositorio: en tu directorio personal o en tu cuenta del proveedor. En Claude Code esta memoria está activada por defecto.
+El agente puede llevar sus propias notas sobre el proyecto y cargarlas en sesiones posteriores. Lo corriges en el chat o le dices «recuerda», y el agente escribe la conclusión en su memoria. Esa memoria vive fuera del repositorio: en tu directorio personal o en tu cuenta del proveedor. En las sesiones locales de Claude Code esta memoria está activada por defecto.
 
 ## Problema
 
@@ -82,7 +82,7 @@ Por ejemplo, has corregido varias veces los intentos de instalar dependencias co
 
 ### Claude Code
 
-Comprobado con Claude Code 2.1.316 y la [documentación de memoria](https://code.claude.com/docs/en/memory) el 2026-10-31.
+Comprobado con Claude Code 2.1.330 y la [documentación de memoria](https://code.claude.com/docs/en/memory) el 2026-11-21.
 
 #### Auto memory
 
@@ -98,11 +98,11 @@ Desactiva auto memory en este proyecto para todo el equipo
 
 ### Codex
 
-Comprobado con Codex CLI 0.166.0 y la [documentación de Memories](https://learn.chatgpt.com/docs/customization/memories) el 2026-10-31.
+Comprobado con Codex CLI 0.171.0 y la [documentación de Memories](https://learn.chatgpt.com/docs/customization/memories) el 2026-11-21.
 
 #### Memories
 
-Memories es una función integrada, desactivada por defecto. Si la activaste, Codex genera entradas a partir de sesiones anteriores y las guarda en _~/.codex/memories/_ como un único almacén para toda la máquina. La propia documentación aconseja mantener las reglas obligatorias del equipo en _AGENTS.md_ y llama a Memories una capa auxiliar de recuerdo.
+Memories es una función integrada, desactivada por defecto. Si la activaste, Codex genera entradas a partir de sesiones anteriores y las guarda localmente, fuera del repositorio. La propia documentación aconseja mantener las reglas obligatorias del equipo en _AGENTS.md_ y llama a Memories una capa auxiliar de recuerdo.
 
 Si tienes Memories activada globalmente, pide a Codex que la desactive en el proyecto de equipo. Lo escribe en la configuración del proyecto; súbela al repositorio para que el ajuste se aplique a tus compañeros. Codex lee la configuración del proyecto solo en proyectos de confianza, y ahí tiene prioridad sobre la de usuario. Lo comprobamos en la práctica con Codex CLI 0.166.0.
 

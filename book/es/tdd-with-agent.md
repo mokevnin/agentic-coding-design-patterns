@@ -23,6 +23,8 @@ Por ejemplo, un test calcula un descuento con la misma fórmula que usa la funci
 
 Separar las fases de forma explícita te permite ver el test antes de la implementación y controlar los cambios del criterio.
 
+En particular, llamar a la función que se comprueba para calcular `expected` equivale a compararla consigo misma. Obtén la respuesta esperada de un ejemplo resuelto o de un requisito antes de ejecutar la implementación; el orden test-first por sí solo no garantiza esa independencia.
+
 ## Solución
 
 Lleva las fases roja y verde a prompts distintos y quédate tú con la puerta entre ellas.

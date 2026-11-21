@@ -98,7 +98,7 @@ Weekly code passes can run as cloud tasks. Request a small PR for fixes, or a de
 
 ### Passes that don't depend on the agent
 
-Some passes use [Matt Pocock's skills](matt-pocock-skills.md); others are plain prompts. For the skills, install the pack using one of the methods in its profile, then run `/setup-matt-pocock-skills` once. The examples below name the procedures; invocation depends on the agent. Built-in commands appear in separate blocks after the common approach.
+Some passes use [Matt Pocock's skills](matt-pocock-skills.md); others are plain prompts. For the skills, connect the pack using the author's guide, then run `/setup-matt-pocock-skills` once. The examples below name the procedures; invocation depends on the agent. Built-in commands appear in separate blocks after the common approach.
 
 #### Retrospective
 
@@ -107,6 +107,8 @@ This is the `retro` skill from the pack's engineering section ([source](https://
 The skill loads `writing-for-agents` as a style guide and reads the session transcript, the current one by default. It looks for improvements in seven categories: navigation, automated checks, review standards, _AGENTS.md_, tool economy, rules that change nothing, and access to information. It proposes catching a mechanical violation with a linter, hook or CI, and writing into the standards only what takes judgement. It lists candidates by severity and changes nothing itself.
 
 Run it right after a session where the agent got stuck: many corrections, a rollback, a long search, a repeated mistake. Implement the accepted proposals in that same session.
+
+After an accepted change, check whether the original failure recurs in subsequent team sessions. For a disputed change, compare the old and new workflow on the same task with an [eval](agent-workflow-evals.md). Keep rules, skills or checks that help; remove scaffolding that does not. This [feedback cycle](https://martinfowler.com/articles/reduce-friction-ai/feedback-flywheel.html) turns an individual correction into a shared improvement. Store the result in the repository so teammates benefit too.
 
 ##### Example
 
@@ -214,7 +216,7 @@ Clean up your memory for this project
 
 ### Claude Code
 
-This block was checked against Claude Code 2.1.316 and the [command reference](https://code.claude.com/docs/en/commands) on 2026-10-31. Installation and memory upkeep run locally. `/schedule` starts cloud tasks; review also has a cloud mode, `/code-review ultra`.
+This block was checked against Claude Code 2.1.330 and the [command reference](https://code.claude.com/docs/en/commands) on 2026-11-21. Installation and memory upkeep run locally. `/schedule` starts cloud tasks; review also has a cloud mode, `/code-review ultra`.
 
 #### Schedule: `/schedule`
 
@@ -292,9 +294,19 @@ Run it monthly, after `/fewer-permission-prompts`.
 /doctor
 ```
 
+#### Instruction audit: `/doctor prompt-audit`
+
+This built-in Claude Code pass reviews instructions, including _AGENTS.md_ and skills. It looks for contradictions, missing commands and rules left over from older models, then proposes edits ([documentation](https://code.claude.com/docs/en/memory#audit-your-instruction-files)). Run it monthly and after a model change. You choose the proposals; files change after your decision. Check whether an accepted edit helps on subsequent tasks rather than judging it by the number of lines removed.
+
+##### Example
+
+```text
+/doctor prompt-audit
+```
+
 #### Skills: `/skill-doctor`
 
-`/skill-doctor` is a built-in command available since version 2.1.252 ([docs](https://code.claude.com/docs/en/skills#find-unused-skills)). Its report requires feature-flag fetching; the command is unavailable over Remote Control.
+`/skill-doctor` is a built-in command ([docs](https://code.claude.com/docs/en/skills#find-unused-skills)).
 
 The report shows context cost and usage for supported skills; bundled and enterprise skills are excluded. Claude Code loads project, user, plugin and other supported skill sources. For editable installs, check _.claude/skills/_ or links to shared files; for plugin installs, check the plugin itself.
 
@@ -322,7 +334,7 @@ Run it monthly, and whenever `/run` reports that the skill is stale.
 
 ### Codex
 
-This block was checked against Codex CLI 0.166.0 and documentation on learn.chatgpt.com on 2026-10-31.
+This block was checked against Codex CLI 0.171.0 and documentation on learn.chatgpt.com on 2026-11-21.
 
 #### Schedule: Scheduled tasks and `codex-action`
 
@@ -380,7 +392,7 @@ Security Review requires feature access, a configured workspace and a connected 
 
 #### Memory: Memories
 
-Memories are off by default ([docs](https://learn.chatgpt.com/docs/customization/memories)). If you turned them on, entries live in _~/.codex/memories/_ and are generated from past sessions. The documentation advises against editing them by hand, so during the monthly pass project facts go into _AGENTS.md_, and in a team project it is better to ask Codex to turn Memories off (see [Private Memory](private-agent-memory.md)).
+Memories are off by default ([docs](https://learn.chatgpt.com/docs/customization/memories)). If you turned them on, entries are generated from past sessions and stored locally, outside the repository. The documentation advises against editing them by hand, so during the monthly pass project facts go into _AGENTS.md_, and in a team project it is better to ask Codex to turn Memories off (see [Private Memory](private-agent-memory.md)).
 
 #### Permissions: `.rules` files
 

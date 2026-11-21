@@ -170,6 +170,18 @@ Run it after completing a migration or removing an old feature. If the support p
 Find dead code and obsolete workarounds in payments
 ```
 
+#### An unfinished migration
+
+While old and new ways of calling a service coexist, the agent may copy the old one. You keep correcting generated calls even though the target form is agreed. Planned compatibility may need both forms; the problem starts when new consumers keep using the path you decided to retire.
+
+Ask the agent to find the remaining consumers and propose how to finish the migration. Before moving them, prevent new uses of the old path with a [check](quality-gates.md) and point to the target example in shared instructions. Track the existing sites with a verifiable exit condition. Remove compatibility after migrating all required consumers and checking their contracts; use [tracer-bullet tickets](tracer-bullet-tickets.md) for a broad replacement.
+
+##### Example
+
+```text
+Propose how to finish moving payments to the new HTTP client
+```
+
 #### Architecture
 
 This is the `improve-codebase-architecture` skill from [Matt Pocock's pack](matt-pocock-skills.md) ([source](https://github.com/mattpocock/skills/tree/4ae2317ddb22b046e26455e4f9c9b3aaaf62212d/skills/engineering/improve-codebase-architecture)). It loads `codebase-design` and `grilling` itself. The plan becomes tickets with the `to-tickets` skill ([source](https://github.com/mattpocock/skills/tree/4ae2317ddb22b046e26455e4f9c9b3aaaf62212d/skills/engineering/to-tickets)).

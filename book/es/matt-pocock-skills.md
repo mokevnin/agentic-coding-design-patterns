@@ -13,11 +13,9 @@ _Comandos y capacidades de mattpocock/skills (4ae2317) comprobados el 31 de octu
 
 [El pack de skills de Matt Pocock](https://github.com/mattpocock/skills) implementa el [desarrollo orientado a especificaciones](spec-driven-development.md) mediante un conjunto de [procedimientos para el agente de código](skills-as-packaged-workflows.md). La especificación y los tickets vinculados van al **tracker**, donde el equipo sigue con su trabajo habitual.
 
-## Instalación y configuración
+## Preparar el proceso
 
-Para una instalación gestionada en Claude Code, ejecuta `claude plugin install mattpocock-skills@claude-plugins-official`. En Codex, añade primero el marketplace con `codex plugin marketplace add mattpocock/skills` e instala con `codex plugin add mattpocock-skills@mattpocock`. Las instrucciones para GitHub Copilot y otros agentes están en el [README del paquete](https://github.com/mattpocock/skills#installation-30-second-setup).
-
-Instala archivos editables con `npx skills@latest add mattpocock/skills`. Elige un método por agente para evitar duplicados. Después ejecuta una vez `/setup-matt-pocock-skills`: acordará contigo el tracker, las etiquetas de triaje y la ubicación de los documentos del dominio. La configuración se guarda en _docs/agents/_. Hay plantillas para GitHub, GitLab y archivos Markdown locales; otros trackers se configuran a partir de tu descripción.
+Conecta el pack siguiendo la [guía del autor](https://github.com/mattpocock/skills#installation-30-second-setup). Después ejecuta una vez `/setup-matt-pocock-skills`: acordará contigo el tracker, las etiquetas de triaje y la ubicación de los documentos del dominio. Los procedimientos posteriores usan esos acuerdos, de modo que las especificaciones y los tickets llegan al lugar habitual del equipo.
 
 ## Flujo de trabajo
 
@@ -79,4 +77,4 @@ Otros skills dan soporte a etapas adicionales del trabajo.
 
 ## Cuándo elegirlo
 
-El pack encaja con un equipo que quiere organizar el SDD dentro de un agente de código y del tracker que ya tiene. La instalación gestionada está disponible en Claude Code, Codex y GitHub Copilot; la editable permite adaptar los procedimientos al proyecto. [OpenSpec](openspec.md) es cómodo para guardar el paquete de cambio en el repositorio, y [Superpowers](superpowers.md) ofrece otro conjunto de skills con puntos de control obligatorios.
+El pack encaja con un equipo que quiere organizar el SDD dentro de un agente de código y del tracker que ya tiene. [OpenSpec](openspec.md) es cómodo para guardar el paquete de cambio en el repositorio, y [Superpowers](superpowers.md) ofrece otro conjunto de skills con puntos de control obligatorios.

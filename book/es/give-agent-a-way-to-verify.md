@@ -116,6 +116,32 @@ Prepara una comprobación del rendimiento de la búsqueda después del despliegu
 
 Apruebas un plan con el p95 de referencia, la tasa de errores aceptable y una ventana de observación de media hora. Después del despliegue, ejecutas la comprobación. La latencia media ha bajado, pero el agente encuentra más errores en una región y adjunta la consulta y ejemplos de los logs. Investigas la desviación antes de aceptar el cambio.
 
+### Claude Code
+
+Comprobado con Claude Code 2.1.330 y la [documentación de skills](https://code.claude.com/docs/en/skills) el 2026-11-21.
+
+#### Comprobar la aplicación: `/verify`
+
+`/verify` es un skill integrado que compila y ejecuta la aplicación para comprobar el cambio en funcionamiento. Puede guardar el procedimiento de verificación en el proyecto para las siguientes sesiones. Ejecútalo tras modificar el comportamiento visible para el usuario; el resultado debe ser un escenario observado, además de los tests en verde ([documentación](https://code.claude.com/docs/en/skills#run-and-verify-your-app)).
+
+Un procedimiento `/verify` guardado en el proyecto también puede incorporarse a las instrucciones de Claude antes del commit ([condiciones](https://code.claude.com/docs/en/skills#run-your-checks-before-each-commit)). Depende del skill disponible al iniciar la sesión y de si el agente puede invocarlo; un skill integrado o de plugin con el mismo nombre no añade esa instrucción. Es una indicación al modelo, así que conserva el control obligatorio en CI.
+
+##### Ejemplo
+
+```text
+/verify
+```
+
+#### Continuar hasta el resultado: `/goal`
+
+`/goal` es un comando integrado para tareas largas con una condición verificable de finalización. Tras cada respuesta, un modelo evalúa si se ha cumplido y continúa cuando hace falta. Acuerda antes un límite de recursos y señales de falta de progreso. Comprueba la finalización mediante artefactos del entorno: el juicio del modelo por sí solo no demuestra que la aplicación funcione ([documentación](https://code.claude.com/docs/en/goal)).
+
+##### Ejemplo
+
+```text
+/goal corrige la exportación hasta que pasen los escenarios de aceptación
+```
+
 ## Ejemplo
 
 Para un validador de códigos promocionales, fijas los casos a comprobar junto con la tarea.

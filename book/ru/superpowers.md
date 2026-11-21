@@ -13,15 +13,7 @@ _Команды и возможности Superpowers 7.0.1 проверены 3
 
 [Superpowers](https://github.com/obra/superpowers) Джесси Винсента (obra) реализует [SDD](spec-driven-development.md) набором [скиллов](skills-as-packaged-workflows.md). Между дизайном и реализацией инструкции задают обязательные контрольные точки с названием HARD-GATE.
 
-## Установка
-
-Основной способ установки использует маркетплейс Claude Code.
-
-```text
-/plugin install superpowers@claude-plugins-official
-```
-
-Пак также содержит инструкции и манифесты для Codex, Cursor, Antigravity, GitHub Copilot CLI и OpenCode.
+Способ подключения для вашего агента описан в [руководстве Superpowers](https://github.com/obra/superpowers#installation). После подключения пак помогает выбирать процедуру по задаче: обсуждать новую фичу, исследовать баг или выполнять согласованный план.
 
 ## Рабочий процесс
 

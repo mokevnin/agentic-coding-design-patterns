@@ -94,15 +94,29 @@ For a one-off task a dedicated skill usually creates extra work maintaining the 
 
 ## Implementation
 
-1. Pick a procedure you keep having to explain again.
-2. Create a _SKILL.md_ with a name, a purpose, steps, and their completion criteria.
-3. Decide how it is invoked. In the description, state which tasks the skill is needed for rather than summarizing its contents: the agent uses the description to decide whether to load the procedure.
-4. Move reference material into sibling files and link to it from the steps that need it (see [Context Engineering](context-engineering.md)).
-5. Use consistent process terms and explain them where they affect an action.
-6. Test the procedure on real tasks and delete stale instructions.
-7. Build up a "Gotchas" section in the skill from the mistakes the agent made while following it. These entries hold what the agent does not know without the skill.
-8. For a large set, add an index that helps pick the right skill.
-9. If needed, adapt ready-made procedures from [Superpowers](superpowers.md) or [Matt Pocock's skills](matt-pocock-skills.md).
+### Independent of the agent
+
+#### Saving a procedure
+
+Choose a procedure you keep explaining and ask the agent to package it as a skill. Its description should make the applicable tasks clear: the agent uses it to select the procedure. Keep actions, constraints and a verifiable result inside; load reference details through links. Collect pitfalls from actual failures and check the skill on subsequent tasks. You can adapt procedures from [Superpowers](superpowers.md) or [Matt Pocock](matt-pocock-skills.md) to your project.
+
+##### Example
+
+```text
+Save our release procedure as a skill
+```
+
+#### Why a skill is not used
+
+When the agent skips a procedure, first find where its use breaks down. A file can exist in the project without appearing among available skills. The agent can see a description without selecting it for the task. Even loading the full instructions does not establish that they were followed: check actions and results in the session log.
+
+Compare an ordinary request with a direct skill invocation on the same task. If invoking it helps, check the description and scope. If both runs skip the required action, look for conflicting instructions or an unclear completion criterion. Use your tool's diagnostics for loading evidence. Distinguish an available description from instructions actually read; [Project Memory](agents-md-memory.md) covers loading behavior. Save recurring failures as [workflow evals](agent-workflow-evals.md) so the next skill change can be checked.
+
+##### Example
+
+```text
+Check why the release skill does not trigger on our tasks
+```
 
 ## Example
 

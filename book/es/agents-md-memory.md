@@ -90,6 +90,8 @@ Mantén el archivo corto y añade reglas a partir de fallos observados. Lleva la
 
 La convención [AGENTS.md](https://agents.md/) da un nombre común, pero el descubrimiento depende de la herramienta. Comprueba que el archivo se cargó antes de confiar en una regla. Verifica los cambios de instrucciones con tareas reales.
 
+Si no se aplica una regla, distingue la presencia del archivo, su carga y las acciones del agente. El [capítulo sobre skills](skills-as-packaged-workflows.md#por-qué-no-se-usa-un-skill) explica cómo investigarlo.
+
 ### Claude Code
 
 Comprobado con Claude Code 2.1.316 el 2026-10-31.

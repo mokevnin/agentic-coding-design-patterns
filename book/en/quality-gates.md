@@ -111,7 +111,7 @@ Turn this comment into a check so CI catches it on its own
 
 ### Claude Code
 
-Checked against Claude Code 2.1.316 and the [hooks documentation](https://code.claude.com/docs/en/hooks) on 2026-10-31.
+Checked against Claude Code 2.1.330 and the [hooks documentation](https://code.claude.com/docs/en/hooks) on 2026-11-21.
 
 #### A check before the reply ends
 
@@ -125,7 +125,7 @@ Add a hook for the whole team: run the fast checks before finishing a reply and 
 
 ### Codex
 
-Checked against Codex CLI 0.166.0 and the [hooks documentation](https://learn.chatgpt.com/docs/hooks) on 2026-10-31.
+Checked against Codex CLI 0.171.0 and the [hooks documentation](https://learn.chatgpt.com/docs/hooks) on 2026-11-21.
 
 #### A check before the reply ends
 

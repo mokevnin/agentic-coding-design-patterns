@@ -170,6 +170,18 @@ Lánzalo al completar una migración o eliminar una función antigua. Si no se c
 Encuentra código muerto y soluciones temporales obsoletas en pagos
 ```
 
+#### Una migración sin terminar
+
+Mientras conviven las formas antigua y nueva de llamar a un servicio, el agente puede copiar la antigua. Sigues corrigiendo las llamadas generadas aunque la forma de destino ya esté acordada. La compatibilidad planificada puede necesitar ambas; el problema empieza cuando aparecen nuevos consumidores de la vía que decidiste retirar.
+
+Pide al agente que encuentre los consumidores restantes y proponga cómo terminar la migración. Antes de trasladarlos, impide nuevos usos de la vía antigua con una [comprobación](quality-gates.md) e indica el ejemplo de destino en las instrucciones compartidas. Registra los usos existentes con una condición verificable de finalización. Retira la compatibilidad tras trasladar todos los consumidores necesarios y comprobar sus contratos; usa [tickets trazadores](tracer-bullet-tickets.md) para una sustitución amplia.
+
+##### Ejemplo
+
+```text
+Propón cómo terminar el traslado de pagos al nuevo cliente HTTP
+```
+
 #### Arquitectura
 
 Es el skill `improve-codebase-architecture` del [paquete de Matt Pocock](matt-pocock-skills.md) ([código fuente](https://github.com/mattpocock/skills/tree/4ae2317ddb22b046e26455e4f9c9b3aaaf62212d/skills/engineering/improve-codebase-architecture)). Carga por sí mismo `codebase-design` y `grilling`. El plan se convierte en tickets con el skill `to-tickets` ([código fuente](https://github.com/mattpocock/skills/tree/4ae2317ddb22b046e26455e4f9c9b3aaaf62212d/skills/engineering/to-tickets)).

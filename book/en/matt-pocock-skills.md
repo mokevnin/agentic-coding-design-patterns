@@ -13,11 +13,9 @@ _Commands and capabilities of mattpocock/skills (4ae2317) checked on October 31,
 
 [Matt Pocock's skill pack](https://github.com/mattpocock/skills) implements [spec-driven development](spec-driven-development.md) as a set of [procedures for a coding agent](skills-as-packaged-workflows.md). The specification and its linked tickets go into the **issue tracker**, where the team carries on with its usual work.
 
-## Installation and setup
+## Preparing the workflow
 
-For a managed Claude Code installation, run `claude plugin install mattpocock-skills@claude-plugins-official`. In Codex, first add the marketplace with `codex plugin marketplace add mattpocock/skills`, then install with `codex plugin add mattpocock-skills@mattpocock`. GitHub Copilot and other agents have instructions in the [pack README](https://github.com/mattpocock/skills#installation-30-second-setup).
-
-Install editable files with `npx skills@latest add mattpocock/skills`. Choose one installation method per agent to avoid duplicate skills. Then run `/setup-matt-pocock-skills` once: it agrees the tracker, triage labels and domain-document locations with you. Configuration lives in _docs/agents/_. Templates cover GitHub, GitLab and local Markdown files; other trackers are configured from your description.
+Connect the pack using the [author's guide](https://github.com/mattpocock/skills#installation-30-second-setup). Then run `/setup-matt-pocock-skills` once: it agrees the tracker, triage labels and domain-document locations with you. Subsequent procedures use those decisions, so specifications and tickets land where your team normally works.
 
 ## Workflow
 
@@ -79,4 +77,4 @@ Additional skills support other stages of the work.
 
 ## When to choose it
 
-The pack fits a team that wants to run SDD inside a coding agent and an existing tracker. Managed installation is available in Claude Code, Codex and GitHub Copilot; editable installation lets you adapt procedures to the project. [OpenSpec](openspec.md) is convenient for keeping the change package in the repository, and [Superpowers](superpowers.md) offers a different set of skills with mandatory checkpoints.
+The pack fits a team that wants to run SDD inside a coding agent and an existing tracker. [OpenSpec](openspec.md) is convenient for keeping the change package in the repository, and [Superpowers](superpowers.md) offers a different set of skills with mandatory checkpoints.

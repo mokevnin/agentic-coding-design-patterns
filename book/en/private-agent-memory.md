@@ -13,7 +13,7 @@ Private agent memory, auto memory, Memories, personal agent memory.
 
 ## Context
 
-The agent can keep its own notes about the project and load them in later sessions. You correct it in the chat or say "remember", and it writes the conclusion into its memory. That memory lives outside the repository: in your home directory or in your account on the vendor's side. In Claude Code this memory is on by default.
+The agent can keep its own notes about the project and load them in later sessions. You correct it in the chat or say "remember", and it writes the conclusion into its memory. That memory lives outside the repository: in your home directory or in your account on the vendor's side. In local Claude Code sessions this memory is on by default.
 
 ## Problem
 
@@ -82,7 +82,7 @@ For example, you repeatedly corrected attempts to install dependencies with npm.
 
 ### Claude Code
 
-Checked against Claude Code 2.1.316 and the [memory documentation](https://code.claude.com/docs/en/memory) on 2026-10-31.
+Checked against Claude Code 2.1.330 and the [memory documentation](https://code.claude.com/docs/en/memory) on 2026-11-21.
 
 #### Auto memory
 
@@ -98,11 +98,11 @@ Turn off auto memory in this project for the whole team
 
 ### Codex
 
-Checked against Codex CLI 0.166.0 and the [Memories documentation](https://learn.chatgpt.com/docs/customization/memories) on 2026-10-31.
+Checked against Codex CLI 0.171.0 and the [Memories documentation](https://learn.chatgpt.com/docs/customization/memories) on 2026-11-21.
 
 #### Memories
 
-Memories is a built-in feature that is off by default. If you turned it on, Codex generates entries from past sessions and keeps them in _~/.codex/memories/_ as one store for the whole machine. The documentation itself advises keeping required team rules in _AGENTS.md_ and calls Memories a helpful recall layer.
+Memories is a built-in feature that is off by default. If you turned it on, Codex generates entries from past sessions and stores them locally, outside the repository. The documentation itself advises keeping required team rules in _AGENTS.md_ and calls Memories a helpful recall layer.
 
 If Memories is on globally for you, ask Codex to turn it off in the team project. It writes this into the project config; commit it so the setting applies to your teammates. Codex reads project config only in trusted projects, and there it overrides the user config. We checked this in practice on Codex CLI 0.166.0.
 

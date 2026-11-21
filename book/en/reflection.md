@@ -95,6 +95,22 @@ The developer sets the axes and makes the decisions. The result of the cycle sti
 6. Save recurring criteria in a command or a skill.
 7. Confirm the fixes with tests or an [independent review](writer-reviewer.md) if the change calls for it.
 
+### Independent of the agent
+
+#### A new implementation after critique
+
+Sometimes critique shows that local fixes preserve an awkward design. You can ask the agent to implement it again using the constraints it has uncovered. This reflection variant is useful for a concrete structural difficulty: error handling might be scattered throughout an export, with each fix adding another branch.
+
+Preserve the working version and its behavioral checks. Record what the critique established and start the new implementation on a separate branch. To reduce the influence of the original solution, pass the findings to a [fresh session](handoff.md). Compare both versions against the same requirements and checks; the first working version remains a recovery point. Rewriting alone does not establish improvement. For choosing a design before implementation, use [Design It Twice](design-it-twice.md).
+
+##### Example
+
+```text
+Implement the export again using what we learned from the critique
+```
+
+The plan explains which difficulty the new design will remove and how the agent will check preserved behavior. After implementation, compare the result with the first version and choose what to keep.
+
 ## Example
 
 The agent has finished a CSV report export. Before committing, you ask it to check the code.
