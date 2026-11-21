@@ -5,7 +5,7 @@
   so localized copy stays in the locale folders. Rerender a card from the repo
   root, URL-encoding the sentence (it may hold quotes):
   lead=$(node -e 'console.log(encodeURIComponent(process.argv[1]))' "<sentence>")
-  pnpm exec playwright screenshot --viewport-size=1200,630 "file://$PWD/plugins/honkit-plugin-seo/og-card.html?lead=$lead" book/assets/og/<locale>.png
+  pnpm dlx playwright@1.65.1 screenshot --viewport-size=1200,630 "file://$PWD/book/.vitepress/og-card.html?lead=$lead" book/assets/og/<locale>.png
 -->
 <html>
   <head>

@@ -1,0 +1,4 @@
+/* Diagrams follow the paragraphs they illustrate with the same rhythm as figures. */
+.vp-doc .mermaid-diagram {
+  margin: 1.5em 0;
+}
