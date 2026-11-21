@@ -21,7 +21,9 @@ Operating guide for agents (and humans) working in this repository.
 
 ## SEO and link previews
 
-- `book/.vitepress/seo.mjs` adds per-page head tags in VitePress's `transformHead`: `meta description` from the chapter text, canonical, `hreflang` and Open Graph/Twitter tags. `sitemap.xml` is VitePress's own, with an x-default alternate added.
+- `book/.vitepress/seo.mjs` adds per-page head tags in VitePress's `transformHead`: `meta description`, canonical, `hreflang` and Open Graph/Twitter tags. `sitemap.xml` is VitePress's own, with an x-default alternate added.
+- The description is written into the page's frontmatter by a markdown-it plugin while the page renders, not computed in `transformHead`: the VitePress client rewrites `meta description` to the frontmatter description (or the site's) on hydration. A `description:` in a page's frontmatter overrides it. A locale page with no prose (the table of contents) takes its locale home page's description.
+- VitePress keeps one `meta` per key (its `id`, else its first attribute besides `content`), so a repeated meta such as `og:locale:alternate` needs a distinct `id` on each tag.
 - The public URL, base path and preview image live in `book/.vitepress/config.mjs`; change `BASE_URL` and `base` there when the site moves to its own domain.
 - The description is the first paragraph of a pattern's intent section, or an anti-pattern's problem section; other pages use their first paragraph, skipping an all-italic note. The section heading ids per locale are `descriptionSections` in the same config: add the id there when a new chapter kind opens differently. That paragraph should state the chapter's point on its own.
 - Preview cards are `book/assets/og/<locale>.png`, rendered from `book/.vitepress/og-card.html`; the command to rerender one is at the top of that file.
