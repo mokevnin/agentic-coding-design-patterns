@@ -182,6 +182,7 @@ export default defineConfig({
     anchor: { slugify: (text) => slugid(text.trim()) },
     config: (md) => {
       md.use(mermaidMarkdown);
+      md.use(seo.markdown);
       const linkOpen = md.renderer.rules.link_open;
       md.renderer.rules.link_open = (tokens, index, options, env, self) => {
         const token = tokens[index];
@@ -209,6 +210,7 @@ export default defineConfig({
     transformItems: seo.sitemapItems
   },
 
+  transformPageData: seo.transformPageData,
   transformHead: seo.transformHead,
 
   // Shared files (preview cards, chapter samples) keep their plain URLs under
