@@ -1,6 +1,6 @@
 # Contributing
 
-The book is built from markdown with [Honkit](https://github.com/honkit/honkit). Navigation and grouping come from `book/<locale>/SUMMARY.md` — a separate file per language.
+The book is built from Markdown with [VitePress](https://vitepress.dev/). Navigation and grouping come from `book/<locale>/SUMMARY.md` — a separate file per language; the site config turns it into the sidebar.
 
 ## Add a new pattern
 
@@ -8,9 +8,9 @@ The book is built from markdown with [Honkit](https://github.com/honkit/honkit).
 1. Pick a kebab-case `slug` (e.g. `chain-of-thought`). It becomes the file name in every locale and the key under `book/assets/`.
 2. Create the chapter in the canonical locale: copy [`templates/ru/pattern.md`](templates/ru/pattern.md) to `book/ru/<slug>.md` and fill it in. Do not change the section headings — they are the same across all chapters of that language.
 3. Add a link in `book/ru/SUMMARY.md` under the right group heading (line order = order in the book).
-4. Draw diagrams as ```` ```mermaid ```` fences right in the chapter — they are rendered to SVG at build time and translated together with the surrounding text. Use the shared `accent` / `warn` / `muted` classes (`node:::accent`) so every diagram in the book shares one palette; the theme lives in `mermaid.config.json`, and its night-theme counterpart in `mermaid.config.dark.json`.
+4. Draw diagrams as ```` ```mermaid ```` fences right in the chapter — they are rendered to SVG at build time and translated together with the surrounding text. Use the shared `accent` / `warn` / `muted` classes (`node:::accent`) so every diagram in the book shares one palette; the theme lives in `mermaid.config.json`, and its dark-mode counterpart in `mermaid.config.dark.json`.
 5. Anything that is genuinely a file — images, sample code — goes in `book/assets/<slug>/` and is referenced with a relative path `../assets/<slug>/...`.
-6. Preview with `pnpm start`.
+6. Preview with `mise run serve`.
 
 ## Extend an existing pattern
 
@@ -29,7 +29,7 @@ Recheck a tool profile against the tool's primary documentation before each book
 
 ## Chapter front matter (optional but useful)
 
-Honkit takes the title from the first `#` and navigation from `SUMMARY.md`. A small front matter is handy as metadata and reads well on GitHub:
+VitePress takes the title from the first `#` and navigation from `SUMMARY.md`. A small front matter is handy as metadata and reads well on GitHub. Avoid keys VitePress reserves (`title`, `description`, `layout`, `outline`, `sidebar` and the like) unless you mean to override the page:
 
 ```yaml
 ---
@@ -42,7 +42,7 @@ source_rev:              # for NON-canonical locales only (see below)
 
 ## Translation
 
-- The canonical locale is `ru` (`language` in `book/book.json`). A pattern is written in Russian first.
+- The canonical locale is `ru`. A pattern is written in Russian first.
 - To translate, copy `book/ru/<slug>.md` to `book/<locale>/<slug>.md`, translate the text, and add a link to `book/<locale>/SUMMARY.md` in the same group. Use the matching template under `templates/<locale>/` for the localized headings.
 - In the translation's front matter set `source_rev` — the git SHA of the ru chapter at the time of translating, so staleness can be tracked:
 

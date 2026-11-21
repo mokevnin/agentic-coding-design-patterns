@@ -1,6 +1,6 @@
 {
   "$schema": "https://syncpack.dev/schema.json",
-  "source": ["package.json", "plugins/*/package.json"],
+  "source": ["package.json"],
   "semverGroups": [
     {
       "dependencies": ["**"],

@@ -1,28 +1,12 @@
 # pnpm settings (pnpm no longer reads the "pnpm" field in package.json).
-packages:
-  - 'plugins/*'
 
-# Explicitly requested latest releases; Playwright's browser and core, and honkit's
-# own @honkit/* packages, must stay in sync.
+# Explicitly requested latest releases; Playwright's browser and core must stay in sync.
 minimumReleaseAgeExclude:
   - playwright-core@1.65.1
   - playwright@1.65.1
-  - '@honkit/asciidoc@6.2.6'
-  - '@honkit/honkit-plugin-fontsettings@6.2.6'
-  - '@honkit/honkit-plugin-highlight@6.2.6'
-  - '@honkit/honkit-plugin-lunr@6.2.6'
-  - '@honkit/honkit-plugin-theme-default@6.2.6'
-  - '@honkit/html@6.2.6'
-  - '@honkit/markdown-legacy@6.2.6'
-  - honkit@6.2.6
 
 # mermaid-isomorphic still declares mermaid ^11; Mermaid 12 adds the newer diagram types.
 overrides:
   mermaid: '^12.3.0'
   # mermaid-isomorphic only loads KaTeX CSS; its ^0.16 pin is vulnerable (GHSA-238p-pmpm-9mq7).
   'mermaid-isomorphic>katex': '^0.19.1'
-
-# The Lunr plugin indexes inline <style>, so Mermaid's SVG CSS fills the search index
-# budget and later chapters drop out of search. Drop once upstream strips it.
-patchedDependencies:
-  '@honkit/honkit-plugin-lunr': patches/@honkit__honkit-plugin-lunr.patch

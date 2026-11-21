@@ -1,6 +1,7 @@
 npm-cache/
 node_modules/
 dist/
+book/.vitepress/cache/
 *.pdf
 *.epub
 .DS_Store

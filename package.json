@@ -5,25 +5,24 @@
   "description": "Design patterns for coding with AI agents (ru/en/es), in the spirit of the Gang of Four",
   "license": "CC-BY-SA-4.0",
   "scripts": {
-    "start": "honkit serve ./book",
-    "build": "honkit build ./book ../dist",
-    "deps:update": "ncu --deep -u && pnpm update --recursive --latest",
-    "pdf:ru": "honkit pdf ./book/ru ../../dist/agentic-coding-design-patterns-ru.pdf",
-    "pdf:en": "honkit pdf ./book/en ../../dist/agentic-coding-design-patterns-en.pdf",
-    "pdf:es": "honkit pdf ./book/es ../../dist/agentic-coding-design-patterns-es.pdf"
+    "start": "vitepress dev book",
+    "build": "vitepress build book",
+    "preview": "vitepress preview book",
+    "test": "node --test tests/",
+    "deps:update": "ncu -u && pnpm update --latest"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
-    "gitbook-plugin-toolbar": "^0.6.0",
-    "honkit": "^6.2.6",
-    "honkit-plugin-mermaid": "workspace:*",
-    "honkit-plugin-seo": "workspace:*",
+    "cheerio": "^1.2.0",
+    "github-slugid": "^1.0.1",
+    "mermaid-isomorphic": "^3.1.0",
     "npm-check-updates": "^23.1.1",
     "oxfmt": "^0.78.0",
     "oxlint": "^1.93.0",
     "playwright": "^1.65.1",
-    "syncpack": "^15.3.3"
+    "syncpack": "^15.3.3",
+    "vitepress": "^2.0.0-alpha.21"
   },
   "packageManager": "pnpm@12.18.0"
 }

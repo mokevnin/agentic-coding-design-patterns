@@ -1,0 +1,20 @@
+/* Each Mermaid diagram comes in both palettes; the dark mode shows the dark one. */
+.vp-doc figure.mermaid {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+.vp-doc figure.mermaid img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+}
+
+.vp-doc figure.mermaid .mermaid-dark,
+.dark .vp-doc figure.mermaid .mermaid-light {
+  display: none;
+}
+
+.dark .vp-doc figure.mermaid .mermaid-dark {
+  display: inline-block;
+}

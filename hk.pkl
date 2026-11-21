@@ -12,7 +12,7 @@ local checks = new Mapping<String, Step> {
     ["oxlint"] = Builtins.ox_lint
     // Markdown stays with rumdl: book prose uses one physical line per paragraph.
     ["oxfmt"] = (Builtins.oxfmt) {
-        glob = List("*.js", "*.json", "*.css", "*.yml", "*.yaml", "*.toml")
+        glob = List("*.js", "*.mjs", "*.json", "*.css", "*.yml", "*.yaml", "*.toml")
         exclude = List("pnpm-lock.yaml", "skills-lock.json")
     }
     ["syncpack"] {
@@ -20,9 +20,10 @@ local checks = new Mapping<String, Step> {
         check = "syncpack lint"
         fix = "syncpack fix"
     }
-    ["search"] {
-        glob = List("*.js", "package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "patches/**")
-        check = "node --test tests/*.test.js"
+    // Sidebar and SEO logic of the VitePress config, plus SUMMARY.md links.
+    ["tests"] {
+        glob = List("*.mjs", "**/SUMMARY.md", "package.json", "pnpm-lock.yaml")
+        check = "node --test tests/"
     }
     // Check references across the whole book, beyond the files selected by the hook.
     ["links"] = (Builtins.lychee) {

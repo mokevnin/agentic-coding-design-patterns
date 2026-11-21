@@ -11,21 +11,21 @@ Operating guide for agents (and humans) working in this repository.
 ## Diagrams
 
 - Diagrams are written as ```` ```mermaid ```` fences directly in the chapter, so the labels are translated together with the prose and GitHub renders them in the repo.
-- `plugins/honkit-plugin-mermaid` renders the fences into inline SVG at build time (Mermaid in headless Playwright), so diagrams also survive `honkit pdf`, which never runs JS.
+- `book/.vitepress/mermaid.mjs` renders the fences to SVG at build time (Mermaid in headless Playwright), so readers need no JavaScript for them. Each diagram becomes an `<img>` of an SVG file, not inline markup: Vue strips the `<style>` Mermaid puts inside the SVG. The diagram's `title:` doubles as the image's alt text.
 - Shared palette and theme live in `mermaid.config.json`. Use the `accent`, `warn` and `muted` classes (`node:::accent`) instead of per-diagram `classDef`.
-- The website also gets every diagram in a dark palette for the Honkit night theme: `mermaid.config.dark.json` holds only the keys that differ and is merged over `mermaid.config.json`. A new color or class in the light config needs its dark counterpart there, including the `accent`/`warn`/`muted` rules in `themeCSS`. The PDF gets the light palette only.
-- Rendered SVGs are cached in `node_modules/.cache/honkit-mermaid`, keyed by diagram source plus theme config. The theme is read once at startup, so restart `mise run serve` after editing `mermaid.config.json` or `mermaid.config.dark.json`.
+- Every diagram is also rendered in a dark palette for VitePress's dark mode: `mermaid.config.dark.json` holds only the keys that differ and is merged over `mermaid.config.json`. A new color or class in the light config needs its dark counterpart there, including the `accent`/`warn`/`muted` rules in `themeCSS`.
+- Rendered SVGs are cached in `node_modules/.cache/mermaid`, keyed by diagram source plus theme config. The theme is read once at startup, so restart `mise run serve` after editing `mermaid.config.json` or `mermaid.config.dark.json`.
 - Beyond `flowchart`, the types that survive this pipeline and the palette are `sequenceDiagram`, `stateDiagram-v2`, `gitGraph`, `quadrantChart`, `pie` and `sankey-beta`.
 - `sankey-beta` accepts **ASCII only in node names** (Mermaid 12.0.0) — quoting does not help, and Cyrillic or even Spanish accents raise a parse error. Its `title:` and `%%` comments do take non-ASCII. Where it is used, node labels stay English with a `%% TODO` to localize them once upstream is fixed.
 - Types that silently drop the frontmatter `title:` the book uses as a caption: `sankey-beta`, `mindmap`, `timeline`, `kanban`, `block-beta`, `architecture-beta`. Put the thesis in the paragraph under the diagram instead. `treemap-beta` scales label size with box area, so the smallest — usually most important — share is the least readable.
-- A diagram is read inside a ~770px column. Keep it under ~1200px wide — prefer `flowchart TB` over a long left-to-right chain, and remember that a note hung off a node with `-.-` widens the diagram.
+- A diagram is read inside a ~690px column. Keep it under ~1200px wide — prefer `flowchart TB` over a long left-to-right chain, and remember that a note hung off a node with `-.-` widens the diagram.
 
 ## SEO and link previews
 
-- `plugins/honkit-plugin-seo` post-processes the website build: it fills `meta description` from the chapter text, adds canonical, `hreflang` and Open Graph/Twitter tags, and writes `sitemap.xml`. PDFs are untouched.
-- The public URL and preview image live in `pluginsConfig.seo` in `book/book.json`; change `baseUrl` there when the site moves to its own domain.
+- `book/.vitepress/seo.mjs` adds per-page head tags in VitePress's `transformHead`: `meta description` from the chapter text, canonical, `hreflang` and Open Graph/Twitter tags. `sitemap.xml` is VitePress's own, with an x-default alternate added.
+- The public URL, base path and preview image live in `book/.vitepress/config.mjs`; change `BASE_URL` and `base` there when the site moves to its own domain.
 - The description is the first paragraph of a pattern's intent section, or an anti-pattern's problem section; other pages use their first paragraph, skipping an all-italic note. The section heading ids per locale are `descriptionSections` in the same config: add the id there when a new chapter kind opens differently. That paragraph should state the chapter's point on its own.
-- Preview cards are `book/assets/og/<locale>.png`, rendered from `plugins/honkit-plugin-seo/og-card.html`; the command to rerender one is at the top of that file.
+- Preview cards are `book/assets/og/<locale>.png`, rendered from `book/.vitepress/og-card.html`; the command to rerender one is at the top of that file.
 
 ## Markdown formatting
 
@@ -57,11 +57,11 @@ Operating guide for agents (and humans) working in this repository.
 
 - Use mise 2026.11.3 or newer; CI pins 2026.11.8. Commit `mise.lock` alongside tool updates; it covers Linux x64 and macOS arm64.
 - `mise run setup` — install locked deps, pinned linters and git hooks
-- `mise run serve` — local preview (Honkit serve)
-- `mise run build` — static build into `./dist`
+- `mise run serve` — local preview with hot reload (VitePress dev server)
+- `mise run build` — static build into `./dist`; VitePress fails it on a dead link between pages
+- `mise run preview` — serve the `./dist` build locally
 - `pnpm exec playwright install chromium` — one-off, needed to render diagrams
-- `mise run pdf` — PDFs for all locales
-- `mise run update` — bump project tools and dependencies in every workspace package; when hk changes, also update both versioned Pkl imports in `hk.pkl`
+- `mise run update` — bump project tools and dependencies; when hk changes, also update both versioned Pkl imports in `hk.pkl`
 
 ## Structure conventions
 
