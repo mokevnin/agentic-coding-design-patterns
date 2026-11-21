@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [agents-md-memory, give-agent-a-way-to-verify, quality-gates, isolated-parallel-work]
-source_rev: 41d95a5eca315b4d3770f8d362f0656cdcc67dac
+source_rev: 09116c17f30c242ee777337b683f49a67562b23d
 ---
 
 # Límites ejecutables

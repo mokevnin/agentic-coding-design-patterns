@@ -2,7 +2,7 @@
 group: context
 status: draft
 related: [context-engineering, domain-context-file, bloated-agents-md, private-agent-memory, scheduled-maintenance]
-source_rev: bf1399e377d55027b9a42082e4f17327a1e25215
+source_rev: 09116c17f30c242ee777337b683f49a67562b23d
 ---
 
 # Project Memory

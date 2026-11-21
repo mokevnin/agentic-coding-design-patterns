@@ -4,7 +4,7 @@ kind: tool
 checked_on: 2026-11-21
 status: draft
 related: [spec-driven-development]
-source_rev: 37e47a76087ce3d60293c9dc12d6f2819bf9a69f
+source_rev: 09116c17f30c242ee777337b683f49a67562b23d
 ---
 
 # OpenSpec

@@ -4,7 +4,7 @@ kind: tool
 checked_on: 2026-10-31
 status: draft
 related: [spec-driven-development, explore-plan-code-commit]
-source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
+source_rev: 09116c17f30c242ee777337b683f49a67562b23d
 ---
 
 # Superpowers

@@ -2,7 +2,7 @@
 group: project-org
 status: draft
 related: [one-feature-at-a-time, writer-reviewer, give-agent-a-way-to-verify]
-source_rev: 8b49e83488f16f3ca7d9690fd31bb9be3ef9720b
+source_rev: 09116c17f30c242ee777337b683f49a67562b23d
 ---
 
 # Trabajo paralelo aislado
